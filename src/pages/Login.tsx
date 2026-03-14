@@ -4,7 +4,7 @@ import { useAuthContext } from '../hooks/AuthContext'
 import { Truck, AlertCircle, Eye, EyeOff } from 'lucide-react'
 import { tokens } from '../lib/tokens'
 
-const GOOGLE_CLIENT_ID = '26773356182-sb6d8l7krsltmjfh2rto7nutd4eu73qr.apps.googleusercontent.com'
+const GOOGLE_CLIENT_ID = '431361414884-df5g44uf1b7bv95oh8ecag7j5vir3om4.apps.googleusercontent.com'
 
 declare global {
   interface Window {
