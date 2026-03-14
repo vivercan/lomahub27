@@ -15,6 +15,7 @@ export type Rol =
 export interface UserMetadata {
   rol: Rol
   empresa: string
+  permisosCustom?: string[]
 }
 
 export interface AuthUser {
@@ -22,6 +23,7 @@ export interface AuthUser {
   email: string
   rol: Rol
   empresa: string
+  permisosCustom?: string[]
 }
 
 export const ROLES_LABELS: Record<Rol, string> = {
@@ -47,9 +49,27 @@ export const RUTAS_INICIALES: Record<Rol, string> = {
   ventas: '/ventas/mis-leads',
   cs: '/operaciones/despachos',
   supervisor_cs: '/servicio/dashboard',
-  operaciones: '/operaciones/torre-control',
+  operaciones: '/operaciones/dedicados',
   gerente_ops: '/operaciones/torre-control',
   cxc: '/cxc/cartera',
   pricing: '/cotizador/tarifas',
   it: '/admin/configuracion',
+}
+
+// Maps permisosCustom module IDs to route path prefixes
+export const PERMISOS_CUSTOM_ROUTES: Record<string, string[]> = {
+  'agregar-lead': ['/ventas/leads/nuevo'],
+  'panel-oportunidades': ['/ventas/mis-leads', '/ventas/dashboard', '/ventas/leads/'],
+  'servicio-clientes': ['/servicio/dashboard', '/servicio/whatsapp', '/servicio/metricas'],
+}
+
+/**
+ * Check if a user with permisosCustom has access to a given path.
+ */
+export function checkCustomAccess(permisosCustom: string[], path: string): boolean {
+  for (const permiso of permisosCustom) {
+    const routes = PERMISOS_CUSTOM_ROUTES[permiso] || []
+    if (routes.some(r => path.startsWith(r))) return true
+  }
+  return false
 }

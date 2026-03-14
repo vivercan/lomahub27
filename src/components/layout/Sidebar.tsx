@@ -9,6 +9,7 @@ import { tokens } from '../../lib/tokens'
 import { Logo } from '../ui/Logo'
 import { useAuthContext } from '../../hooks/AuthContext'
 import type { Rol } from '../../types/auth'
+import { checkCustomAccess } from '../../types/auth'
 
 interface NavItem {
   label: string
@@ -18,34 +19,34 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: 'War Room', path: '/war-room', icon: <LayoutDashboard size={18} />, roles: ['superadmin', 'admin', 'direccion'] },
+  { label: 'War Room', path: '/war-room', icon: <LayoutDashboard size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'direccion'] },
   { label: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} />, roles: ['superadmin', 'admin'] },
   // Ventas
-  { label: 'Dashboard Ventas', path: '/ventas/dashboard', icon: <TrendingUp size={18} />, roles: ['superadmin', 'admin', 'gerente_comercial'] },
-  { label: 'Mis Leads', path: '/ventas/mis-leads', icon: <Target size={18} />, roles: ['superadmin', 'admin', 'gerente_comercial', 'ventas'] },
-  { label: 'Nuevo Lead', path: '/ventas/leads/nuevo', icon: <Users size={18} />, roles: ['superadmin', 'admin', 'gerente_comercial', 'ventas'] },
+  { label: 'Dashboard Ventas', path: '/ventas/dashboard', icon: <TrendingUp size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
+  { label: 'Mis Leads', path: '/ventas/mis-leads', icon: <Target size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
+  { label: 'Nuevo Lead', path: '/ventas/leads/nuevo', icon: <Users size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
   // Cotizador
-  { label: 'Cotizador', path: '/cotizador/nueva', icon: <FileText size={18} />, roles: ['superadmin', 'admin', 'ventas', 'gerente_comercial', 'pricing'] },
+  { label: 'Cotizador', path: '/cotizador/nueva', icon: <FileText size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'pricing'] },
   // Clientes
-  { label: 'Alta de Cliente', path: '/clientes/alta', icon: <Users size={18} />, roles: ['superadmin', 'admin', 'ventas', 'gerente_comercial', 'cs', 'supervisor_cs', 'cxc', 'pricing'] },
+  { label: 'Alta de Cliente', path: '/clientes/alta', icon: <Users size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs', 'cxc', 'pricing'] },
   // Operaciones
-  { label: 'Despachos', path: '/operaciones/despachos', icon: <Truck size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
-  { label: 'Torre de Control', path: '/operaciones/torre-control', icon: <Radio size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs', 'operaciones', 'gerente_ops', 'direccion'] },
-  { label: 'Mapa GPS', path: '/operaciones/mapa', icon: <Map size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs', 'operaciones', 'gerente_ops', 'direccion'] },
-  { label: 'Dedicados', path: '/operaciones/dedicados', icon: <Truck size={18} />, roles: ['superadmin', 'admin', 'cs', 'operaciones', 'gerente_ops'] },
-  { label: 'Cajas', path: '/operaciones/cajas', icon: <Package size={18} />, roles: ['superadmin', 'admin', 'cs', 'operaciones'] },
-  { label: 'Tractos', path: '/operaciones/tractos', icon: <Truck size={18} />, roles: ['superadmin', 'admin', 'cs', 'operaciones', 'gerente_ops'] },
-  { label: 'Disponibilidad', path: '/operaciones/disponibilidad', icon: <Clock size={18} />, roles: ['superadmin', 'admin', 'cs', 'gerente_ops', 'direccion'] },
-  { label: 'Oferta Equipo', path: '/operaciones/oferta-equipo', icon: <Send size={18} />, roles: ['superadmin', 'admin', 'cs'] },
-  // Servicio
+  { label: 'Despachos', path: '/operaciones/despachos', icon: <Truck size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'supervisor_cs'] },
+  { label: 'Torre de Control', path: '/operaciones/torre-control', icon: <Radio size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'supervisor_cs', 'operaciones', 'gerente_ops', 'direccion'] },
+  { label: 'Mapa GPS', path: '/operaciones/mapa', icon: <Map size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'supervisor_cs', 'operaciones', 'gerente_ops', 'direccion'] },
+  { label: 'Dedicados', path: '/operaciones/dedicados', icon: <Truck size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops'] },
+  { label: 'Cajas', path: '/operaciones/cajas', icon: <Package size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'operaciones'] },
+  { label: 'Tractos', path: '/operaciones/tractos', icon: <Truck size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops'] },
+  { label: 'Disponibilidad', path: '/operaciones/disponibilidad', icon: <Clock size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_ops', 'direccion'] },
+  { label: 'Oferta Equipo', path: '/operaciones/oferta-equipo', icon: <Send size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas'] },
+  // Servicio — ventas NO tiene acceso a estos (excepto vía permisosCustom)
   { label: 'Dashboard CS', path: '/servicio/dashboard', icon: <Headphones size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
   { label: 'WhatsApp', path: '/servicio/whatsapp', icon: <MessageSquare size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
-  { label: 'Métricas Servicio', path: '/servicio/metricas', icon: <Activity size={18} />, roles: ['superadmin', 'admin', 'supervisor_cs', 'direccion'] },
+  { label: 'Métricas Servicio', path: '/servicio/metricas', icon: <Activity size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion'] },
   // Inteligencia
-  { label: 'KPI / Analítica', path: '/inteligencia', icon: <BarChart3 size={18} />, roles: ['superadmin', 'admin', 'direccion', 'gerente_comercial', 'gerente_ops'] },
+  { label: 'KPI / Analítica', path: '/inteligencia', icon: <BarChart3 size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops'] },
   // CXC
-  { label: 'CXC / Cartera', path: '/cxc/cartera', icon: <DollarSign size={18} />, roles: ['superadmin', 'admin', 'cxc', 'direccion'] },
-  // Admin
+  { label: 'CXC / Cartera', path: '/cxc/cartera', icon: <DollarSign size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'cxc', 'direccion'] },
+  // Admin — SOLO superadmin y admin
   { label: 'Configuración', path: '/admin/configuracion', icon: <Settings size={18} />, roles: ['superadmin', 'admin'] },
 ]
 
@@ -56,7 +57,10 @@ export function Sidebar() {
 
   if (!user) return null
 
-  const visibleItems = navItems.filter(item => item.roles.includes(user.rol))
+  // If user has permisosCustom, only show routes matching those permissions
+  const visibleItems = user.permisosCustom && user.permisosCustom.length > 0
+    ? navItems.filter(item => checkCustomAccess(user.permisosCustom!, item.path))
+    : navItems.filter(item => item.roles.includes(user.rol))
 
   const handleLogout = async () => {
     await logout()
