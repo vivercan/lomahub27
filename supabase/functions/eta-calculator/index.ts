@@ -1,21 +1,24 @@
 // ETA Calculator — Cálculo real de ETA con Google Maps Distance Matrix + NOM-087
 // Soporta: origen/destino como lat/lon o dirección, hora_salida, viaje_id opcional
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+// SIN imports de esm.sh — usa fetch() directo al REST API de Supabase
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const supabase = createClient(
-  Deno.env.get('SUPABASE_URL')!,
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-)
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
+const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+const sbHeaders = {
+  apikey: SERVICE_KEY,
+  Authorization: `Bearer ${SERVICE_KEY}`,
+  'Content-Type': 'application/json',
+  Prefer: 'return=minimal',
+}
 
 // NOM-087-SCT-2-2017: límite 10h conducción continua, 8h descanso obligatorio
 const NOM087_MAX_CONDUCCION_HORAS = 10
 const NOM087_DESCANSO_HORAS = 8
-const KM_PROMEDIO_POR_HORA = 80 // velocidad promedio en carretera MX
 
 interface ETARequest {
   origen: string        // lat,lon o dirección
@@ -163,9 +166,15 @@ Deno.serve(async (req) => {
         }
       }
 
-      await supabase.from('viajes')
-        .update(updateData)
-        .eq('id', viaje_id)
+      // UPDATE via REST API (sin esm.sh import)
+      await fetch(
+        `${SUPABASE_URL}/rest/v1/viajes?id=eq.${viaje_id}`,
+        {
+          method: 'PATCH',
+          headers: sbHeaders,
+          body: JSON.stringify(updateData),
+        }
+      )
     }
 
     const response: ETAResponse = {
