@@ -1,0 +1,242 @@
+import { useState } from 'react';
+import { ModuleLayout } from '../../components/layout/ModuleLayout';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { DataTable } from '../../components/ui/DataTable';
+import { Plus } from 'lucide-react';
+import { tokens } from '../../lib/tokens';
+
+interface Usuario {
+  id: string;
+  nombre: string;
+  email: string;
+  rol: 'Admin' | 'Gerente' | 'Operador' | 'Ejecutivo' | 'Visualizador';
+  empresa: string;
+  estado: 'activo' | 'inactivo';
+}
+
+const mockUsuarios: Usuario[] = [
+  {
+    id: '1',
+    nombre: 'Jorge Gutiérrez',
+    email: 'jorge.gutierrez@lomahub.com',
+    rol: 'Admin',
+    empresa: 'LomaHub27',
+    estado: 'activo',
+  },
+  {
+    id: '2',
+    nombre: 'Sandra López',
+    email: 'sandra.lopez@transportes.com',
+    rol: 'Gerente',
+    empresa: 'Transportes García',
+    estado: 'activo',
+  },
+  {
+    id: '3',
+    nombre: 'Juan Pérez',
+    email: 'juan.perez@transportes.com',
+    rol: 'Operador',
+    empresa: 'Transportes García',
+    estado: 'activo',
+  },
+  {
+    id: '4',
+    nombre: 'Carlos Mendoza',
+    email: 'carlos.mendoza@logistica.com',
+    rol: 'Ejecutivo',
+    empresa: 'Logística Integral',
+    estado: 'inactivo',
+  },
+  {
+    id: '5',
+    nombre: 'María García',
+    email: 'maria.garcia@distribuidor.com',
+    rol: 'Visualizador',
+    empresa: 'Distribuidora México',
+    estado: 'activo',
+  },
+];
+
+type TabType = 'usuarios' | 'catalogos' | 'parametros' | 'integraciones' | 'auditoria';
+
+function getRolBadgeColor(rol: string): 'primary' | 'green' | 'yellow' | 'red' | 'gray' | 'blue' | 'orange' {
+  switch (rol) {
+    case 'Admin':
+      return 'red';
+    case 'Gerente':
+      return 'yellow';
+    case 'Operador':
+      return 'blue';
+    case 'Ejecutivo':
+      return 'green';
+    case 'Visualizador':
+      return 'gray';
+    default:
+      return 'gray';
+  }
+}
+
+function getEstadoBadgeColor(estado: string): 'green' | 'gray' {
+  return estado === 'activo' ? 'green' : 'gray';
+}
+
+export default function Configuracion() {
+  const [activeTab, setActiveTab] = useState<TabType>('usuarios');
+
+  const tabs: TabType[] = ['usuarios', 'catalogos', 'parametros', 'integraciones', 'auditoria'];
+
+  const usuarioColumns = [
+    { key: 'nombre', label: 'Nombre', width: '20%' },
+    { key: 'email', label: 'Email', width: '25%' },
+    {
+      key: 'rol',
+      label: 'Rol',
+      width: '15%',
+      render: (row: Usuario) => <Badge color={getRolBadgeColor(row.rol)}>{row.rol}</Badge>,
+    },
+    { key: 'empresa', label: 'Empresa', width: '20%' },
+    {
+      key: 'estado',
+      label: 'Estado',
+      width: '15%',
+      render: (row: Usuario) => (
+        <Badge color={getEstadoBadgeColor(row.estado)}>
+          {row.estado === 'activo' ? 'Activo' : 'Inactivo'}
+        </Badge>
+      ),
+    },
+    {
+      key: 'actions',
+      label: 'Acciones',
+      width: '5%',
+      render: (_row: Usuario) => (
+        <div style={{ display: 'flex', gap: tokens.spacing.xs }}>
+          <Button variant="secondary" size="sm">
+            Editar
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <ModuleLayout titulo="Configuración del Sistema">
+      <div style={{ marginBottom: tokens.spacing.lg }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: tokens.spacing.sm,
+            borderBottom: `2px solid ${tokens.colors.border}`,
+            marginBottom: tokens.spacing.lg,
+          }}
+        >
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderBottom: activeTab === tab ? `3px solid ${tokens.colors.blue}` : 'none',
+                color: activeTab === tab ? tokens.colors.blue : tokens.colors.textSecondary,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {activeTab === 'usuarios' && (
+        <Card>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: tokens.spacing.md,
+              paddingBottom: tokens.spacing.md,
+              borderBottom: `1px solid ${tokens.colors.border}`,
+            }}
+          >
+            <h3
+              style={{
+                color: tokens.colors.textPrimary,
+                margin: 0,
+              }}
+            >
+              Usuarios del Sistema
+            </h3>
+            <Button variant="primary" size="sm">
+              <Plus size={16} style={{ marginRight: tokens.spacing.xs }} />
+              Nuevo Usuario
+            </Button>
+          </div>
+
+          <DataTable columns={usuarioColumns} data={mockUsuarios} />
+        </Card>
+      )}
+
+      {activeTab === 'catalogos' && (
+        <Card>
+          <div
+            style={{
+              padding: tokens.spacing.lg,
+              textAlign: 'center',
+              color: tokens.colors.textSecondary,
+            }}
+          >
+            <p style={{ margin: 0 }}>Gestión de Catálogos (Implementar según especificaciones)</p>
+          </div>
+        </Card>
+      )}
+
+      {activeTab === 'parametros' && (
+        <Card>
+          <div
+            style={{
+              padding: tokens.spacing.lg,
+              textAlign: 'center',
+              color: tokens.colors.textSecondary,
+            }}
+          >
+            <p style={{ margin: 0 }}>Parámetros del Sistema (Implementar según especificaciones)</p>
+          </div>
+        </Card>
+      )}
+
+      {activeTab === 'integraciones' && (
+        <Card>
+          <div
+            style={{
+              padding: tokens.spacing.lg,
+              textAlign: 'center',
+              color: tokens.colors.textSecondary,
+            }}
+          >
+            <p style={{ margin: 0 }}>Integraciones (Implementar según especificaciones)</p>
+          </div>
+        </Card>
+      )}
+
+      {activeTab === 'auditoria' && (
+        <Card>
+          <div
+            style={{
+              padding: tokens.spacing.lg,
+              textAlign: 'center',
+              color: tokens.colors.textSecondary,
+            }}
+          >
+            <p style={{ margin: 0 }}>Auditoría del Sistema (Implementar según especificaciones)</p>
+          </div>
+        </Card>
+      )}
+    </ModuleLayout>
+  );
+}
