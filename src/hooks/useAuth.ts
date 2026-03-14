@@ -50,12 +50,10 @@ export function useAuth() {
     return data
   }
 
-  const loginWithGoogle = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
+  const loginWithGoogleIdToken = async (idToken: string) => {
+    const { data, error } = await supabase.auth.signInWithIdToken({
       provider: 'google',
-      options: {
-        redirectTo: window.location.origin + '/dashboard',
-      },
+      token: idToken,
     })
     if (error) throw error
     return data
@@ -90,7 +88,7 @@ export function useAuth() {
     user,
     loading,
     login,
-    loginWithGoogle,
+    loginWithGoogleIdToken,
     logout,
     getRutaInicial,
     hasRole,
