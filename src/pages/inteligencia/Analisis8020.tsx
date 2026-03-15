@@ -109,52 +109,85 @@ export default function Analisis8020() {
     setLoading(true)
     setError(null)
     try {
+      const [anio, mesNum] = mes.split('-')
+      const mesStart = `${anio}-${mesNum}-01`
+      const lastDay = new Date(parseInt(anio), parseInt(mesNum), 0).getDate()
+      const mesEnd = `${anio}-${mesNum}-${String(lastDay).padStart(2, '0')}`
+
       const { data: viajes } = await supabase
         .from('viajes')
         .select('id, cliente_id, tracto_id, origen, destino, created_at')
-        .gte('created_at', `${periodoInicio}T00:00:00`)
-        .lte('created_at', `${periodoFin}T23:59:59`)
+        .gte('created_at', `${mesStart}T00:00:00`)
+        .lte('created_at', `${mesEnd}T23:59:59`)
 
       const { data: clientes } = await supabase.from('clientes').select('id, razon_social, empresa')
       const { data: tractos } = await supabase.from('tractos').select('id, numero_economico, empresa')
 
-      const clienteMap = new Map((clientes || []).map(c => [c.id, c]))
-      const tractoMap = new Map((tractos || []).map(t => [t.id, t]))
+      const clienteMap: Record<string, any> = {}
+      for (const c of (clientes || [])) { clienteMap[c.id] = c }
+      const tractoMap: Record<string, any> = {}
+      for (const t of (tractos || [])) { tractoMap[t.id] = t }
       const totalViajes = (viajes || []).length
 
-      const buildPareto = (agg: Map<string, number>, getName: (id: string) => { nombre: string; empresa: string }) => {
-        const items = Array.from(agg.entries())
-          .sort((a, b) => b[1] - a[1])
-          .map(([id, count]) => {
-            const info = getName(id)
-            return { id, nombre: info.nombre, empresa: info.empresa, valor: count, porcentaje: totalViajes > 0 ? (count / totalViajes) * 100 : 0, acumulado: 0, grupo: 'A' as const }
-          })
+      const buildPareto = (agg: Record<string, number>, getName: (id: string) => { nombre: string; empresa: string }): ParetoItem[] => {
+        const sorted = Object.entries(agg).sort((a, b) => b[1] - a[1])
         let acum = 0
-        items.forEach(item => { acum += item.porcentaje; item.acumulado = acum; item.grupo = acum <= 80 ? 'A' : acum <= 95 ? 'B' : 'C' })
-        return items
+        return sorted.map(([id, count], idx) => {
+          const info = getName(id)
+          const pct = totalViajes > 0 ? (count / totalViajes) * 100 : 0
+          acum += pct
+          return {
+            posicion: idx + 1,
+            id,
+            label: info.nombre,
+            sublabel: info.empresa,
+            ingreso: 0,
+            costo: 0,
+            margen: 0,
+            viajes: count,
+            pct_del_total: pct,
+            pct_acumulado: acum,
+            zona: (acum <= 80 ? 'A' : acum <= 95 ? 'B' : 'C') as 'A' | 'B' | 'C',
+          }
+        })
       }
 
-      const clienteAgg = new Map<string, number>()
-      const tractoAgg = new Map<string, number>()
-      const rutaAgg = new Map<string, number>()
+      const clienteAgg: Record<string, number> = {}
+      const tractoAgg: Record<string, number> = {}
+      const rutaAgg: Record<string, number> = {}
       ;(viajes || []).forEach(v => {
-        if (v.cliente_id) clienteAgg.set(v.cliente_id, (clienteAgg.get(v.cliente_id) || 0) + 1)
-        if (v.tracto_id) tractoAgg.set(v.tracto_id, (tractoAgg.get(v.tracto_id) || 0) + 1)
+        if (v.cliente_id) clienteAgg[v.cliente_id] = (clienteAgg[v.cliente_id] || 0) + 1
+        if (v.tracto_id) tractoAgg[v.tracto_id] = (tractoAgg[v.tracto_id] || 0) + 1
         const rk = `${v.origen || '?'} \u2192 ${v.destino || '?'}`
-        rutaAgg.set(rk, (rutaAgg.get(rk) || 0) + 1)
+        rutaAgg[rk] = (rutaAgg[rk] || 0) + 1
       })
 
-      const cp = buildPareto(clienteAgg, id => ({ nombre: clienteMap.get(id)?.razon_social || id, empresa: clienteMap.get(id)?.empresa || '' }))
-      const tp = buildPareto(tractoAgg, id => ({ nombre: tractoMap.get(id)?.numero_economico || id, empresa: tractoMap.get(id)?.empresa || '' }))
+      const cp = buildPareto(clienteAgg, id => ({ nombre: clienteMap[id]?.razon_social || id, empresa: clienteMap[id]?.empresa || '' }))
+      const tp = buildPareto(tractoAgg, id => ({ nombre: tractoMap[id]?.numero_economico || id, empresa: tractoMap[id]?.empresa || '' }))
       const rp = buildPareto(rutaAgg, id => ({ nombre: id, empresa: '' }))
 
-      const countA = (arr: typeof cp) => arr.filter(x => x.grupo === 'A').length
+      const buildResult = (items: ParetoItem[]): ParetoResult => {
+        const items80 = items.filter(x => x.zona === 'A').length
+        const top20Count = Math.max(1, Math.ceil(items.length * 0.2))
+        const concentracion = items.slice(0, top20Count).reduce((s, i) => s + i.pct_del_total, 0)
+        return {
+          totalItems: items.length,
+          totalIngreso: 0,
+          totalCosto: 0,
+          totalViajes: totalViajes,
+          margenGlobal: 0,
+          items80pct: items80,
+          concentracion,
+          detalle: items,
+        }
+      }
 
       setData({
         ok: true,
-        periodo: { inicio: periodoInicio, fin: periodoFin },
-        resumen: { totalItems: totalViajes, grupoA: countA(cp), grupoB: cp.filter(x => x.grupo === 'B').length, grupoC: cp.filter(x => x.grupo === 'C').length, concentracionTop20: cp.slice(0, Math.ceil(cp.length * 0.2)).reduce((s, i) => s + i.porcentaje, 0) },
-        pareto: { clientes: cp, tractos: tp, rutas: rp },
+        mes: `${anio}-${mesNum}`,
+        clientes: buildResult(cp),
+        tractos: buildResult(tp),
+        rutas: buildResult(rp),
       })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
