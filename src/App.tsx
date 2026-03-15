@@ -14,6 +14,7 @@ import MisLeads from './pages/ventas/MisLeads'
 import NuevoLead from './pages/ventas/NuevoLead'
 import FichaLead from './pages/ventas/FichaLead'
 import ProgramaSemanal from './pages/ventas/ProgramaSemanal'
+import Comisiones from './pages/ventas/Comisiones'
 
 // Cotizador
 import NuevaCotizacion from './pages/cotizador/NuevaCotizacion'
@@ -178,11 +179,7 @@ function App() {
           <Route path="/operaciones/tractos" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops']}>
               <ControlTractos />
-                        </ProtectedRoute>
-          } />
-
-          {/* âââ 18. Disponibilidad âââ */}
-                 </ProtectedRoute>
+            </ProtectedRoute>
           } />
 
           {/* âââ 18. Disponibilidad âââ */}
@@ -224,6 +221,13 @@ function App() {
           <Route path="/inteligencia" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops']}>
               <Inteligencia />
+            </ProtectedRoute>
+          } />
+
+          {/* âââ 28. Comisiones por Ejecutivo âââ */}
+          <Route path="/ventas/comisiones" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'gerente_comercial', 'direccion']}>
+              <Comisiones />
             </ProtectedRoute>
           } />
 
