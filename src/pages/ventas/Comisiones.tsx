@@ -121,7 +121,8 @@ export default function Comisiones() {
         .lte('created_at', `${mesEnd}T23:59:59`)
       if (vErr) throw new Error(vErr.message)
 
-      const { data: clientes } = await supabase.from('clientes').select('id, razon_social')
+      const { data: _clientes } = await supabase.from('clientes').select('id, razon_social')
+      void _clientes // available for future use
       const totalViajes = viajes?.length || 0
       const uniqueClientes = new Set((viajes || []).map(v => v.cliente_id).filter(Boolean))
 
