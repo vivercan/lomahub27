@@ -16,7 +16,7 @@ import { tokens } from '../lib/tokens'
 import { supabase } from '../lib/supabase'
 import type { SemaforoEstado } from '../lib/tokens'
 
-// âââ Types âââââââââââââââââââââââââââââââââââââââââââ
+// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Types Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 interface RankingItem {
   id: string
   nombre: string
@@ -51,7 +51,7 @@ interface RankingsResponse {
   mensaje?: string
 }
 
-// âââ Helpers âââââââââââââââââââââââââââââââââââââââââ
+// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Helpers Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 function formatCurrency(n: number): string {
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0 }).format(n)
 }
@@ -91,27 +91,119 @@ export default function Inteligencia() {
     setLoading(true)
     setError(null)
     try {
-      const { data: sessionData } = await supabase.auth.getSession()
-      const token = sessionData.session?.access_token
-      if (!token) throw new Error('SesiÃ³n expirada')
+      // Query viajes directly from Supabase (replaces Edge Function call)
+      const { data: viajes, error: vErr } = await supabase
+        .from('viajes')
+        .select('id, cliente_id, tracto_id, origen, destino, created_at')
+        .gte('created_at', `${periodoInicio}T00:00:00`)
+        .lte('created_at', `${periodoFin}T23:59:59`)
 
-      const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/rankings-automaticos`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            periodo_inicio: periodoInicio,
-            periodo_fin: periodoFin,
-          }),
-        }
+      if (vErr) throw new Error(vErr.message)
+
+      // Empty period — show empty state gracefully
+      if (!viajes || viajes.length === 0) {
+        setData({
+          ok: true,
+          periodo: { inicio: periodoInicio, fin: periodoFin },
+          resumen: { totalClientes: 0, totalTractos: 0, totalRutas: 0, viajesTotal: 0, facturacionTotal: 0, margenPromedio: 0 },
+          rankings: { clientes_top: [], clientes_bottom: [], tractos_top: [], tractos_bottom: [], rutas_top: [], rutas_bottom: [] },
+        })
+        return
+      }
+
+      // Fetch client and tracto names
+      const clienteIds = [...new Set(viajes.map(v => v.cliente_id).filter(Boolean))]
+      const tractoIds = [...new Set(viajes.map(v => v.tracto_id).filter(Boolean))]
+
+      const { data: clientes } = clienteIds.length > 0
+        ? await supabase.from('clientes').select('id, razon_social, empresa').in('id', clienteIds)
+        : { data: [] }
+      const { data: tractos } = tractoIds.length > 0
+        ? await supabase.from('tractos').select('id, numero_economico, empresa').in('id', tractoIds)
+        : { data: [] }
+
+      const clienteMap = new Map((clientes || []).map(c => [c.id, c]))
+      const tractoMap = new Map((tractos || []).map(t => [t.id, t]))
+
+      // Aggregate by dimension
+      const agg = (key: (v: any) => string) => {
+        const map = new Map<string, number>()
+        viajes.forEach(v => {
+          const k = key(v)
+          if (k) map.set(k, (map.get(k) || 0) + 1)
+        })
+        return map
+      }
+
+      const clienteAgg = agg(v => v.cliente_id)
+      const tractoAgg = agg(v => v.tracto_id)
+      const rutaAgg = agg(v => `${v.origen || '?'} → ${v.destino || '?'}`)
+
+      // Build ranking items
+      const buildRanking = (
+        entries: [string, number][],
+        getName: (id: string) => { nombre: string; empresa?: string },
+        label: string,
+      ): RankingItem[] =>
+        entries
+          .sort((a, b) => b[1] - a[1])
+          .map(([id, count], i) => {
+            const info = getName(id)
+            return {
+              id,
+              nombre: info.nombre,
+              empresa: info.empresa,
+              valor_principal: count,
+              valor_secundario: 0,
+              label_principal: label,
+              label_secundario: 'Margen %',
+              cambio_pct: 0,
+              posicion: i + 1,
+            }
+          })
+
+      const clienteRanking = buildRanking(
+        Array.from(clienteAgg.entries()),
+        id => ({ nombre: clienteMap.get(id)?.razon_social || id, empresa: clienteMap.get(id)?.empresa }),
+        'Viajes',
       )
-      const json: RankingsResponse = await res.json()
-      if (!json.ok) throw new Error(json.mensaje || 'Error al obtener rankings')
-      setData(json)
+      const tractoRanking = buildRanking(
+        Array.from(tractoAgg.entries()),
+        id => ({ nombre: tractoMap.get(id)?.numero_economico || id, empresa: tractoMap.get(id)?.empresa }),
+        'Viajes',
+      )
+      const rutaRanking = buildRanking(
+        Array.from(rutaAgg.entries()),
+        id => ({ nombre: id }),
+        'Frecuencia',
+      )
+
+      const top5 = (arr: RankingItem[]) => arr.slice(0, 5).map((x, i) => ({ ...x, posicion: i + 1 }))
+      const bot5 = (arr: RankingItem[]) =>
+        arr.length > 5
+          ? arr.slice(-5).reverse().map((x, i) => ({ ...x, posicion: i + 1 }))
+          : []
+
+      setData({
+        ok: true,
+        periodo: { inicio: periodoInicio, fin: periodoFin },
+        resumen: {
+          totalClientes: clienteAgg.size,
+          totalTractos: tractoAgg.size,
+          totalRutas: rutaAgg.size,
+          viajesTotal: viajes.length,
+          facturacionTotal: 0,
+          margenPromedio: 0,
+        },
+        rankings: {
+          clientes_top: top5(clienteRanking),
+          clientes_bottom: bot5(clienteRanking),
+          tractos_top: top5(tractoRanking),
+          tractos_bottom: bot5(tractoRanking),
+          rutas_top: top5(rutaRanking),
+          rutas_bottom: bot5(rutaRanking),
+        },
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
@@ -123,11 +215,11 @@ export default function Inteligencia() {
     fetchData()
   }, [])
 
-  // âââ Current ranking data ââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Current ranking data Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   const currentKey = `${categoria}_${vista}` as keyof RankingsResponse['rankings']
   const currentData = data?.rankings?.[currentKey] ?? []
 
-  // âââ Category options ââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Category options Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   const categoriaOptions = [
     { value: 'clientes', label: 'Clientes' },
     { value: 'tractos', label: 'Tractos' },
@@ -140,7 +232,7 @@ export default function Inteligencia() {
     rutas: <MapPin size={18} />,
   }
 
-  // âââ Table columns ââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Table columns Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   const columns: Column<RankingItem>[] = [
     {
       key: 'posicion',
@@ -193,11 +285,11 @@ export default function Inteligencia() {
     },
     {
       key: 'valor_principal',
-      label: currentData[0]?.label_principal || 'MÃ©trica Principal',
+      label: currentData[0]?.label_principal || 'MÃÂ©trica Principal',
       align: 'right',
       render: (row) => (
         <span className="text-sm font-semibold" style={{ color: tokens.colors.primary }}>
-          {row.label_principal.includes('$') || row.label_principal.includes('Ingreso') || row.label_principal.includes('FacturaciÃ³n')
+          {row.label_principal.includes('$') || row.label_principal.includes('Ingreso') || row.label_principal.includes('FacturaciÃÂ³n')
             ? formatCurrency(row.valor_principal)
             : row.valor_principal.toLocaleString('es-MX')}
         </span>
@@ -205,7 +297,7 @@ export default function Inteligencia() {
     },
     {
       key: 'valor_secundario',
-      label: currentData[0]?.label_secundario || 'MÃ©trica Secundaria',
+      label: currentData[0]?.label_secundario || 'MÃÂ©trica Secundaria',
       align: 'right',
       render: (row) => (
         <span className="text-sm" style={{ color: tokens.colors.textSecondary }}>
@@ -237,10 +329,10 @@ export default function Inteligencia() {
     },
   ]
 
-  // âââ CSV Export ââââââââââââââââââââââââââââââââââââ
+  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ CSV Export Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
   const handleExportCSV = () => {
     if (!currentData.length) return
-    const header = 'PosiciÃ³n,Nombre,Empresa,Valor Principal,Valor Secundario,Cambio %\n'
+    const header = 'PosiciÃÂ³n,Nombre,Empresa,Valor Principal,Valor Secundario,Cambio %\n'
     const rows = currentData.map(r =>
       `${r.posicion},${r.nombre},${r.empresa || ''},${r.valor_principal},${r.valor_secundario},${r.cambio_pct}`
     ).join('\n')
@@ -272,7 +364,7 @@ export default function Inteligencia() {
       <div className="flex flex-wrap gap-4 mb-6 items-end">
         <div>
           <label className="text-xs block mb-1" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-            PerÃ­odo inicio
+            PerÃÂ­odo inicio
           </label>
           <input
             type="date"
@@ -289,7 +381,7 @@ export default function Inteligencia() {
         </div>
         <div>
           <label className="text-xs block mb-1" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-            PerÃ­odo fin
+            PerÃÂ­odo fin
           </label>
           <input
             type="date"
@@ -306,7 +398,7 @@ export default function Inteligencia() {
         </div>
         <div style={{ minWidth: '160px' }}>
           <Select
-            label="CategorÃ­a"
+            label="CategorÃÂ­a"
             options={categoriaOptions}
             value={categoria}
             onChange={(e) => setCategoria(e.target.value as Categoria)}
@@ -357,7 +449,7 @@ export default function Inteligencia() {
             icono={<TrendingUp size={18} />}
           />
           <KPICard
-            titulo="FacturaciÃ³n"
+            titulo="FacturaciÃÂ³n"
             valor={formatCurrency(data.resumen.facturacionTotal)}
             color="green"
             icono={<BarChart3 size={18} />}
@@ -435,7 +527,7 @@ export default function Inteligencia() {
           className="text-lg font-bold"
           style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, margin: 0 }}
         >
-          {vista === 'top' ? 'Top 5' : 'Bottom 5'} â {
+          {vista === 'top' ? 'Top 5' : 'Bottom 5'} Ã¢ÂÂ {
             categoria === 'clientes' ? 'Clientes' :
             categoria === 'tractos' ? 'Tractos' : 'Rutas'
           }
@@ -448,7 +540,7 @@ export default function Inteligencia() {
           columns={columns}
           data={currentData}
           loading={loading}
-          emptyMessage={`No hay datos de ${categoria} para este perÃ­odo`}
+          emptyMessage={`No hay datos de ${categoria} para este perÃÂ­odo`}
         />
       </Card>
 
@@ -459,7 +551,7 @@ export default function Inteligencia() {
             className="text-sm font-medium mb-4"
             style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}
           >
-            DistribuciÃ³n â {currentData[0]?.label_principal || 'Valor'}
+            DistribuciÃÂ³n Ã¢ÂÂ {currentData[0]?.label_principal || 'Valor'}
           </h4>
           <div className="space-y-3">
             {currentData.map((item) => {
@@ -509,3 +601,4 @@ export default function Inteligencia() {
     </ModuleLayout>
   )
 }
+
