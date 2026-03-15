@@ -42,6 +42,9 @@ import MetricasServicio from './pages/servicio/MetricasServicio'
 // CXC
 import Cartera from './pages/cxc/Cartera'
 
+// Inteligencia
+import PresupuestoMensual from './pages/inteligencia/PresupuestoMensual'
+
 // Admin
 import Configuracion from './pages/admin/Configuracion'
 
@@ -54,14 +57,14 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
-          {/+ âââ 02. War Room âââ */}
+          {/* âââ 02. War Room âââ */}
           <Route path="/war-room" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'direccion']}>
               <WarRoom />
             </ProtectedRoute>
           } />
 
-          {/+ âââ 03. Dashboard Ventas âââ */}
+          {/* âââ 03. Dashboard Ventas âââ */}
           <Route path="/ventas/dashboard" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <DashboardVentas />
@@ -175,7 +178,11 @@ function App() {
           <Route path="/operaciones/tractos" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops']}>
               <ControlTractos />
-            </ProtectedRoute>
+                        </ProtectedRoute>
+          } />
+
+          {/* âââ 18. Disponibilidad âââ */}
+                 </ProtectedRoute>
           } />
 
           {/* âââ 18. Disponibilidad âââ */}
@@ -206,17 +213,24 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/+ âââ 21. MÃ©tricas Servicio â cs sÃ­, ventas NO âââ */}
+          {/* âââ 21. MÃ©tricas Servicio â cs sÃ­, ventas NO âââ */}
           <Route path="/servicio/metricas" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion']}>
               <MetricasServicio />
             </ProtectedRoute>
           } />
 
-          {/* âââ 22. Inteligencia âââ */}
+          {/* âââ 22. Inteligencia / Rankings âââ */}
           <Route path="/inteligencia" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops']}>
               <Inteligencia />
+            </ProtectedRoute>
+          } />
+
+          {/* âââ 27. Presupuesto Mensual âââ */}
+          <Route path="/inteligencia/presupuesto" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'direccion', 'gerente_comercial', 'gerente_ops']}>
+              <PresupuestoMensual />
             </ProtectedRoute>
           } />
 
@@ -227,7 +241,7 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/+ âââ 24. ConfiguraciÃ³n â SOLO superadmin y admin âââ */}
+          {/* âââ 24. ConfiguraciÃ³n â SOLO superadmin y admin âââ */}
           <Route path="/admin/configuracion" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
               <Configuracion />
