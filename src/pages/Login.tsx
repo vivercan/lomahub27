@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, type FormEvent } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthContext } from '../hooks/AuthContext'
-import { Truck, AlertCircle, Eye, EyeOff } from 'lucide-react'
+import { Truck, AlertCircle } from 'lucide-react'
 import { tokens } from '../lib/tokens'
 
 const GOOGLE_CLIENT_ID = '431361414884-df5g44uf1b7bv95oh8ecag7j5vir3om4.apps.googleusercontent.com'
@@ -21,13 +21,9 @@ declare global {
 }
 
 export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
-  const { login, loginWithGoogleIdToken, getRutaInicial } = useAuthContext()
+  const { loginWithGoogleIdToken, getRutaInicial } = useAuthContext()
   const navigate = useNavigate()
   const googleBtnRef = useRef<HTMLDivElement>(null)
 
@@ -83,25 +79,6 @@ export default function Login() {
       setError(err.message || 'Error al iniciar sesión con Google')
     } finally {
       setGoogleLoading(false)
-    }
-  }
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
-
-    try {
-      await login(email, password)
-      navigate(getRutaInicial())
-    } catch (err: any) {
-      setError(
-        err.message === 'Invalid login credentials'
-          ? 'Correo o contraseña incorrectos'
-          : err.message || 'Error al iniciar sesión'
-      )
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -164,123 +141,27 @@ export default function Login() {
             borderColor: tokens.effects.glassmorphism.border,
           }}
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div
-                className="flex items-center gap-3 p-3 rounded-lg border"
-                style={{
-                  background: `${tokens.colors.red}1a`,
-                  borderColor: `${tokens.colors.red}33`,
-                }}
-              >
-                <AlertCircle className="w-5 h-5 shrink-0" style={{ color: tokens.colors.red }} />
-                <p className="text-sm" style={{ color: tokens.colors.red, fontFamily: tokens.fonts.body }}>
-                  {error}
-                </p>
-              </div>
-            )}
-
-            <div>
-              <label
-                className="block text-sm font-medium mb-2"
-                style={{
-                  color: tokens.colors.textSecondary,
-                  fontFamily: tokens.fonts.body,
-                }}
-              >
-                Correo electrónico
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-                className="w-full rounded-lg px-4 py-3 text-sm outline-none transition-colors focus:ring-2"
-                style={{
-                  background: tokens.colors.bgHover,
-                  border: `1px solid ${tokens.colors.border}`,
-                  color: tokens.colors.textPrimary,
-                  fontFamily: tokens.fonts.body,
-                  // @ts-expect-error CSS custom property
-                  '--tw-ring-color': tokens.colors.primary,
-                }}
-                placeholder="tu@empresa.com"
-              />
-            </div>
-
-            <div>
-              <label
-                className="block text-sm font-medium mb-2"
-                style={{
-                  color: tokens.colors.textSecondary,
-                  fontFamily: tokens.fonts.body,
-                }}
-              >
-                Contraseña
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                  className="w-full rounded-lg px-4 py-3 text-sm outline-none transition-colors focus:ring-2 pr-12"
-                  style={{
-                    background: tokens.colors.bgHover,
-                    border: `1px solid ${tokens.colors.border}`,
-                    color: tokens.colors.textPrimary,
-                    fontFamily: tokens.fonts.body,
-                    // @ts-expect-error CSS custom property
-                    '--tw-ring-color': tokens.colors.primary,
-                  }}
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
-                  style={{ color: tokens.colors.textMuted }}
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          {error && (
+            <div
+              className="flex items-center gap-3 p-3 rounded-lg border mb-6"
               style={{
-                background: tokens.colors.primary,
-                color: '#fff',
-                fontFamily: tokens.fonts.body,
-                boxShadow: tokens.effects.glowPrimary,
+                background: `${tokens.colors.red}1a`,
+                borderColor: `${tokens.colors.red}33`,
               }}
             >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Ingresando...
-                </span>
-              ) : (
-                'Ingresar'
-              )}
-            </button>
-          </form>
+              <AlertCircle className="w-5 h-5 shrink-0" style={{ color: tokens.colors.red }} />
+              <p className="text-sm" style={{ color: tokens.colors.red, fontFamily: tokens.fonts.body }}>
+                {error}
+              </p>
+            </div>
+          )}
 
-          {/* Divider */}
-          <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px" style={{ background: tokens.colors.border }} />
-            <span
-              className="text-xs"
-              style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}
-            >
-              o continúa con
-            </span>
-            <div className="flex-1 h-px" style={{ background: tokens.colors.border }} />
-          </div>
+          <p
+            className="text-center text-sm mb-6"
+            style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}
+          >
+            Inicia sesión con tu cuenta de Google
+          </p>
 
           {/* Google Sign-In Button (rendered by GSI) */}
           <div className="w-full flex justify-center">
