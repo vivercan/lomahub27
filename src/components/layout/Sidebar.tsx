@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Users, TrendingUp, FileText, Truck, Map, MessageSquare,
   BarChart3, DollarSign, Settings, LogOut, ChevronLeft, ChevronRight,
-  Radio, Package, Clock, Send, Headphones, Activity, Target
+  Radio, Package, Clock, Send, Headphones, Activity, Target, Calculator, Calendar
 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 import { Logo } from '../ui/Logo'
@@ -25,6 +25,7 @@ const navItems: NavItem[] = [
   { label: 'Dashboard Ventas', path: '/ventas/dashboard', icon: <TrendingUp size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
   { label: 'Mis Leads', path: '/ventas/mis-leads', icon: <Target size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
   { label: 'Nuevo Lead', path: '/ventas/leads/nuevo', icon: <Users size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
+  { label: 'Programa Semanal', path: '/ventas/programa-semanal', icon: <Calendar size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'direccion'] },
   // Cotizador
   { label: 'Cotizador', path: '/cotizador/nueva', icon: <FileText size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'pricing'] },
   // Clientes
@@ -38,16 +39,17 @@ const navItems: NavItem[] = [
   { label: 'Tractos', path: '/operaciones/tractos', icon: <Truck size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops'] },
   { label: 'Disponibilidad', path: '/operaciones/disponibilidad', icon: <Clock size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_ops', 'direccion'] },
   { label: 'Oferta Equipo', path: '/operaciones/oferta-equipo', icon: <Send size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas'] },
-  // Servicio — ventas NO tiene acceso a estos (excepto vía permisosCustom)
+  { label: 'Rentabilidad', path: '/operaciones/rentabilidad', icon: <Calculator size={18} />, roles: ['superadmin', 'admin', 'operaciones', 'gerente_ops', 'direccion'] },
+  // Servicio â ventas NO tiene acceso a estos (excepto vÃ­a permisosCustom)
   { label: 'Dashboard CS', path: '/servicio/dashboard', icon: <Headphones size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
   { label: 'WhatsApp', path: '/servicio/whatsapp', icon: <MessageSquare size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
-  { label: 'Métricas Servicio', path: '/servicio/metricas', icon: <Activity size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion'] },
+  { label: 'MÃ©tricas Servicio', path: '/servicio/metricas', icon: <Activity size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion'] },
   // Inteligencia
-  { label: 'KPI / Analítica', path: '/inteligencia', icon: <BarChart3 size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops'] },
+  { label: 'KPI / AnalÃ­tica', path: '/inteligencia', icon: <BarChart3 size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops'] },
   // CXC
   { label: 'CXC / Cartera', path: '/cxc/cartera', icon: <DollarSign size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'cxc', 'direccion'] },
-  // Admin — SOLO superadmin y admin
-  { label: 'Configuración', path: '/admin/configuracion', icon: <Settings size={18} />, roles: ['superadmin', 'admin'] },
+  // Admin â SOLO superadmin y admin
+  { label: 'ConfiguraciÃ³n', path: '/admin/configuracion', icon: <Settings size={18} />, roles: ['superadmin', 'admin'] },
 ]
 
 export function Sidebar() {
@@ -124,7 +126,7 @@ export function Sidebar() {
           style={{ color: tokens.colors.red }}
         >
           <LogOut size={16} />
-          {!collapsed && 'Cerrar Sesión'}
+          {!collapsed && 'Cerrar SesiÃ³n'}
         </button>
       </div>
     </aside>
