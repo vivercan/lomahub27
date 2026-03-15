@@ -14,7 +14,7 @@ import { Badge } from '../../components/ui/Badge'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 
-// ─── Types ───────────────────────────────────────────
+// âââ Types âââââââââââââââââââââââââââââââââââââââââââ
 interface ParetoItem {
   posicion: number
   id: string
@@ -51,7 +51,7 @@ interface AnalisisResponse {
 
 type Dimension = 'clientes' | 'tractos' | 'rutas'
 
-// ─── Helpers ─────────────────────────────────────────
+// âââ Helpers âââââââââââââââââââââââââââââââââââââââââ
 function formatCurrency(n: number): string {
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0 }).format(n)
 }
@@ -109,25 +109,53 @@ export default function Analisis8020() {
     setLoading(true)
     setError(null)
     try {
-      const { data: sessionData } = await supabase.auth.getSession()
-      const token = sessionData.session?.access_token
-      if (!token) throw new Error('Sesión expirada')
+      const { data: viajes } = await supabase
+        .from('viajes')
+        .select('id, cliente_id, tracto_id, origen, destino, created_at')
+        .gte('created_at', `${periodoInicio}T00:00:00`)
+        .lte('created_at', `${periodoFin}T23:59:59`)
 
-      const [anio, mesNum] = mes.split('-')
-      const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analisis-8020`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ mes: parseInt(mesNum), anio: parseInt(anio), dimension: 'todos' }),
-        }
-      )
-      const json: AnalisisResponse = await res.json()
-      if (!json.ok) throw new Error(json.mensaje || 'Error al obtener análisis')
-      setData(json)
+      const { data: clientes } = await supabase.from('clientes').select('id, razon_social, empresa')
+      const { data: tractos } = await supabase.from('tractos').select('id, numero_economico, empresa')
+
+      const clienteMap = new Map((clientes || []).map(c => [c.id, c]))
+      const tractoMap = new Map((tractos || []).map(t => [t.id, t]))
+      const totalViajes = (viajes || []).length
+
+      const buildPareto = (agg: Map<string, number>, getName: (id: string) => { nombre: string; empresa: string }) => {
+        const items = Array.from(agg.entries())
+          .sort((a, b) => b[1] - a[1])
+          .map(([id, count]) => {
+            const info = getName(id)
+            return { id, nombre: info.nombre, empresa: info.empresa, valor: count, porcentaje: totalViajes > 0 ? (count / totalViajes) * 100 : 0, acumulado: 0, grupo: 'A' as const }
+          })
+        let acum = 0
+        items.forEach(item => { acum += item.porcentaje; item.acumulado = acum; item.grupo = acum <= 80 ? 'A' : acum <= 95 ? 'B' : 'C' })
+        return items
+      }
+
+      const clienteAgg = new Map<string, number>()
+      const tractoAgg = new Map<string, number>()
+      const rutaAgg = new Map<string, number>()
+      ;(viajes || []).forEach(v => {
+        if (v.cliente_id) clienteAgg.set(v.cliente_id, (clienteAgg.get(v.cliente_id) || 0) + 1)
+        if (v.tracto_id) tractoAgg.set(v.tracto_id, (tractoAgg.get(v.tracto_id) || 0) + 1)
+        const rk = `${v.origen || '?'} \u2192 ${v.destino || '?'}`
+        rutaAgg.set(rk, (rutaAgg.get(rk) || 0) + 1)
+      })
+
+      const cp = buildPareto(clienteAgg, id => ({ nombre: clienteMap.get(id)?.razon_social || id, empresa: clienteMap.get(id)?.empresa || '' }))
+      const tp = buildPareto(tractoAgg, id => ({ nombre: tractoMap.get(id)?.numero_economico || id, empresa: tractoMap.get(id)?.empresa || '' }))
+      const rp = buildPareto(rutaAgg, id => ({ nombre: id, empresa: '' }))
+
+      const countA = (arr: typeof cp) => arr.filter(x => x.grupo === 'A').length
+
+      setData({
+        ok: true,
+        periodo: { inicio: periodoInicio, fin: periodoFin },
+        resumen: { totalItems: totalViajes, grupoA: countA(cp), grupoB: cp.filter(x => x.grupo === 'B').length, grupoC: cp.filter(x => x.grupo === 'C').length, concentracionTop20: cp.slice(0, Math.ceil(cp.length * 0.2)).reduce((s, i) => s + i.porcentaje, 0) },
+        pareto: { clientes: cp, tractos: tp, rutas: rp },
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
@@ -141,7 +169,7 @@ export default function Analisis8020() {
 
   const current: ParetoResult | null = data?.[dimension] ?? null
 
-  // ─── Pareto bar chart (SVG) ────────────────────────
+  // âââ Pareto bar chart (SVG) ââââââââââââââââââââââââ
   function ParetoChart({ items }: { items: ParetoItem[] }) {
     if (!items.length) return null
     const maxIngreso = items[0]?.ingreso || 1
@@ -210,7 +238,7 @@ export default function Analisis8020() {
     )
   }
 
-  // ─── Concentration gauge SVG ───────────────────────
+  // âââ Concentration gauge SVG âââââââââââââââââââââââ
   function ConcentrationGauge({ items80: count, total, pct }: { items80: number; total: number; pct: number }) {
     const angle = (pct / 100) * 360
     const r = 60
@@ -253,7 +281,7 @@ export default function Analisis8020() {
     )
   }
 
-  // ─── Table columns ─────────────────────────────────
+  // âââ Table columns âââââââââââââââââââââââââââââââââ
   const columns: Column<ParetoItem>[] = [
     {
       key: 'posicion',
@@ -359,7 +387,7 @@ export default function Analisis8020() {
     },
   ]
 
-  // ─── CSV Export ────────────────────────────────────
+  // âââ CSV Export ââââââââââââââââââââââââââââââââââââ
   const handleExportCSV = () => {
     if (!current?.detalle?.length) return
     const header = `Pos,${getDimensionLabel(dimension)},SubLabel,Viajes,Ingreso,Costo,Margen %,% Total,% Acumulado,Zona\n`
@@ -375,8 +403,8 @@ export default function Analisis8020() {
 
   return (
     <ModuleLayout
-      titulo="Análisis 80/20 (Pareto)"
-      subtitulo="Identifica qué 20% genera el 80% de tus ingresos"
+      titulo="AnÃ¡lisis 80/20 (Pareto)"
+      subtitulo="Identifica quÃ© 20% genera el 80% de tus ingresos"
       acciones={
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={handleExportCSV} disabled={!current?.detalle?.length}>
@@ -474,7 +502,7 @@ export default function Analisis8020() {
             icono={<Award size={18} />}
           />
           <KPICard
-            titulo="Concentración"
+            titulo="ConcentraciÃ³n"
             valor={`${current.concentracion}%`}
             color={current.concentracion <= 30 ? 'green' : current.concentracion <= 50 ? 'yellow' : 'red'}
             icono={<Target size={18} />}
@@ -488,7 +516,7 @@ export default function Analisis8020() {
           <Card className="lg:col-span-3">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>
-                Distribución Pareto — {getDimensionLabel(dimension)}
+                DistribuciÃ³n Pareto â {getDimensionLabel(dimension)}
               </h3>
               <button onClick={() => setShowGauge(!showGauge)} className="p-1" style={{ color: tokens.colors.textMuted }}>
                 {showGauge ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -510,7 +538,7 @@ export default function Analisis8020() {
               </div>
               <div className="flex items-center gap-1">
                 <div className="w-6 h-0.5" style={{ borderTop: `2px dashed ${tokens.colors.primary}` }} />
-                <span className="text-xs" style={{ color: tokens.colors.textMuted }}>Línea 80%</span>
+                <span className="text-xs" style={{ color: tokens.colors.textMuted }}>LÃ­nea 80%</span>
               </div>
             </div>
           </Card>
@@ -538,10 +566,10 @@ export default function Analisis8020() {
                 {current.items80pct} {getDimensionLabel(dimension).toLowerCase()} ({current.concentracion}% del total)
                 generan el 80% del ingreso ({formatCurrency(current.totalIngreso * 0.8)}).
                 {current.concentracion <= 25
-                  ? ' Alta concentración — riesgo de dependencia de pocos clientes.'
+                  ? ' Alta concentraciÃ³n â riesgo de dependencia de pocos clientes.'
                   : current.concentracion <= 40
-                  ? ' Concentración moderada — buen balance.'
-                  : ' Distribución equilibrada — ingresos bien diversificados.'}
+                  ? ' ConcentraciÃ³n moderada â buen balance.'
+                  : ' DistribuciÃ³n equilibrada â ingresos bien diversificados.'}
               </p>
             </div>
           </div>
