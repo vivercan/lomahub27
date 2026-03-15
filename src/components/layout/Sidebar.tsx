@@ -46,6 +46,7 @@ const navItems: NavItem[] = [
   { label: 'MÃ©tricas Servicio', path: '/servicio/metricas', icon: <Activity size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion'] },
   // Inteligencia
   { label: 'KPI / AnalÃ­tica', path: '/inteligencia', icon: <BarChart3 size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops'] },
+  { label: 'Presupuesto', path: '/inteligencia/presupuesto', icon: <DollarSign size={18} />, roles: ['superadmin', 'admin', 'direccion', 'gerente_comercial', 'gerente_ops'] },
   // CXC
   { label: 'CXC / Cartera', path: '/cxc/cartera', icon: <DollarSign size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'cxc', 'direccion'] },
   // Admin â SOLO superadmin y admin
