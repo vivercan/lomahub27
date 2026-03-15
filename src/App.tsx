@@ -1,4 +1,12 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+
+import RadiografiaFinanciera from './pages/clientes/RadiografiaFinanciera'{/* ─── 30. Radiografía Financiera ─── */}
+          <Route path="/clientes/:id/radiografia" element={
+            <ProtectedRoute allowedRoles={["superadmin", "admin", "cs", "ventas", "gerente_comercial", "cxc", "direccion"]}>
+              <RadiografiaFinanciera />
+            </ProtectedRoute>
+          } />
+
+          import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './hooks/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 
