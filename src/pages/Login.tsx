@@ -23,9 +23,17 @@ declare global {
 export default function Login() {
   const [error, setError] = useState('')
   const [googleLoading, setGoogleLoading] = useState(false)
-  const { loginWithGoogleIdToken, getRutaInicial } = useAuthContext()
+  const { user, loading, loginWithGoogleIdToken, getRutaInicial } = useAuthContext()
   const navigate = useNavigate()
   const googleBtnRef = useRef<HTMLDivElement>(null)
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (!loading && user) {
+      const ruta = getRutaInicial()
+      navigate(ruta, { replace: true })
+    }
+  }, [loading, user])
 
   // Load Google Identity Services script
   useEffect(() => {
@@ -71,15 +79,23 @@ export default function Login() {
     setGoogleLoading(true)
     try {
       await loginWithGoogleIdToken(response.credential)
-      // Navigation handled by auth state change — give it a moment
-      setTimeout(() => {
-        navigate(getRutaInicial())
-      }, 500)
+      // Navigation is handled by the useEffect watching user state
     } catch (err: any) {
       setError(err.message || 'Error al iniciar sesión con Google')
     } finally {
       setGoogleLoading(false)
     }
+  }
+
+  // Show nothing while checking auth
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center"
+        style={{ background: tokens.effects.gradientBg }}>
+        <div className="w-8 h-8 border-4 border-current border-t-transparent rounded-full animate-spin"
+          style={{ color: tokens.colors.primary }} />
+      </div>
+    )
   }
 
   return (
@@ -149,8 +165,14 @@ export default function Login() {
                 borderColor: `${tokens.colors.red}33`,
               }}
             >
-              <AlertCircle className="w-5 h-5 shrink-0" style={{ color: tokens.colors.red }} />
-              <p className="text-sm" style={{ color: tokens.colors.red, fontFamily: tokens.fonts.body }}>
+              <AlertCircle
+                className="w-5 h-5 shrink-0"
+                style={{ color: tokens.colors.red }}
+              />
+              <p
+                className="text-sm"
+                style={{ color: tokens.colors.red, fontFamily: tokens.fonts.body }}
+              >
                 {error}
               </p>
             </div>
@@ -167,10 +189,16 @@ export default function Login() {
           <div className="w-full flex justify-center">
             <div ref={googleBtnRef} className="w-full" />
           </div>
+
           {googleLoading && (
             <div className="flex items-center justify-center gap-2 mt-3">
-              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" style={{ color: tokens.colors.textMuted }} />
-              <span className="text-xs" style={{ color: tokens.colors.textMuted }}>Autenticando…</span>
+              <div
+                className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"
+                style={{ color: tokens.colors.textMuted }}
+              />
+              <span className="text-xs" style={{ color: tokens.colors.textMuted }}>
+                Autenticando…
+              </span>
             </div>
           )}
         </div>
