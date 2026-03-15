@@ -14,7 +14,7 @@ import { Badge } from '../../components/ui/Badge'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 
-// âââ Types âââââââââââââââââââââââââââââââââââââââââââ
+// ─── Types ───────────────────────────────────────────
 interface ParetoItem {
   posicion: number
   id: string
@@ -51,7 +51,7 @@ interface AnalisisResponse {
 
 type Dimension = 'clientes' | 'tractos' | 'rutas'
 
-// âââ Helpers âââââââââââââââââââââââââââââââââââââââââ
+// ─── Helpers ─────────────────────────────────────────
 function formatCurrency(n: number): string {
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0 }).format(n)
 }
@@ -60,12 +60,6 @@ function getZonaColor(zona: string): 'green' | 'yellow' | 'red' {
   if (zona === 'A') return 'green'
   if (zona === 'B') return 'yellow'
   return 'red'
-}
-
-function getZonaLabel(zona: string): string {
-  if (zona === 'A') return 'A (80%)'
-  if (zona === 'B') return 'B (95%)'
-  return 'C (cola)'
 }
 
 function getMedalColor(pos: number): string {
@@ -117,7 +111,7 @@ export default function Analisis8020() {
     try {
       const { data: sessionData } = await supabase.auth.getSession()
       const token = sessionData.session?.access_token
-      if (!token) throw new Error('SesiÃ³n expirada')
+      if (!token) throw new Error('Sesión expirada')
 
       const [anio, mesNum] = mes.split('-')
       const res = await fetch(
@@ -132,7 +126,7 @@ export default function Analisis8020() {
         }
       )
       const json: AnalisisResponse = await res.json()
-      if (!json.ok) throw new Error(json.mensaje || 'Error al obtener anÃ¡lisis')
+      if (!json.ok) throw new Error(json.mensaje || 'Error al obtener análisis')
       setData(json)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
@@ -147,7 +141,7 @@ export default function Analisis8020() {
 
   const current: ParetoResult | null = data?.[dimension] ?? null
 
-  // âââ Pareto bar chart (SVG) ââââââââââââââââââââââââ
+  // ─── Pareto bar chart (SVG) ────────────────────────
   function ParetoChart({ items }: { items: ParetoItem[] }) {
     if (!items.length) return null
     const maxIngreso = items[0]?.ingreso || 1
@@ -216,7 +210,7 @@ export default function Analisis8020() {
     )
   }
 
-  // âââ Concentration gauge SVG âââââââââââââââââââââââ
+  // ─── Concentration gauge SVG ───────────────────────
   function ConcentrationGauge({ items80: count, total, pct }: { items80: number; total: number; pct: number }) {
     const angle = (pct / 100) * 360
     const r = 60
@@ -244,7 +238,7 @@ export default function Analisis8020() {
             strokeLinecap="round"
           />
           <text x={cx} y={cy - 6} textAnchor="middle" fontSize={22} fontWeight="bold"
-            fill={tokens.colors.textPrimary} fontFamily={tokens.fonts.mono}>
+            fill={tokens.colors.textPrimary} fontFamily={"'Courier New', monospace"}>
             {count}
           </text>
           <text x={cx} y={cy + 14} textAnchor="middle" fontSize={11}
@@ -259,7 +253,7 @@ export default function Analisis8020() {
     )
   }
 
-  // âââ Table columns âââââââââââââââââââââââââââââââââ
+  // ─── Table columns ─────────────────────────────────
   const columns: Column<ParetoItem>[] = [
     {
       key: 'posicion',
@@ -357,7 +351,7 @@ export default function Analisis8020() {
       render: (row) => (
         <span className="text-sm font-medium" style={{
           color: row.pct_acumulado <= 80 ? tokens.colors.green : row.pct_acumulado <= 95 ? tokens.colors.yellow : tokens.colors.red,
-          fontFamily: tokens.fonts.mono,
+          fontFamily: "'Courier New', monospace",
         }}>
           {row.pct_acumulado}%
         </span>
@@ -365,7 +359,7 @@ export default function Analisis8020() {
     },
   ]
 
-  // âââ CSV Export ââââââââââââââââââââââââââââââââââââ
+  // ─── CSV Export ────────────────────────────────────
   const handleExportCSV = () => {
     if (!current?.detalle?.length) return
     const header = `Pos,${getDimensionLabel(dimension)},SubLabel,Viajes,Ingreso,Costo,Margen %,% Total,% Acumulado,Zona\n`
@@ -381,8 +375,8 @@ export default function Analisis8020() {
 
   return (
     <ModuleLayout
-      titulo="AnÃ¡lisis 80/20 (Pareto)"
-      subtitulo="Identifica quÃ© 20% genera el 80% de tus ingresos"
+      titulo="Análisis 80/20 (Pareto)"
+      subtitulo="Identifica qué 20% genera el 80% de tus ingresos"
       acciones={
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={handleExportCSV} disabled={!current?.detalle?.length}>
@@ -480,7 +474,7 @@ export default function Analisis8020() {
             icono={<Award size={18} />}
           />
           <KPICard
-            titulo="ConcentraciÃ³n"
+            titulo="Concentración"
             valor={`${current.concentracion}%`}
             color={current.concentracion <= 30 ? 'green' : current.concentracion <= 50 ? 'yellow' : 'red'}
             icono={<Target size={18} />}
@@ -494,7 +488,7 @@ export default function Analisis8020() {
           <Card className="lg:col-span-3">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>
-                DistribuciÃ³n Pareto â {getDimensionLabel(dimension)}
+                Distribución Pareto — {getDimensionLabel(dimension)}
               </h3>
               <button onClick={() => setShowGauge(!showGauge)} className="p-1" style={{ color: tokens.colors.textMuted }}>
                 {showGauge ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -516,7 +510,7 @@ export default function Analisis8020() {
               </div>
               <div className="flex items-center gap-1">
                 <div className="w-6 h-0.5" style={{ borderTop: `2px dashed ${tokens.colors.primary}` }} />
-                <span className="text-xs" style={{ color: tokens.colors.textMuted }}>LÃ­nea 80%</span>
+                <span className="text-xs" style={{ color: tokens.colors.textMuted }}>Línea 80%</span>
               </div>
             </div>
           </Card>
@@ -544,10 +538,10 @@ export default function Analisis8020() {
                 {current.items80pct} {getDimensionLabel(dimension).toLowerCase()} ({current.concentracion}% del total)
                 generan el 80% del ingreso ({formatCurrency(current.totalIngreso * 0.8)}).
                 {current.concentracion <= 25
-                  ? ' Alta concentraciÃ³n â riesgo de dependencia de pocos clientes.'
+                  ? ' Alta concentración — riesgo de dependencia de pocos clientes.'
                   : current.concentracion <= 40
-                  ? ' ConcentraciÃ³n moderada â buen balance.'
-                  : ' DistribuciÃ³n equilibrada â ingresos bien diversificados.'}
+                  ? ' Concentración moderada — buen balance.'
+                  : ' Distribución equilibrada — ingresos bien diversificados.'}
               </p>
             </div>
           </div>
@@ -576,3 +570,4 @@ export default function Analisis8020() {
     </ModuleLayout>
   )
 }
+
