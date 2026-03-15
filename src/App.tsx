@@ -1,12 +1,4 @@
-
-import RadiografiaFinanciera from './pages/clientes/RadiografiaFinanciera'{/* ─── 30. Radiografía Financiera ─── */}
-          <Route path="/clientes/:id/radiografia" element={
-            <ProtectedRoute allowedRoles={["superadmin", "admin", "cs", "ventas", "gerente_comercial", "cxc", "direccion"]}>
-              <RadiografiaFinanciera />
-            </ProtectedRoute>
-          } />
-
-          import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './hooks/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 
@@ -30,6 +22,7 @@ import NuevaCotizacion from './pages/cotizador/NuevaCotizacion'
 // Clientes
 import AltaCliente from './pages/clientes/AltaCliente'
 import FichaCliente from './pages/clientes/FichaCliente'
+import RadiografiaFinanciera from './pages/clientes/RadiografiaFinanciera'
 
 // Operaciones
 import Despachos from './pages/operaciones/Despachos'
@@ -125,6 +118,13 @@ function App() {
           <Route path="/clientes/alta" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs', 'cxc', 'pricing']}>
               <AltaCliente />
+            </ProtectedRoute>
+          } />
+
+          {/* ─── 30. Radiografía Financiera ─── */}
+          <Route path="/clientes/:id/radiografia" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'cxc', 'direccion']}>
+              <RadiografiaFinanciera />
             </ProtectedRoute>
           } />
 
@@ -285,3 +285,4 @@ function App() {
 }
 
 export default App
+
