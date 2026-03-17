@@ -33,7 +33,7 @@ export default function FichaCliente(): ReactElement {
   const { id } = useParams<{ id: string }>();
   const [cliente, setCliente] = useState<Cliente | null>(null);
   const [viajesActivos, setViajesActivos] = useState<Viaje[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
@@ -116,7 +116,7 @@ export default function FichaCliente(): ReactElement {
     { label: 'Fecha de Alta', value: cliente.fecha_alta },
   ];
 
-  const historialInteracciones = [];
+  const historialInteracciones: any[] = [];
 
   const viajesColumns = [
     { key: 'id', label: 'ID Viaje' },
