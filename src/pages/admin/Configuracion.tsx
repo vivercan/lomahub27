@@ -43,7 +43,7 @@ function getEstadoBadgeColor(estado: string): 'green' | 'gray' {
 export default function Configuracion() {
   const [activeTab, setActiveTab] = useState<TabType>('usuarios');
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUsuarios = async () => {
