@@ -30,7 +30,7 @@ function getRiesgoEstado(dias: number): 'verde' | 'amarillo' | 'rojo' {
 
 export default function Cartera() {
   const [clientesCartera, setClientesCartera] = useState<ClienteCarteraRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [totalSaldo, setTotalSaldo] = useState(0);
   const [totalVencido, setTotalVencido] = useState(0);
   const [promedioDias, setPromedioDias] = useState(0);
