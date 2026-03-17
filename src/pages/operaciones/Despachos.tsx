@@ -348,7 +348,8 @@ export default function Despachos(): ReactElement {
             { value: 'cargando', label: 'Cargando' },
             { value: 'en_transito', label: 'En Tr\u00e1nsito' },
             { value: 'completado', label: 'Completado' },
-            { value: 'retrasado', label: 'Retrasado' },n            { value: 'en_riesgo', label: 'En Riesgo' },
+            { value: 'retrasado', label: 'Retrasado' },
+            { value: 'en_riesgo', label: 'En Riesgo' },
           ]}
         />
         <Select
