@@ -1,9 +1,11 @@
+import { useState, useEffect } from 'react';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Card } from '../../components/ui/Card';
 import { KPICard } from '../../components/ui/KPICard';
 import { Badge } from '../../components/ui/Badge';
 import { DataTable } from '../../components/ui/DataTable';
 import { tokens } from '../../lib/tokens';
+import { supabase } from '../../lib/supabase';
 
 interface TractoRow {
   id: string;
@@ -16,97 +18,6 @@ interface TractoRow {
   horas_ociosas: number;
   viaje_actual: string;
 }
-
-const mockTractos: TractoRow[] = [
-  {
-    id: '1',
-    economico: 'MX-001',
-    empresa: 'Transportes García',
-    segmento: 'Full Truckload',
-    estado: 'en_viaje',
-    operador: 'Juan Pérez',
-    km_acumulados: 245000,
-    horas_ociosas: 2.5,
-    viaje_actual: 'Monterrey → CDMX',
-  },
-  {
-    id: '2',
-    economico: 'MX-002',
-    empresa: 'Transportes García',
-    segmento: 'Full Truckload',
-    estado: 'en_viaje',
-    operador: 'Carlos López',
-    km_acumulados: 198500,
-    horas_ociosas: 4.2,
-    viaje_actual: 'Guadalajara → Monterrey',
-  },
-  {
-    id: '3',
-    economico: 'MX-003',
-    empresa: 'Logística Integral',
-    segmento: 'LTL',
-    estado: 'disponible',
-    operador: 'Roberto Sánchez',
-    km_acumulados: 156200,
-    horas_ociosas: 8.5,
-    viaje_actual: '—',
-  },
-  {
-    id: '4',
-    economico: 'MX-004',
-    empresa: 'Transportes García',
-    segmento: 'Full Truckload',
-    estado: 'taller',
-    operador: '—',
-    km_acumulados: 289100,
-    horas_ociosas: 0,
-    viaje_actual: '—',
-  },
-  {
-    id: '5',
-    economico: 'MX-005',
-    empresa: 'Logística Integral',
-    segmento: 'Full Truckload',
-    estado: 'en_viaje',
-    operador: 'Miguel Hernández',
-    km_acumulados: 312400,
-    horas_ociosas: 1.8,
-    viaje_actual: 'CDMX → Veracruz',
-  },
-  {
-    id: '6',
-    economico: 'MX-006',
-    empresa: 'Transportes García',
-    segmento: 'LTL',
-    estado: 'disponible',
-    operador: 'David Torres',
-    km_acumulados: 124500,
-    horas_ociosas: 6.3,
-    viaje_actual: '—',
-  },
-  {
-    id: '7',
-    economico: 'MX-007',
-    empresa: 'Logística Integral',
-    segmento: 'Full Truckload',
-    estado: 'en_viaje',
-    operador: 'Fernando Ruiz',
-    km_acumulados: 267800,
-    horas_ociosas: 3.1,
-    viaje_actual: 'Monterrey → CDMX',
-  },
-  {
-    id: '8',
-    economico: 'MX-008',
-    empresa: 'Transportes García',
-    segmento: 'Full Truckload',
-    estado: 'taller',
-    operador: '—',
-    km_acumulados: 198700,
-    horas_ociosas: 0,
-    viaje_actual: '—',
-  },
-];
 
 function getEstadoBadgeColor(estado: string): 'gray' | 'green' | 'blue' | 'yellow' {
   switch (estado) {
@@ -132,6 +43,47 @@ function formatNumber(num: number): string {
 }
 
 export default function ControlTractos() {
+  const [tractos, setTractos] = useState<TractoRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTractos = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('tractos')
+          .select('*');
+
+        if (error) {
+          console.error('Error fetching tractos:', error);
+          setTractos([]);
+          return;
+        }
+
+        const formattedTractos = (data || []).map((tracto: any) => ({
+          id: tracto.id?.toString() || '',
+          economico: tracto.economico || '',
+          empresa: tracto.empresa || '',
+          segmento: tracto.segmento || '',
+          estado: tracto.estado || 'disponible',
+          operador: tracto.operador || '—',
+          km_acumulados: tracto.km_acumulados || 0,
+          horas_ociosas: tracto.horas_ociosas || 0,
+          viaje_actual: tracto.viaje_actual || '—',
+        }));
+
+        setTractos(formattedTractos);
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        setTractos([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTractos();
+  }, []);
+
   const columns = [
     { key: 'economico', label: 'Económico', width: '12%' },
     { key: 'empresa', label: 'Empresa', width: '18%' },
@@ -184,14 +136,25 @@ export default function ControlTractos() {
           marginBottom: tokens.spacing.lg,
         }}
       >
-        <KPICard titulo="Total" valor="142" color="gray" />
-        <KPICard titulo="Disponibles" valor="28" color="green" />
-        <KPICard titulo="En Viaje" valor="96" color="blue" />
-        <KPICard titulo="Taller" valor="18" color="yellow" />
+        <KPICard titulo="Total" valor={tractos.length.toString()} color="gray" />
+        <KPICard titulo="Disponibles" valor={tractos.filter(t => t.estado === 'disponible').length.toString()} color="green" />
+        <KPICard titulo="En Viaje" valor={tractos.filter(t => t.estado === 'en_viaje').length.toString()} color="blue" />
+        <KPICard titulo="Taller" valor={tractos.filter(t => t.estado === 'taller').length.toString()} color="yellow" />
       </div>
 
       <Card>
-        <DataTable columns={columns} data={mockTractos} />
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
+            <p>Cargando...</p>
+          </div>
+        ) : tractos.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
+            <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
+            <p style={{ fontSize: '14px', marginTop: '4px' }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
+          </div>
+        ) : (
+          <DataTable columns={columns} data={tractos} />
+        )}
       </Card>
     </ModuleLayout>
   );
