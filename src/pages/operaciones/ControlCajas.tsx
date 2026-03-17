@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { useState, useEffect } from 'react';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Card } from '../../components/ui/Card';
 import { KPICard } from '../../components/ui/KPICard';
@@ -6,82 +7,57 @@ import { DataTable } from '../../components/ui/DataTable';
 import { Badge } from '../../components/ui/Badge';
 import { Select } from '../../components/ui/Select';
 import { tokens } from '../../lib/tokens';
+import { supabase } from '../../lib/supabase';
+
+interface Caja {
+  economico: string;
+  empresa: string;
+  tipo: string;
+  estado: string;
+  ubicacion: string;
+  tiempoEnEstado: string;
+  clienteActual: string;
+}
 
 export default function ControlCajas(): ReactElement {
-  const cajas = [
-    {
-      economico: 'CAJ-045',
-      empresa: 'TDN México',
-      tipo: 'seco',
-      estado: 'en_transito',
-      ubicacion: 'CDMX - México',
-      tiempoEnEstado: '2h 30min',
-      clienteActual: 'Transportes del Norte',
-    },
-    {
-      economico: 'CAJ-052',
-      empresa: 'Logística Integral',
-      tipo: 'refri',
-      estado: 'disponible',
-      ubicacion: 'Monterrey - NL',
-      tiempoEnEstado: '5h 15min',
-      clienteActual: 'Logística Integral',
-    },
-    {
-      economico: 'CAJ-068',
-      empresa: 'TDN México',
-      tipo: 'seco',
-      estado: 'en_transito',
-      ubicacion: 'Querétaro - QRO',
-      tiempoEnEstado: '3h 45min',
-      clienteActual: 'Carga Express',
-    },
-    {
-      economico: 'CAJ-071',
-      empresa: 'Carga Global',
-      tipo: 'refri',
-      estado: 'disponible',
-      ubicacion: 'Veracruz - VER',
-      tiempoEnEstado: '1h 30min',
-      clienteActual: 'Transportes del Centro',
-    },
-    {
-      economico: 'CAJ-083',
-      empresa: 'TDN México',
-      tipo: 'seco',
-      estado: 'taller',
-      ubicacion: 'Servicio Técnico - CDMX',
-      tiempoEnEstado: '6h 20min',
-      clienteActual: 'Mantenimiento',
-    },
-    {
-      economico: 'CAJ-091',
-      empresa: 'Logística Premium',
-      tipo: 'refri',
-      estado: 'en_transito',
-      ubicacion: 'Laredo - TAMPS',
-      tiempoEnEstado: '4h 10min',
-      clienteActual: 'Logística Premium',
-    },
-    {
-      economico: 'CAJ-107',
-      empresa: 'Transportes Global',
-      tipo: 'seco',
-      estado: 'disponible',
-      ubicacion: 'Almacén Central - CDMX',
-      tiempoEnEstado: '8h 45min',
-      clienteActual: 'Disponible',
-    },
-    {
-      economico: 'CAJ-115',
-      empresa: 'Carga Express',
-      tipo: 'refri',
-      estado: 'taller',
-      ubicacion: 'Servicio Técnico - MTY',
-      tiempoEnEstado: '12h 30min',
-      clienteActual: 'Mantenimiento',
-    },
-  ];
+  const [cajas, setCajas] = useState<Caja[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCajas = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('cajas')
+          .select('*');
+
+        if (error) {
+          console.error('Error fetching cajas:', error);
+          setCajas([]);
+          return;
+        }
+
+        const formattedCajas = (data || []).map((caja: any) => ({
+          economico: caja.economico || '',
+          empresa: caja.empresa || '',
+          tipo: caja.tipo || 'seco',
+          estado: caja.estado || 'disponible',
+          ubicacion: caja.ubicacion || '',
+          tiempoEnEstado: caja.tiempo_en_estado || '0h',
+          clienteActual: caja.cliente_actual || 'Sin asignar',
+        }));
+
+        setCajas(formattedCajas);
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        setCajas([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCajas();
+  }, []);
 
   const tipoVariant = (tipo: string): 'primary' | 'gray' => {
     return tipo === 'refri' ? 'primary' : 'gray';
@@ -119,12 +95,12 @@ export default function ControlCajas(): ReactElement {
     {
       key: 'tipo',
       label: 'Tipo',
-      render: (row: typeof cajas[0]) => <Badge color={tipoVariant(row.tipo)}>{row.tipo === 'refri' ? 'Refrigerada' : 'Seco'}</Badge>,
+      render: (row: Caja) => <Badge color={tipoVariant(row.tipo)}>{row.tipo === 'refri' ? 'Refrigerada' : 'Seco'}</Badge>,
     },
     {
       key: 'estado',
       label: 'Estado',
-      render: (row: typeof cajas[0]) => <Badge color={estadoVariant(row.estado)}>{estadoLabel(row.estado)}</Badge>,
+      render: (row: Caja) => <Badge color={estadoVariant(row.estado)}>{estadoLabel(row.estado)}</Badge>,
     },
     { key: 'ubicacion', label: 'Ubicación' },
     { key: 'tiempoEnEstado', label: 'Tiempo en Estado' },
@@ -142,10 +118,10 @@ export default function ControlCajas(): ReactElement {
           marginBottom: tokens.spacing.lg,
         }}
       >
-        <KPICard titulo="Total Cajas" valor="186" color="primary" />
-        <KPICard titulo="Disponibles" valor="42" color="green" />
-        <KPICard titulo="En Tránsito" valor="98" color="primary" />
-        <KPICard titulo="Taller" valor="12" color="yellow" />
+        <KPICard titulo="Total Cajas" valor={cajas.length.toString()} color="primary" />
+        <KPICard titulo="Disponibles" valor={cajas.filter(c => c.estado === 'disponible').length.toString()} color="green" />
+        <KPICard titulo="En Tránsito" valor={cajas.filter(c => c.estado === 'en_transito').length.toString()} color="primary" />
+        <KPICard titulo="Taller" valor={cajas.filter(c => c.estado === 'taller').length.toString()} color="yellow" />
       </div>
 
       {/* Filtro Estado */}
@@ -166,7 +142,18 @@ export default function ControlCajas(): ReactElement {
         <div style={{ marginBottom: tokens.spacing.md, paddingBottom: tokens.spacing.md, borderBottom: `1px solid ${tokens.colors.border}` }}>
           <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>Inventario de Cajas</h3>
         </div>
-        <DataTable columns={cajasColumns} data={cajas} />
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
+            <p>Cargando...</p>
+          </div>
+        ) : cajas.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
+            <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
+            <p style={{ fontSize: '14px', marginTop: '4px' }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
+          </div>
+        ) : (
+          <DataTable columns={cajasColumns} data={cajas} />
+        )}
       </Card>
     </ModuleLayout>
   );
