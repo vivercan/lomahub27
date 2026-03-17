@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { useState, useEffect } from 'react';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Card } from '../../components/ui/Card';
 import { KPICard } from '../../components/ui/KPICard';
@@ -7,90 +8,59 @@ import { Select } from '../../components/ui/Select';
 import { Semaforo } from '../../components/ui/Semaforo';
 import type { SemaforoEstado } from '../../lib/tokens';
 import { tokens } from '../../lib/tokens';
+import { supabase } from '../../lib/supabase';
+
+interface Viaje {
+  folio: string;
+  cliente: string;
+  ruta: string;
+  tracto: string;
+  eta: string;
+  cita: string;
+  diferencia: number;
+  estado: SemaforoEstado;
+}
 
 export default function TorreControl(): ReactElement {
-  const viajes = [
-    {
-      folio: 'VJ-2024-001',
-      cliente: 'Transportes del Norte',
-      ruta: 'CDMX → GTO',
-      tracto: 'TAC-001',
-      eta: '15:30',
-      cita: '15:45',
-      diferencia: -15,
-      estado: 'en_transito',
-    },
-    {
-      folio: 'VJ-2024-002',
-      cliente: 'Logística Integral',
-      ruta: 'MTY → CDMX',
-      tracto: 'TAC-002',
-      eta: '18:45',
-      cita: '18:30',
-      diferencia: 15,
-      estado: 'en_transito',
-    },
-    {
-      folio: 'VJ-2024-003',
-      cliente: 'Transportes del Sur',
-      ruta: 'QRO → SLP',
-      tracto: 'TAC-003',
-      eta: '22:00',
-      cita: '21:00',
-      diferencia: 60,
-      estado: 'en_riesgo',
-    },
-    {
-      folio: 'VJ-2024-004',
-      cliente: 'Carga Express',
-      ruta: 'CDMX → VERACRUZ',
-      tracto: 'TAC-004',
-      eta: '14:00',
-      cita: '14:00',
-      diferencia: 0,
-      estado: 'cargando',
-    },
-    {
-      folio: 'VJ-2024-005',
-      cliente: 'Transportes del Centro',
-      ruta: 'GTO → MONTERREY',
-      tracto: 'TAC-005',
-      eta: '19:30',
-      cita: '18:15',
-      diferencia: 75,
-      estado: 'retrasado',
-    },
-    {
-      folio: 'VJ-2024-006',
-      cliente: 'Logística Premium',
-      ruta: 'LAREDO → CDMX',
-      tracto: 'TAC-006',
-      eta: '20:30',
-      cita: '20:30',
-      diferencia: 0,
-      estado: 'en_transito',
-    },
-    {
-      folio: 'VJ-2024-007',
-      cliente: 'Transportes del Golfo',
-      ruta: 'VERACRUZ → CDMX',
-      tracto: 'TAC-007',
-      eta: '16:15',
-      cita: '16:00',
-      diferencia: 15,
-      estado: 'en_transito',
-    },
-    {
-      folio: 'VJ-2024-008',
-      cliente: 'Carga Global',
-      ruta: 'NUEVO LAREDO → MTY',
-      tracto: 'TAC-008',
-      eta: '17:45',
-      cita: '17:30',
-      diferencia: 15,
-      estado: 'programado',
-    },
-  ];
+  const [viajes, setViajes] = useState<Viaje[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchViajes = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('viajes')
+          .select('*');
+
+        if (error) {
+          console.error('Error fetching viajes:', error);
+          setViajes([]);
+          return;
+        }
+
+        const formattedViajes = (data || []).map((viaje: any) => ({
+          folio: viaje.folio || '',
+          cliente: viaje.cliente || '',
+          ruta: viaje.ruta || '',
+          tracto: viaje.tracto || '',
+          eta: viaje.eta || '',
+          cita: viaje.cita || '',
+          diferencia: viaje.diferencia || 0,
+          estado: viaje.estado || 'programado' as SemaforoEstado,
+        }));
+
+        setViajes(formattedViajes);
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        setViajes([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchViajes();
+  }, []);
 
   const getDiferenciaColor = (diferencia: number) => {
     if (diferencia <= 0) return tokens.colors.green;
@@ -108,7 +78,7 @@ export default function TorreControl(): ReactElement {
     {
       key: 'diferencia',
       label: 'Diferencia',
-      render: (row: typeof viajes[0]) => (
+      render: (row: Viaje) => (
         <span style={{ color: getDiferenciaColor(row.diferencia), fontWeight: 600 }}>
           {row.diferencia > 0 ? '+' : ''}{row.diferencia} min
         </span>
@@ -117,7 +87,7 @@ export default function TorreControl(): ReactElement {
     {
       key: 'estado',
       label: 'Estado',
-      render: (row: typeof viajes[0]) => <Semaforo estado={row.estado as SemaforoEstado} />,
+      render: (row: Viaje) => <Semaforo estado={row.estado} />,
     },
   ];
 
@@ -132,10 +102,10 @@ export default function TorreControl(): ReactElement {
           marginBottom: tokens.spacing.lg,
         }}
       >
-        <KPICard titulo="En Tránsito" valor="34" color="green" />
-        <KPICard titulo="En Riesgo" valor="6" color="yellow" />
-        <KPICard titulo="Retrasados" valor="3" color="red" />
-        <KPICard titulo="Programados" valor="12" color="primary" />
+        <KPICard titulo="En Tránsito" valor={viajes.filter(v => v.estado === 'en_transito').length.toString()} color="green" />
+        <KPICard titulo="En Riesgo" valor={viajes.filter(v => v.estado === 'en_riesgo').length.toString()} color="yellow" />
+        <KPICard titulo="Retrasados" valor={viajes.filter(v => v.estado === 'retrasado').length.toString()} color="red" />
+        <KPICard titulo="Programados" valor={viajes.filter(v => v.estado === 'programado').length.toString()} color="primary" />
       </div>
 
       {/* Filtros */}
@@ -180,7 +150,18 @@ export default function TorreControl(): ReactElement {
       {/* Viajes DataTable */}
       <Card>
         <h3>Monitoreo de Viajes</h3>
-        <DataTable columns={viajesColumns} data={viajes} />
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
+            <p>Cargando...</p>
+          </div>
+        ) : viajes.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
+            <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
+            <p style={{ fontSize: '14px', marginTop: '4px' }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
+          </div>
+        ) : (
+          <DataTable columns={viajesColumns} data={viajes} />
+        )}
       </Card>
     </ModuleLayout>
   );
