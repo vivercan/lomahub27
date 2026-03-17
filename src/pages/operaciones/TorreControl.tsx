@@ -102,8 +102,8 @@ export default function TorreControl(): ReactElement {
           marginBottom: tokens.spacing.lg,
         }}
       >
-        <KPICard titulo="En Tránsito" valor={viajes.filter(v => v.estado === 'en_transito').length.toString()} color="green" />
-        <KPICard titulo="En Riesgo" valor={viajes.filter(v => v.estado === 'en_riesgo').length.toString()} color="yellow" />
+        <KPICard titulo="En Tránsito" valor={viajes.filter(v => v.estado === ('en_transito' as string)).length.toString()} color="green" />
+        <KPICard titulo="En Riesgo" valor={viajes.filter(v => v.estado === ('en_riesgo' as string)).length.toString()} color="yellow" />
         <KPICard titulo="Retrasados" valor={viajes.filter(v => v.estado === 'retrasado').length.toString()} color="red" />
         <KPICard titulo="Programados" valor={viajes.filter(v => v.estado === 'programado').length.toString()} color="primary" />
       </div>
