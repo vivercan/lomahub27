@@ -1,13 +1,21 @@
 import { useState } from 'react'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, CheckCircle } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Select } from '../../components/ui/Select'
 import { tokens } from '../../lib/tokens'
+import { supabase } from '../../lib/supabase'
+import { useAuthContext } from '../../hooks/AuthContext'
 
 export default function NuevoLead() {
+  const navigate = useNavigate()
+  const { user } = useAuthContext()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
   const [formData, setFormData] = useState({
     empresa: '',
     contacto: '',
@@ -24,17 +32,43 @@ export default function NuevoLead() {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
-
-    // Mostrar advertencia de duplicado si "Transportes" está en el campo empresa
+    setError(null)
     if (field === 'empresa') {
       setShowDuplicateWarning(value.toLowerCase().includes('transportes'))
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Lead guardado:', formData)
-    // Aquí iría la lógica para guardar el lead
+    if (!formData.empresa.trim()) {
+      setError('El nombre de la empresa es obligatorio')
+      return
+    }
+    setSaving(true)
+    setError(null)
+    try {
+      const { error: insertError } = await supabase.from('leads').insert([{
+        empresa: formData.empresa.trim(),
+        contacto: formData.contacto.trim(),
+        telefono: formData.telefono.trim(),
+        email: formData.email.trim(),
+        ciudad: formData.ciudad.trim(),
+        ruta_interes: formData.rutaInteres.trim(),
+        tipo_carga: formData.tipoCarga,
+        fuente: formData.fuente || 'Manual',
+        notas: formData.notas.trim(),
+        estado: 'Nuevo',
+        probabilidad: 10,
+        ejecutivo_nombre: user?.nombre || user?.email || 'Sin asignar',
+      }])
+      if (insertError) throw insertError
+      setSuccess(true)
+      setTimeout(() => navigate('/ventas/mis-leads'), 1500)
+    } catch (err: any) {
+      setError(err.message || 'Error al guardar el lead')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const fuenteOptions = [
@@ -57,7 +91,6 @@ export default function NuevoLead() {
   return (
     <ModuleLayout titulo="Captura de Lead" subtitulo="Registrar nuevo prospecto">
       <div className="space-y-6 max-w-3xl">
-        {/* Form Card */}
         <Card>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -78,7 +111,7 @@ export default function NuevoLead() {
 
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="Teléfono"
+                label="Tel\u00e9fono"
                 placeholder="+52 1234567890"
                 value={formData.telefono}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('telefono', e.target.value)}
@@ -100,7 +133,7 @@ export default function NuevoLead() {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('ciudad', e.target.value)}
               />
               <Input
-                label="Ruta de Interés"
+                label="Ruta de Inter\u00e9s"
                 placeholder="Ej: CDMX - Monterrey"
                 value={formData.rutaInteres}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('rutaInteres', e.target.value)}
@@ -149,7 +182,6 @@ export default function NuevoLead() {
               />
             </div>
 
-            {/* Duplicate Warning */}
             {showDuplicateWarning && (
               <div
                 className="flex items-start gap-3 p-3 rounded-lg border"
@@ -185,9 +217,27 @@ export default function NuevoLead() {
               </div>
             )}
 
+            {error && (
+              <div className="flex items-start gap-3 p-3 rounded-lg border" style={{ background: `${tokens.colors.red}1a`, borderColor: `${tokens.colors.red}33` }}>
+                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: tokens.colors.red }} />
+                <p className="text-sm" style={{ color: tokens.colors.red, fontFamily: tokens.fonts.body }}>{error}</p>
+              </div>
+            )}
+
+            {success && (
+              <div className="flex items-start gap-3 p-3 rounded-lg border" style={{ background: `${tokens.colors.green}1a`, borderColor: `${tokens.colors.green}33` }}>
+                <CheckCircle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: tokens.colors.green }} />
+                <p className="text-sm" style={{ color: tokens.colors.green, fontFamily: tokens.fonts.body }}>Lead guardado exitosamente. Redirigiendo...</p>
+              </div>
+            )}
+
             <div className="flex gap-2 pt-4">
-              <Button variant="primary">Guardar Lead</Button>
-              <Button variant="secondary">Cancelar</Button>
+              <Button variant="primary" disabled={saving || success} loading={saving}>
+                {saving ? 'Guardando...' : 'Guardar Lead'}
+              </Button>
+              <Button variant="secondary" onClick={() => navigate('/ventas/mis-leads')} disabled={saving}>
+                Cancelar
+              </Button>
             </div>
           </form>
         </Card>
