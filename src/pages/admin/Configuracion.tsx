@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -6,6 +6,7 @@ import { Badge } from '../../components/ui/Badge';
 import { DataTable } from '../../components/ui/DataTable';
 import { Plus } from 'lucide-react';
 import { tokens } from '../../lib/tokens';
+import { supabase } from '../../lib/supabase';
 
 interface Usuario {
   id: string;
@@ -15,49 +16,6 @@ interface Usuario {
   empresa: string;
   estado: 'activo' | 'inactivo';
 }
-
-const mockUsuarios: Usuario[] = [
-  {
-    id: '1',
-    nombre: 'Jorge Gutiérrez',
-    email: 'jorge.gutierrez@lomahub.com',
-    rol: 'Admin',
-    empresa: 'LomaHub27',
-    estado: 'activo',
-  },
-  {
-    id: '2',
-    nombre: 'Sandra López',
-    email: 'sandra.lopez@transportes.com',
-    rol: 'Gerente',
-    empresa: 'Transportes García',
-    estado: 'activo',
-  },
-  {
-    id: '3',
-    nombre: 'Juan Pérez',
-    email: 'juan.perez@transportes.com',
-    rol: 'Operador',
-    empresa: 'Transportes García',
-    estado: 'activo',
-  },
-  {
-    id: '4',
-    nombre: 'Carlos Mendoza',
-    email: 'carlos.mendoza@logistica.com',
-    rol: 'Ejecutivo',
-    empresa: 'Logística Integral',
-    estado: 'inactivo',
-  },
-  {
-    id: '5',
-    nombre: 'María García',
-    email: 'maria.garcia@distribuidor.com',
-    rol: 'Visualizador',
-    empresa: 'Distribuidora México',
-    estado: 'activo',
-  },
-];
 
 type TabType = 'usuarios' | 'catalogos' | 'parametros' | 'integraciones' | 'auditoria';
 
@@ -84,6 +42,33 @@ function getEstadoBadgeColor(estado: string): 'green' | 'gray' {
 
 export default function Configuracion() {
   const [activeTab, setActiveTab] = useState<TabType>('usuarios');
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('usuarios')
+          .select('id, nombre, email, rol, empresa, estado')
+          .order('nombre', { ascending: true });
+
+        if (error) {
+          console.error('Error fetching usuarios:', error);
+          setUsuarios([]);
+        } else if (data) {
+          setUsuarios(data as Usuario[]);
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        setUsuarios([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsuarios();
+  }, []);
 
   const tabs: TabType[] = ['usuarios', 'catalogos', 'parametros', 'integraciones', 'auditoria'];
 
@@ -122,7 +107,7 @@ export default function Configuracion() {
   ];
 
   return (
-    <ModuleLayout titulo="Configuración del Sistema">
+    <ModuleLayout titulo="Configuraci\u00f3n del Sistema">
       <div style={{ marginBottom: tokens.spacing.lg }}>
         <div
           style={{
@@ -178,7 +163,14 @@ export default function Configuracion() {
             </Button>
           </div>
 
-          <DataTable columns={usuarioColumns} data={mockUsuarios} />
+          {usuarios.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: tokens.spacing.lg, color: tokens.colors.textSecondary }}>
+              <p style={{ fontSize: '1.1rem', fontWeight: '500', margin: 0 }}>Sin datos</p>
+              <p style={{ fontSize: '0.85rem', marginTop: tokens.spacing.sm }}>Los datos se cargar\u00e1n cuando est\u00e9n disponibles en el sistema</p>
+            </div>
+          ) : (
+            <DataTable columns={usuarioColumns} data={usuarios} />
+          )}
         </Card>
       )}
 
@@ -191,7 +183,7 @@ export default function Configuracion() {
               color: tokens.colors.textSecondary,
             }}
           >
-            <p style={{ margin: 0 }}>Gestión de Catálogos (Implementar según especificaciones)</p>
+            <p style={{ margin: 0 }}>Gesti\u00f3n de Cat\u00e1logos (Implementar seg\u00fan especificaciones)</p>
           </div>
         </Card>
       )}
@@ -205,7 +197,7 @@ export default function Configuracion() {
               color: tokens.colors.textSecondary,
             }}
           >
-            <p style={{ margin: 0 }}>Parámetros del Sistema (Implementar según especificaciones)</p>
+            <p style={{ margin: 0 }}>Par\u00e1metros del Sistema (Implementar seg\u00fan especificaciones)</p>
           </div>
         </Card>
       )}
@@ -219,7 +211,7 @@ export default function Configuracion() {
               color: tokens.colors.textSecondary,
             }}
           >
-            <p style={{ margin: 0 }}>Integraciones (Implementar según especificaciones)</p>
+            <p style={{ margin: 0 }}>Integraciones (Implementar seg\u00fan especificaciones)</p>
           </div>
         </Card>
       )}
@@ -233,7 +225,7 @@ export default function Configuracion() {
               color: tokens.colors.textSecondary,
             }}
           >
-            <p style={{ margin: 0 }}>Auditoría del Sistema (Implementar según especificaciones)</p>
+            <p style={{ margin: 0 }}>Auditor\u00eda del Sistema (Implementar seg\u00fan especificaciones)</p>
           </div>
         </Card>
       )}
