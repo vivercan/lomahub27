@@ -27,7 +27,6 @@ export default function Login() {
   const navigate = useNavigate()
   const googleBtnRef = useRef<HTMLDivElement>(null)
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (!loading && user) {
       const ruta = getRutaInicial()
@@ -35,42 +34,57 @@ export default function Login() {
     }
   }, [loading, user])
 
-  // Load Google Identity Services script
   useEffect(() => {
-    if (document.getElementById('gsi-script')) return
-    const script = document.createElement('script')
-    script.id = 'gsi-script'
-    script.src = 'https://accounts.google.com/gsi/client'
-    script.async = true
-    script.onload = () => initializeGSI()
-    document.head.appendChild(script)
-
-    // If script already loaded
-    if (window.google?.accounts?.id) {
-      initializeGSI()
+    const loadGSI = () => {
+      const existingScript = document.getElementById('gsi-script')
+      if (existingScript && !window.google?.accounts?.id) {
+        existingScript.remove()
+      }
+      if (!document.getElementById('gsi-script')) {
+        const script = document.createElement('script')
+        script.id = 'gsi-script'
+        script.src = 'https://accounts.google.com/gsi/client'
+        script.async = true
+        script.onload = () => {
+          setTimeout(initializeGSI, 100)
+        }
+        document.head.appendChild(script)
+      } else if (window.google?.accounts?.id) {
+        initializeGSI()
+      }
     }
+    loadGSI()
   }, [])
 
   const initializeGSI = () => {
-    if (!window.google?.accounts?.id) return
-
-    window.google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: handleGoogleCredential,
-      auto_select: false,
-    })
-
-    // Render the styled Google button
-    if (googleBtnRef.current) {
-      window.google.accounts.id.renderButton(googleBtnRef.current, {
-        type: 'standard',
-        theme: 'filled_black',
-        size: 'large',
-        text: 'signin_with',
-        shape: 'rectangular',
-        width: googleBtnRef.current.offsetWidth,
-        locale: 'es',
+    if (!window.google?.accounts?.id) {
+      console.error('Google Identity Services not available')
+      return
+    }
+    try {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredential,
+        auto_select: false,
       })
+      if (googleBtnRef.current) {
+        const width = googleBtnRef.current.offsetWidth
+        if (width > 0) {
+          window.google.accounts.id.renderButton(googleBtnRef.current, {
+            type: 'standard',
+            theme: 'filled_black',
+            size: 'large',
+            text: 'signin_with',
+            shape: 'rectangular',
+            width: width,
+            locale: 'es',
+          })
+        } else {
+          setTimeout(initializeGSI, 100)
+        }
+      }
+    } catch (error) {
+      console.error('Error initializing Google Sign-In:', error)
     }
   }
 
@@ -79,138 +93,67 @@ export default function Login() {
     setGoogleLoading(true)
     try {
       await loginWithGoogleIdToken(response.credential)
-      // Navigation is handled by the useEffect watching user state
     } catch (err: any) {
-      setError(err.message || 'Error al iniciar sesión con Google')
+      setError(err.message || 'Error al iniciar sesi\u00f3n con Google')
     } finally {
       setGoogleLoading(false)
     }
   }
 
-  // Show nothing while checking auth
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center"
-        style={{ background: tokens.effects.gradientBg }}>
-        <div className="w-8 h-8 border-4 border-current border-t-transparent rounded-full animate-spin"
-          style={{ color: tokens.colors.primary }} />
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: tokens.colors.bgPrimary }}>
+        <p style={{ color: tokens.colors.textSecondary }}>Cargando...</p>
       </div>
     )
   }
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4"
-      style={{ background: tokens.effects.gradientBg }}
-    >
-      {/* Background effects */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div
-          className="absolute top-1/4 -left-20 w-96 h-96 rounded-full blur-3xl"
-          style={{ background: `${tokens.colors.primary}0d` }}
-        />
-        <div
-          className="absolute bottom-1/4 -right-20 w-96 h-96 rounded-full blur-3xl"
-          style={{ background: `${tokens.colors.primary}0d` }}
-        />
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', padding: '1rem', background: tokens.effects.gradientBg, position: 'relative' }}>
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '25%', left: '-5rem', width: '24rem', height: '24rem', borderRadius: '50%', filter: 'blur(48px)', background: `${tokens.colors.primary}0d` }} />
+        <div style={{ position: 'absolute', bottom: '25%', right: '-5rem', width: '24rem', height: '24rem', borderRadius: '50%', filter: 'blur(48px)', background: `${tokens.colors.primary}0d` }} />
       </div>
 
-      <div className="relative w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl border mb-4"
-            style={{
-              background: `${tokens.colors.primary}1a`,
-              borderColor: `${tokens.colors.primary}33`,
-            }}
-          >
-            <Truck className="w-8 h-8" style={{ color: tokens.colors.primary }} />
+      <div style={{ position: 'relative', width: '100%', maxWidth: '28rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '4rem', height: '4rem', borderRadius: '1rem', border: `1px solid ${tokens.colors.primary}33`, background: `${tokens.colors.primary}1a`, marginBottom: '1rem' }}>
+            <Truck style={{ width: '2rem', height: '2rem', color: tokens.colors.primary }} />
           </div>
-          <h1
-            className="text-3xl font-bold"
-            style={{
-              color: tokens.colors.textPrimary,
-              fontFamily: tokens.fonts.heading,
-              letterSpacing: '0.05em',
-            }}
-          >
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 700, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, letterSpacing: '0.05em' }}>
             Loma<span style={{ color: tokens.colors.primary }}>HUB</span>27
           </h1>
-          <p
-            className="mt-2 text-sm"
-            style={{
-              color: tokens.colors.textSecondary,
-              fontFamily: tokens.fonts.body,
-            }}
-          >
+          <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
             CRM + TMS + Torre de Control
           </p>
         </div>
 
-        {/* Login Card */}
-        <div
-          className="rounded-xl border p-8"
-          style={{
-            background: tokens.effects.glassmorphism.background,
-            backdropFilter: tokens.effects.glassmorphism.backdropFilter,
-            borderColor: tokens.effects.glassmorphism.border,
-          }}
-        >
+        <div style={{ borderRadius: '0.75rem', border: `1px solid ${tokens.effects.glassmorphism.border}`, padding: '2rem', background: tokens.effects.glassmorphism.background, backdropFilter: tokens.effects.glassmorphism.backdropFilter }}>
           {error && (
-            <div
-              className="flex items-center gap-3 p-3 rounded-lg border mb-6"
-              style={{
-                background: `${tokens.colors.red}1a`,
-                borderColor: `${tokens.colors.red}33`,
-              }}
-            >
-              <AlertCircle
-                className="w-5 h-5 shrink-0"
-                style={{ color: tokens.colors.red }}
-              />
-              <p
-                className="text-sm"
-                style={{ color: tokens.colors.red, fontFamily: tokens.fonts.body }}
-              >
-                {error}
-              </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', borderRadius: '0.5rem', border: `1px solid ${tokens.colors.red}33`, background: `${tokens.colors.red}1a`, marginBottom: '1.5rem' }}>
+              <AlertCircle style={{ width: '1.25rem', height: '1.25rem', flexShrink: 0, color: tokens.colors.red }} />
+              <p style={{ fontSize: '0.875rem', color: tokens.colors.red, fontFamily: tokens.fonts.body }}>{error}</p>
             </div>
           )}
 
-          <p
-            className="text-center text-sm mb-6"
-            style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}
-          >
-            Inicia sesión con tu cuenta de Google
+          <p style={{ textAlign: 'center', fontSize: '0.875rem', marginBottom: '1.5rem', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
+            Inicia sesi\u00f3n con tu cuenta de Google
           </p>
 
-          {/* Google Sign-In Button (rendered by GSI) */}
-          <div className="w-full flex justify-center">
-            <div ref={googleBtnRef} className="w-full" />
+          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <div ref={googleBtnRef} style={{ width: '100%' }} />
           </div>
 
           {googleLoading && (
-            <div className="flex items-center justify-center gap-2 mt-3">
-              <div
-                className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"
-                style={{ color: tokens.colors.textMuted }}
-              />
-              <span className="text-xs" style={{ color: tokens.colors.textMuted }}>
-                Autenticando…
-              </span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '0.75rem' }}>
+              <div style={{ width: '1rem', height: '1rem', border: '2px solid currentColor', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite', color: tokens.colors.textMuted }} />
+              <span style={{ fontSize: '0.75rem', color: tokens.colors.textMuted }}>Autenticando\u2026</span>
             </div>
           )}
         </div>
 
-        <p
-          className="text-center text-xs mt-6"
-          style={{
-            color: tokens.colors.textMuted,
-            fontFamily: tokens.fonts.body,
-          }}
-        >
-          LomaHUB27 v2.0 — Sistema de gestión integral
+        <p style={{ textAlign: 'center', fontSize: '0.75rem', marginTop: '1.5rem', color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
+          LomaHUB27 v2.0 \u2014 Sistema de gesti\u00f3n integral
         </p>
       </div>
     </div>
