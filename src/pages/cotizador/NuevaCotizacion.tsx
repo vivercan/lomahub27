@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Upload } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
@@ -6,6 +6,12 @@ import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Select } from '../../components/ui/Select'
 import { tokens } from '../../lib/tokens'
+import { supabase } from '../../lib/supabase'
+
+interface SelectOption {
+  value: string
+  label: string
+}
 
 export default function NuevaCotizacion() {
   const [formData, setFormData] = useState({
@@ -19,33 +25,56 @@ export default function NuevaCotizacion() {
   })
 
   const [file, setFile] = useState<File | null>(null)
-
-  const clienteOptions = [
+  const [clienteOptions, setClienteOptions] = useState<SelectOption[]>([
     { value: '', label: 'Seleccionar cliente...' },
-    { value: 'transportes-garcia', label: 'Transportes García' },
-    { value: 'logistica-mexico', label: 'Logística México SA' },
-    { value: 'express-delivery', label: 'Express Delivery' },
-  ]
+  ])
 
-  const tipoEquipoOptions = [
+  const tipoEquipoOptions: SelectOption[] = [
     { value: '', label: 'Seleccionar equipo...' },
     { value: 'seco', label: 'Seco' },
     { value: 'refrigerado', label: 'Refrigerado' },
     { value: 'especializado', label: 'Especializado' },
   ]
 
-  const tipoServicioOptions = [
+  const tipoServicioOptions: SelectOption[] = [
     { value: '', label: 'Seleccionar servicio...' },
     { value: 'impo', label: 'IMPO' },
     { value: 'expo', label: 'EXPO' },
     { value: 'nac', label: 'NAC' },
   ]
 
+  useEffect(() => {
+    const fetchClientes = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('clientes')
+          .select('id, nombre')
+          .order('nombre', { ascending: true })
+
+        if (error) {
+          console.error('Error fetching clientes:', error)
+        } else if (data) {
+          const options: SelectOption[] = [
+            { value: '', label: 'Seleccionar cliente...' },
+            ...data.map((c) => ({
+              value: c.id,
+              label: c.nombre || 'Sin nombre',
+            })),
+          ]
+          setClienteOptions(options)
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err)
+      }
+    }
+
+    fetchClientes()
+  }, [])
+
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
-  // Calcular margen
   const tarifa = parseFloat(formData.tarifa) || 0
   const costoBase = parseFloat(formData.costoBase) || 0
   const margen = costoBase > 0 ? ((tarifa - costoBase) / costoBase) * 100 : 0
@@ -54,7 +83,7 @@ export default function NuevaCotizacion() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Cotización enviada:', formData, file)
+    console.log('Cotizaci\u00f3n enviada:', formData, file)
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,9 +93,8 @@ export default function NuevaCotizacion() {
   }
 
   return (
-    <ModuleLayout titulo="Nueva Cotización" subtitulo="Cotizador rápido">
+    <ModuleLayout titulo="Nueva Cotizaci\u00f3n" subtitulo="Cotizador r\u00e1pido">
       <div className="space-y-6 max-w-2xl">
-        {/* Form Card */}
         <Card>
           <form onSubmit={handleSubmit} className="space-y-4">
             <Select
@@ -118,13 +146,12 @@ export default function NuevaCotizacion() {
               <Input
                 label="Costo Base ($)"
                 type="number"
-                placeholder="Costo de operación"
+                placeholder="Costo de operaci\u00f3n"
                 value={formData.costoBase}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('costoBase', e.target.value)}
               />
             </div>
 
-            {/* Margen Display */}
             <div
               className="p-3 rounded-lg border"
               style={{
@@ -153,12 +180,11 @@ export default function NuevaCotizacion() {
             </div>
 
             <Button variant="primary" className="w-full">
-              Enviar Cotización
+              Enviar Cotizaci\u00f3n
             </Button>
           </form>
         </Card>
 
-        {/* PDF Upload Card */}
         <Card>
           <div className="space-y-3">
             <div className="flex items-center gap-2 mb-4">
@@ -226,7 +252,7 @@ export default function NuevaCotizacion() {
                   fontFamily: tokens.fonts.body,
                 }}
               >
-                ✓ {file.name} seleccionado
+                \u2713 {file.name} seleccionado
               </p>
             )}
           </div>
