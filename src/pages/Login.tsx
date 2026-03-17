@@ -102,7 +102,7 @@ export default function Login() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: tokens.colors.bgPrimary }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: tokens.colors.primary }}>
         <p style={{ color: tokens.colors.textSecondary }}>Cargando...</p>
       </div>
     )
