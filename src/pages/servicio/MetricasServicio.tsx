@@ -1,8 +1,10 @@
+import { useState, useEffect } from 'react';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Card } from '../../components/ui/Card';
 import { KPICard } from '../../components/ui/KPICard';
 import { DataTable } from '../../components/ui/DataTable';
 import { tokens } from '../../lib/tokens';
+import { supabase } from '../../lib/supabase';
 
 interface EjecutivaRow {
   id: string;
@@ -13,42 +15,29 @@ interface EjecutivaRow {
   clientes_atendidos: number;
 }
 
-const mockEjecutivas: EjecutivaRow[] = [
-  {
-    id: '1',
-    nombre: 'María García',
-    mensajes_respondidos: 142,
-    tiempo_promedio: '6m 30s',
-    porcentaje_sla: 95,
-    clientes_atendidos: 18,
-  },
-  {
-    id: '2',
-    nombre: 'Laura Rodríguez',
-    mensajes_respondidos: 128,
-    tiempo_promedio: '7m 45s',
-    porcentaje_sla: 91,
-    clientes_atendidos: 15,
-  },
-  {
-    id: '3',
-    nombre: 'Andrea López',
-    mensajes_respondidos: 156,
-    tiempo_promedio: '8m 15s',
-    porcentaje_sla: 88,
-    clientes_atendidos: 21,
-  },
-  {
-    id: '4',
-    nombre: 'Sofía Martínez',
-    mensajes_respondidos: 134,
-    tiempo_promedio: '7m 00s',
-    porcentaje_sla: 93,
-    clientes_atendidos: 17,
-  },
-];
-
 export default function MetricasServicio() {
+  const [ejecutivas, setEjecutivas] = useState<EjecutivaRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEjecutivas = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('ejecutivas_cs')
+          .select('*');
+
+        if (error) throw error;
+        setEjecutivas(data || []);
+      } catch (error) {
+        console.error('Error fetching ejecutivas:', error);
+        setEjecutivas([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEjecutivas();
+  }, []);
   const ejecutivaColumns = [
     { key: 'nombre', label: 'Nombre', width: '20%' },
     { key: 'mensajes_respondidos', label: 'Mensajes Respondidos', width: '20%' },
@@ -100,7 +89,14 @@ export default function MetricasServicio() {
             Rendimiento por Ejecutiva
           </h3>
         </div>
-        <DataTable columns={ejecutivaColumns} data={mockEjecutivas} />
+        {ejecutivas.length === 0 ? (
+          <div className="text-center py-12 text-gray-400">
+            <p className="text-lg font-medium">Sin datos</p>
+            <p className="text-sm mt-1">Los datos se cargarán cuando estén disponibles en el sistema</p>
+          </div>
+        ) : (
+          <DataTable columns={ejecutivaColumns} data={ejecutivas} />
+        )}
         </Card>
       </div>
 
