@@ -22,7 +22,7 @@ export default function OfertaEquipo() {
   const [tipoEquipo, setTipoEquipo] = useState<string>('');
   const [selectedClientes, setSelectedClientes] = useState<Set<string>>(new Set());
   const [clientes, setClientes] = useState<ClienteRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchClientes = async () => {
@@ -35,7 +35,7 @@ export default function OfertaEquipo() {
     fetchClientes();
   }, []);
 
-  const toggleClienteSelection = (clienteId: string) => {
+  const _toggleClienteSelection = (clienteId: string) => {
     const n = new Set(selectedClientes);
     if (n.has(clienteId)) n.delete(clienteId); else n.add(clienteId);
     setSelectedClientes(n);
