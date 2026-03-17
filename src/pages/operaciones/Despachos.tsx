@@ -11,7 +11,6 @@ import { Select } from '../../components/ui/Select';
 import { tokens } from '../../lib/tokens';
 import { supabase } from '../../lib/supabase';
 
-// ─── Tipos ───────────────────────────────────────────────
 interface Viaje {
   id?: string;
   folio: string;
@@ -50,146 +49,25 @@ interface NuevoViajeForm {
   fv_machote_id: string;
 }
 
-// ─── Componente Modal genérico ───────────────────────────
-function Modal({
-  open,
-  onClose,
-  titulo,
-  children,
-}: {
-  open: boolean;
-  onClose: () => void;
-  titulo: string;
-  children: React.ReactNode;
-}) {
+function Modal({ open, onClose, titulo, children }: { open: boolean; onClose: () => void; titulo: string; children: React.ReactNode }) {
   if (!open) return null;
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 1000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'rgba(0,0,0,0.7)',
-        backdropFilter: 'blur(4px)',
-      }}
-      onClick={onClose}
-    >
-      <div
-        style={{
-          background: tokens.colors.bgCard,
-          border: `1px solid ${tokens.colors.border}`,
-          borderRadius: tokens.radius.lg,
-          boxShadow: tokens.effects.cardShadow,
-          padding: tokens.spacing.xl,
-          minWidth: '480px',
-          maxWidth: '640px',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h2
-          style={{
-            margin: 0,
-            marginBottom: tokens.spacing.lg,
-            color: tokens.colors.textPrimary,
-            fontFamily: tokens.fonts.heading,
-            fontSize: '1.1rem',
-          }}
-        >
-          {titulo}
-        </h2>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }} onClick={onClose}>
+      <div style={{ background: tokens.colors.bgCard, border: `1px solid ${tokens.colors.border}`, borderRadius: tokens.radius.lg, boxShadow: tokens.effects.cardShadow, padding: tokens.spacing.xl, minWidth: '480px', maxWidth: '640px', maxHeight: '90vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
+        <h2 style={{ margin: 0, marginBottom: tokens.spacing.lg, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, fontSize: '1.1rem' }}>{titulo}</h2>
         {children}
       </div>
     </div>
   );
 }
 
-// ─── Componente Principal ────────────────────────────────
 export default function Despachos(): ReactElement {
-  // Estado de viajes (mock inicial — en producción vendrán de Supabase)
-  const [viajes, setViajes] = useState<Viaje[]>([
-    {
-      folio: 'VJ-2024-001',
-      cliente: 'Transportes del Norte',
-      ruta: 'CDMX → GTO',
-      tipo: 'IMPO',
-      tracto: 'TAC-001',
-      caja: 'CAJ-045',
-      operador: 'Juan García',
-      estado: 'en_transito',
-      citaDescarga: '15:30',
-    },
-    {
-      folio: 'VJ-2024-002',
-      cliente: 'Logística Integral',
-      ruta: 'MTY → CDMX',
-      tipo: 'EXPO',
-      tracto: 'TAC-002',
-      caja: 'CAJ-052',
-      operador: 'Carlos López',
-      estado: 'en_transito',
-      citaDescarga: '18:45',
-    },
-    {
-      folio: 'VJ-2024-003',
-      cliente: 'Transportes del Sur',
-      ruta: 'QRO → SLP',
-      tipo: 'NAC',
-      tracto: 'TAC-003',
-      caja: 'CAJ-068',
-      operador: 'Miguel Rodríguez',
-      estado: 'programado',
-      citaDescarga: '22:00',
-    },
-    {
-      folio: 'VJ-2024-004',
-      cliente: 'Carga Express',
-      ruta: 'CDMX → VERACRUZ',
-      tipo: 'IMPO',
-      tracto: 'TAC-004',
-      caja: 'CAJ-071',
-      operador: 'Fernando Díaz',
-      estado: 'cargando',
-      citaDescarga: '14:00',
-    },
-    {
-      folio: 'VJ-2024-005',
-      cliente: 'Transportes del Centro',
-      ruta: 'GTO → MONTERREY',
-      tipo: 'NAC',
-      tracto: 'TAC-005',
-      caja: 'CAJ-083',
-      operador: 'Antonio Morales',
-      estado: 'completado',
-      citaDescarga: '10:15',
-    },
-    {
-      folio: 'VJ-2024-006',
-      cliente: 'Logística Premium',
-      ruta: 'LAREDO → CDMX',
-      tipo: 'EXPO',
-      tracto: 'TAC-006',
-      caja: 'CAJ-091',
-      operador: 'Roberto Sánchez',
-      estado: 'en_transito',
-      citaDescarga: '20:30',
-    },
-  ]);
-
-  // Estados de modales
+  const [viajes, setViajes] = useState<Viaje[]>([]);
   const [showNuevoViaje, setShowNuevoViaje] = useState(false);
   const [showETAWarning, setShowETAWarning] = useState(false);
   const [showFVBlock, setShowFVBlock] = useState(false);
-
-  // Estado de carga
   const [creandoViaje, setCreandoViaje] = useState(false);
   const [calculandoETA, setCalculandoETA] = useState(false);
-
-  // Estado del formulario
   const [form, setForm] = useState<NuevoViajeForm>({
     cliente: '',
     origen: '',
@@ -203,21 +81,48 @@ export default function Despachos(): ReactElement {
     fv_machote_id: '',
   });
 
-  // Estado de ETA calculado
   const [etaResult, setEtaResult] = useState<ETAResponse | null>(null);
-
-  // Nota obligatoria para ETA imposible
   const [notaETAImposible, setNotaETAImposible] = useState('');
-
-  // Error messages
   const [error, setError] = useState('');
   const [fvError, setFvError] = useState('');
-
-  // Filtros
   const [filtroEstado, setFiltroEstado] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('');
 
-  // ─── Funciones de color ────────────────────────────────
+  useEffect(() => {
+    const fetchViajes = async () => {
+      try {
+        const { data, error: dbError } = await supabase
+          .from('viajes')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (dbError) {
+          console.error('Error fetching viajes:', dbError);
+          setViajes([]);
+        } else if (data) {
+          const viajesFormatted: Viaje[] = data.map((v) => ({
+            id: v.id,
+            folio: v.folio || '\u2014',
+            cliente: v.cliente_nombre || '\u2014',
+            ruta: `${v.origen || '?'} \u2192 ${v.destino || '?'}`,
+            tipo: v.tipo || '\u2014',
+            tracto: v.tracto_numero || '\u2014',
+            caja: v.caja_numero || '\u2014',
+            operador: v.operador_nombre || '\u2014',
+            estado: v.estado || 'programado',
+            citaDescarga: v.cita_descarga ? new Date(v.cita_descarga).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : '\u2014',
+            eta_calculado: v.eta_calculado,
+            eta_imposible: v.eta_imposible || false,
+          }));
+          setViajes(viajesFormatted);
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        setViajes([]);
+      }
+    };
+    fetchViajes();
+  }, []);
+
   const tipoColor = (tipo: string): 'primary' | 'green' | 'yellow' | 'orange' | 'red' | 'gray' | 'blue' => {
     switch (tipo) {
       case 'IMPO': return 'blue';
@@ -239,77 +144,42 @@ export default function Despachos(): ReactElement {
     }
   };
 
-  // ─── Validar FV / Machote ──────────────────────────────
   const validarFV = useCallback(async (fvId: string): Promise<{ valido: boolean; mensaje: string }> => {
-    if (!fvId) return { valido: true, mensaje: '' }; // Sin FV, no bloquear (puede no aplicar)
-
+    if (!fvId) return { valido: true, mensaje: '' };
     try {
       const { data, error: dbError } = await supabase
         .from('formato_viaje')
         .select('id, numero, fecha_vigencia, estado')
         .eq('id', fvId)
         .single();
-
       if (dbError || !data) {
-        return { valido: false, mensaje: 'No se encontró el FV/Machote seleccionado.' };
+        return { valido: false, mensaje: 'No se encontr\u00f3 el FV/Machote seleccionado.' };
       }
-
-      // Verificar vigencia
       const hoy = new Date();
       const vigencia = new Date(data.fecha_vigencia);
-
       if (vigencia < hoy) {
-        return {
-          valido: false,
-          mensaje: `FV ${data.numero} VENCIDO desde ${vigencia.toLocaleDateString('es-MX')}. No se puede despachar con machote vencido.`,
-        };
+        return { valido: false, mensaje: `FV ${data.numero} VENCIDO desde ${vigencia.toLocaleDateString('es-MX')}. No se puede despachar con machote vencido.` };
       }
-
       if (data.estado === 'inactivo' || data.estado === 'cancelado') {
-        return {
-          valido: false,
-          mensaje: `FV ${data.numero} tiene estado "${data.estado}". No se puede despachar.`,
-        };
+        return { valido: false, mensaje: `FV ${data.numero} tiene estado "${data.estado}". No se puede despachar.` };
       }
-
       return { valido: true, mensaje: '' };
     } catch {
-      // Si la tabla no existe aún, no bloquear
       return { valido: true, mensaje: '' };
     }
   }, []);
 
-  // ─── Calcular ETA ──────────────────────────────────────
-  const calcularETA = useCallback(async (
-    origen: string,
-    destino: string,
-    hora_salida: string,
-    cita_descarga?: string,
-  ): Promise<ETAResponse | null> => {
+  const calcularETA = useCallback(async (origen: string, destino: string, hora_salida: string, cita_descarga?: string): Promise<ETAResponse | null> => {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('Sesión no válida');
-
+      if (!session) throw new Error('Sesi\u00f3n no v\u00e1lida');
       const res = await fetch(`${supabaseUrl}/functions/v1/eta-calculator`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({
-          origen,
-          destino,
-          hora_salida,
-          ...(cita_descarga ? { cita_descarga } : {}),
-        }),
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+        body: JSON.stringify({ origen, destino, hora_salida, ...(cita_descarga ? { cita_descarga } : {}) }),
       });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || `Error ${res.status}`);
-      }
-
+      if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || `Error ${res.status}`); }
       return await res.json() as ETAResponse;
     } catch (err) {
       console.error('Error calculando ETA:', err);
@@ -317,19 +187,14 @@ export default function Despachos(): ReactElement {
     }
   }, []);
 
-  // ─── Registrar alerta en alerta-engine ─────────────────
   const registrarAlerta = useCallback(async (tipo: string, datos: Record<string, unknown>) => {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
-
       await fetch(`${supabaseUrl}/functions/v1/alerta-engine`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
         body: JSON.stringify({ tipo, ...datos }),
       });
     } catch (err) {
@@ -337,29 +202,22 @@ export default function Despachos(): ReactElement {
     }
   }, []);
 
-  // ─── Flujo de creación de viaje ────────────────────────
   const handleCrearViaje = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
     setFvError('');
-
-    // 1. Validar campos obligatorios
     if (!form.cliente || !form.origen || !form.destino || !form.tipo || !form.hora_salida) {
       setError('Completa todos los campos obligatorios.');
       return;
     }
-
     setCreandoViaje(true);
-
     try {
-      // 2. PASO 1: Validar FV/Machote — si vencido → BLOQUEAR
       if (form.fv_machote_id) {
         const fvResult = await validarFV(form.fv_machote_id);
         if (!fvResult.valido) {
           setFvError(fvResult.mensaje);
           setShowFVBlock(true);
           setCreandoViaje(false);
-
           // Registrar alerta de machote inactivo
           await registrarAlerta('ALERTA_MACHOTE_INACTIVO', {
             viaje_folio: `VJ-${Date.now()}`,
@@ -369,29 +227,17 @@ export default function Despachos(): ReactElement {
           return;
         }
       }
-
-      // 3. PASO 2: Calcular ETA
       setCalculandoETA(true);
-      const eta = await calcularETA(
-        form.origen,
-        form.destino,
-        form.hora_salida,
-        form.cita_descarga || undefined,
-      );
+      const eta = await calcularETA(form.origen, form.destino, form.hora_salida, form.cita_descarga || undefined);
       setCalculandoETA(false);
-
       if (eta) {
         setEtaResult(eta);
-
-        // 4. PASO 3: Si ETA imposible → modal de advertencia
         if (eta.eta_imposible) {
           setShowETAWarning(true);
           setCreandoViaje(false);
-          return; // No continuar — esperar confirmación del usuario
+          return;
         }
       }
-
-      // 5. ETA OK o sin respuesta → crear viaje directamente
       await finalizarCreacionViaje(eta);
     } catch (err) {
       setError(`Error al crear viaje: ${err instanceof Error ? err.message : String(err)}`);
@@ -399,35 +245,24 @@ export default function Despachos(): ReactElement {
     }
   };
 
-  // ─── Confirmar viaje con ETA imposible (nota obligatoria) ─
   const handleConfirmarETAImposible = async () => {
     if (notaETAImposible.length < 20) {
       setError('La nota debe tener al menos 20 caracteres.');
       return;
     }
-
     setShowETAWarning(false);
     setCreandoViaje(true);
-
-    // Registrar alerta ETA imposible
     await registrarAlerta('ALERTA_ETA_IMPOSIBLE', {
-      origen: form.origen,
-      destino: form.destino,
-      eta_timestamp: etaResult?.eta_timestamp,
-      cita_descarga: form.cita_descarga,
-      nota_confirmacion: notaETAImposible,
-      confirmado_por_usuario: true,
+      origen: form.origen, destino: form.destino,
+      eta_timestamp: etaResult?.eta_timestamp, cita_descarga: form.cita_descarga,
+      nota_confirmacion: notaETAImposible, confirmado_por_usuario: true,
     });
-
     await finalizarCreacionViaje(etaResult);
   };
 
-  // ─── Finalizar creación del viaje ──────────────────────
   const finalizarCreacionViaje = async (eta: ETAResponse | null) => {
     try {
       const nuevoFolio = `VJ-${new Date().getFullYear()}-${String(viajes.length + 1).padStart(3, '0')}`;
-
-      // Intentar insertar en Supabase
       const nuevoViaje: Record<string, unknown> = {
         folio: nuevoFolio,
         cliente_nombre: form.cliente,
@@ -442,29 +277,19 @@ export default function Despachos(): ReactElement {
         hora_salida: form.hora_salida,
         eta_calculado: eta?.eta_timestamp || null,
       };
-
       const { data: viajeDB, error: insertError } = await supabase
-        .from('viajes')
-        .insert(nuevoViaje)
-        .select()
-        .single();
-
-      // Si hay viaje en DB, registrar monitoreo activo
+        .from('viajes').insert(nuevoViaje).select().single();
       if (viajeDB && !insertError) {
         await registrarAlerta('ALERTA_CITA_EN_RIESGO', {
-          viaje_id: viajeDB.id,
-          cita_descarga: form.cita_descarga,
-          eta_timestamp: eta?.eta_timestamp,
-          tipo_monitoreo: 'MONITOREO_ACTIVO',
+          viaje_id: viajeDB.id, cita_descarga: form.cita_descarga,
+          eta_timestamp: eta?.eta_timestamp, tipo_monitoreo: 'MONITOREO_ACTIVO',
         });
       }
-
-      // Agregar a la lista visual (funciona con o sin DB)
       const viajeLocal: Viaje = {
         id: viajeDB?.id,
         folio: nuevoFolio,
         cliente: form.cliente,
-        ruta: `${form.origen} → ${form.destino}`,
+        ruta: `${form.origen} \u2192 ${form.destino}`,
         tipo: form.tipo,
         tracto: form.tracto,
         caja: form.caja,
@@ -472,26 +297,12 @@ export default function Despachos(): ReactElement {
         estado: 'programado',
         citaDescarga: form.cita_descarga
           ? new Date(form.cita_descarga).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })
-          : '—',
+          : '\u2014',
         eta_calculado: eta?.eta_timestamp,
         eta_imposible: eta?.eta_imposible,
       };
-
       setViajes((prev) => [viajeLocal, ...prev]);
-
-      // Limpiar y cerrar
-      setForm({
-        cliente: '',
-        origen: '',
-        destino: '',
-        tipo: '',
-        tracto: '',
-        caja: '',
-        operador: '',
-        hora_salida: '',
-        cita_descarga: '',
-        fv_machote_id: '',
-      });
+      setForm({ cliente: '', origen: '', destino: '', tipo: '', tracto: '', caja: '', operador: '', hora_salida: '', cita_descarga: '', fv_machote_id: '' });
       setNotaETAImposible('');
       setEtaResult(null);
       setShowNuevoViaje(false);
@@ -503,78 +314,41 @@ export default function Despachos(): ReactElement {
     }
   };
 
-  // ─── Filtrar viajes ────────────────────────────────────
   const viajesFiltrados = viajes.filter((v) => {
     if (filtroEstado && v.estado !== filtroEstado) return false;
     if (filtroTipo && v.tipo !== filtroTipo) return false;
     return true;
   });
 
-  // ─── Columnas de la tabla ──────────────────────────────
   const viajesColumns = [
     { key: 'folio', label: 'Folio' },
     { key: 'cliente', label: 'Cliente' },
-    { key: 'ruta', label: 'Origen → Destino' },
-    {
-      key: 'tipo',
-      label: 'Tipo',
-      render: (row: Viaje) => <Badge color={tipoColor(row.tipo)}>{row.tipo}</Badge>,
-    },
+    { key: 'ruta', label: 'Origen \u2192 Destino' },
+    { key: 'tipo', label: 'Tipo', render: (row: Viaje) => <Badge color={tipoColor(row.tipo)}>{row.tipo}</Badge> },
     { key: 'tracto', label: 'Tracto' },
     { key: 'caja', label: 'Caja' },
     { key: 'operador', label: 'Operador' },
-    {
-      key: 'estado',
-      label: 'Estado',
-      render: (row: Viaje) => <Semaforo estado={estadoToSemaforo(row.estado)} />,
-    },
+    { key: 'estado', label: 'Estado', render: (row: Viaje) => <Semaforo estado={estadoToSemaforo(row.estado)} /> },
     { key: 'citaDescarga', label: 'Cita Descarga' },
-    {
-      key: 'eta_calculado',
-      label: 'ETA',
-      render: (row: Viaje) => {
-        if (!row.eta_calculado) return <span style={{ color: tokens.colors.textMuted }}>—</span>;
-        const eta = new Date(row.eta_calculado);
-        return (
-          <span style={{ color: row.eta_imposible ? tokens.colors.red : tokens.colors.green }}>
-            {eta.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
-            {row.eta_imposible && ' !!'}
-          </span>
-        );
-      },
-    },
+    { key: 'eta_calculado', label: 'ETA', render: (row: Viaje) => {
+      if (!row.eta_calculado) return <span style={{ color: tokens.colors.textMuted }}>\u2014</span>;
+      const eta = new Date(row.eta_calculado);
+      return (<span style={{ color: row.eta_imposible ? tokens.colors.red : tokens.colors.green }}>{eta.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}{row.eta_imposible && ' !!'}</span>);
+    }},
   ];
 
   return (
     <ModuleLayout titulo="Despachos">
-      {/* Botón Nuevo Viaje */}
       <div style={{ marginBottom: tokens.spacing.lg }}>
-        <Button variant="primary" onClick={() => setShowNuevoViaje(true)}>
-          Nuevo Viaje
-        </Button>
+        <Button variant="primary" onClick={() => setShowNuevoViaje(true)}>Nuevo Viaje</Button>
       </div>
-
-      {/* Filtros */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: tokens.spacing.md,
-          marginBottom: tokens.spacing.lg,
-        }}
-      >
-        <Select
-          label="Estado"
-          placeholder="Filtrar por estado"
-          value={filtroEstado}
-          onChange={(e) => setFiltroEstado(e.target.value)}
-          options={[
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
+        <Select label="Estado" placeholder="Filtrar por estado" value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)} options={[
             { value: 'programado', label: 'Programado' },
             { value: 'cargando', label: 'Cargando' },
-            { value: 'en_transito', label: 'En Tránsito' },
+            { value: 'en_transito', label: 'En Tr\u00e1nsito' },
             { value: 'completado', label: 'Completado' },
-            { value: 'retrasado', label: 'Retrasado' },
-            { value: 'en_riesgo', label: 'En Riesgo' },
+            { value: 'retrasado', label: 'Retrasado' },n            { value: 'en_riesgo', label: 'En Riesgo' },
           ]}
         />
         <Select
