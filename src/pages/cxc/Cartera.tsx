@@ -1,9 +1,11 @@
+import { useState, useEffect } from 'react';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Card } from '../../components/ui/Card';
 import { KPICard } from '../../components/ui/KPICard';
 import { DataTable } from '../../components/ui/DataTable';
 import { Semaforo } from '../../components/ui/Semaforo';
 import { tokens } from '../../lib/tokens';
+import { supabase } from '../../lib/supabase';
 
 interface ClienteCarteraRow {
   id: string;
@@ -16,89 +18,6 @@ interface ClienteCarteraRow {
   riesgo_dias: number;
 }
 
-const mockClientesCartera: ClienteCarteraRow[] = [
-  {
-    id: '1',
-    cliente: 'Transportes García',
-    saldo_total: 125000,
-    saldo_vencido: 45000,
-    dias_credito: 30,
-    dias_prom_pago: 42,
-    ejecutivo_cxc: 'Jorge Gutiérrez',
-    riesgo_dias: 65,
-  },
-  {
-    id: '2',
-    cliente: 'Logística Integral',
-    saldo_total: 380000,
-    saldo_vencido: 0,
-    dias_credito: 45,
-    dias_prom_pago: 38,
-    ejecutivo_cxc: 'Sandra López',
-    riesgo_dias: 15,
-  },
-  {
-    id: '3',
-    cliente: 'Distribuidora México',
-    saldo_total: 275000,
-    saldo_vencido: 180000,
-    dias_credito: 30,
-    dias_prom_pago: 55,
-    ejecutivo_cxc: 'Jorge Gutiérrez',
-    riesgo_dias: 78,
-  },
-  {
-    id: '4',
-    cliente: 'Transportes del Norte',
-    saldo_total: 420000,
-    saldo_vencido: 220000,
-    dias_credito: 60,
-    dias_prom_pago: 72,
-    ejecutivo_cxc: 'Sandra López',
-    riesgo_dias: 92,
-  },
-  {
-    id: '5',
-    cliente: 'Grupo Comercial XYZ',
-    saldo_total: 185000,
-    saldo_vencido: 85000,
-    dias_credito: 30,
-    dias_prom_pago: 48,
-    ejecutivo_cxc: 'Carlos Mendoza',
-    riesgo_dias: 52,
-  },
-  {
-    id: '6',
-    cliente: 'Industrias Lázaro',
-    saldo_total: 320000,
-    saldo_vencido: 150000,
-    dias_credito: 45,
-    dias_prom_pago: 61,
-    ejecutivo_cxc: 'Sandra López',
-    riesgo_dias: 68,
-  },
-  {
-    id: '7',
-    cliente: 'Servicios Globales',
-    saldo_total: 215000,
-    saldo_vencido: 0,
-    dias_credito: 30,
-    dias_prom_pago: 28,
-    ejecutivo_cxc: 'Carlos Mendoza',
-    riesgo_dias: 8,
-  },
-  {
-    id: '8',
-    cliente: 'Exportaciones Nacionales',
-    saldo_total: 480000,
-    saldo_vencido: 0,
-    dias_credito: 60,
-    dias_prom_pago: 55,
-    ejecutivo_cxc: 'Jorge Gutiérrez',
-    riesgo_dias: 20,
-  },
-];
-
 function formatCurrency(amount: number): string {
   return `$${amount.toLocaleString('es-MX')}`;
 }
@@ -110,6 +29,53 @@ function getRiesgoEstado(dias: number): 'verde' | 'amarillo' | 'rojo' {
 }
 
 export default function Cartera() {
+  const [clientesCartera, setClientesCartera] = useState<ClienteCarteraRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [totalSaldo, setTotalSaldo] = useState(0);
+  const [totalVencido, setTotalVencido] = useState(0);
+  const [promedioDias, setPromedioDias] = useState(0);
+
+  useEffect(() => {
+    const fetchCartera = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('clientes')
+          .select('id, nombre, saldo_total, saldo_vencido, dias_credito, dias_prom_pago, ejecutivo_cxc')
+          .order('saldo_total', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching cartera:', error);
+          setClientesCartera([]);
+        } else if (data) {
+          const cartera: ClienteCarteraRow[] = data.map((cliente) => ({
+            id: cliente.id,
+            cliente: cliente.nombre || 'Sin nombre',
+            saldo_total: cliente.saldo_total || 0,
+            saldo_vencido: cliente.saldo_vencido || 0,
+            dias_credito: cliente.dias_credito || 0,
+            dias_prom_pago: cliente.dias_prom_pago || 0,
+            ejecutivo_cxc: cliente.ejecutivo_cxc || 'Sin asignar',
+            riesgo_dias: cliente.dias_prom_pago ? Math.max(0, cliente.dias_prom_pago - cliente.dias_credito) : 0,
+          }));
+
+          setClientesCartera(cartera);
+          setTotalSaldo(cartera.reduce((sum, c) => sum + c.saldo_total, 0));
+          setTotalVencido(cartera.reduce((sum, c) => sum + c.saldo_vencido, 0));
+          if (cartera.length > 0) {
+            setPromedioDias(Math.round(cartera.reduce((sum, c) => sum + c.dias_prom_pago, 0) / cartera.length));
+          }
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        setClientesCartera([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCartera();
+  }, []);
+
   const columns = [
     { key: 'cliente', label: 'Cliente', width: '18%' },
     {
@@ -152,14 +118,21 @@ export default function Cartera() {
           marginBottom: tokens.spacing.lg,
         }}
       >
-        <KPICard titulo="Saldo Total" valor="$2.4M" color="gray" />
-        <KPICard titulo="Vencido" valor="$680K" color="red" />
-        <KPICard titulo="Clientes con Saldo" valor="45" color="gray" />
-        <KPICard titulo="Días Promedio Pago" valor="38" color="yellow" />
+        <KPICard titulo="Saldo Total" valor={formatCurrency(totalSaldo)} color="gray" />
+        <KPICard titulo="Vencido" valor={formatCurrency(totalVencido)} color="red" />
+        <KPICard titulo="Clientes con Saldo" valor={clientesCartera.length.toString()} color="gray" />
+        <KPICard titulo="Días Promedio Pago" valor={`${promedioDias}d`} color="yellow" />
       </div>
 
       <Card>
-        <DataTable columns={columns} data={mockClientesCartera} />
+        {clientesCartera.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: tokens.spacing.lg, color: tokens.colors.textSecondary }}>
+            <p style={{ fontSize: '1.1rem', fontWeight: '500', margin: 0 }}>Sin datos</p>
+            <p style={{ fontSize: '0.85rem', marginTop: tokens.spacing.sm }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
+          </div>
+        ) : (
+          <DataTable columns={columns} data={clientesCartera} />
+        )}
       </Card>
     </ModuleLayout>
   );
