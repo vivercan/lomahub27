@@ -59,15 +59,17 @@ export default function AltaCliente() {
 
   const tipoOptions = [
     { value: '', label: 'Seleccionar tipo...' },
-    { value: 'pf', label: 'Persona FÃ­sica' },
-    { value: 'pm', label: 'Persona Moral' },
+    { value: 'prospecto', label: 'Prospecto' },
+    { value: 'activo', label: 'Activo' },
+    { value: 'corporativo', label: 'Corporativo' },
+    { value: 'estrategico', label: 'Estratégico' },
   ]
 
   const segmentoOptions = [
     { value: '', label: 'Seleccionar segmento...' },
     { value: 'grande', label: 'Empresa Grande' },
     { value: 'mediana', label: 'Empresa Mediana' },
-    { value: 'pequeÃ±a', label: 'Empresa PequeÃ±a' },
+    { value: 'pequeña', label: 'Empresa Pequeña' },
   ]
 
   const publicLinkUrl = 'https://lomahub.app/public/cliente/QTZx9mK2L'
@@ -80,6 +82,35 @@ export default function AltaCliente() {
     navigator.clipboard.writeText(publicLinkUrl)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+
+  const handleGuardarCliente = async () => {
+    if (!formData.razonSocial.trim()) {
+      setSaveError('La razón social es obligatoria')
+      return
+    }
+    setSaving(true)
+    setSaveError(null)
+    try {
+      const { error: insertError } = await supabase.from('clientes').insert([{
+        razon_social: formData.razonSocial.trim(),
+        rfc: formData.rfc.trim() || null,
+        tipo: formData.tipo || 'prospecto',
+        segmento: formData.segmento || null,
+        notas: `Ciudad: ${formData.ciudad || 'N/A'} | Contacto: ${formData.contactoPrincipal || 'N/A'} | Tel: ${formData.telefono || 'N/A'} | Email: ${formData.email || 'N/A'}`,
+        activo: true,
+      }])
+      if (insertError) throw insertError
+      setSaveSuccess(true)
+    } catch (err: any) {
+      setSaveError(err.message || 'Error al guardar el cliente')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleSiguiente = () => {
@@ -129,7 +160,7 @@ export default function AltaCliente() {
     try {
       const { data: sessionData } = await supabase.auth.getSession()
       const token = sessionData.session?.access_token
-      if (!token) throw new Error('SesiÃ³n expirada')
+      if (!token) throw new Error('Sesión expirada')
 
       // Read file as text
       const text = await contratoFile.text()
@@ -152,7 +183,7 @@ export default function AltaCliente() {
       if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`)
 
       const json = await res.json()
-      if (!json.ok) throw new Error(json.mensaje || 'Error en el anÃ¡lisis')
+      if (!json.ok) throw new Error(json.mensaje || 'Error en el análisis')
 
       setAnalisis(json.analisis)
     } catch (err) {
@@ -244,7 +275,7 @@ export default function AltaCliente() {
             {paso === 1 && (
               <>
                 <Input
-                  label="RazÃ³n Social *"
+                  label="Razón Social *"
                   placeholder="Nombre legal de la empresa"
                   value={formData.razonSocial}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('razonSocial', e.target.value)}
@@ -284,7 +315,7 @@ export default function AltaCliente() {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('contactoPrincipal', e.target.value)}
                 />
                 <Input
-                  label="TelÃ©fono"
+                  label="Teléfono"
                   placeholder="+52 1234567890"
                   value={formData.telefono}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('telefono', e.target.value)}
@@ -313,12 +344,12 @@ export default function AltaCliente() {
                     fontFamily: tokens.fonts.body,
                   }}
                 >
-                  Contenido del paso {paso} â IntegraciÃ³n con mÃ³dulos especÃ­ficos
+                  Contenido del paso {paso} — Integración con módulos específicos
                 </p>
               </div>
             )}
 
-            {/* âââ PASO 6: AnÃ¡lisis de Contratos con IA âââ */}
+            {/* âââ PASO 6: Análisis de Contratos con IA âââ */}
             {paso === 6 && (
               <div className="space-y-4">
                 {/* Upload area */}
@@ -352,10 +383,10 @@ export default function AltaCliente() {
                     <label className="cursor-pointer block">
                       <Upload size={32} style={{ color: tokens.colors.textMuted, margin: '0 auto 8px' }} />
                       <p className="text-sm mb-1" style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
-                        Arrastra tu contrato aquÃ­ o haz clic para seleccionar
+                        Arrastra tu contrato aquí o haz clic para seleccionar
                       </p>
                       <p className="text-xs" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-                        PDF, DOCX o TXT â mÃ¡ximo 10 MB
+                        PDF, DOCX o TXT — máximo 10 MB
                       </p>
                       <input
                         type="file"
@@ -400,7 +431,7 @@ export default function AltaCliente() {
                     <div className="flex items-center justify-center gap-3 py-8">
                       <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: tokens.colors.primary, borderTopColor: 'transparent' }} />
                       <p className="text-sm" style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
-                        Claude estÃ¡ analizando el contrato... esto puede tomar 15-30 segundos
+                        Claude está analizando el contrato... esto puede tomar 15-30 segundos
                       </p>
                     </div>
                   </Card>
@@ -420,7 +451,7 @@ export default function AltaCliente() {
                             {analisis.score_riesgo}/10
                           </p>
                           <Badge color={scoreBadgeColor(analisis.score_riesgo)}>
-                            {analisis.score_riesgo <= 3 ? 'Bajo Riesgo' : analisis.score_riesgo <= 5 ? 'Riesgo Moderado' : analisis.score_riesgo <= 7 ? 'Riesgo Alto' : 'Riesgo CrÃ­tico'}
+                            {analisis.score_riesgo <= 3 ? 'Bajo Riesgo' : analisis.score_riesgo <= 5 ? 'Riesgo Moderado' : analisis.score_riesgo <= 7 ? 'Riesgo Alto' : 'Riesgo Crítico'}
                           </Badge>
                         </div>
                         <div
@@ -458,16 +489,16 @@ export default function AltaCliente() {
                         <div className="flex gap-6">
                           <div>
                             <p className="text-xs" style={{ color: tokens.colors.textMuted }}>Inicio</p>
-                            <p className="text-sm font-medium" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body }}>{analisis.vigencia.inicio || 'â'}</p>
+                            <p className="text-sm font-medium" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body }}>{analisis.vigencia.inicio || '—'}</p>
                           </div>
                           <div>
                             <p className="text-xs" style={{ color: tokens.colors.textMuted }}>Fin</p>
-                            <p className="text-sm font-medium" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body }}>{analisis.vigencia.fin || 'â'}</p>
+                            <p className="text-sm font-medium" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body }}>{analisis.vigencia.fin || '—'}</p>
                           </div>
                           <div>
-                            <p className="text-xs" style={{ color: tokens.colors.textMuted }}>RenovaciÃ³n</p>
+                            <p className="text-xs" style={{ color: tokens.colors.textMuted }}>Renovación</p>
                             <Badge color={analisis.vigencia.renovacion_automatica ? 'green' : 'gray'}>
-                              {analisis.vigencia.renovacion_automatica ? 'AutomÃ¡tica' : 'Manual'}
+                              {analisis.vigencia.renovacion_automatica ? 'Automática' : 'Manual'}
                             </Badge>
                           </div>
                         </div>
@@ -494,7 +525,7 @@ export default function AltaCliente() {
                       </Card>
                     )}
 
-                    {/* ClÃ¡usulas de riesgo (collapsible) */}
+                    {/* Cláusulas de riesgo (collapsible) */}
                     {analisis.clausulas_riesgo && analisis.clausulas_riesgo.length > 0 && (
                       <Card>
                         <button
@@ -502,7 +533,7 @@ export default function AltaCliente() {
                           onClick={() => toggleSeccion('clausulas')}
                         >
                           <p className="text-xs uppercase tracking-wider font-bold" style={{ color: tokens.colors.orange, fontFamily: tokens.fonts.body }}>
-                            ClÃ¡usulas de Riesgo ({analisis.clausulas_riesgo.length})
+                            Cláusulas de Riesgo ({analisis.clausulas_riesgo.length})
                           </p>
                           {seccionesAbiertas.clausulas ? <ChevronUp size={16} style={{ color: tokens.colors.textMuted }} /> : <ChevronDown size={16} style={{ color: tokens.colors.textMuted }} />}
                         </button>
@@ -599,10 +630,10 @@ export default function AltaCliente() {
                       </Card>
                     )}
 
-                    {/* RecomendaciÃ³n general */}
+                    {/* Recomendación general */}
                     <Card glow="primary">
                       <p className="text-xs uppercase tracking-wider mb-2" style={{ color: tokens.colors.primary, fontFamily: tokens.fonts.body }}>
-                        RecomendaciÃ³n General
+                        Recomendación General
                       </p>
                       <p className="text-sm leading-relaxed" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body }}>
                         {analisis.recomendacion_general}
@@ -638,7 +669,7 @@ export default function AltaCliente() {
                     fontFamily: tokens.fonts.body,
                   }}
                 >
-                  Link PÃºblico
+                  Link Público
                 </p>
                 <div className="flex items-center gap-2">
                   <input
@@ -677,7 +708,7 @@ export default function AltaCliente() {
           </form>
         </Card>
 
-        {/* Botones de NavegaciÃ³n */}
+        {/* Botones de Navegación */}
         <div className="flex gap-2 justify-between">
           <Button
             variant="secondary"
@@ -692,10 +723,29 @@ export default function AltaCliente() {
           </Button>
         </div>
 
+        {saveError && (
+          <div className="flex items-start gap-3 p-3 rounded-lg border" style={{ background: `${tokens.colors.red}1a`, borderColor: `${tokens.colors.red}33` }}>
+            <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: tokens.colors.red }} />
+            <p className="text-sm" style={{ color: tokens.colors.red, fontFamily: tokens.fonts.body }}>{saveError}</p>
+          </div>
+        )}
+
+        {saveSuccess && (
+          <div className="flex items-start gap-3 p-3 rounded-lg border" style={{ background: `${tokens.colors.green}1a`, borderColor: `${tokens.colors.green}33` }}>
+            <Check className="w-5 h-5 shrink-0 mt-0.5" style={{ color: tokens.colors.green }} />
+            <p className="text-sm" style={{ color: tokens.colors.green, fontFamily: tokens.fonts.body }}>Cliente registrado exitosamente en Supabase.</p>
+          </div>
+        )}
+
         {paso === 1 && (
-          <Button variant="secondary" className="w-full">
-            Generar Link PÃºblico
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="primary" className="flex-1" onClick={handleGuardarCliente} disabled={saving || saveSuccess}>
+              {saving ? 'Guardando...' : saveSuccess ? 'Guardado' : 'Registrar Cliente'}
+            </Button>
+            <Button variant="secondary" className="flex-1">
+              Generar Link Público
+            </Button>
+          </div>
         )}
       </div>
     </ModuleLayout>
