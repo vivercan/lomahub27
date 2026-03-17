@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import type { ReactElement } from 'react';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Card } from '../../components/ui/Card';
@@ -5,104 +6,58 @@ import { DataTable } from '../../components/ui/DataTable';
 import { Select } from '../../components/ui/Select';
 import { Semaforo } from '../../components/ui/Semaforo';
 import { tokens } from '../../lib/tokens';
+import { supabase } from '../../lib/supabase';
+
+interface Tracto {
+  id: string;
+  numero_economico: string;
+  empresa: string;
+  segmento: string;
+  ubicacion: string;
+  velocidad: number;
+  ultimo_reporte: string;
+  estado: string;
+  cliente_asignado: string;
+}
 
 export default function Dedicados(): ReactElement {
-  const dedicados = [
-    {
-      economico: 'TAC-001',
-      empresa: 'TDN México',
-      segmento: 'Premium',
-      ubicacion: 'CDMX - México',
-      velocidad: '85 km/h',
-      ultimoReporte: '13 Mar - 14:30',
-      estado: 'movimiento',
-      clienteAsignado: 'Transportes del Norte',
-    },
-    {
-      economico: 'TAC-002',
-      empresa: 'Logística Integral',
-      segmento: 'Standard',
-      ubicacion: 'Monterrey - NL',
-      velocidad: '0 km/h',
-      ultimoReporte: '13 Mar - 14:25',
-      estado: 'detenida_menos60',
-      clienteAsignado: 'Logística Integral',
-    },
-    {
-      economico: 'TAC-003',
-      empresa: 'TDN México',
-      segmento: 'Premium',
-      ubicacion: 'Querétaro - QRO',
-      velocidad: '92 km/h',
-      ultimoReporte: '13 Mar - 14:28',
-      estado: 'movimiento',
-      clienteAsignado: 'Carga Express',
-    },
-    {
-      economico: 'TAC-004',
-      empresa: 'Carga Global',
-      segmento: 'Económico',
-      ubicacion: 'Veracruz - VER',
-      velocidad: '0 km/h',
-      ultimoReporte: '13 Mar - 13:45',
-      estado: 'detenida_mas60',
-      clienteAsignado: 'Transportes del Centro',
-    },
-    {
-      economico: 'TAC-005',
-      empresa: 'TDN México',
-      segmento: 'Premium',
-      ubicacion: 'Tampico - TAMPS',
-      velocidad: '78 km/h',
-      ultimoReporte: '13 Mar - 14:32',
-      estado: 'movimiento',
-      clienteAsignado: 'Logística Premium',
-    },
-    {
-      economico: 'TAC-006',
-      empresa: 'Logística Integral',
-      segmento: 'Standard',
-      ubicacion: 'Guadalajara - JAL',
-      velocidad: '0 km/h',
-      ultimoReporte: '13 Mar - 12:00',
-      estado: 'sin_senal',
-      clienteAsignado: 'Transportes del Golfo',
-    },
-    {
-      economico: 'TAC-007',
-      empresa: 'Carga Express',
-      segmento: 'Económico',
-      ubicacion: 'Saltillo - COAH',
-      velocidad: '88 km/h',
-      ultimoReporte: '13 Mar - 14:29',
-      estado: 'movimiento',
-      clienteAsignado: 'Carga Global',
-    },
-    {
-      economico: 'TAC-008',
-      empresa: 'Translogística',
-      segmento: 'Standard',
-      ubicacion: 'San Luis Potosí - SLP',
-      velocidad: '0 km/h',
-      ultimoReporte: '13 Mar - 14:10',
-      estado: 'detenida_menos60',
-      clienteAsignado: 'Transportes de Occidente',
-    },
-  ];
+  const [dedicados, setDedicados] = useState<Tracto[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDedicados = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('tractos')
+          .select('*');
+
+        if (error) throw error;
+
+        setDedicados(data || []);
+      } catch (err) {
+        console.error('Error fetching dedicados:', err);
+        setDedicados([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDedicados();
+  }, []);
 
   const dedicadosColumns = [
-    { key: 'economico', label: 'Económico' },
+    { key: 'numero_economico', label: 'Económico' },
     { key: 'empresa', label: 'Empresa' },
     { key: 'segmento', label: 'Segmento' },
     { key: 'ubicacion', label: 'Ubicación' },
     { key: 'velocidad', label: 'Velocidad' },
-    { key: 'ultimoReporte', label: 'Último Reporte' },
+    { key: 'ultimo_reporte', label: 'Último Reporte' },
     {
       key: 'estado',
       label: 'Estado',
-      render: (_row: typeof dedicados[0]) => <Semaforo estado={'verde' as const} />,
+      render: (_row: Tracto) => <Semaforo estado={'verde' as const} />,
     },
-    { key: 'clienteAsignado', label: 'Cliente Asignado' },
+    { key: 'cliente_asignado', label: 'Cliente Asignado' },
   ];
 
   return (
@@ -125,7 +80,18 @@ export default function Dedicados(): ReactElement {
         <div style={{ marginBottom: tokens.spacing.md, paddingBottom: tokens.spacing.md, borderBottom: `1px solid ${tokens.colors.border}` }}>
           <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>Unidades Dedicadas</h3>
         </div>
-        <DataTable columns={dedicadosColumns} data={dedicados} />
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>
+            <p>Cargando...</p>
+          </div>
+        ) : dedicados.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>
+            <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
+            <p style={{ fontSize: '14px', marginTop: tokens.spacing.sm }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
+          </div>
+        ) : (
+          <DataTable columns={dedicadosColumns} data={dedicados} />
+        )}
       </Card>
 
       {/* Leyenda de Estados */}
