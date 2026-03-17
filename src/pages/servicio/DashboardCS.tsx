@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import type { ReactElement } from 'react';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Card } from '../../components/ui/Card';
@@ -6,44 +7,58 @@ import { DataTable } from '../../components/ui/DataTable';
 import { Semaforo } from '../../components/ui/Semaforo';
 import type { SemaforoEstado } from '../../lib/tokens';
 import { tokens } from '../../lib/tokens';
+import { supabase } from '../../lib/supabase';
+
+interface Cliente {
+  id: string;
+  cliente: string;
+  estado: SemaforoEstado;
+  ultimoContacto: string;
+  viajesActivos: number;
+}
 
 export default function DashboardCS(): ReactElement {
-  const resumen =
-    'Viajes en tránsito: 12 | Retrasados: 2 | Cajas sin plan: 3 | Clientes pendientes de contacto: 4';
+  const [resumen, setResumen] = useState('Viajes en tránsito: 0 | Retrasados: 0 | Cajas sin plan: 0 | Clientes pendientes de contacto: 0');
+  const [misClientes, setMisClientes] = useState<Cliente[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const misClientes = [
-    {
-      cliente: 'Transportes del Norte',
-      estado: 'contactado',
-      ultimoContacto: '13 Mar - 10:30 AM',
-      viajesActivos: 3,
-    },
-    {
-      cliente: 'Logística Integral',
-      estado: 'pendiente',
-      ultimoContacto: '11 Mar - 2:15 PM',
-      viajesActivos: 1,
-    },
-    {
-      cliente: 'Transportes del Sur',
-      estado: 'en_seguimiento',
-      ultimoContacto: 'Hoy - 8:45 AM',
-      viajesActivos: 2,
-    },
-    {
-      cliente: 'Carga Express',
-      estado: 'riesgo',
-      ultimoContacto: '10 Mar - 4:00 PM',
-      viajesActivos: 0,
-    },
-  ];
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const { data: clientesData, error: clientesError } = await supabase
+          .from('clientes')
+          .select('*');
+
+        if (clientesError) throw clientesError;
+
+        const formattedClientes = (clientesData || []).map((cliente: any) => ({
+          id: cliente.id,
+          cliente: cliente.nombre,
+          estado: 'contactado' as SemaforoEstado,
+          ultimoContacto: 'N/A',
+          viajesActivos: 0,
+        }));
+
+        setMisClientes(formattedClientes);
+        setResumen(`Viajes en tránsito: 0 | Retrasados: 0 | Cajas sin plan: 0 | Clientes pendientes de contacto: ${formattedClientes.length}`);
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setMisClientes([]);
+        setResumen('Viajes en tránsito: 0 | Retrasados: 0 | Cajas sin plan: 0 | Clientes pendientes de contacto: 0');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   const clientesColumns = [
     { key: 'cliente', label: 'Cliente' },
     {
       key: 'estado',
       label: 'Estado Interacción',
-      render: (row: typeof misClientes[0]) => <Semaforo estado={row.estado as SemaforoEstado} />,
+      render: (row: Cliente) => <Semaforo estado={row.estado} />,
     },
     { key: 'ultimoContacto', label: 'Último Contacto' },
     { key: 'viajesActivos', label: 'Viajes Activos' },
@@ -76,17 +91,28 @@ export default function DashboardCS(): ReactElement {
           marginTop: tokens.spacing.lg,
         }}
       >
-        <KPICard titulo="Clientes Asignados" valor="15" color="primary" />
-        <KPICard titulo="Contactados Hoy" valor="8" color="green" />
-        <KPICard titulo="Pendientes" valor="7" color="red" />
-        <KPICard titulo="Escalamientos" valor="2" color="yellow" />
+        <KPICard titulo="Clientes Asignados" valor={misClientes.length.toString()} color="primary" />
+        <KPICard titulo="Contactados Hoy" valor="0" color="green" />
+        <KPICard titulo="Pendientes" valor="0" color="red" />
+        <KPICard titulo="Escalamientos" valor="0" color="yellow" />
       </div>
 
       {/* Mis Clientes Hoy */}
       <div style={{ marginTop: tokens.spacing.lg }}>
         <Card>
           <h3>Mis Clientes Hoy</h3>
-          <DataTable columns={clientesColumns} data={misClientes} />
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>
+              <p>Cargando...</p>
+            </div>
+          ) : misClientes.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>
+              <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
+              <p style={{ fontSize: '14px', marginTop: tokens.spacing.sm }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
+            </div>
+          ) : (
+            <DataTable columns={clientesColumns} data={misClientes} />
+          )}
         </Card>
       </div>
     </ModuleLayout>
