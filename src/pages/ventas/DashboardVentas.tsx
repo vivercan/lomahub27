@@ -1,9 +1,11 @@
+import { useState, useEffect } from 'react'
 import { BarChart3, TrendingUp } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
 import { KPICard } from '../../components/ui/KPICard'
 import { DataTable } from '../../components/ui/DataTable'
 import { tokens } from '../../lib/tokens'
+import { supabase } from '../../lib/supabase'
 import type { Column } from '../../components/ui/DataTable'
 
 interface FunnelStage {
@@ -21,25 +23,51 @@ interface Vendedor {
 }
 
 export default function DashboardVentas() {
-  const kpis = [
-    { titulo: 'Pipeline Total', valor: '$4.2M', color: 'primary' as const },
-    { titulo: 'Leads Nuevos Semana', valor: '12', color: 'green' as const },
-    { titulo: 'Conversión', valor: '23%', color: 'blue' as const },
-    { titulo: 'Cotizaciones Sin Resp.', valor: '5', color: 'orange' as const },
-  ]
+  const [kpis, setKpis] = useState([
+    { titulo: 'Pipeline Total', valor: '0', color: 'primary' as const },
+    { titulo: 'Leads Nuevos Semana', valor: '0', color: 'green' as const },
+    { titulo: 'Conversión', valor: '0%', color: 'blue' as const },
+    { titulo: 'Cotizaciones Sin Resp.', valor: '0', color: 'orange' as const },
+  ])
+  const [funnelData, setFunnelData] = useState<FunnelStage[]>([])
+  const [vendedores, setVendedores] = useState<Vendedor[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const funnelData: FunnelStage[] = [
-    { etapa: 'Nuevo', cantidad: 45, monto: '$1.2M' },
-    { etapa: 'Contactado', cantidad: 32, monto: '$1.8M' },
-    { etapa: 'Cotización', cantidad: 18, monto: '$1.1M' },
-    { etapa: 'Negociación', cantidad: 8, monto: '$1.0M' },
-  ]
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const { count: clientesCount } = await supabase
+          .from('clientes')
+          .select('*', { count: 'exact', head: true })
 
-  const vendedores: Vendedor[] = [
-    { puesto: 1, nombre: 'Carlos López', ventas: '$285K', meta: '$300K', avance: '95%' },
-    { puesto: 2, nombre: 'María García', ventas: '$195K', meta: '$250K', avance: '78%' },
-    { puesto: 3, nombre: 'Jorge Ruiz', ventas: '$165K', meta: '$250K', avance: '66%' },
-  ]
+        const { count: viagesCount } = await supabase
+          .from('viajes')
+          .select('*', { count: 'exact', head: true })
+
+        setKpis([
+          { titulo: 'Pipeline Total', valor: clientesCount?.toString() || '0', color: 'primary' as const },
+          { titulo: 'Leads Nuevos Semana', valor: (viagesCount || 0).toString(), color: 'green' as const },
+          { titulo: 'Conversión', valor: '0%', color: 'blue' as const },
+          { titulo: 'Cotizaciones Sin Resp.', valor: '0', color: 'orange' as const },
+        ])
+
+        setFunnelData([])
+        setVendedores([])
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err)
+        setKpis([
+          { titulo: 'Pipeline Total', valor: '0', color: 'primary' as const },
+          { titulo: 'Leads Nuevos Semana', valor: '0', color: 'green' as const },
+          { titulo: 'Conversión', valor: '0%', color: 'blue' as const },
+          { titulo: 'Cotizaciones Sin Resp.', valor: '0', color: 'orange' as const },
+        ])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+  }, [])
 
   const funnelColumns: Column<FunnelStage>[] = [
     { key: 'etapa', label: 'Etapa', width: '25%' },
@@ -68,7 +96,6 @@ export default function DashboardVentas() {
       subtitulo="Gerente Comercial — Semana en curso"
     >
       <div className="space-y-6">
-        {/* KPIs */}
         <div className="grid grid-cols-4 gap-4">
           {kpis.map((kpi) => (
             <KPICard
@@ -80,7 +107,6 @@ export default function DashboardVentas() {
           ))}
         </div>
 
-        {/* Funnel de Ventas */}
         <Card>
           <div className="mb-4 flex items-center gap-2">
             <BarChart3
@@ -97,10 +123,20 @@ export default function DashboardVentas() {
               Funnel de Ventas
             </h2>
           </div>
-          <DataTable columns={funnelColumns} data={funnelData} />
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '48px 16px', color: tokens.colors.textMuted }}>
+              <p>Cargando...</p>
+            </div>
+          ) : funnelData.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '48px 16px', color: tokens.colors.textMuted }}>
+              <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
+              <p style={{ fontSize: '14px', marginTop: '8px' }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
+            </div>
+          ) : (
+            <DataTable columns={funnelColumns} data={funnelData} />
+          )}
         </Card>
 
-        {/* Ranking de Vendedores */}
         <Card>
           <div className="mb-4 flex items-center gap-2">
             <TrendingUp
@@ -117,7 +153,18 @@ export default function DashboardVentas() {
               Top Vendedores
             </h2>
           </div>
-          <DataTable columns={vendedorColumns} data={vendedores} />
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '48px 16px', color: tokens.colors.textMuted }}>
+              <p>Cargando...</p>
+            </div>
+          ) : vendedores.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '48px 16px', color: tokens.colors.textMuted }}>
+              <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
+              <p style={{ fontSize: '14px', marginTop: '8px' }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
+            </div>
+          ) : (
+            <DataTable columns={vendedorColumns} data={vendedores} />
+          )}
         </Card>
       </div>
     </ModuleLayout>
