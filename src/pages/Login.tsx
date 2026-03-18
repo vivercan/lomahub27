@@ -55,6 +55,14 @@ const S = {
     background: L.bg,
     fontFamily: L.font,
   },
+  grain: {
+    position: 'fixed' as const,
+    top: 0, left: 0, right: 0, bottom: 0,
+    pointerEvents: 'none' as const,
+    zIndex: 1,
+    opacity: 0.035,
+    mixBlendMode: 'overlay' as const,
+  },
   amb1: {
     position: 'fixed' as const,
     width: '900px', height: '900px',
@@ -370,6 +378,12 @@ export default function Login() {
 
   return (
     <div style={S.page}>
+      <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+        <filter id="grain">
+          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+        </filter>
+      </svg>
+      <div style={{ ...S.grain, filter: 'url(#grain)' }} />
       <div style={S.amb1} />
       <div style={S.amb2} />
 
