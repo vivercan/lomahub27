@@ -78,8 +78,8 @@ const S = {
   left: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    justifyContent: 'flex-end' as const,
-    padding: '0 48px 80px 48px',
+    justifyContent: 'center' as const,
+    padding: '0 48px',
     position: 'relative' as const,
     zIndex: 2,
   },
@@ -218,7 +218,7 @@ const S = {
     fontSize: '20px', fontWeight: 400,
     fontStyle: 'italic' as const,
     letterSpacing: '3px',
-    color: 'rgba(180,180,180,0.4)',
+    color: 'rgba(180,180,180,0.55)',
     textAlign: 'right' as const,
     paddingRight: '4px',
   },
@@ -374,6 +374,7 @@ export default function Login() {
         <div style={S.card}>
           <div style={S.cardLine} />
           <h1 style={S.title}>Bienvenido</h1>
+          <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.35)', margin: '-16px 0 24px', fontWeight: 400, letterSpacing: '0.3px' }}>Accede a tu plataforma</p>
 
           {error && (
             <div style={S.errorBox}>
