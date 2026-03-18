@@ -79,13 +79,13 @@ const S = {
     display: 'flex' as const,
     flexDirection: 'column' as const,
     justifyContent: 'center' as const,
-    padding: '35px 48px 0 48px',
+    padding: '50px 48px 0 48px',
     position: 'relative' as const,
     zIndex: 2,
   },
   divider: {
     position: 'absolute' as const,
-    top: '15%', bottom: '15%', right: '-11px',
+    top: '15%', bottom: '15%', right: '-17px',
     width: '1px',
     background: `linear-gradient(to bottom, transparent, ${L.w08}, transparent)`,
   },
@@ -138,9 +138,9 @@ const S = {
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
     gap: '12px',
-    padding: '16px 24px',
-    background: L.orange,
-    border: 'none',
+    padding: '11px 24px',
+    background: 'rgba(232,97,26,0.60)',
+    border: '1px solid rgba(255,255,255,0.10)',
     borderRadius: '12px',
     color: '#fff',
     fontFamily: L.font,
@@ -148,8 +148,10 @@ const S = {
     fontWeight: 600,
     cursor: 'pointer',
     transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
-    boxShadow: '0 4px 24px rgba(232,97,26,0.25)',
+    boxShadow: '0 4px 24px rgba(232,97,26,0.20), 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 1px 0 rgba(255,255,255,0.10) inset, 0 -1px 0 rgba(0,0,0,0.15) inset',
     letterSpacing: '0.3px',
+    backdropFilter: 'blur(20px) saturate(1.3)',
+    WebkitBackdropFilter: 'blur(20px) saturate(1.3)',
   },
   loadingBox: {
     display: 'flex' as const,
@@ -171,7 +173,7 @@ const S = {
     alignItems: 'flex-start' as const,
     justifyContent: 'center' as const,
     position: 'relative' as const,
-    padding: '155px 80px 60px 40px',
+    padding: '170px 80px 60px 40px',
     overflow: 'hidden' as const,
     zIndex: 2,
   },
@@ -392,10 +394,10 @@ export default function Login() {
           <button
             style={{
               ...S.customBtn,
-              background: hover ? L.orangeHover : L.orange,
+              background: hover ? 'rgba(255,122,46,0.65)' : 'rgba(232,97,26,0.60)',
               boxShadow: hover
-                ? '0 6px 32px rgba(232,97,26,0.35), 0 0 60px rgba(232,97,26,0.1)'
-                : '0 4px 24px rgba(232,97,26,0.25)',
+                ? '0 6px 32px rgba(232,97,26,0.30), 0 0 60px rgba(232,97,26,0.08), 0 0 0 0.5px rgba(255,255,255,0.08) inset, 0 1px 0 rgba(255,255,255,0.12) inset, 0 -1px 0 rgba(0,0,0,0.15) inset'
+                : '0 4px 24px rgba(232,97,26,0.20), 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 1px 0 rgba(255,255,255,0.10) inset, 0 -1px 0 rgba(0,0,0,0.15) inset',
               transform: hover ? 'translateY(-1px)' : 'none',
             }}
             onMouseEnter={() => setHover(true)}
