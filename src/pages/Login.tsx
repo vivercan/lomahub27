@@ -19,31 +19,31 @@ declare global {
   }
 }
 
-/* ── Design tokens (login-specific, black + orange brand) ── */
-const login = {
+const L = {
   bg: '#08080C',
   orange: '#E8611A',
-  orangeGlow: 'rgba(232, 97, 26, 0.12)',
-  white90: 'rgba(255,255,255,0.90)',
-  white50: 'rgba(255,255,255,0.50)',
-  white20: 'rgba(255,255,255,0.20)',
-  white08: 'rgba(255,255,255,0.08)',
-  white04: 'rgba(255,255,255,0.04)',
-  white02: 'rgba(255,255,255,0.02)',
+  orangeHover: '#FF7A2E',
+  orangeGlow: 'rgba(232, 97, 26, 0.15)',
+  w90: 'rgba(255,255,255,0.90)',
+  w50: 'rgba(255,255,255,0.50)',
+  w20: 'rgba(255,255,255,0.20)',
+  w10: 'rgba(255,255,255,0.10)',
+  w08: 'rgba(255,255,255,0.08)',
+  w04: 'rgba(255,255,255,0.04)',
+  w02: 'rgba(255,255,255,0.02)',
   red: '#EF4444',
   green: '#2ECC71',
   font: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
 } as const
 
-const styles = {
-  /* ── Page ── */
+const S = {
   page: {
     display: 'grid' as const,
-    gridTemplateColumns: '400px 1fr',
+    gridTemplateColumns: '420px 1fr',
     width: '100%',
     minHeight: '100vh',
-    background: login.bg,
-    fontFamily: login.font,
+    background: L.bg,
+    fontFamily: L.font,
     position: 'relative' as const,
     overflow: 'hidden' as const,
   },
@@ -52,58 +52,46 @@ const styles = {
     justifyContent: 'center' as const,
     alignItems: 'center' as const,
     height: '100vh',
-    background: login.bg,
-    fontFamily: login.font,
+    background: L.bg,
+    fontFamily: L.font,
   },
-
-  /* ── Ambient orbs ── */
-  ambient1: {
+  amb1: {
     position: 'fixed' as const,
-    width: '900px',
-    height: '900px',
+    width: '900px', height: '900px',
     borderRadius: '50%',
     filter: 'blur(150px)',
-    background: 'radial-gradient(circle, rgba(232, 97, 26, 0.07), transparent 65%)',
-    top: '-30%',
-    right: '-15%',
+    background: 'radial-gradient(circle, rgba(232,97,26,0.07), transparent 65%)',
+    top: '-30%', right: '-15%',
     pointerEvents: 'none' as const,
     zIndex: 0,
   },
-  ambient2: {
+  amb2: {
     position: 'fixed' as const,
-    width: '400px',
-    height: '400px',
+    width: '400px', height: '400px',
     borderRadius: '50%',
     filter: 'blur(150px)',
     background: 'radial-gradient(circle, rgba(255,255,255,0.015), transparent 70%)',
-    bottom: '-10%',
-    left: '30%',
+    bottom: '-10%', left: '30%',
     pointerEvents: 'none' as const,
     zIndex: 0,
   },
-
-  /* ── Left panel ── */
-  leftPanel: {
+  left: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
     justifyContent: 'flex-end' as const,
-    padding: '0 48px 100px 48px',
+    padding: '0 48px 80px 48px',
     position: 'relative' as const,
     zIndex: 2,
   },
-  leftDivider: {
+  divider: {
     position: 'absolute' as const,
-    top: '15%',
-    bottom: '15%',
-    right: 0,
+    top: '15%', bottom: '15%', right: 0,
     width: '1px',
-    background: `linear-gradient(to bottom, transparent, ${login.white08}, transparent)`,
+    background: `linear-gradient(to bottom, transparent, ${L.w08}, transparent)`,
   },
-
-  /* ── Login card ── */
   card: {
-    background: login.white02,
-    border: `1px solid ${login.white08}`,
+    background: L.w02,
+    border: `1px solid ${L.w08}`,
     borderRadius: '16px',
     padding: '40px 36px',
     backdropFilter: 'blur(30px)',
@@ -112,61 +100,55 @@ const styles = {
     overflow: 'hidden' as const,
     animation: 'loginSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both',
   },
-  cardTopLine: {
+  cardLine: {
     position: 'absolute' as const,
-    top: 0,
-    left: '15%',
-    right: '15%',
+    top: 0, left: '15%', right: '15%',
     height: '1px',
-    background: `linear-gradient(90deg, transparent, ${login.orangeGlow.replace('0.12', '0.25')}, transparent)`,
+    background: `linear-gradient(90deg, transparent, rgba(232,97,26,0.25), transparent)`,
   },
   title: {
     fontSize: '28px',
     fontWeight: 700,
-    color: login.white90,
-    marginBottom: '6px',
+    color: L.w90,
+    marginBottom: '32px',
   },
-  subtitle: {
-    fontSize: '13px',
-    color: login.white20,
-    marginBottom: '36px',
-    lineHeight: 1.6,
-  },
-
-  /* ── Google button container ── */
-  googleContainer: {
-    width: '100%',
-    display: 'flex' as const,
-    justifyContent: 'center' as const,
-  },
-  googleBtn: {
-    width: '100%',
-  },
-
-  /* ── Error ── */
   errorBox: {
     display: 'flex' as const,
     alignItems: 'center' as const,
     gap: '10px',
     padding: '12px',
     borderRadius: '10px',
-    border: `1px solid rgba(239, 68, 68, 0.25)`,
-    background: 'rgba(239, 68, 68, 0.08)',
-    marginBottom: '24px',
+    border: '1px solid rgba(239,68,68,0.25)',
+    background: 'rgba(239,68,68,0.08)',
+    marginBottom: '20px',
   },
-  errorIcon: {
-    width: '18px',
-    height: '18px',
-    flexShrink: 0,
-    color: login.red,
+  errorIcon: { width: '18px', height: '18px', flexShrink: 0, color: L.red },
+  errorText: { fontSize: '13px', color: L.red, margin: 0 },
+  googleWrap: {
+    width: '100%',
+    display: 'flex' as const,
+    justifyContent: 'center' as const,
   },
-  errorText: {
-    fontSize: '13px',
-    color: login.red,
-    margin: 0,
+  googleDiv: { width: '100%' },
+  customBtn: {
+    width: '100%',
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+    gap: '12px',
+    padding: '16px 24px',
+    background: L.orange,
+    border: 'none',
+    borderRadius: '12px',
+    color: '#fff',
+    fontFamily: L.font,
+    fontSize: '15px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+    boxShadow: '0 4px 24px rgba(232,97,26,0.25)',
+    letterSpacing: '0.3px',
   },
-
-  /* ── Loading indicator ── */
   loadingBox: {
     display: 'flex' as const,
     alignItems: 'center' as const,
@@ -175,28 +157,14 @@ const styles = {
     marginTop: '12px',
   },
   spinner: {
-    width: '14px',
-    height: '14px',
-    border: `2px solid ${login.white20}`,
+    width: '14px', height: '14px',
+    border: `2px solid ${L.w20}`,
     borderTopColor: 'transparent',
     borderRadius: '50%',
     animation: 'loginSpin 1s linear infinite',
   },
-  loadingText: {
-    fontSize: '12px',
-    color: login.white20,
-  },
-
-  version: {
-    marginTop: '24px',
-    fontSize: '10px',
-    color: 'rgba(255,255,255,0.10)',
-    letterSpacing: '1px',
-    textAlign: 'center' as const,
-  },
-
-  /* ── Right panel ── */
-  rightPanel: {
+  loadingText: { fontSize: '12px', color: L.w20 },
+  right: {
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
@@ -205,17 +173,14 @@ const styles = {
     overflow: 'hidden' as const,
     zIndex: 2,
   },
-  brandContainer: {
+  brand: {
     width: '100%',
-    maxWidth: '700px',
-    animation: 'loginFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both',
+    maxWidth: '800px',
+    animation: 'loginFadeIn 0.6s cubic-bezier(0.16,1,0.3,1) both',
   },
-
-  /* ── Logo lines ── */
   lineTop: {
-    width: '100%',
-    height: '2px',
-    marginBottom: '20px',
+    width: '100%', height: '2px',
+    marginBottom: '16px',
     background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08) 10%, rgba(255,255,255,0.25) 40%, rgba(232,97,26,0.5) 75%, rgba(232,97,26,0.2) 90%, transparent)',
     borderRadius: '2px',
   },
@@ -228,247 +193,250 @@ const styles = {
     userSelect: 'none' as const,
   },
   logoLoma: {
-    fontSize: '110px',
-    fontWeight: 800,
+    fontSize: '140px', fontWeight: 800,
     fontStyle: 'italic' as const,
-    color: login.white90,
-    letterSpacing: '-5px',
+    color: L.w90, letterSpacing: '-6px',
   },
   logoHub: {
-    fontSize: '110px',
-    fontWeight: 800,
+    fontSize: '140px', fontWeight: 800,
     fontStyle: 'italic' as const,
-    color: login.white90,
-    letterSpacing: '-5px',
+    color: L.w90, letterSpacing: '-6px',
   },
   logo27: {
-    fontSize: '110px',
-    fontWeight: 800,
+    fontSize: '140px', fontWeight: 800,
     fontStyle: 'italic' as const,
-    color: login.orange,
-    letterSpacing: '-4px',
-    textShadow: '0 0 80px rgba(232, 97, 26, 0.2)',
+    color: L.orange, letterSpacing: '-5px',
+    textShadow: '0 0 80px rgba(232,97,26,0.25)',
   },
-  lineBottom: {
-    width: '100%',
-    height: '3px',
-    margin: '10px 0 8px',
+  lineBot: {
+    width: '100%', height: '3px',
+    margin: '8px 0 8px',
     background: 'linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.25) 25%, rgba(255,255,255,0.45) 45%, rgba(232,97,26,0.6) 70%, rgba(232,97,26,0.25) 88%, transparent)',
     borderRadius: '2px',
   },
   tagline: {
-    fontSize: '20px',
-    fontWeight: 400,
+    fontSize: '20px', fontWeight: 400,
     fontStyle: 'italic' as const,
     letterSpacing: '3px',
-    color: 'rgba(180, 180, 180, 0.4)',
+    color: 'rgba(180,180,180,0.4)',
     textAlign: 'right' as const,
     paddingRight: '4px',
   },
-
-  /* ── Status bar ── */
   statusBar: {
     position: 'fixed' as const,
-    bottom: 0,
-    left: 0,
-    right: 0,
+    bottom: 0, left: 0, right: 0,
     height: '32px',
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'space-between' as const,
     padding: '0 32px',
-    background: 'rgba(0, 0, 0, 0.6)',
-    borderTop: `1px solid ${login.white04}`,
+    background: 'rgba(0,0,0,0.6)',
+    borderTop: `1px solid ${L.w04}`,
     zIndex: 10,
   },
-  statusText: {
+  statusL: {
     fontSize: '10px',
     color: 'rgba(255,255,255,0.15)',
     letterSpacing: '0.5px',
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    gap: '6px',
   },
-  statusDot: {
+  statusR: {
+    fontSize: '10px',
+    color: 'rgba(255,255,255,0.15)',
+    letterSpacing: '0.5px',
+    textAlign: 'right' as const,
+  },
+  dot: {
     display: 'inline-block',
-    width: '5px',
-    height: '5px',
+    width: '5px', height: '5px',
     borderRadius: '50%',
-    background: login.green,
-    boxShadow: `0 0 6px rgba(46, 204, 113, 0.4)`,
-    marginRight: '6px',
+    background: L.green,
+    boxShadow: '0 0 6px rgba(46,204,113,0.4)',
   },
 }
 
-/* ── CSS Keyframes (injected once) ── */
-const keyframesId = 'login-keyframes'
-function injectKeyframes() {
-  if (typeof document !== 'undefined' && !document.getElementById(keyframesId)) {
-    const style = document.createElement('style')
-    style.id = keyframesId
-    style.textContent = `
-      @keyframes loginFadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      @keyframes loginSlideUp {
-        from { opacity: 0; transform: translateY(24px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      @keyframes loginSpin {
-        to { transform: rotate(360deg); }
-      }
+const kfId = 'login-kf'
+function injectKF() {
+  if (typeof document !== 'undefined' && !document.getElementById(kfId)) {
+    const el = document.createElement('style')
+    el.id = kfId
+    el.textContent = `
+      @keyframes loginFadeIn { from{opacity:0} to{opacity:1} }
+      @keyframes loginSlideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+      @keyframes loginSpin { to{transform:rotate(360deg)} }
     `
-    document.head.appendChild(style)
+    document.head.appendChild(el)
   }
 }
 
 export default function Login() {
   const [error, setError] = useState('')
   const [googleLoading, setGoogleLoading] = useState(false)
+  const [hover, setHover] = useState(false)
   const { user, loading, loginWithGoogleIdToken, getRutaInicial } = useAuthContext()
   const navigate = useNavigate()
   const googleBtnRef = useRef<HTMLDivElement>(null)
+  const hiddenGoogleRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => { injectKeyframes() }, [])
+  useEffect(() => { injectKF() }, [])
 
   useEffect(() => {
     if (!loading && user) {
-      const ruta = getRutaInicial()
-      navigate(ruta, { replace: true })
+      navigate(getRutaInicial(), { replace: true })
     }
   }, [loading, user])
 
   useEffect(() => {
     const loadGSI = () => {
-      const existingScript = document.getElementById('gsi-script')
-      if (existingScript && !window.google?.accounts?.id) {
-        existingScript.remove()
-      }
+      const existing = document.getElementById('gsi-script')
+      if (existing && !window.google?.accounts?.id) existing.remove()
       if (!document.getElementById('gsi-script')) {
-        const script = document.createElement('script')
-        script.id = 'gsi-script'
-        script.src = 'https://accounts.google.com/gsi/client'
-        script.async = true
-        script.onload = () => {
-          setTimeout(initializeGSI, 100)
-        }
-        document.head.appendChild(script)
+        const s = document.createElement('script')
+        s.id = 'gsi-script'
+        s.src = 'https://accounts.google.com/gsi/client'
+        s.async = true
+        s.onload = () => setTimeout(initGSI, 100)
+        document.head.appendChild(s)
       } else if (window.google?.accounts?.id) {
-        initializeGSI()
+        initGSI()
       }
     }
     loadGSI()
   }, [])
 
-  const initializeGSI = () => {
-    if (!window.google?.accounts?.id) {
-      console.error('Google Identity Services not available')
-      return
-    }
+  const initGSI = () => {
+    if (!window.google?.accounts?.id) return
     try {
       window.google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleCredential,
+        callback: handleCredential,
         auto_select: false,
       })
-      if (googleBtnRef.current) {
-        const width = googleBtnRef.current.offsetWidth
-        if (width > 0) {
-          window.google.accounts.id.renderButton(googleBtnRef.current, {
-            type: 'standard',
-            theme: 'filled_black',
-            size: 'large',
-            text: 'signin_with',
-            shape: 'rectangular',
-            width: width,
-            locale: 'es',
-          })
-        } else {
-          setTimeout(initializeGSI, 100)
-        }
+      if (hiddenGoogleRef.current) {
+        window.google.accounts.id.renderButton(hiddenGoogleRef.current, {
+          type: 'standard',
+          theme: 'filled_black',
+          size: 'large',
+          text: 'signin_with',
+          shape: 'rectangular',
+          width: 300,
+          locale: 'es',
+        })
       }
-    } catch (err) {
-      console.error('Error initializing Google Sign-In:', err)
+    } catch (e) {
+      console.error('GSI init error:', e)
     }
   }
 
-  const handleGoogleCredential = async (response: { credential: string }) => {
+  const handleCredential = async (response: { credential: string }) => {
     setError('')
     setGoogleLoading(true)
     try {
       await loginWithGoogleIdToken(response.credential)
     } catch (err: any) {
-      setError(err.message || 'Error al iniciar sesión con Google')
+      setError(err.message || 'Error al iniciar sesiÃ³n con Google')
     } finally {
       setGoogleLoading(false)
     }
   }
 
+  const triggerGoogleSignIn = () => {
+    if (hiddenGoogleRef.current) {
+      const btn = hiddenGoogleRef.current.querySelector('div[role="button"]') as HTMLElement
+      if (btn) {
+        btn.click()
+        return
+      }
+    }
+    if (window.google?.accounts?.id) {
+      window.google.accounts.id.prompt()
+    }
+  }
+
   if (loading) {
     return (
-      <div style={styles.pageLoading}>
-        <p style={{ color: login.white20 }}>Cargando...</p>
+      <div style={S.pageLoading}>
+        <p style={{ color: L.w20 }}>Cargando...</p>
       </div>
     )
   }
 
   return (
-    <div style={styles.page}>
-      {/* Ambient light */}
-      <div style={styles.ambient1} />
-      <div style={styles.ambient2} />
+    <div style={S.page}>
+      <div style={S.amb1} />
+      <div style={S.amb2} />
 
-      {/* Left: Login panel — pushed to bottom */}
-      <div style={styles.leftPanel}>
-        <div style={styles.leftDivider} />
-        <div style={styles.card}>
-          <div style={styles.cardTopLine} />
-          <h1 style={styles.title}>Bienvenido</h1>
-          <p style={styles.subtitle}>
-            Inicia sesión con tu cuenta de Google para acceder al centro de operaciones.
-          </p>
+      <div style={S.left}>
+        <div style={S.divider} />
+        <div style={S.card}>
+          <div style={S.cardLine} />
+          <h1 style={S.title}>Bienvenido</h1>
 
           {error && (
-            <div style={styles.errorBox}>
-              <AlertCircle style={styles.errorIcon} />
-              <p style={styles.errorText}>{error}</p>
+            <div style={S.errorBox}>
+              <AlertCircle style={S.errorIcon} />
+              <p style={S.errorText}>{error}</p>
             </div>
           )}
 
-          <div style={styles.googleContainer}>
-            <div ref={googleBtnRef} style={styles.googleBtn} />
-          </div>
+          {/* Hidden Google button for auth flow */}
+          <div ref={hiddenGoogleRef} style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', height: 0, overflow: 'hidden' }} />
+
+          {/* Custom orange button */}
+          <button
+            style={{
+              ...S.customBtn,
+              background: hover ? L.orangeHover : L.orange,
+              boxShadow: hover
+                ? '0 6px 32px rgba(232,97,26,0.35), 0 0 60px rgba(232,97,26,0.1)'
+                : '0 4px 24px rgba(232,97,26,0.25)',
+              transform: hover ? 'translateY(-1px)' : 'none',
+            }}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            onClick={triggerGoogleSignIn}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24">
+              <path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" opacity="0.9"/>
+              <path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" opacity="0.7"/>
+              <path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" opacity="0.5"/>
+              <path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" opacity="0.8"/>
+            </svg>
+            Iniciar con Google
+          </button>
 
           {googleLoading && (
-            <div style={styles.loadingBox}>
-              <div style={styles.spinner} />
-              <span style={styles.loadingText}>Autenticando…</span>
+            <div style={S.loadingBox}>
+              <div style={S.spinner} />
+              <span style={S.loadingText}>Autenticandoâ¦</span>
             </div>
           )}
-
-          <p style={styles.version}>v2.0 · Grupo Loma 2026</p>
         </div>
       </div>
 
-      {/* Right: Logo GRANDE */}
-      <div style={styles.rightPanel}>
-        <div style={styles.brandContainer}>
-          <div style={styles.lineTop} />
-          <div style={styles.logoRow}>
-            <span style={styles.logoLoma}>Loma</span>
-            <span style={styles.logoHub}>HUB</span>
-            <span style={styles.logo27}>27</span>
+      <div style={S.right}>
+        <div style={S.brand}>
+          <div style={S.lineTop} />
+          <div style={S.logoRow}>
+            <span style={S.logoLoma}>Loma</span>
+            <span style={S.logoHub}>HUB</span>
+            <span style={S.logo27}>27</span>
           </div>
-          <div style={styles.lineBottom} />
-          <div style={styles.tagline}>Future Experience</div>
+          <div style={S.lineBot} />
+          <div style={S.tagline}>Future Experience</div>
         </div>
       </div>
 
-      {/* Status bar */}
-      <div style={styles.statusBar}>
-        <span style={styles.statusText}>
-          <span style={styles.statusDot} />
+      <div style={S.statusBar}>
+        <span style={S.statusL}>
+          <span style={S.dot} />
           Sistema operativo
         </span>
-        <span style={styles.statusText}>Operación Inteligente</span>
+        <span style={S.statusR}>
+          Grupo Loma 2026 Â· hola@trob.com.mx Â· OperaciÃ³n inteligente... Resultados reales
+        </span>
       </div>
     </div>
   )
