@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink} from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Users, TrendingUp, FileText, Truck, Map, MessageSquare,
   BarChart3, DollarSign, Settings, LogOut, ChevronLeft, ChevronRight,
@@ -58,6 +58,7 @@ const navItems: NavItem[] = [
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const { user, logout } = useAuthContext()
+  const navigate = useNavigate()
 
   if (!user) return null
 
@@ -137,4 +138,4 @@ export function Sidebar() {
       </div>
     </aside>
   )
-}
+  }
