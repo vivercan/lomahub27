@@ -39,7 +39,7 @@ const L = {
 const S = {
   page: {
     display: 'grid' as const,
-    gridTemplateColumns: '500px 1fr',
+    gridTemplateColumns: '560px 1fr',
     width: '100%',
     minHeight: '100vh',
     background: L.bg,
@@ -85,32 +85,34 @@ const S = {
   },
   divider: {
     position: 'absolute' as const,
-    top: '15%', bottom: '15%', right: 0,
+    top: '15%', bottom: '15%', right: '-20px',
     width: '1px',
     background: `linear-gradient(to bottom, transparent, ${L.w08}, transparent)`,
   },
   card: {
-    background: L.w02,
-    border: `1px solid ${L.w08}`,
-    borderRadius: '16px',
-    padding: '28px 40px',
-    backdropFilter: 'blur(30px)',
-    WebkitBackdropFilter: 'blur(30px)',
+    background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.04) 100%)',
+    border: '1px solid rgba(255,255,255,0.12)',
+    borderRadius: '20px',
+    padding: '22px 52px',
+    backdropFilter: 'blur(40px) saturate(1.4)',
+    WebkitBackdropFilter: 'blur(40px) saturate(1.4)',
     position: 'relative' as const,
     overflow: 'hidden' as const,
     animation: 'loginSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.08) inset, 0 1px 0 rgba(255,255,255,0.1) inset, 0 -1px 0 rgba(0,0,0,0.2) inset',
+    transform: 'perspective(1000px) rotateX(0.5deg)',
   },
   cardLine: {
     position: 'absolute' as const,
-    top: 0, left: '15%', right: '15%',
+    top: 0, left: '10%', right: '10%',
     height: '1px',
-    background: `linear-gradient(90deg, transparent, rgba(232,97,26,0.25), transparent)`,
+    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15) 30%, rgba(232,97,26,0.3) 50%, rgba(255,255,255,0.15) 70%, transparent)',
   },
   title: {
     fontSize: '28px',
     fontWeight: 700,
     color: L.w90,
-    marginBottom: '24px',
+    marginBottom: '16px',
   },
   errorBox: {
     display: 'flex' as const,
@@ -374,7 +376,7 @@ export default function Login() {
         <div style={S.card}>
           <div style={S.cardLine} />
           <h1 style={S.title}>Bienvenido</h1>
-          <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.35)', margin: '-16px 0 24px', fontWeight: 400, letterSpacing: '0.3px' }}>Accede a tu plataforma</p>
+          <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.35)', margin: '-8px 0 18px', fontWeight: 400, letterSpacing: '0.3px' }}>Accede a tu plataforma</p>
 
           {error && (
             <div style={S.errorBox}>
@@ -439,4 +441,3 @@ export default function Login() {
     </div>
   )
 }
-
