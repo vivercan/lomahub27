@@ -39,7 +39,7 @@ const L = {
 const S = {
   page: {
     display: 'grid' as const,
-    gridTemplateColumns: '420px 1fr',
+    gridTemplateColumns: '500px 1fr',
     width: '100%',
     minHeight: '100vh',
     background: L.bg,
@@ -93,7 +93,7 @@ const S = {
     background: L.w02,
     border: `1px solid ${L.w08}`,
     borderRadius: '16px',
-    padding: '40px 36px',
+    padding: '28px 40px',
     backdropFilter: 'blur(30px)',
     WebkitBackdropFilter: 'blur(30px)',
     position: 'relative' as const,
@@ -110,7 +110,7 @@ const S = {
     fontSize: '28px',
     fontWeight: 700,
     color: L.w90,
-    marginBottom: '32px',
+    marginBottom: '24px',
   },
   errorBox: {
     display: 'flex' as const,
