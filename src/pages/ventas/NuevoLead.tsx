@@ -33,6 +33,7 @@ export default function NuevoLead() {
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
     setError(null)
+
     if (field === 'empresa') {
       setShowDuplicateWarning(value.toLowerCase().includes('transportes'))
     }
@@ -59,7 +60,7 @@ export default function NuevoLead() {
         notas: formData.notas.trim(),
         estado: 'Nuevo',
         probabilidad: 10,
-        ejecutivo_nombre: user?.nombre || user?.email || 'Sin asignar',
+        ejecutivo_nombre: user?.email || 'Sin asignar',
       }])
       if (insertError) throw insertError
       setSuccess(true)
@@ -91,6 +92,7 @@ export default function NuevoLead() {
   return (
     <ModuleLayout titulo="Captura de Lead" subtitulo="Registrar nuevo prospecto">
       <div className="space-y-6 max-w-3xl">
+        {/* Form Card */}
         <Card>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -111,7 +113,7 @@ export default function NuevoLead() {
 
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="Tel\u00e9fono"
+                label="TelÃ©fono"
                 placeholder="+52 1234567890"
                 value={formData.telefono}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('telefono', e.target.value)}
@@ -133,7 +135,7 @@ export default function NuevoLead() {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('ciudad', e.target.value)}
               />
               <Input
-                label="Ruta de Inter\u00e9s"
+                label="Ruta de InterÃ©s"
                 placeholder="Ej: CDMX - Monterrey"
                 value={formData.rutaInteres}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('rutaInteres', e.target.value)}
@@ -182,6 +184,7 @@ export default function NuevoLead() {
               />
             </div>
 
+            {/* Duplicate Warning */}
             {showDuplicateWarning && (
               <div
                 className="flex items-start gap-3 p-3 rounded-lg border"
@@ -244,4 +247,4 @@ export default function NuevoLead() {
       </div>
     </ModuleLayout>
   )
-}
+      }
