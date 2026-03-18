@@ -21,8 +21,8 @@ declare global {
 
 const L = {
   bg: '#08080C',
-  orange: '#E8611A',
-  orangeHover: '#FF7A2E',
+  orange: 'rgba(232,97,26,0.80)',
+  orangeHover: 'rgba(255,122,46,0.85)',
   orangeGlow: 'rgba(232, 97, 26, 0.15)',
   w90: 'rgba(255,255,255,0.90)',
   w50: 'rgba(255,255,255,0.50)',
@@ -205,7 +205,7 @@ const S = {
   logo27: {
     fontSize: '170px', fontWeight: 800,
     fontStyle: 'italic' as const,
-    color: L.orange, letterSpacing: '-6px',
+    color: '#E8611A', letterSpacing: '-6px',
     textShadow: '0 0 80px rgba(232,97,26,0.25)',
   },
   lineBot: {
@@ -228,7 +228,7 @@ const S = {
     height: '32px',
     display: 'flex' as const,
     alignItems: 'center' as const,
-    justifyContent: 'center' as const,
+    justifyContent: 'flex-end' as const,
     padding: '0 32px',
     background: 'rgba(0,0,0,0.6)',
     borderTop: `1px solid ${L.w04}`,
@@ -243,8 +243,8 @@ const S = {
     gap: '6px',
   },
   statusR: {
-    fontSize: '11px',
-    color: 'rgba(255,255,255,0.85)',
+    fontSize: '9px',
+    color: 'rgba(255,255,255,0.40)',
     letterSpacing: '0.3px',
     textAlign: 'right' as const,
     fontWeight: 400,
@@ -439,3 +439,4 @@ export default function Login() {
     </div>
   )
 }
+
