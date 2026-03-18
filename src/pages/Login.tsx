@@ -336,7 +336,7 @@ export default function Login() {
     try {
       await loginWithGoogleIdToken(response.credential)
     } catch (err: any) {
-      setError(err.message || 'Error al iniciar sesiÃ³n con Google')
+      setError(err.message || 'Error al iniciar sesi\u00f3n con Google')
     } finally {
       setGoogleLoading(false)
     }
@@ -410,7 +410,7 @@ export default function Login() {
           {googleLoading && (
             <div style={S.loadingBox}>
               <div style={S.spinner} />
-              <span style={S.loadingText}>Autenticandoâ¦</span>
+              <span style={S.loadingText}>Autenticando...</span>
             </div>
           )}
         </div>
@@ -435,7 +435,7 @@ export default function Login() {
           Sistema operativo
         </span>
         <span style={S.statusR}>
-          Grupo Loma 2026 Â· hola@trob.com.mx Â· OperaciÃ³n inteligente... Resultados reales
+          Grupo Loma 2026 {"\u00b7"} hola@trob.com.mx {"\u00b7"} Operaci{"\u00f3"}n inteligente... Resultados reales
         </span>
       </div>
     </div>
