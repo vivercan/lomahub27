@@ -79,7 +79,7 @@ const S = {
     display: 'flex' as const,
     flexDirection: 'column' as const,
     justifyContent: 'center' as const,
-    padding: '50px 48px 0 48px',
+    padding: '65px 48px 0 48px',
     position: 'relative' as const,
     zIndex: 2,
   },
@@ -139,7 +139,7 @@ const S = {
     justifyContent: 'center' as const,
     gap: '12px',
     padding: '11px 24px',
-    background: 'rgba(232,97,26,0.60)',
+    background: 'rgba(232,97,26,0.40)',
     border: '1px solid rgba(255,255,255,0.10)',
     borderRadius: '12px',
     color: '#fff',
@@ -173,7 +173,7 @@ const S = {
     alignItems: 'flex-start' as const,
     justifyContent: 'center' as const,
     position: 'relative' as const,
-    padding: '170px 80px 60px 40px',
+    padding: '170px 80px 60px 35px',
     overflow: 'hidden' as const,
     zIndex: 2,
   },
@@ -394,7 +394,7 @@ export default function Login() {
           <button
             style={{
               ...S.customBtn,
-              background: hover ? 'rgba(255,122,46,0.65)' : 'rgba(232,97,26,0.60)',
+              background: hover ? 'rgba(255,122,46,0.45)' : 'rgba(232,97,26,0.40)',
               boxShadow: hover
                 ? '0 6px 32px rgba(232,97,26,0.30), 0 0 60px rgba(232,97,26,0.08), 0 0 0 0.5px rgba(255,255,255,0.08) inset, 0 1px 0 rgba(255,255,255,0.12) inset, 0 -1px 0 rgba(0,0,0,0.15) inset'
                 : '0 4px 24px rgba(232,97,26,0.20), 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 1px 0 rgba(255,255,255,0.10) inset, 0 -1px 0 rgba(0,0,0,0.15) inset',
