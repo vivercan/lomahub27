@@ -31,7 +31,19 @@ export default function TorreControl(): ReactElement {
         setLoading(true);
         const { data, error } = await supabase
           .from('viajes')
-          .select('*');
+          .select(`
+            id,
+            origen,
+            destino,
+            estado,
+            eta_calculado,
+            cita_descarga,
+            notas,
+            cliente:clientes(nombre),
+            tracto:tractos(numero_economico)
+          `)
+          .not('estado', 'eq', 'cancelado')
+          .order('cita_descarga', { ascending: true });
 
         if (error) {
           console.error('Error fetching viajes:', error);
@@ -39,16 +51,22 @@ export default function TorreControl(): ReactElement {
           return;
         }
 
-        const formattedViajes = (data || []).map((viaje: any) => ({
-          folio: viaje.folio || '',
-          cliente: viaje.cliente || '',
-          ruta: viaje.ruta || '',
-          tracto: viaje.tracto || '',
-          eta: viaje.eta || '',
-          cita: viaje.cita || '',
-          diferencia: viaje.diferencia || 0,
-          estado: viaje.estado || 'programado' as SemaforoEstado,
-        }));
+        const formattedViajes = (data || []).map((viaje: any) => {
+          const eta = viaje.eta_calculado ? new Date(viaje.eta_calculado) : null;
+          const cita = viaje.cita_descarga ? new Date(viaje.cita_descarga) : null;
+          const diffMin = eta && cita ? Math.round((eta.getTime() - cita.getTime()) / 60000) : 0;
+
+          return {
+            folio: viaje.id?.substring(0, 8)?.toUpperCase() || '—',
+            cliente: viaje.cliente?.nombre || '—',
+            ruta: `${viaje.origen || '?'} → ${viaje.destino || '?'}`,
+            tracto: viaje.tracto?.numero_economico || '—',
+            eta: eta ? eta.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
+            cita: cita ? cita.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
+            diferencia: diffMin,
+            estado: (viaje.estado || 'programado') as SemaforoEstado,
+          };
+        });
 
         setViajes(formattedViajes);
       } catch (err) {
@@ -102,8 +120,8 @@ export default function TorreControl(): ReactElement {
           marginBottom: tokens.spacing.lg,
         }}
       >
-        <KPICard titulo="En Tránsito" valor={viajes.filter(v => v.estado === ('en_transito' as string)).length.toString()} color="green" />
-        <KPICard titulo="En Riesgo" valor={viajes.filter(v => v.estado === ('en_riesgo' as string)).length.toString()} color="yellow" />
+        <KPICard titulo="En Tránsito" valor={viajes.filter(v => v.estado === 'en_transito').length.toString()} color="green" />
+        <KPICard titulo="En Riesgo" valor={viajes.filter(v => v.estado === 'en_riesgo').length.toString()} color="yellow" />
         <KPICard titulo="Retrasados" valor={viajes.filter(v => v.estado === 'retrasado').length.toString()} color="red" />
         <KPICard titulo="Programados" valor={viajes.filter(v => v.estado === 'programado').length.toString()} color="primary" />
       </div>
