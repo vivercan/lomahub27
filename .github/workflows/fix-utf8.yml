@@ -1,0 +1,74 @@
+name: Fix UTF-8 Double Encoding
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-utf8:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fix double-encoded UTF-8
+        run: |
+          python3 << 'PYEOF'
+          import os, glob
+
+          def fix_double_encoded_utf8(text):
+              prev = text
+              for _ in range(3):
+                  try:
+                      fixed = prev.encode('latin-1').decode('utf-8')
+                      if fixed == prev:
+                          break
+                      prev = fixed
+                  except (UnicodeDecodeError, UnicodeEncodeError):
+                      result = []
+                      i = 0
+                      while i < len(prev):
+                          found = False
+                          for seqlen in [4, 3, 2]:
+                              if i + seqlen <= len(prev):
+                                  chunk = prev[i:i+seqlen]
+                                  try:
+                                      decoded = chunk.encode('latin-1').decode('utf-8')
+                                      if decoded != chunk:
+                                          result.append(decoded)
+                                          i += seqlen
+                                          found = True
+                                          break
+                                  except:
+                                      pass
+                          if not found:
+                              result.append(prev[i])
+                              i += 1
+                      fixed = ''.join(result)
+                      if fixed == prev:
+                          break
+                      prev = fixed
+              return prev
+
+          files = glob.glob('src/**/*.tsx', recursive=True) + glob.glob('src/**/*.ts', recursive=True)
+          fixed_count = 0
+          for fpath in files:
+              with open(fpath, 'r', encoding='utf-8') as f:
+                  c = f.read()
+              fixed = fix_double_encoded_utf8(c)
+              if fixed != c:
+                  with open(fpath, 'w', encoding='utf-8') as f:
+                      f.write(fixed)
+                  fixed_count += 1
+                  print(f'FIXED: {fpath}')
+          print(f'Total fixed: {fixed_count}')
+          PYEOF
+
+      - name: Commit fixes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --staged --quiet || git commit -m 'fix: correct UTF-8 double-encoding in all .tsx/.ts files'
+          git push
