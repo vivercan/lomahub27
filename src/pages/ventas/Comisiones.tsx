@@ -15,7 +15,7 @@ import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 import type { SemaforoEstado } from '../../lib/tokens'
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Types Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ─── Types ───────────────────────────────────────────
 interface EjecutivoComision {
   posicion: number
   ejecutivo_id: string
@@ -54,7 +54,7 @@ interface ComisionesResponse {
   mensaje?: string
 }
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Helpers Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ─── Helpers ─────────────────────────────────────────
 function formatCurrency(n: number): string {
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0 }).format(n)
 }
@@ -161,7 +161,7 @@ export default function Comisiones() {
 
   const promedio = data?.resumen?.comisionPromedio || 0
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Table columns Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // ─── Table columns ────────────────────────────────
   const columns: Column<EjecutivoComision>[] = [
     {
       key: 'posicion',
@@ -253,7 +253,7 @@ export default function Comisiones() {
     },
     {
       key: 'comision',
-      label: 'ComisiÃÂ³n',
+      label: 'Comisión',
       align: 'right',
       render: (row) => (
         <span className="text-sm font-bold" style={{ color: tokens.colors.green }}>
@@ -263,10 +263,10 @@ export default function Comisiones() {
     },
   ]
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ CSV Export Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // ─── CSV Export ────────────────────────────────────
   const handleExportCSV = () => {
     if (!filteredDetalle.length) return
-    const header = 'Pos,Ejecutivo,Empresa,Viajes,Clientes,Nuevos,Ingreso,Costo,Margen %,Base ComisiÃÂ³n,% Aplicado,ComisiÃÂ³n\n'
+    const header = 'Pos,Ejecutivo,Empresa,Viajes,Clientes,Nuevos,Ingreso,Costo,Margen %,Base Comisión,% Aplicado,Comisión\n'
     const rows = filteredDetalle.map(r =>
       `${r.posicion},"${r.nombre}",${r.empresa},${r.viajes},${r.clientes},${r.clientes_nuevos},${r.ingreso},${r.costo},${r.margen.toFixed(1)},${r.base_comision},${r.pct_aplicado},${r.comision}`
     ).join('\n')
@@ -280,7 +280,7 @@ export default function Comisiones() {
   return (
     <ModuleLayout
       titulo="Comisiones por Ejecutivo"
-      subtitulo="CÃÂ¡lculo automÃÂ¡tico de comisiones sobre viajes facturados"
+      subtitulo="Cálculo automático de comisiones sobre viajes facturados"
       acciones={
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={handleExportCSV} disabled={!filteredDetalle.length}>
@@ -357,7 +357,7 @@ export default function Comisiones() {
             icono={<Award size={18} />}
           />
           <KPICard
-            titulo="ComisiÃÂ³n Promedio"
+            titulo="Comisión Promedio"
             valor={formatCurrency(data.resumen.comisionPromedio)}
             color="yellow"
             icono={<TrendingUp size={18} />}
@@ -372,7 +372,7 @@ export default function Comisiones() {
             <div className="flex items-center gap-2">
               <Percent size={16} style={{ color: tokens.colors.textMuted }} />
               <span className="text-xs" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-                ComisiÃÂ³n estÃÂ¡ndar:
+                Comisión estándar:
               </span>
               <span className="text-sm font-semibold" style={{ color: tokens.colors.primary }}>
                 {data.config.comision_pct_default}%

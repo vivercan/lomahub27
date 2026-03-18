@@ -18,7 +18,7 @@ interface Cliente {
 }
 
 export default function DashboardCS(): ReactElement {
-  const [resumen, setResumen] = useState('Viajes en trÃ¡nsito: 0 | Retrasados: 0 | Cajas sin plan: 0 | Clientes pendientes de contacto: 0');
+  const [resumen, setResumen] = useState('Viajes en tránsito: 0 | Retrasados: 0 | Cajas sin plan: 0 | Clientes pendientes de contacto: 0');
   const [misClientes, setMisClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,11 +40,11 @@ export default function DashboardCS(): ReactElement {
         }));
 
         setMisClientes(formattedClientes);
-        setResumen(`Viajes en trÃ¡nsito: 0 | Retrasados: 0 | Cajas sin plan: 0 | Clientes pendientes de contacto: ${formattedClientes.length}`);
+        setResumen(`Viajes en tránsito: 0 | Retrasados: 0 | Cajas sin plan: 0 | Clientes pendientes de contacto: ${formattedClientes.length}`);
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
         setMisClientes([]);
-        setResumen('Viajes en trÃ¡nsito: 0 | Retrasados: 0 | Cajas sin plan: 0 | Clientes pendientes de contacto: 0');
+        setResumen('Viajes en tránsito: 0 | Retrasados: 0 | Cajas sin plan: 0 | Clientes pendientes de contacto: 0');
       } finally {
         setLoading(false);
       }
@@ -57,10 +57,10 @@ export default function DashboardCS(): ReactElement {
     { key: 'cliente', label: 'Cliente' },
     {
       key: 'estado',
-      label: 'Estado InteracciÃ³n',
+      label: 'Estado Interacción',
       render: (row: Cliente) => <Semaforo estado={row.estado} />,
     },
-    { key: 'ultimoContacto', label: 'Ãltimo Contacto' },
+    { key: 'ultimoContacto', label: 'Último Contacto' },
     { key: 'viajesActivos', label: 'Viajes Activos' },
   ];
 
@@ -108,7 +108,7 @@ export default function DashboardCS(): ReactElement {
           ) : misClientes.length === 0 ? (
             <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>
               <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
-              <p style={{ fontSize: '14px', marginTop: tokens.spacing.sm }}>Los datos se cargarÃ¡n cuando estÃ©n disponibles en el sistema</p>
+              <p style={{ fontSize: '14px', marginTop: tokens.spacing.sm }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
             </div>
           ) : (
             <DataTable columns={clientesColumns} data={misClientes} />

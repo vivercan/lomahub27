@@ -16,7 +16,7 @@ import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 import type { SemaforoEstado } from '../../lib/tokens'
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Types Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ─── Types ───────────────────────────────────────────
 interface ClientePresupuesto {
   cliente_id: string
   razon_social: string
@@ -46,7 +46,7 @@ interface PresupuestoResponse {
   mensaje?: string
 }
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Helpers Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ─── Helpers ─────────────────────────────────────────
 function formatCurrency(n: number): string {
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0 }).format(n)
 }
@@ -165,7 +165,7 @@ export default function PresupuestoMensual() {
     (c) => !empresa || c.empresa === empresa
   ) ?? []
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Table columns Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // ─── Table columns ────────────────────────────────
   const columns: Column<ClientePresupuesto>[] = [
     {
       key: 'semaforo',
@@ -261,12 +261,12 @@ export default function PresupuestoMensual() {
       render: (row) => {
         if (row.tendencia === 'alza') return <TrendingUp size={16} style={{ color: tokens.colors.green }} />
         if (row.tendencia === 'baja') return <TrendingDown size={16} style={{ color: tokens.colors.red }} />
-        return <span style={{ color: tokens.colors.gray }}>Ã¢ÂÂ</span>
+        return <span style={{ color: tokens.colors.gray }}>—</span>
       },
     },
   ]
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ CSV Export Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // ─── CSV Export ────────────────────────────────────
   const handleExportCSV = () => {
     if (!filteredDetalle.length) return
     const header = 'Cliente,Empresa,Presupuesto,Real,Diferencia,Cumplimiento %,Viajes Pres,Viajes Real,Tendencia\n'
@@ -289,7 +289,7 @@ export default function PresupuestoMensual() {
   return (
     <ModuleLayout
       titulo="Presupuesto Mensual"
-      subtitulo="Presupuesto vs real por cliente Ã¢ÂÂ facturaciÃÂ³n y viajes"
+      subtitulo="Presupuesto vs real por cliente — facturación y viajes"
       acciones={
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={handleExportCSV} disabled={!filteredDetalle.length}>
@@ -366,7 +366,7 @@ export default function PresupuestoMensual() {
             icono={<TrendingUp size={18} />}
           />
           <KPICard
-            titulo="SuperÃÂ¡vit/DÃÂ©ficit"
+            titulo="Superávit/Déficit"
             valor={formatCurrency(data.resumen.superavit)}
             color={data.resumen.superavit >= 0 ? 'green' : 'red'}
             icono={<DollarSign size={18} />}

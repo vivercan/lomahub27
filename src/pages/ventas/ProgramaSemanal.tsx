@@ -108,7 +108,7 @@ export default function ProgramaSemanal() {
   const tendenciaIcon = (t: string) => {
     if (t === 'alza') return <TrendingUp size={14} style={{ color: tokens.colors.green }} />
     if (t === 'baja') return <TrendingUp size={14} style={{ color: tokens.colors.red, transform: 'rotate(180deg)' }} />
-    return <span style={{ color: tokens.colors.gray, fontSize: '14px' }}>Ã¢ÂÂ</span>
+    return <span style={{ color: tokens.colors.gray, fontSize: '14px' }}>—</span>
   }
 
   const balanceColor = data && data.balance >= 0 ? tokens.colors.green : tokens.colors.red
@@ -147,7 +147,7 @@ export default function ProgramaSemanal() {
           Esta semana
         </Button>
         <Button variant="ghost" size="sm" onClick={() => setSemanaInicio(getMonday(1))}>
-          PrÃÂ³xima semana
+          Próxima semana
         </Button>
         <Button variant="primary" size="md" onClick={fetchData} loading={loading}>
           Consultar
@@ -188,7 +188,7 @@ export default function ProgramaSemanal() {
             <KPICard
               titulo="Balance"
               valor={data.balance >= 0 ? `+${data.balance}` : `${data.balance}`}
-              subtitulo={data.balance >= 0 ? 'Capacidad disponible' : 'DÃÂ©ficit de capacidad'}
+              subtitulo={data.balance >= 0 ? 'Capacidad disponible' : 'Déficit de capacidad'}
               color={data.balance >= 0 ? 'green' : 'red'}
             />
             <KPICard
@@ -198,7 +198,7 @@ export default function ProgramaSemanal() {
             />
           </div>
 
-          {/* Alerta de dÃÂ©ficit */}
+          {/* Alerta de déficit */}
           {data.alerta && (
             <Card glow="red" className="mb-6">
               <div className="flex items-center gap-3">
@@ -215,7 +215,7 @@ export default function ProgramaSemanal() {
             <div className="mb-4">
               <p className="text-sm" style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
                 Semana: <span style={{ color: tokens.colors.textPrimary, fontWeight: 600 }}>
-                  {new Date(data.semana.inicio + 'T12:00:00').toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })} Ã¢ÂÂ {new Date(data.semana.fin + 'T12:00:00').toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  {new Date(data.semana.inicio + 'T12:00:00').toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })} — {new Date(data.semana.fin + 'T12:00:00').toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })}
                 </span>
               </p>
             </div>
@@ -261,7 +261,7 @@ export default function ProgramaSemanal() {
                     <div className="mt-3">
                       <div className="flex items-center justify-between mb-1">
                         <p className="text-xs" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-                          Forecast prÃÂ³xima semana
+                          Forecast próxima semana
                         </p>
                         <p className="text-lg font-bold" style={{ color: tokens.colors.primary, fontFamily: tokens.fonts.heading }}>
                           {cliente.forecast_proxima}
@@ -293,7 +293,7 @@ export default function ProgramaSemanal() {
                   Balance Flota vs Demanda
                 </p>
                 <p className="text-2xl font-bold mt-1" style={{ color: balanceColor, fontFamily: tokens.fonts.heading }}>
-                  {data.balance >= 0 ? `+${data.balance} unidades disponibles` : `${Math.abs(data.balance)} unidades de dÃÂ©ficit`}
+                  {data.balance >= 0 ? `+${data.balance} unidades disponibles` : `${Math.abs(data.balance)} unidades de déficit`}
                 </p>
               </div>
               <div

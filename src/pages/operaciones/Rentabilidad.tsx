@@ -209,7 +209,7 @@ export default function Rentabilidad() {
     },
     {
       key: 'utilizacion',
-      label: 'UtilizaciÃÂ³n',
+      label: 'Utilización',
       align: 'center',
       render: (row) => {
         const pct = row.utilizacion
@@ -235,7 +235,7 @@ export default function Rentabilidad() {
 
   const handleExportCSV = () => {
     if (!filteredDetalle.length) return
-    const header = 'Tracto,Empresa,Viajes,Ingreso,Costo,Margen,% Margen,UtilizaciÃÂ³n\n'
+    const header = 'Tracto,Empresa,Viajes,Ingreso,Costo,Margen,% Margen,Utilización\n'
     const rows = filteredDetalle.map(r =>
       `${r.numero_economico},${r.empresa},${r.viajes},${r.ingresoEstimado},${r.costoEstimado},${r.margen},${r.margenPct},${r.utilizacion}`
     ).join('\n')
@@ -249,7 +249,7 @@ export default function Rentabilidad() {
   return (
     <ModuleLayout
       titulo="Rentabilidad por Tracto"
-      subtitulo="Ingreso, costo, margen y utilizaciÃÂ³n por unidad"
+      subtitulo="Ingreso, costo, margen y utilización por unidad"
       acciones={
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={handleExportCSV} disabled={!filteredDetalle.length}>
@@ -267,7 +267,7 @@ export default function Rentabilidad() {
       <div className="flex flex-wrap gap-4 mb-6 items-end">
         <div>
           <label className="text-xs block mb-1" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-            PerÃÂ­odo inicio
+            Período inicio
           </label>
           <input
             type="date"
@@ -284,7 +284,7 @@ export default function Rentabilidad() {
         </div>
         <div>
           <label className="text-xs block mb-1" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-            PerÃÂ­odo fin
+            Período fin
           </label>
           <input
             type="date"
@@ -368,7 +368,7 @@ export default function Rentabilidad() {
           columns={columns}
           data={filteredDetalle}
           loading={loading}
-          emptyMessage="No hay tractos con datos en este perÃÂ­odo"
+          emptyMessage="No hay tractos con datos en este período"
         />
       </Card>
     </ModuleLayout>

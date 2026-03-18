@@ -16,7 +16,7 @@ import { tokens } from '../lib/tokens'
 import { supabase } from '../lib/supabase'
 import type { SemaforoEstado } from '../lib/tokens'
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Types Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ─── Types ───────────────────────────────────────────
 interface RankingItem {
   id: string
   nombre: string
@@ -51,7 +51,7 @@ interface RankingsResponse {
   mensaje?: string
 }
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Helpers Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ─── Helpers ─────────────────────────────────────────
 function formatCurrency(n: number): string {
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0 }).format(n)
 }
@@ -215,11 +215,11 @@ export default function Inteligencia() {
     fetchData()
   }, [])
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Current ranking data Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // ─── Current ranking data ──────────────────────────
   const currentKey = `${categoria}_${vista}` as keyof RankingsResponse['rankings']
   const currentData = data?.rankings?.[currentKey] ?? []
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Category options Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // ─── Category options ──────────────────────────────
   const categoriaOptions = [
     { value: 'clientes', label: 'Clientes' },
     { value: 'tractos', label: 'Tractos' },
@@ -232,7 +232,7 @@ export default function Inteligencia() {
     rutas: <MapPin size={18} />,
   }
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Table columns Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // ─── Table columns ────────────────────────────────
   const columns: Column<RankingItem>[] = [
     {
       key: 'posicion',
@@ -285,11 +285,11 @@ export default function Inteligencia() {
     },
     {
       key: 'valor_principal',
-      label: currentData[0]?.label_principal || 'MÃÂ©trica Principal',
+      label: currentData[0]?.label_principal || 'Métrica Principal',
       align: 'right',
       render: (row) => (
         <span className="text-sm font-semibold" style={{ color: tokens.colors.primary }}>
-          {row.label_principal.includes('$') || row.label_principal.includes('Ingreso') || row.label_principal.includes('FacturaciÃÂ³n')
+          {row.label_principal.includes('$') || row.label_principal.includes('Ingreso') || row.label_principal.includes('Facturación')
             ? formatCurrency(row.valor_principal)
             : row.valor_principal.toLocaleString('es-MX')}
         </span>
@@ -297,7 +297,7 @@ export default function Inteligencia() {
     },
     {
       key: 'valor_secundario',
-      label: currentData[0]?.label_secundario || 'MÃÂ©trica Secundaria',
+      label: currentData[0]?.label_secundario || 'Métrica Secundaria',
       align: 'right',
       render: (row) => (
         <span className="text-sm" style={{ color: tokens.colors.textSecondary }}>
@@ -329,10 +329,10 @@ export default function Inteligencia() {
     },
   ]
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ CSV Export Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // ─── CSV Export ────────────────────────────────────
   const handleExportCSV = () => {
     if (!currentData.length) return
-    const header = 'PosiciÃÂ³n,Nombre,Empresa,Valor Principal,Valor Secundario,Cambio %\n'
+    const header = 'Posición,Nombre,Empresa,Valor Principal,Valor Secundario,Cambio %\n'
     const rows = currentData.map(r =>
       `${r.posicion},${r.nombre},${r.empresa || ''},${r.valor_principal},${r.valor_secundario},${r.cambio_pct}`
     ).join('\n')
@@ -364,7 +364,7 @@ export default function Inteligencia() {
       <div className="flex flex-wrap gap-4 mb-6 items-end">
         <div>
           <label className="text-xs block mb-1" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-            PerÃÂ­odo inicio
+            Período inicio
           </label>
           <input
             type="date"
@@ -381,7 +381,7 @@ export default function Inteligencia() {
         </div>
         <div>
           <label className="text-xs block mb-1" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-            PerÃÂ­odo fin
+            Período fin
           </label>
           <input
             type="date"
@@ -398,7 +398,7 @@ export default function Inteligencia() {
         </div>
         <div style={{ minWidth: '160px' }}>
           <Select
-            label="CategorÃÂ­a"
+            label="Categoría"
             options={categoriaOptions}
             value={categoria}
             onChange={(e) => setCategoria(e.target.value as Categoria)}
@@ -449,7 +449,7 @@ export default function Inteligencia() {
             icono={<TrendingUp size={18} />}
           />
           <KPICard
-            titulo="FacturaciÃÂ³n"
+            titulo="Facturación"
             valor={formatCurrency(data.resumen.facturacionTotal)}
             color="green"
             icono={<BarChart3 size={18} />}
@@ -527,7 +527,7 @@ export default function Inteligencia() {
           className="text-lg font-bold"
           style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, margin: 0 }}
         >
-          {vista === 'top' ? 'Top 5' : 'Bottom 5'} Ã¢ÂÂ {
+          {vista === 'top' ? 'Top 5' : 'Bottom 5'} — {
             categoria === 'clientes' ? 'Clientes' :
             categoria === 'tractos' ? 'Tractos' : 'Rutas'
           }
@@ -540,7 +540,7 @@ export default function Inteligencia() {
           columns={columns}
           data={currentData}
           loading={loading}
-          emptyMessage={`No hay datos de ${categoria} para este perÃÂ­odo`}
+          emptyMessage={`No hay datos de ${categoria} para este período`}
         />
       </Card>
 
@@ -551,7 +551,7 @@ export default function Inteligencia() {
             className="text-sm font-medium mb-4"
             style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}
           >
-            DistribuciÃÂ³n Ã¢ÂÂ {currentData[0]?.label_principal || 'Valor'}
+            Distribución — {currentData[0]?.label_principal || 'Valor'}
           </h4>
           <div className="space-y-3">
             {currentData.map((item) => {

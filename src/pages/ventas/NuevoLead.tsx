@@ -113,7 +113,7 @@ export default function NuevoLead() {
 
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="TelÃ©fono"
+                label="Teléfono"
                 placeholder="+52 1234567890"
                 value={formData.telefono}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('telefono', e.target.value)}
@@ -135,7 +135,7 @@ export default function NuevoLead() {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('ciudad', e.target.value)}
               />
               <Input
-                label="Ruta de InterÃ©s"
+                label="Ruta de Interés"
                 placeholder="Ej: CDMX - Monterrey"
                 value={formData.rutaInteres}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('rutaInteres', e.target.value)}

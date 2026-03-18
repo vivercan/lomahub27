@@ -11,7 +11,7 @@ import { Select } from '../../components/ui/Select';
 import { tokens } from '../../lib/tokens';
 import { supabase } from '../../lib/supabase';
 
-// âââ Tipos âââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── Tipos ───────────────────────────────────────────────
 interface Viaje {
   id?: string;
   folio: string;
@@ -50,7 +50,7 @@ interface NuevoViajeForm {
   fv_machote_id: string;
 }
 
-// âââ Componente Modal genÃ©rico âââââââââââââââââââââââââââ
+// ─── Componente Modal genérico ───────────────────────────
 function Modal({
   open,
   onClose,
@@ -108,9 +108,9 @@ function Modal({
   );
 }
 
-// âââ Componente Principal ââââââââââââââââââââââââââââââââ
+// ─── Componente Principal ────────────────────────────────
 export default function Despachos(): ReactElement {
-  // Estado de viajes â iniciar vacÃ­o, llenar con Supabase
+  // Estado de viajes — iniciar vacío, llenar con Supabase
   const [viajes, setViajes] = useState<Viaje[]>([]);
 
   // Estados de modales
@@ -165,15 +165,15 @@ export default function Despachos(): ReactElement {
         } else if (data) {
           const viajesFormatted: Viaje[] = data.map((v) => ({
             id: v.id,
-            folio: v.folio || 'â',
-            cliente: v.cliente_nombre || 'â',
-            ruta: `${v.origen || '?'} â ${v.destino || '?'}`,
-            tipo: v.tipo || 'â',
-            tracto: v.tracto_numero || 'â',
-            caja: v.caja_numero || 'â',
-            operador: v.operador_nombre || 'â',
+            folio: v.folio || '—',
+            cliente: v.cliente_nombre || '—',
+            ruta: `${v.origen || '?'} → ${v.destino || '?'}`,
+            tipo: v.tipo || '—',
+            tracto: v.tracto_numero || '—',
+            caja: v.caja_numero || '—',
+            operador: v.operador_nombre || '—',
             estado: v.estado || 'programado',
-            citaDescarga: v.cita_descarga ? new Date(v.cita_descarga).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : 'â',
+            citaDescarga: v.cita_descarga ? new Date(v.cita_descarga).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : '—',
             eta_calculado: v.eta_calculado,
             eta_imposible: v.eta_imposible || false,
           }));
@@ -188,7 +188,7 @@ export default function Despachos(): ReactElement {
     fetchViajes();
   }, []);
 
-  // âââ Funciones de color ââââââââââââââââââââââââââââââââ
+  // ─── Funciones de color ────────────────────────────────
   const tipoColor = (tipo: string): 'primary' | 'green' | 'yellow' | 'orange' | 'red' | 'gray' | 'blue' => {
     switch (tipo) {
       case 'IMPO': return 'blue';
@@ -210,7 +210,7 @@ export default function Despachos(): ReactElement {
     }
   };
 
-  // âââ Validar FV / Machote ââââââââââââââââââââââââââââââ
+  // ─── Validar FV / Machote ──────────────────────────────
   const validarFV = useCallback(async (fvId: string): Promise<{ valido: boolean; mensaje: string }> => {
     if (!fvId) return { valido: true, mensaje: '' }; // Sin FV, no bloquear (puede no aplicar)
 
@@ -222,7 +222,7 @@ export default function Despachos(): ReactElement {
         .single();
 
       if (dbError || !data) {
-        return { valido: false, mensaje: 'No se encontrÃ³ el FV/Machote seleccionado.' };
+        return { valido: false, mensaje: 'No se encontró el FV/Machote seleccionado.' };
       }
 
       // Verificar vigencia
@@ -245,12 +245,12 @@ export default function Despachos(): ReactElement {
 
       return { valido: true, mensaje: '' };
     } catch {
-      // Si la tabla no existe aÃºn, no bloquear
+      // Si la tabla no existe aún, no bloquear
       return { valido: true, mensaje: '' };
     }
   }, []);
 
-  // âââ Calcular ETA ââââââââââââââââââââââââââââââââââââââ
+  // ─── Calcular ETA ──────────────────────────────────────
   const calcularETA = useCallback(async (
     origen: string,
     destino: string,
@@ -260,7 +260,7 @@ export default function Despachos(): ReactElement {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('SesiÃ³n no vÃ¡lida');
+      if (!session) throw new Error('Sesión no válida');
 
       const res = await fetch(`${supabaseUrl}/functions/v1/eta-calculator`, {
         method: 'POST',
@@ -288,7 +288,7 @@ export default function Despachos(): ReactElement {
     }
   }, []);
 
-  // âââ Registrar alerta en alerta-engine âââââââââââââââââ
+  // ─── Registrar alerta en alerta-engine ─────────────────
   const registrarAlerta = useCallback(async (tipo: string, datos: Record<string, unknown>) => {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -308,7 +308,7 @@ export default function Despachos(): ReactElement {
     }
   }, []);
 
-  // âââ Flujo de creaciÃ³n de viaje ââââââââââââââââââââââââ
+  // ─── Flujo de creación de viaje ────────────────────────
   const handleCrearViaje = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
@@ -323,7 +323,7 @@ export default function Despachos(): ReactElement {
     setCreandoViaje(true);
 
     try {
-      // 2. PASO 1: Validar FV/Machote â si vencido â BLOQUEAR
+      // 2. PASO 1: Validar FV/Machote — si vencido → BLOQUEAR
       if (form.fv_machote_id) {
         const fvResult = await validarFV(form.fv_machote_id);
         if (!fvResult.valido) {
@@ -354,15 +354,15 @@ export default function Despachos(): ReactElement {
       if (eta) {
         setEtaResult(eta);
 
-        // 4. PASO 3: Si ETA imposible â modal de advertencia
+        // 4. PASO 3: Si ETA imposible → modal de advertencia
         if (eta.eta_imposible) {
           setShowETAWarning(true);
           setCreandoViaje(false);
-          return; // No continuar â esperar confirmaciÃ³n del usuario
+          return; // No continuar — esperar confirmación del usuario
         }
       }
 
-      // 5. ETA OK o sin respuesta â crear viaje directamente
+      // 5. ETA OK o sin respuesta → crear viaje directamente
       await finalizarCreacionViaje(eta);
     } catch (err) {
       setError(`Error al crear viaje: ${err instanceof Error ? err.message : String(err)}`);
@@ -370,7 +370,7 @@ export default function Despachos(): ReactElement {
     }
   };
 
-  // âââ Confirmar viaje con ETA imposible (nota obligatoria) â
+  // ─── Confirmar viaje con ETA imposible (nota obligatoria) ─
   const handleConfirmarETAImposible = async () => {
     if (notaETAImposible.length < 20) {
       setError('La nota debe tener al menos 20 caracteres.');
@@ -393,7 +393,7 @@ export default function Despachos(): ReactElement {
     await finalizarCreacionViaje(etaResult);
   };
 
-  // âââ Finalizar creaciÃ³n del viaje ââââââââââââââââââââââ
+  // ─── Finalizar creación del viaje ──────────────────────
   const finalizarCreacionViaje = async (eta: ETAResponse | null) => {
     try {
       const nuevoFolio = `VJ-${new Date().getFullYear()}-${String(viajes.length + 1).padStart(3, '0')}`;
@@ -435,7 +435,7 @@ export default function Despachos(): ReactElement {
         id: viajeDB?.id,
         folio: nuevoFolio,
         cliente: form.cliente,
-        ruta: `${form.origen} â ${form.destino}`,
+        ruta: `${form.origen} → ${form.destino}`,
         tipo: form.tipo,
         tracto: form.tracto,
         caja: form.caja,
@@ -443,7 +443,7 @@ export default function Despachos(): ReactElement {
         estado: 'programado',
         citaDescarga: form.cita_descarga
           ? new Date(form.cita_descarga).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })
-          : 'â',
+          : '—',
         eta_calculado: eta?.eta_timestamp,
         eta_imposible: eta?.eta_imposible,
       };
@@ -474,18 +474,18 @@ export default function Despachos(): ReactElement {
     }
   };
 
-  // âââ Filtrar viajes ââââââââââââââââââââââââââââââââââââ
+  // ─── Filtrar viajes ────────────────────────────────────
   const viajesFiltrados = viajes.filter((v) => {
     if (filtroEstado && v.estado !== filtroEstado) return false;
     if (filtroTipo && v.tipo !== filtroTipo) return false;
     return true;
   });
 
-  // âââ Columnas de la tabla ââââââââââââââââââââââââââââââ
+  // ─── Columnas de la tabla ──────────────────────────────
   const viajesColumns = [
     { key: 'folio', label: 'Folio' },
     { key: 'cliente', label: 'Cliente' },
-    { key: 'ruta', label: 'Origen â Destino' },
+    { key: 'ruta', label: 'Origen → Destino' },
     {
       key: 'tipo',
       label: 'Tipo',
@@ -504,7 +504,7 @@ export default function Despachos(): ReactElement {
       key: 'eta_calculado',
       label: 'ETA',
       render: (row: Viaje) => {
-        if (!row.eta_calculado) return <span style={{ color: tokens.colors.textMuted }}>â</span>;
+        if (!row.eta_calculado) return <span style={{ color: tokens.colors.textMuted }}>—</span>;
         const eta = new Date(row.eta_calculado);
         return (
           <span style={{ color: row.eta_imposible ? tokens.colors.red : tokens.colors.green }}>
@@ -518,7 +518,7 @@ export default function Despachos(): ReactElement {
 
   return (
     <ModuleLayout titulo="Despachos">
-      {/* BotÃ³n Nuevo Viaje */}
+      {/* Botón Nuevo Viaje */}
       <div style={{ marginBottom: tokens.spacing.lg }}>
         <Button variant="primary" onClick={() => setShowNuevoViaje(true)}>
           Nuevo Viaje
@@ -542,7 +542,7 @@ export default function Despachos(): ReactElement {
           options={[
             { value: 'programado', label: 'Programado' },
             { value: 'cargando', label: 'Cargando' },
-            { value: 'en_transito', label: 'En TrÃ¡nsito' },
+            { value: 'en_transito', label: 'En Tránsito' },
             { value: 'completado', label: 'Completado' },
             { value: 'retrasado', label: 'Retrasado' },
             { value: 'en_riesgo', label: 'En Riesgo' },
@@ -554,14 +554,14 @@ export default function Despachos(): ReactElement {
           value={filtroTipo}
           onChange={(e) => setFiltroTipo(e.target.value)}
           options={[
-            { value: 'IMPO', label: 'ImportaciÃ³n' },
-            { value: 'EXPO', label: 'ExportaciÃ³n' },
+            { value: 'IMPO', label: 'Importación' },
+            { value: 'EXPO', label: 'Exportación' },
             { value: 'NAC', label: 'Nacional' },
           ]}
         />
       </div>
 
-      {/* Viajes del DÃ­a */}
+      {/* Viajes del Día */}
       <Card>
         <div
           style={{
@@ -573,7 +573,7 @@ export default function Despachos(): ReactElement {
             alignItems: 'center',
           }}
         >
-          <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>Viajes del DÃ­a</h3>
+          <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>Viajes del Día</h3>
           <span style={{ color: tokens.colors.textMuted, fontSize: '0.85rem' }}>
             {viajesFiltrados.length} viaje{viajesFiltrados.length !== 1 ? 's' : ''}
           </span>
@@ -581,7 +581,7 @@ export default function Despachos(): ReactElement {
         <DataTable columns={viajesColumns} data={viajesFiltrados} />
       </Card>
 
-      {/* âââââââ MODAL: Nuevo Viaje âââââââ */}
+      {/* ═══════ MODAL: Nuevo Viaje ═══════ */}
       <Modal
         open={showNuevoViaje}
         onClose={() => { setShowNuevoViaje(false); setError(''); }}
@@ -601,8 +601,8 @@ export default function Despachos(): ReactElement {
               value={form.tipo}
               onChange={(e) => setForm((f) => ({ ...f, tipo: e.target.value }))}
               options={[
-                { value: 'IMPO', label: 'ImportaciÃ³n' },
-                { value: 'EXPO', label: 'ExportaciÃ³n' },
+                { value: 'IMPO', label: 'Importación' },
+                { value: 'EXPO', label: 'Exportación' },
                 { value: 'NAC', label: 'Nacional' },
               ]}
             />
@@ -683,11 +683,11 @@ export default function Despachos(): ReactElement {
         </form>
       </Modal>
 
-      {/* âââââââ MODAL: Advertencia ETA Imposible âââââââ */}
+      {/* ═══════ MODAL: Advertencia ETA Imposible ═══════ */}
       <Modal
         open={showETAWarning}
         onClose={() => setShowETAWarning(false)}
-        titulo="ETA Imposible â Advertencia"
+        titulo="ETA Imposible — Advertencia"
       >
         <div style={{ marginBottom: tokens.spacing.md }}>
           <div
@@ -700,7 +700,7 @@ export default function Despachos(): ReactElement {
             }}
           >
             <p style={{ margin: 0, color: tokens.colors.red, fontWeight: 'bold', marginBottom: tokens.spacing.xs }}>
-              El ETA calculado supera la cita de descarga por mÃ¡s de 2 horas.
+              El ETA calculado supera la cita de descarga por más de 2 horas.
             </p>
             {etaResult && (
               <div style={{ color: tokens.colors.textSecondary, fontSize: '0.85rem', marginTop: tokens.spacing.sm }}>
@@ -713,7 +713,7 @@ export default function Despachos(): ReactElement {
                   {etaResult.distancia_km} km
                 </p>
                 <p style={{ margin: '4px 0' }}>
-                  <strong style={{ color: tokens.colors.textPrimary }}>DuraciÃ³n total:</strong>{' '}
+                  <strong style={{ color: tokens.colors.textPrimary }}>Duración total:</strong>{' '}
                   {Math.floor(etaResult.duracion_minutos / 60)}h {etaResult.duracion_minutos % 60}min
                 </p>
                 {etaResult.paradas_nom087 > 0 && (
@@ -737,13 +737,13 @@ export default function Despachos(): ReactElement {
           </div>
 
           <p style={{ color: tokens.colors.textSecondary, fontSize: '0.85rem', marginBottom: tokens.spacing.sm }}>
-            Para confirmar de todas formas, escribe una nota obligatoria (mÃ­nimo 20 caracteres) explicando la razÃ³n:
+            Para confirmar de todas formas, escribe una nota obligatoria (mínimo 20 caracteres) explicando la razón:
           </p>
 
           <textarea
             value={notaETAImposible}
             onChange={(e) => setNotaETAImposible(e.target.value)}
-            placeholder="Ej: Cliente aceptÃ³ hora flexible, se coordinarÃ¡ reagenda con destino..."
+            placeholder="Ej: Cliente aceptó hora flexible, se coordinará reagenda con destino..."
             style={{
               width: '100%',
               minHeight: '80px',
@@ -758,7 +758,7 @@ export default function Despachos(): ReactElement {
             }}
           />
           <span style={{ color: tokens.colors.textMuted, fontSize: '0.75rem' }}>
-            {notaETAImposible.length}/20 caracteres mÃ­nimo
+            {notaETAImposible.length}/20 caracteres mínimo
           </span>
 
           {error && (
@@ -789,11 +789,11 @@ export default function Despachos(): ReactElement {
         </div>
       </Modal>
 
-      {/* âââââââ MODAL: FV/Machote Bloqueado âââââââ */}
+      {/* ═══════ MODAL: FV/Machote Bloqueado ═══════ */}
       <Modal
         open={showFVBlock}
         onClose={() => setShowFVBlock(false)}
-        titulo="Despacho Bloqueado â FV/Machote No VÃ¡lido"
+        titulo="Despacho Bloqueado — FV/Machote No Válido"
       >
         <div
           style={{
@@ -814,7 +814,7 @@ export default function Despachos(): ReactElement {
 
         <p style={{ color: tokens.colors.textSecondary, fontSize: '0.85rem', margin: `0 0 ${tokens.spacing.md}` }}>
           Contacta a CS para actualizar el FV/Machote antes de intentar despachar nuevamente.
-          Se ha enviado una alerta automÃ¡tica al equipo de CS y Operaciones.
+          Se ha enviado una alerta automática al equipo de CS y Operaciones.
         </p>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>

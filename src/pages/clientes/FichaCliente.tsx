@@ -107,7 +107,7 @@ export default function FichaCliente(): ReactElement {
   }
 
   const datosMaestros = [
-    { label: 'RazÃ³n Social', value: cliente.razon_social },
+    { label: 'Razón Social', value: cliente.razon_social },
     { label: 'RFC', value: cliente.rfc },
     { label: 'Tipo', value: cliente.tipo },
     { label: 'Segmento', value: cliente.segmento },
@@ -134,7 +134,7 @@ export default function FichaCliente(): ReactElement {
   ];
 
   return (
-    <ModuleLayout titulo={`Cliente â ${cliente.razon_social}`}>
+    <ModuleLayout titulo={`Cliente — ${cliente.razon_social}`}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: tokens.spacing.lg }}>
         {/* Left Column: Datos Maestros */}
         <Card>
@@ -157,15 +157,15 @@ export default function FichaCliente(): ReactElement {
 
         {/* Right Column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.lg }}>
-          {/* RadiografÃ­a Financiera */}
+          {/* Radiografía Financiera */}
           <Card>
             <div style={{ marginBottom: tokens.spacing.md, paddingBottom: tokens.spacing.md, borderBottom: `1px solid ${tokens.colors.border}` }}>
-              <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>RadiografÃ­a Financiera</h3>
+              <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>Radiografía Financiera</h3>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: tokens.spacing.md }}>
-              <KPICard titulo="FacturaciÃ³n Mensual" valor="$450K" color="primary" />
+              <KPICard titulo="Facturación Mensual" valor="$450K" color="primary" />
               <KPICard titulo="Saldo CXC" valor="$120K" color="red" />
-              <KPICard titulo="DÃ­as CrÃ©dito" valor="30" color="primary" />
+              <KPICard titulo="Días Crédito" valor="30" color="primary" />
             </div>
           </Card>
 
@@ -177,7 +177,7 @@ export default function FichaCliente(): ReactElement {
             {viajesActivos.length === 0 ? (
               <div className="text-center py-12 text-gray-400">
                 <p className="text-lg font-medium">Sin datos</p>
-                <p className="text-sm mt-1">Los datos se cargarÃ¡n cuando estÃ©n disponibles en el sistema</p>
+                <p className="text-sm mt-1">Los datos se cargarán cuando estén disponibles en el sistema</p>
               </div>
             ) : (
               <DataTable columns={viajesColumns} data={viajesActivos} />
@@ -195,7 +195,7 @@ export default function FichaCliente(): ReactElement {
           {historialInteracciones.length === 0 ? (
             <div className="text-center py-12 text-gray-400">
               <p className="text-lg font-medium">Sin datos</p>
-              <p className="text-sm mt-1">Los datos se cargarÃ¡n cuando estÃ©n disponibles en el sistema</p>
+              <p className="text-sm mt-1">Los datos se cargarán cuando estén disponibles en el sistema</p>
             </div>
           ) : (
             <DataTable columns={interaccionesColumns} data={historialInteracciones} />
