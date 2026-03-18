@@ -1,25 +1,21 @@
 {
-    "headers": [
-          {
-                  "source": "/(.*)",
-                  "headers": [
-                            { "key": "Content-Type", "value": "text/html; charset=utf-8" }
-                  ]
-          },
-          {
-                  "source": "/assets/(.*).js",
-                  "headers": [
-                            { "key": "Content-Type", "value": "application/javascript; charset=utf-8" }
-                  ]
-          },
-          {
-                  "source": "/assets/(.*).css",
-                  "headers": [
-                            { "key": "Content-Type", "value": "text/css; charset=utf-8" }
-                  ]
-          }
-    ],
-    "rewrites": [
-          { "source": "/(.*)", "destination": "/index.html" }
-    ]
+  "headers": [
+    {
+      "source": "/assets/(.*)\\.js",
+      "headers": [
+        { "key": "Content-Type", "value": "application/javascript; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)\\.css",
+      "headers": [
+        { "key": "Content-Type", "value": "text/css; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
