@@ -93,9 +93,9 @@ const S = {
   },
   divider: {
     position: 'absolute' as const,
-    top: '15%', bottom: '15%', right: '-17px',
+    top: '15%', bottom: '15%', right: '7px',
     width: '1px',
-    background: `linear-gradient(to bottom, transparent, ${L.w08}, transparent)`,
+    background: 'linear-gradient(to bottom, transparent, rgba(232,97,26,0.10), transparent)',
   },
   card: {
     background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.04) 100%)',
@@ -427,7 +427,7 @@ export default function Login() {
 
           {googleLoading && (
             <div style={S.loadingBox}>
-              <div style={S.spinner} />
+        &           <div style={S.spinner} />
               <span style={S.loadingText}>Autenticando...</span>
             </div>
           )}
