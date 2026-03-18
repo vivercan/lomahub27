@@ -33,7 +33,7 @@ export default function FichaCliente(): ReactElement {
   const { id } = useParams<{ id: string }>();
   const [cliente, setCliente] = useState<Cliente | null>(null);
   const [viajesActivos, setViajesActivos] = useState<Viaje[]>([]);
-  const [, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
@@ -107,7 +107,7 @@ export default function FichaCliente(): ReactElement {
   }
 
   const datosMaestros = [
-    { label: 'Raz\u00f3n Social', value: cliente.razon_social },
+    { label: 'RazÃ³n Social', value: cliente.razon_social },
     { label: 'RFC', value: cliente.rfc },
     { label: 'Tipo', value: cliente.tipo },
     { label: 'Segmento', value: cliente.segmento },
@@ -116,7 +116,7 @@ export default function FichaCliente(): ReactElement {
     { label: 'Fecha de Alta', value: cliente.fecha_alta },
   ];
 
-  const historialInteracciones: any[] = [];
+  const historialInteracciones: Array<{ fecha: string; tipo: string; detalle: string }> = [];
 
   const viajesColumns = [
     { key: 'id', label: 'ID Viaje' },
@@ -134,8 +134,9 @@ export default function FichaCliente(): ReactElement {
   ];
 
   return (
-    <ModuleLayout titulo={`Cliente \u2014 ${cliente.razon_social}`}>
+    <ModuleLayout titulo={`Cliente â ${cliente.razon_social}`}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: tokens.spacing.lg }}>
+        {/* Left Column: Datos Maestros */}
         <Card>
           <div style={{ marginBottom: tokens.spacing.md, paddingBottom: tokens.spacing.md, borderBottom: `1px solid ${tokens.colors.border}` }}>
             <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>Datos Maestros</h3>
@@ -154,18 +155,21 @@ export default function FichaCliente(): ReactElement {
           </div>
         </Card>
 
+        {/* Right Column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.lg }}>
+          {/* RadiografÃ­a Financiera */}
           <Card>
             <div style={{ marginBottom: tokens.spacing.md, paddingBottom: tokens.spacing.md, borderBottom: `1px solid ${tokens.colors.border}` }}>
-              <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>Radiograf\u00eda Financiera</h3>
+              <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>RadiografÃ­a Financiera</h3>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: tokens.spacing.md }}>
-              <KPICard titulo="Facturaci\u00f3n Mensual" valor="$450K" color="primary" />
+              <KPICard titulo="FacturaciÃ³n Mensual" valor="$450K" color="primary" />
               <KPICard titulo="Saldo CXC" valor="$120K" color="red" />
-              <KPICard titulo="D\u00edas Cr\u00e9dito" valor="30" color="primary" />
+              <KPICard titulo="DÃ­as CrÃ©dito" valor="30" color="primary" />
             </div>
           </Card>
 
+          {/* Viajes Activos */}
           <Card>
             <div style={{ marginBottom: tokens.spacing.md, paddingBottom: tokens.spacing.md, borderBottom: `1px solid ${tokens.colors.border}` }}>
               <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>Viajes Activos</h3>
@@ -173,7 +177,7 @@ export default function FichaCliente(): ReactElement {
             {viajesActivos.length === 0 ? (
               <div className="text-center py-12 text-gray-400">
                 <p className="text-lg font-medium">Sin datos</p>
-                <p className="text-sm mt-1">Los datos se cargar\u00e1n cuando est\u00e9n disponibles en el sistema</p>
+                <p className="text-sm mt-1">Los datos se cargarÃ¡n cuando estÃ©n disponibles en el sistema</p>
               </div>
             ) : (
               <DataTable columns={viajesColumns} data={viajesActivos} />
@@ -191,7 +195,7 @@ export default function FichaCliente(): ReactElement {
           {historialInteracciones.length === 0 ? (
             <div className="text-center py-12 text-gray-400">
               <p className="text-lg font-medium">Sin datos</p>
-              <p className="text-sm mt-1">Los datos se cargar\u00e1n cuando est\u00e9n disponibles en el sistema</p>
+              <p className="text-sm mt-1">Los datos se cargarÃ¡n cuando estÃ©n disponibles en el sistema</p>
             </div>
           ) : (
             <DataTable columns={interaccionesColumns} data={historialInteracciones} />
@@ -200,4 +204,4 @@ export default function FichaCliente(): ReactElement {
       </div>
     </ModuleLayout>
   );
-}
+                }
