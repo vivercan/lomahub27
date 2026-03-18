@@ -33,7 +33,7 @@ const L = {
   w02: 'rgba(255,255,255,0.02)',
   red: '#EF4444',
   green: '#2ECC71',
-  font: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+  font: "'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif",
 } as const
 
 const S = {
@@ -427,7 +427,7 @@ export default function Login() {
 
           {googleLoading && (
             <div style={S.loadingBox}>
-        &           <div style={S.spinner} />
+              <div style={S.spinner} />
               <span style={S.loadingText}>Autenticando...</span>
             </div>
           )}
