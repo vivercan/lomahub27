@@ -39,7 +39,7 @@ export default function TorreControl(): ReactElement {
             eta_calculado,
             cita_descarga,
             notas,
-            cliente:clientes(nombre),
+            cliente:clientes(razon_social),
             tracto:tractos(numero_economico)
           `)
           .not('estado', 'eq', 'cancelado')
@@ -58,7 +58,7 @@ export default function TorreControl(): ReactElement {
 
           return {
             folio: viaje.id?.substring(0, 8)?.toUpperCase() || '—',
-            cliente: viaje.cliente?.nombre || '—',
+            cliente: viaje.cliente?.razon_social || '—',
             ruta: `${viaje.origen || '?'} → ${viaje.destino || '?'}`,
             tracto: viaje.tracto?.numero_economico || '—',
             eta: eta ? eta.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
