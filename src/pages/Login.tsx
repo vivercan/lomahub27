@@ -79,13 +79,13 @@ const S = {
     display: 'flex' as const,
     flexDirection: 'column' as const,
     justifyContent: 'center' as const,
-    padding: '15px 48px 0 48px',
+    padding: '35px 48px 0 48px',
     position: 'relative' as const,
     zIndex: 2,
   },
   divider: {
     position: 'absolute' as const,
-    top: '15%', bottom: '15%', right: '4px',
+    top: '15%', bottom: '15%', right: '-11px',
     width: '1px',
     background: `linear-gradient(to bottom, transparent, ${L.w08}, transparent)`,
   },
@@ -171,7 +171,7 @@ const S = {
     alignItems: 'flex-start' as const,
     justifyContent: 'center' as const,
     position: 'relative' as const,
-    padding: '135px 80px 60px 40px',
+    padding: '155px 80px 60px 40px',
     overflow: 'hidden' as const,
     zIndex: 2,
   },
@@ -435,7 +435,7 @@ export default function Login() {
 
       <div style={S.statusBar}>
         <span style={S.statusR}>
-          Grupo Loma 2026 {"\u00b7"} hola@trob.com.mx {"\u00b7"} Operaci{"\u00f3"}n inteligente... Resultados reales
+          Grupo Loma 2026 {"\u00b7"} <a href="mailto:hola@trob.com.mx" onDoubleClick={(e) => { e.preventDefault(); navigator.clipboard.writeText('hola@trob.com.mx') }} style={{ color: 'inherit', textDecoration: 'none', cursor: 'pointer' }}>hola@trob.com.mx</a> {"\u00b7"} Operaci{"\u00f3"}n inteligente... Resultados reales
         </span>
       </div>
     </div>
