@@ -63,7 +63,7 @@ export function useAuth() {
     const { error } = await supabase.auth.signOut()
     if (error) throw error
     // Force page reload to re-initialize Google GSI script
-    window.location.href = '/login'
+    window.location.reload()
   }
 
   const getRutaInicial = (): string => {
