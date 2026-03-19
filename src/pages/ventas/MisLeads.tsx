@@ -1,5 +1,6 @@
 'use client'
 
+
 import { useEffect, useState, useRef } from 'react'
 import { Upload, Zap, ChevronDown, Loader } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
@@ -274,8 +275,8 @@ export default function MisLeads() {
         ) : visibleLeads.length === 0 ? (
           <Card>
             <div className="text-center py-12">
-              <p className="text-lg font-medium" style={{ color: tokens.colors.textSecondary }}>Sin leads</p>
-              <p className="text-sm mt-2" style={{ color: tokens.colors.textSecondary }}>No hay leads disponibles en este momento</p>
+              <p className="text-lg font-medium" style={{ color: tokens.colors.textSecondary }}>No hay leads activos.</p>
+              <p className="text-sm mt-2" style={{ color: tokens.colors.textSecondary }}>Los leads aparecerán aquí cuando se registren en el sistema.</p>
             </div>
           </Card>
         ) : (
