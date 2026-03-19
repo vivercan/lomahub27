@@ -1,47 +1,62 @@
-import { tokens } from '../../lib/tokens'
-import { Sidebar } from './Sidebar'
+// src/components/layout/ModuleLayout.tsx
+// Layout con AppHeader arriba, SIN sidebar lateral
+// Modificado 19/Mar/2026
+
+import { ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
+import AppHeader from './AppHeader'
+import { useAuth } from '../../hooks/useAuth'
 
 interface ModuleLayoutProps {
-  titulo: string
-  subtitulo?: string
-  acciones?: React.ReactNode
-  children: React.ReactNode
+  children: ReactNode
+  title?: string
+  showBack?: boolean
 }
 
-export function ModuleLayout({ titulo, subtitulo, acciones, children }: ModuleLayoutProps) {
-  return (
-    <div className="flex h-screen overflow-hidden" style={{ background: tokens.effects.gradientBg }}>
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header del módulo */}
-        <div
-          className="border-b px-6 py-4 flex items-center justify-between shrink-0"
-          style={{
-            background: tokens.colors.bgCard,
-            borderColor: tokens.colors.border,
-          }}
-        >
-          <div>
-            <h1
-              className="text-lg font-bold"
-              style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}
-            >
-              {titulo}
-            </h1>
-            {subtitulo && (
-              <p className="text-sm" style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
-                {subtitulo}
-              </p>
-            )}
-          </div>
-          {acciones && <div className="flex items-center gap-2">{acciones}</div>}
-        </div>
+export default function ModuleLayout({ children, title, showBack = true }: ModuleLayoutProps) {
+  const navigate = useNavigate()
+  const { user, logout } = useAuth()
 
-        {/* Contenido del módulo */}
-        <div className="flex-1 overflow-y-auto p-6" style={{ fontFamily: tokens.fonts.body }}>
-          {children}
+  const handleLogout = async () => {
+    await logout()
+  }
+
+  return (
+    <div style={{ minHeight: '100vh', background: '#2a2a36' }}>
+      <AppHeader
+        onLogout={handleLogout}
+        userName={user?.email?.split('@')[0] || 'Usuario'}
+        userRole={user?.rol || 'admin'}
+      />
+
+      {(title || showBack) && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '16px',
+          padding: '16px 36px', borderBottom: '1px solid rgba(255,255,255,0.06)',
+        }}>
+          {showBack && (
+            <button onClick={() => navigate('/dashboard')} style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '6px 12px', background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px',
+              color: 'rgba(255,255,255,0.6)', cursor: 'pointer',
+              fontFamily: "'Montserrat', sans-serif", fontSize: '13px', fontWeight: 600,
+            }}>
+              <ArrowLeft size={18} />
+              <span>Dashboard</span>
+            </button>
+          )}
+          {title && <h1 style={{
+            fontFamily: "'Montserrat', sans-serif", fontWeight: 700,
+            fontSize: '20px', color: '#fff', margin: 0,
+          }}>{title}</h1>}
         </div>
-      </div>
+      )}
+
+      <main style={{ padding: '24px 36px' }}>
+        {children}
+      </main>
     </div>
   )
 }
