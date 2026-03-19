@@ -77,7 +77,7 @@ function App() {
 
           {/* ─── 04. Panel Personal Vendedor ─── */}
           <Route path="/ventas/mis-leads" element={
-            <ProtectedRout
+            <ProtectedRoute
 e allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <MisLeads />
             </ProtectedRoute>
