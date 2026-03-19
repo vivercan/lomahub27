@@ -14,7 +14,7 @@ interface ModuleLayoutProps {
   showBack?: boolean
 }
 
-export default function ModuleLayout({ children, title, showBack = true }: ModuleLayoutProps) {
+export function ModuleLayout({ children, title, showBack = true }: ModuleLayoutProps) {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
 
