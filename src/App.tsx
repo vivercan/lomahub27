@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './hooks/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import HomeDashboard from './pages/HomeDashboard'
 
 // Pages
 import Login from './pages/Login'
@@ -76,7 +77,8 @@ function App() {
 
           {/* ─── 04. Panel Personal Vendedor ─── */}
           <Route path="/ventas/mis-leads" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
+            <ProtectedRout
+e allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <MisLeads />
             </ProtectedRoute>
           } />
@@ -268,10 +270,10 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* ─── Legacy dashboard redirect ─── */}
+          {/* ─── Dashboard 14 modulos ─── */}
           <Route path="/dashboard" element={
             <ProtectedRoute>
-              <WarRoom />
+              <HomeDashboard />
             </ProtectedRoute>
           } />
 
