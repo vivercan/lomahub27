@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+
 import { useNavigate } from 'react-router-dom'
 import { useAuthContext } from '../hooks/AuthContext'
 import { AlertCircle } from 'lucide-react'
@@ -148,8 +149,8 @@ const S = {
     justifyContent: 'center' as const,
     gap: '12px',
     padding: '0 24px',
-    background: '#4285F4',
-    border: 'none',
+    background: 'rgba(255,255,255,0.04)',
+    border: '1px solid rgba(255,255,255,0.10)',
     borderRadius: '12px',
     color: '#fff',
     fontFamily: L.font,
@@ -157,8 +158,10 @@ const S = {
     fontWeight: 600,
     cursor: 'pointer',
     transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
-    boxShadow: '0 4px 24px rgba(66,133,244,0.30), 0 1px 0 rgba(255,255,255,0.10) inset',
+    boxShadow: '0 2px 12px rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.06) inset',
     letterSpacing: '0.3px',
+    position: 'relative' as const,
+    overflow: 'hidden' as const,
   },
   loadingBox: {
     display: 'flex' as const,
@@ -287,6 +290,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const [googleLoading, setGoogleLoading] = useState(false)
   const [hover, setHover] = useState(false)
+  const [pressed, setPressed] = useState(false)
   const { user, loading, loginWithGoogleIdToken, getRutaInicial } = useAuthContext()
   const navigate = useNavigate()
   const googleBtnRef = useRef<HTMLDivElement>(null)
@@ -406,23 +410,34 @@ export default function Login() {
           <button
             style={{
               ...S.customBtn,
-              background: hover ? '#3B78E7' : '#4285F4',
+              background: hover ? 'rgba(244,123,32,0.06)' : 'rgba(255,255,255,0.04)',
+              borderColor: hover ? 'rgba(244,123,32,0.60)' : 'rgba(255,255,255,0.10)',
               boxShadow: hover
-                ? '0 6px 32px rgba(66,133,244,0.40), 0 1px 0 rgba(255,255,255,0.15) inset'
-                : '0 4px 24px rgba(66,133,244,0.30), 0 1px 0 rgba(255,255,255,0.10) inset',
-              transform: hover ? 'translateY(-1px)' : 'none',
+                ? '0 8px 32px rgba(0,0,0,0.3), 0 0 35px rgba(244,123,32,0.28), 4px 0 20px rgba(244,123,32,0.14)'
+                : '0 2px 12px rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.06) inset',
+              transform: pressed ? 'translateY(2px) scale(0.98)' : hover ? 'translateY(-1px)' : 'none',
+              ...(pressed ? { boxShadow: '0 1px 4px rgba(0,0,0,0.5), 0 0 15px rgba(244,123,32,0.18), inset 0 2px 6px rgba(0,0,0,0.4)', borderColor: 'rgba(244,123,32,0.45)', transition: 'all 0.08s ease' } : {}),
             }}
-            onMouseEnter={() => setHover(true)}
+            onMouseEnter={() =>
+            {/* Gradient overlay — derecha a izquierda */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(270deg, rgba(244,123,32,0.50) 0%, rgba(244,123,32,0.22) 40%, rgba(232,97,26,0.04) 100%)',
+              opacity: hover ? 1 : 0,
+              transition: 'opacity 0.3s ease',
+              pointerEvents: 'none' as const,
+              borderRadius: '12px',
+            }} /> setHover(true)}
             onMouseLeave={() => setHover(false)}
             onClick={triggerGoogleSignIn}
           >
-            <svg width="26" height="26" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.2))' }}>
-              <path fill="#FF5200" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            <svg width="20" height="20" viewBox="0 0 24 24" style={{ opacity: hover ? 0.95 : 0.55, transition: 'opacity 0.3s ease' }}>
+              <path fill="rgba(255,255,255,0.85)" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
+              <path fill="rgba(255,255,255,0.70)" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="rgba(255,255,255,0.55)" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A11.96 11.96 0 0 0 1 12c0 1.94.46 3.77 1.18 5.07l3.66-2.98z"/>
+              <path fill="rgba(255,255,255,0.90)" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Iniciar Sesi{"\u00f3"}n
+            <span style={{ color: hover ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.60)", transition: "color 0.3s ease", position: "relative" as const, zIndex: 1 }}>Continuar con Google</span>
           </button>
 
           {googleLoading && (
@@ -432,6 +447,20 @@ export default function Login() {
             </div>
           )}
         </div>
+
+          {/* Separador + Security */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', margin: '14px 0 4px' }}>
+            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+            <span style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,255,0.18)', textTransform: 'uppercase' as const, letterSpacing: '2px' }}>Acceso autorizado</span>
+            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px' }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.30)" strokeWidth="2" strokeLinecap="round" style={{ opacity: 0.5 }}>
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <span style={{ fontSize: '11px', fontWeight: 500, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.3px' }}>Conexión cifrada · Solo personal autorizado</span>
+          </div>
       </div>
 
       <div style={S.right}>
