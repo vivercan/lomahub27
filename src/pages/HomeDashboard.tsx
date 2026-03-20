@@ -1,106 +1,239 @@
 // src/pages/HomeDashboard.tsx
-// Dashboard 14 modulos — Grid 7x2
+
+// Dashboard 14 modulos — Grid 7x2 — Iconos custom — V22b
 // APROBADO POR JJ 19/Mar/2026
 
 import { useNavigate } from 'react-router-dom'
-import {
-  LayoutDashboard, TrendingUp, Users, Headphones,
-  Radio, Map, Truck, Package, DollarSign,
-  BarChart3, PieChart, MessageSquare, FileText, Settings,
-} from 'lucide-react'
+import { useEffect, useState } from 'react'
 import AppHeader from '../components/layout/AppHeader'
 import { useAuth } from '../hooks/useAuth'
+import { supabase } from '../lib/supabase'
+
+// ── Iconos SVG custom (inline para control total) ──
+const icons = {
+  warRoom: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      <circle cx="12" cy="11" r="2.5" strokeWidth="1.5"/>
+    </svg>
+  ),
+  ventas: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <polyline points="3,17 9,11 13,15 21,7"/>
+      <polyline points="17,7 21,7 21,11"/>
+    </svg>
+  ),
+  clientes: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <circle cx="9" cy="7" r="3"/>
+      <path d="M1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
+      <circle cx="18" cy="8" r="2.5" strokeWidth="1.5"/>
+      <path d="M21 21v-1.5a3 3 0 0 0-2-2.8"/>
+    </svg>
+  ),
+  servicio: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+      <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/>
+      <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+    </svg>
+  ),
+  torre: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      <circle cx="12" cy="12" r="10" strokeWidth="1.5"/>
+      <circle cx="12" cy="12" r="6" strokeWidth="1.2" opacity="0.6"/>
+      <circle cx="12" cy="12" r="2" strokeWidth="1.5"/>
+      <line x1="12" y1="12" x2="18" y2="6" strokeWidth="2"/>
+    </svg>
+  ),
+  mapa: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+      <circle cx="12" cy="10" r="3"/>
+    </svg>
+  ),
+  flota: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <rect x="1" y="3" width="15" height="13" rx="1"/>
+      <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+      <circle cx="5.5" cy="18.5" r="2.5"/>
+      <circle cx="18.5" cy="18.5" r="2.5"/>
+    </svg>
+  ),
+  dedicados: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <polyline points="17 1 21 5 17 9"/>
+      <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+      <polyline points="7 23 3 19 7 15"/>
+      <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+    </svg>
+  ),
+  cobranza: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <line x1="12" y1="1" x2="12" y2="23"/>
+      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+    </svg>
+  ),
+  indicadores: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      <rect x="4" y="14" width="4" height="8" rx="0.5"/>
+      <rect x="10" y="8" width="4" height="14" rx="0.5"/>
+      <rect x="16" y="3" width="4" height="19" rx="0.5"/>
+    </svg>
+  ),
+  rentabilidad: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <line x1="12" y1="3" x2="12" y2="21"/>
+      <line x1="4" y1="3" x2="20" y2="3"/>
+      <path d="M4 3L2 10h8L8 3"/>
+      <path d="M16 3l2 7h-8l2-7"/>
+      <line x1="8" y1="21" x2="16" y2="21"/>
+    </svg>
+  ),
+  comunicaciones: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+      <polyline points="22,6 12,13 2,6"/>
+    </svg>
+  ),
+  reportes: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <polyline points="9 15 11 17 15 13" strokeWidth="2.2"/>
+    </svg>
+  ),
+  config: (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  ),
+}
 
 const modules = [
-  // Fila 1
-  { id: 1,  name: 'War Room',         icon: LayoutDashboard, route: '/war-room',                row: 1 },
-  { id: 2,  name: 'Ventas',           icon: TrendingUp,      route: '/ventas/mis-leads',        row: 1 },
-  { id: 3,  name: 'Clientes',         icon: Users,           route: '/clientes/alta',           row: 1 },
-  { id: 4,  name: 'Servicio',         icon: Headphones,      route: '/servicio/dashboard',      row: 1 },
-  { id: 5,  name: 'Torre de Control', icon: Radio,           route: '/operaciones/torre-control', row: 1 },
-  { id: 6,  name: 'Mapa GPS',         icon: Map,             route: '/operaciones/mapa',        row: 1 },
-  { id: 7,  name: 'Flota',            icon: Truck,           route: '/flota/tractos',           row: 1 },
-  // Fila 2
-  { id: 8,  name: 'Dedicados',        icon: Package,         route: '/operaciones/dedicados',   row: 2 },
-  { id: 9,  name: 'Cobranza',         icon: DollarSign,      route: '/cxc/cartera',             row: 2 },
-  { id: 10, name: 'Indicadores',      icon: BarChart3,       route: '/inteligencia',            row: 2 },
-  { id: 11, name: 'Rentabilidad',     icon: PieChart,        route: '/operaciones/rentabilidad', row: 2 },
-  { id: 12, name: 'Comunicaciones',   icon: MessageSquare,   route: '/servicio/whatsapp',       row: 2 },
-  { id: 13, name: 'Reportes',         icon: FileText,        route: '/inteligencia/presupuesto', row: 2 },
-  { id: 14, name: 'Configuracion',    icon: Settings,        route: '/admin/configuracion',     row: 2 },
+  { id: 1,  name: 'War Room',         icon: icons.warRoom,       route: '/war-room',                row: 1, kpi: null,   kpiType: 'status', statusLabel: 'Operativo',  statusColor: 'g', isWarRoom: true },
+  { id: 2,  name: 'Ventas',           icon: icons.ventas,        route: '/ventas/mis-leads',        row: 1, kpi: '24',   kpiType: 'number', kpiLabel: 'leads activos' },
+  { id: 3,  name: 'Clientes',         icon: icons.clientes,      route: '/clientes/alta',           row: 1, kpi: '152',  kpiType: 'number', kpiLabel: 'contactos' },
+  { id: 4,  name: 'Servicio',         icon: icons.servicio,      route: '/servicio/dashboard',      row: 1, kpi: '4',    kpiType: 'number', kpiLabel: 'ejecutivas' },
+  { id: 5,  name: 'Torre de Control', icon: icons.torre,         route: '/operaciones/torre-control', row: 1, kpi: '18',   kpiType: 'number', kpiLabel: 'viajes activos' },
+  { id: 6,  name: 'Mapa GPS',         icon: icons.mapa,          route: '/operaciones/mapa',        row: 1, kpi: '42',   kpiType: 'number', kpiLabel: 'unidades' },
+  { id: 7,  name: 'Flota',            icon: icons.flota,         route: '/flota/tractos',           row: 1, kpi: '783',  kpiType: 'number', kpiLabel: 'unidades' },
+  { id: 8,  name: 'Dedicados',        icon: icons.dedicados,     route: '/operaciones/dedicados',   row: 2, kpi: '4',    kpiType: 'number', kpiLabel: 'segmentos' },
+  { id: 9,  name: 'Cobranza',         icon: icons.cobranza,      route: '/cxc/cartera',             row: 2, kpi: '19',   kpiType: 'number', kpiLabel: 'cuentas CXC' },
+  { id: 10, name: 'Indicadores',      icon: icons.indicadores,   route: '/inteligencia',            row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Rankings',    statusColor: 'g' },
+  { id: 11, name: 'Rentabilidad',     icon: icons.rentabilidad,  route: '/operaciones/rentabilidad', row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Margen',      statusColor: 'a' },
+  { id: 12, name: 'Comunicaciones',   icon: icons.comunicaciones, route: '/servicio/whatsapp',       row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Activo',      statusColor: 'g' },
+  { id: 13, name: 'Reportes',         icon: icons.reportes,      route: '/inteligencia/presupuesto', row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Disponible',  statusColor: 'g' },
+  { id: 14, name: 'Configuraci\u00f3n', icon: icons.config,     route: '/admin/configuracion',     row: 2, kpi: null,   kpiType: 'text',   kpiLabel: '9 usuarios' },
 ]
+
 export default function HomeDashboard() {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
+  const [hover, setHover] = useState<number | null>(null)
 
-  const handleLogout = async () => {
-    await logout()
+  const handleLogout = async () => { await logout() }
+
+  // Format user name: "Juan Viveros" from email
+  const formatName = (email?: string) => {
+    if (!email) return 'Usuario'
+    const name = email.split('@')[0].replace(/[._]/g, ' ')
+    return name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
   }
 
   return (
     <div style={{ minHeight: '100vh', background: '#2a2a36' }}>
       <AppHeader
         onLogout={handleLogout}
-        userName={user?.email?.split('@')[0] || 'Usuario'}
+        userName={formatName(user?.email)}
         userRole={user?.rol || 'admin'}
       />
 
-      <div style={{
-        display: 'flex', flexDirection: 'column', gap: '16px',
-        padding: '32px 36px', maxWidth: '1400px', margin: '0 auto',
-      }}>
-        {/* Fila 1 */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
-          {modules.filter(m => m.row === 1).map(mod => (
-            <ModuleCard key={mod.id} mod={mod} onClick={() => navigate(mod.route)} />
-          ))}
-        </div>
+      {/* Status bar — pulso operativo */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '28px', padding: '14px 24px', margin: '28px 36px 24px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', maxWidth: '1440px' }}>
+        {[
+          { num: '18', label: 'viajes activos', color: '#10B981' },
+          { num: '42', label: 'unidades GPS', color: '#10B981' },
+          { num: '3', label: 'alertas hoy', color: '#F59E0B' },
+          { num: '$847K', label: 'facturado hoy', color: '#10B981' },
+          { num: '24', label: 'leads pipeline', color: '#10B981' },
+        ].map((s, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {i > 0 && <div style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.06)', marginRight: '20px' }} />}
+            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: s.color, boxShadow: `0 0 8px ${s.color}40` }} />
+            <span style={{ fontWeight: 800, fontSize: '16px', color: 'rgba(255,255,255,0.85)' }}>{s.num}</span>
+            <span style={{ fontWeight: 500, fontSize: '11.5px', color: 'rgba(255,255,255,0.35)' }}>{s.label}</span>
+          </div>
+        ))}
+      </div>
 
-        {/* Fila 2 */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
-          {modules.filter(m => m.row === 2).map(mod => (
-            <ModuleCard key={mod.id} mod={mod} onClick={() => navigate(mod.route)} />
-          ))}
-        </div>
+      {/* Grid de modulos */}
+      <div style={{ padding: '0 36px', maxWidth: '1440px', margin: '0 auto' }}>
+        {[1, 2].map(row => (
+          <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px', marginBottom: '14px' }}>
+            {modules.filter(m => m.row === row).map(mod => (
+              <button
+                key={mod.id}
+                onClick={() => navigate(mod.route)}
+                onMouseEnter={() => setHover(mod.id)}
+                onMouseLeave={() => setHover(null)}
+                style={{
+                  display: 'flex', flexDirection: 'column', alignItems: 'center',
+                  justifyContent: 'center', gap: '8px', padding: '22px 12px 20px',
+                  background: mod.isWarRoom
+                    ? 'linear-gradient(135deg, rgba(232,97,26,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)'
+                    : 'linear-gradient(135deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)',
+                  border: `1px solid ${mod.isWarRoom ? 'rgba(232,97,26,0.15)' : hover === mod.id ? 'rgba(244,123,32,0.22)' : 'rgba(255,255,255,0.07)'}`,
+                  borderRadius: '14px', cursor: 'pointer',
+                  transition: 'all 0.25s ease',
+                  boxShadow: hover === mod.id ? '0 12px 32px rgba(0,0,0,0.25), 0 0 20px rgba(244,123,32,0.06)' : '0 4px 12px rgba(0,0,0,0.15)',
+                  transform: hover === mod.id ? 'translateY(-3px)' : 'none',
+                  fontFamily: "'Montserrat', sans-serif",
+                  WebkitFontSmoothing: 'antialiased' as any,
+                  position: 'relative' as const, overflow: 'hidden',
+                  color: mod.isWarRoom ? '#E8611A' : hover === mod.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.45)',
+                }}
+              >
+                {/* Top accent line */}
+                <div style={{
+                  position: 'absolute', top: 0, left: '20%', right: '20%', height: '1px',
+                  background: 'linear-gradient(90deg, transparent, rgba(232,97,26,0.15), transparent)',
+                  opacity: mod.isWarRoom ? 0.6 : hover === mod.id ? 1 : 0,
+                  transition: 'opacity 0.3s',
+                }} />
+
+                {/* Icon */}
+                <div style={{ height: '30px', transition: 'color 0.25s' }}>
+                  {mod.icon}
+                </div>
+
+                {/* Name */}
+                <span style={{
+                  fontWeight: 600, fontSize: '12px', textAlign: 'center', lineHeight: 1.2,
+                  color: mod.isWarRoom ? 'rgba(255,255,255,0.70)' : hover === mod.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.50)',
+                  transition: 'color 0.25s',
+                }}>{mod.name}</span>
+
+                {/* KPI */}
+                <div style={{
+                  fontWeight: 700, fontSize: '11px', textAlign: 'center',
+                  color: hover === mod.id ? 'rgba(255,255,255,0.60)' : 'rgba(255,255,255,0.30)',
+                  transition: 'color 0.25s', letterSpacing: '0.3px',
+                }}>
+                  {mod.kpiType === 'number' && (
+                    <><span style={{ fontWeight: 800, fontSize: '18px', display: 'block', marginBottom: '1px', color: hover === mod.id ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.55)' }}>{mod.kpi}</span>{mod.kpiLabel}</>
+                  )}
+                  {mod.kpiType === 'status' && (
+                    <><span style={{ display: 'inline-block', width: '5px', height: '5px', borderRadius: '50%', marginRight: '4px', verticalAlign: 'middle', background: mod.statusColor === 'g' ? '#10B981' : '#F59E0B' }} />{mod.statusLabel}</>
+                  )}
+                  {mod.kpiType === 'text' && mod.kpiLabel}
+                </div>
+              </button>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
-  )
-}
-function ModuleCard({ mod, onClick }: { mod: typeof modules[0], onClick: () => void }) {
-  const Icon = mod.icon
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
-        justifyContent: 'center', gap: '10px', padding: '24px 12px',
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.015) 50%, rgba(255,255,255,0.028) 100%)',
-        border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px',
-        cursor: 'pointer', transition: 'all 0.25s ease',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-        fontFamily: "'Montserrat', sans-serif", WebkitFontSmoothing: 'antialiased',
-        color: 'rgba(255,255,255,0.55)',
-      }}
-      onMouseEnter={e => {
-        const el = e.currentTarget
-        el.style.borderColor = 'rgba(232,97,26,0.18)'
-        el.style.transform = 'translateY(-2px)'
-        el.style.boxShadow = '0 8px 24px rgba(0,0,0,0.3)'
-        el.style.color = 'rgba(255,255,255,0.92)'
-      }}
-      onMouseLeave={e => {
-        const el = e.currentTarget
-        el.style.borderColor = 'rgba(255,255,255,0.06)'
-        el.style.transform = 'translateY(0)'
-        el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)'
-        el.style.color = 'rgba(255,255,255,0.55)'
-      }}
-    >
-      <Icon size={28} />
-      <span style={{
-        fontWeight: 600, fontSize: '12.5px', textAlign: 'center',
-        transition: 'color 0.2s', color: 'inherit',
-      }}>{mod.name}</span>
-    </button>
   )
 }
