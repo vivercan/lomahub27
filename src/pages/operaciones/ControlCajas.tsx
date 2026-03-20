@@ -20,63 +20,71 @@ interface CajaRow {
   longitud: number | null;
   conGPS: boolean;
   ultimaActualizacion: string;
+  segmento: string;
+  velocidad: number;
 }
 
 export default function ControlCajas(): ReactElement {
   const [cajas, setCajas] = useState<CajaRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filtroEmpresa, setFiltroEmpresa] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('');
-  const [filtroTipo, setFiltroTipo] = useState('');
 
   useEffect(() => {
     const fetchCajas = async () => {
       try {
         setLoading(true);
 
-        // Fetch cajas from DB
-        const { data: cajasData, error: cajasError } = await supabase
-          .from('cajas')
-          .select('id, numero_economico, empresa, tipo, estado, ubicacion_actual, activo')
-          .eq('activo', true)
-          .order('numero_economico', { ascending: true });
+        // MASTER: Pull ALL cajas from gps_tracking where tipo_unidad = 'caja'
+        const { data: gpsData, error: gpsError } = await supabase
+          .from('gps_tracking')
+          .select('*')
+          .eq('tipo_unidad', 'caja')
+          .order('empresa', { ascending: true });
 
-        if (cajasError) {
-          console.error('Error fetching cajas:', cajasError);
+        if (gpsError) {
+          console.error('Error fetching GPS cajas:', gpsError);
           setCajas([]);
           return;
         }
 
-        // Fetch GPS data for cajas (match by numero_economico)
-        const { data: gpsData } = await supabase
-          .from('gps_tracking')
-          .select('economico, latitud, longitud, ubicacion, ultima_actualizacion')
-          .order('ultima_actualizacion', { ascending: false });
+        // Also fetch cajas table for enrichment (tipo seco/refrigerado, estado)
+        const { data: cajasDB } = await supabase
+          .from('cajas')
+          .select('numero_economico, tipo, estado, empresa');
 
-        // Create GPS lookup by economico
-        const gpsMap = new Map();
-        (gpsData || []).forEach((gps) => {
-          if (gps.economico && !gpsMap.has(gps.economico)) {
-            gpsMap.set(gps.economico, gps);
-          }
+        const cajasMap = new Map<string, any>();
+        (cajasDB || []).forEach((c) => {
+          if (c.numero_economico) cajasMap.set(c.numero_economico, c);
         });
 
-        const formattedCajas = (cajasData || []).map((caja) => {
-          const gps = gpsMap.get(caja.numero_economico);
+        const formattedCajas = (gpsData || []).map((gps, idx) => {
+          const cajaInfo = cajasMap.get(gps.economico);
+          const tieneCoords = gps.latitud && gps.longitud && gps.latitud !== 0;
+          const velocidad = gps.velocidad || 0;
+          // Determine movement status
+          let estado = 'sin_senal';
+          if (tieneCoords) {
+            estado = velocidad > 0 ? 'en_movimiento' : 'detenida';
+          }
+
           return {
-            id: caja.id,
-            economico: caja.numero_economico || '\u2014',
-            empresa: caja.empresa || '\u2014',
-            tipo: caja.tipo || 'seco',
-            estado: caja.estado || 'disponible',
-            ubicacion: gps?.ubicacion || caja.ubicacion_actual || 'Sin ubicaci\u00f3n',
-            latitud: gps?.latitud || null,
-            longitud: gps?.longitud || null,
-            conGPS: !!gps?.latitud,
-            ultimaActualizacion: gps?.ultima_actualizacion
+            id: gps.id?.toString() || idx.toString(),
+            economico: gps.economico || '\u2014',
+            empresa: gps.empresa || '\u2014',
+            tipo: cajaInfo?.tipo || (gps.segmento?.toLowerCase().includes('refriger') ? 'refrigerado' : 'seco'),
+            estado,
+            ubicacion: gps.ubicacion || 'Sin ubicaciÃ³n',
+            latitud: gps.latitud || null,
+            longitud: gps.longitud || null,
+            conGPS: !!tieneCoords,
+            ultimaActualizacion: gps.ultima_actualizacion
               ? new Date(gps.ultima_actualizacion).toLocaleString('es-MX', {
                   day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit',
                 })
               : '\u2014',
+            segmento: gps.segmento || '\u2014',
+            velocidad,
           };
         });
 
@@ -91,49 +99,45 @@ export default function ControlCajas(): ReactElement {
 
     fetchCajas();
   }, []);
+
+  // Get unique empresas for filter
+  const empresas = [...new Set(cajas.map(c => c.empresa).filter(e => e !== '\u2014'))];
+
   // Filter cajas
   const cajasFiltradas = cajas.filter(c => {
+    if (filtroEmpresa && c.empresa !== filtroEmpresa) return false;
     if (filtroEstado && c.estado !== filtroEstado) return false;
-    if (filtroTipo && c.tipo !== filtroTipo) return false;
     return true;
   });
 
   const totalCajas = cajas.length;
-  const secas = cajas.filter(c => c.tipo === 'seco').length;
-  const termos = cajas.filter(c => c.tipo === 'refrigerado').length;
+  const enMovimiento = cajas.filter(c => c.estado === 'en_movimiento').length;
+  const detenidas = cajas.filter(c => c.estado === 'detenida').length;
+  const sinSenal = cajas.filter(c => c.estado === 'sin_senal').length;
   const conGPS = cajas.filter(c => c.conGPS).length;
-  const cobertura = totalCajas > 0 ? Math.round((conGPS / totalCajas) * 100) : 0;
-  const coberturaColor = cobertura >= 70 ? 'green' : cobertura >= 50 ? 'yellow' : 'red';
-
-  const tipoLabel = (tipo: string) => tipo === 'refrigerado' ? 'Termo' : 'Seca';
-  const tipoVariant = (tipo: string): 'primary' | 'gray' => tipo === 'refrigerado' ? 'primary' : 'gray';
 
   const estadoVariant = (estado: string): 'green' | 'primary' | 'yellow' | 'red' | 'gray' => {
     switch (estado) {
-      case 'disponible': return 'green';
-      case 'en_transito': return 'primary';
-      case 'taller': return 'yellow';
+      case 'en_movimiento': return 'green';
+      case 'detenida': return 'yellow';
+      case 'sin_senal': return 'red';
       default: return 'gray';
     }
   };
 
   const estadoLabel = (estado: string) => {
     switch (estado) {
-      case 'disponible': return 'Disponible';
-      case 'en_transito': return 'En Tránsito';
-      case 'taller': return 'Taller';
+      case 'en_movimiento': return 'En Movimiento';
+      case 'detenida': return 'Detenida';
+      case 'sin_senal': return 'Sin SeÃ±al';
       default: return estado;
     }
   };
 
   const cajasColumns = [
-    { key: 'economico', label: 'N° Económico' },
+    { key: 'economico', label: 'NÂ° EconÃ³mico' },
     { key: 'empresa', label: 'Empresa' },
-    {
-      key: 'tipo',
-      label: 'Tipo',
-      render: (row: CajaRow) => <Badge color={tipoVariant(row.tipo)}>{tipoLabel(row.tipo)}</Badge>,
-    },
+    { key: 'segmento', label: 'Segmento' },
     {
       key: 'estado',
       label: 'Estado',
@@ -141,7 +145,7 @@ export default function ControlCajas(): ReactElement {
     },
     {
       key: 'ubicacion',
-      label: 'Ubicación GPS',
+      label: 'UbicaciÃ³n GPS',
       render: (row: CajaRow) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span
@@ -160,7 +164,16 @@ export default function ControlCajas(): ReactElement {
         </div>
       ),
     },
-    { key: 'ultimaActualizacion', label: 'Última Señal GPS' },
+    {
+      key: 'velocidad',
+      label: 'Velocidad',
+      render: (row: CajaRow) => (
+        <span style={{ color: row.velocidad > 0 ? tokens.colors.green : tokens.colors.textMuted }}>
+          {row.velocidad > 0 ? `${row.velocidad} km/h` : '\u2014'}
+        </span>
+      ),
+    },
+    { key: 'ultimaActualizacion', label: 'Ãltima SeÃ±al' },
   ];
 
   return (
@@ -174,11 +187,11 @@ export default function ControlCajas(): ReactElement {
           marginBottom: tokens.spacing.lg,
         }}
       >
-        <KPICard titulo="Total Cajas" valor={totalCajas.toString()} color="primary" />
-        <KPICard titulo="Secas" valor={secas.toString()} color="gray" />
-        <KPICard titulo="Termos" valor={termos.toString()} color="primary" />
-        <KPICard titulo="Con GPS" valor={`${conGPS} / ${totalCajas}`} color="green" />
-        <KPICard titulo="Cobertura GPS" valor={`${cobertura}%`} color={coberturaColor} />
+        <KPICard titulo="Total Cajas GPS" valor={totalCajas.toString()} color="primary" />
+        <KPICard titulo="En Movimiento" valor={enMovimiento.toString()} color="green" />
+        <KPICard titulo="Detenidas" valor={detenidas.toString()} color="yellow" />
+        <KPICard titulo="Sin SeÃ±al" valor={sinSenal.toString()} color="red" />
+        <KPICard titulo="Con PosiciÃ³n" valor={`${conGPS} / ${totalCajas}`} color="green" />
       </div>
 
       {/* Filtros */}
@@ -192,26 +205,25 @@ export default function ControlCajas(): ReactElement {
         }}
       >
         <Select
+          label="Empresa"
+          placeholder="Todas las empresas"
+          value={filtroEmpresa}
+          onChange={(e) => setFiltroEmpresa(e.target.value)}
+          options={[
+            { value: '', label: 'Todas' },
+            ...empresas.map(e => ({ value: e, label: e })),
+          ]}
+        />
+        <Select
           label="Estado"
           placeholder="Todos los estados"
           value={filtroEstado}
           onChange={(e) => setFiltroEstado(e.target.value)}
           options={[
             { value: '', label: 'Todos' },
-            { value: 'disponible', label: 'Disponible' },
-            { value: 'en_transito', label: 'En Tránsito' },
-            { value: 'taller', label: 'Taller' },
-          ]}
-        />
-        <Select
-          label="Tipo"
-          placeholder="Todos los tipos"
-          value={filtroTipo}
-          onChange={(e) => setFiltroTipo(e.target.value)}
-          options={[
-            { value: '', label: 'Todos' },
-            { value: 'seco', label: 'Secas' },
-            { value: 'refrigerado', label: 'Termos (Refrigeradas)' },
+            { value: 'en_movimiento', label: 'En Movimiento' },
+            { value: 'detenida', label: 'Detenida' },
+            { value: 'sin_senal', label: 'Sin SeÃ±al' },
           ]}
         />
       </div>
@@ -220,22 +232,20 @@ export default function ControlCajas(): ReactElement {
       <Card>
         <div style={{ marginBottom: tokens.spacing.md, paddingBottom: tokens.spacing.md, borderBottom: `1px solid ${tokens.colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>
-            Inventario de Cajas — {cajasFiltradas.length} unidades
+            Cajas GPS â {cajasFiltradas.length} unidades
           </h3>
-          {cobertura < 70 && !loading && totalCajas > 0 && (
-            <span style={{ color: tokens.colors.red, fontSize: '13px', fontWeight: 600 }}>
-              ⚢ Cobertura GPS por debajo del 70% objetivo
-            </span>
-          )}
+          <span style={{ color: tokens.colors.textMuted, fontSize: '13px' }}>
+            Fuente: GPS Master (tipo_unidad = caja)
+          </span>
         </div>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
-            <p>Cargando inventario de cajas...</p>
+            <p>Cargando cajas desde GPS Master...</p>
           </div>
         ) : cajasFiltradas.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
             <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
-            <p style={{ fontSize: '14px', marginTop: '4px' }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
+            <p style={{ fontSize: '14px', marginTop: '4px' }}>No se encontraron cajas en el GPS Master</p>
           </div>
         ) : (
           <DataTable columns={cajasColumns} data={cajasFiltradas} />
