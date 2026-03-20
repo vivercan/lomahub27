@@ -1,7 +1,66 @@
 // src/pages/HomeDashboard.tsx
 
 
-// Dashboard 14 modulos — Grid 7x2 — Iconos custom — V22b
+
+// Dashboard 14 modulos
+        {/* Status bar — pulso operativo */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '14px 24px', margin: '0 0 24px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', maxWidth: '1440px' }}>
+        {[
+          { num: '18', label: 'viajes activos', color: '#10B981' },
+          { num: '42', label: 'unidades GPS', color: '#10B981' },
+          { num: '3', label: 'alertas hoy', color: '#F59E0B' },
+          { num: '$847K', label: 'facturado hoy', color: '#10B981' },
+          { num: '24', label: 'leads pipeline', color: '#10B981' },
+        ].map((s, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {i > 0 && <div style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.06)', marginRight: '20px' }} />}
+            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: s.color, boxShadow: `0 0 8px ${s.color}40` }} />
+            <span style={{ fontWeight: 800, fontSize: '16px', color: 'rgba(255,255,255,0.85)' }}>{s.num}</span>
+            <span style={{ fontWeight: 500, fontSize: '11.5px', color: 'rgba(255,255,255,0.35)' }}>{s.label}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Grid de modulos */}
+      <div style={{ padding: '0 16px', maxWidth: '100%', margin: '0 auto' }}>
+        {[1, 2].map(row => (
+          <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '16px', marginBottom: '16px' }}>
+            {modules.filter(m => m.row === row).map(mod => (
+              <button
+                key={mod.id}
+                onClick={() => navigate(mod.route)}
+                onMouseEnter={() => setHover(mod.id)}
+                onMouseLeave={() => setHover(null)}
+                style={{
+                  display: 'flex', flexDirection: 'column', alignItems: 'center',
+                  justifyContent: 'center', gap: '10px', padding: '32px 16px 28px',
+                  background: mod.isWarRoom
+                    ? 'linear-gradient(135deg, rgba(232,97,26,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)'
+                    : 'linear-gradient(135deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)',
+                  border: `1px solid ${mod.isWarRoom ? 'rgba(232,97,26,0.15)' : hover === mod.id ? 'rgba(244,123,32,0.22)' : 'rgba(255,255,255,0.07)'}`,
+                  borderRadius: '16px', cursor: 'pointer',
+                  transition: 'all 0.25s ease',
+                  boxShadow: hover === mod.id ? '0 12px 32px rgba(0,0,0,0.25), 0 0 20px rgba(244,123,32,0.06)' : '0 4px 12px rgba(0,0,0,0.15)',
+                  transform: hover === mod.id ? 'translateY(-3px)' : 'none',
+                  fontFamily: "'Montserrat', sans-serif",
+                  WebkitFontSmoothing: 'antialiased' as any,
+                  position: 'relative' as const, overflow: 'hidden',
+                  color: mod.isWarRoom ? '#E8611A' : hover === mod.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.45)',
+                }}
+              >
+                {/* Top accent line */}
+                <div style={{
+                  position: 'absolute', top: 0, left: '20%', right: '20%', height: '1px',
+                  background: 'linear-gradient(90deg, transparent, rgba(232,97,26,0.15), transparent)',
+                  opacity: mod.isWarRoom ? 0.6 : hover === mod.id ? 1 : 0,
+                  transition: 'opacity 0.3s',
+                }} />
+
+                {/* Icon */}
+                <div style={{ height: '36px', transition: 'color 0.25s' }}>
+                  {mod.icon}
+                </div>
+ — Grid 7x2 — Iconos custom — V22b
 // APROBADO POR JJ 19/Mar/2026
 
 import { useNavigate } from 'react-router-dom'
@@ -151,63 +210,7 @@ export default function HomeDashboard() {
         userRole={user?.rol || 'admin'}
       />
 
-      {/* Status bar — pulso operativo */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '14px 24px', margin: '28px 16px 24px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', maxWidth: '1440px' }}>
-        {[
-          { num: '18', label: 'viajes activos', color: '#10B981' },
-          { num: '42', label: 'unidades GPS', color: '#10B981' },
-          { num: '3', label: 'alertas hoy', color: '#F59E0B' },
-          { num: '$847K', label: 'facturado hoy', color: '#10B981' },
-          { num: '24', label: 'leads pipeline', color: '#10B981' },
-        ].map((s, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {i > 0 && <div style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.06)', marginRight: '20px' }} />}
-            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: s.color, boxShadow: `0 0 8px ${s.color}40` }} />
-            <span style={{ fontWeight: 800, fontSize: '16px', color: 'rgba(255,255,255,0.85)' }}>{s.num}</span>
-            <span style={{ fontWeight: 500, fontSize: '11.5px', color: 'rgba(255,255,255,0.35)' }}>{s.label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Grid de modulos */}
-      <div style={{ padding: '0 16px', maxWidth: '100%', margin: '0 auto' }}>
-        {[1, 2].map(row => (
-          <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '16px', marginBottom: '16px' }}>
-            {modules.filter(m => m.row === row).map(mod => (
-              <button
-                key={mod.id}
-                onClick={() => navigate(mod.route)}
-                onMouseEnter={() => setHover(mod.id)}
-                onMouseLeave={() => setHover(null)}
-                style={{
-                  display: 'flex', flexDirection: 'column', alignItems: 'center',
-                  justifyContent: 'center', gap: '10px', padding: '32px 16px 28px',
-                  background: mod.isWarRoom
-                    ? 'linear-gradient(135deg, rgba(232,97,26,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)'
-                    : 'linear-gradient(135deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)',
-                  border: `1px solid ${mod.isWarRoom ? 'rgba(232,97,26,0.15)' : hover === mod.id ? 'rgba(244,123,32,0.22)' : 'rgba(255,255,255,0.07)'}`,
-                  borderRadius: '16px', cursor: 'pointer',
-                  transition: 'all 0.25s ease',
-                  boxShadow: hover === mod.id ? '0 12px 32px rgba(0,0,0,0.25), 0 0 20px rgba(244,123,32,0.06)' : '0 4px 12px rgba(0,0,0,0.15)',
-                  transform: hover === mod.id ? 'translateY(-3px)' : 'none',
-                  fontFamily: "'Montserrat', sans-serif",
-                  WebkitFontSmoothing: 'antialiased' as any,
-                  position: 'relative' as const, overflow: 'hidden',
-                  color: mod.isWarRoom ? '#E8611A' : hover === mod.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.45)',
-                }}
-              >
-                {/* Top accent line */}
-                <div style={{
-                  position: 'absolute', top: 0, left: '20%', right: '20%', height: '1px',
-                  background: 'linear-gradient(90deg, transparent, rgba(232,97,26,0.15), transparent)',
-                  opacity: mod.isWarRoom ? 0.6 : hover === mod.id ? 1 : 0,
-                  transition: 'opacity 0.3s',
-                }} />
-
-                {/* Icon */}
-                <div style={{ height: '36px', transition: 'color 0.25s' }}>
-                  {mod.icon}
-                </div>
+      
 
                 {/* Name */}
                 <span style={{
