@@ -12,15 +12,24 @@ interface TractoRow {
   economico: string;
   empresa: string;
   segmento: string;
-  estado: 'disponible' | 'en_viaje' | 'taller';
+  estado: string;
   operador: string;
-  km_acumulados: number;
-  horas_ociosas: number;
-  viaje_actual: string;
+  ubicacion: string;
+  latitud: number | null;
+  longitud: number | null;
+  conGPS: boolean;
+  velocidad: number;
+  ultimaSenal: string;
 }
 
-function getEstadoBadgeColor(estado: string): 'gray' | 'green' | 'blue' | 'yellow' {
+function getEstadoBadgeColor(estado: string): 'gray' | 'green' | 'blue' | 'yellow' | 'red' {
   switch (estado) {
+    case 'en_movimiento':
+      return 'green';
+    case 'detenido':
+      return 'yellow';
+    case 'sin_senal':
+      return 'red';
     case 'disponible':
       return 'green';
     case 'en_viaje':
@@ -32,45 +41,81 @@ function getEstadoBadgeColor(estado: string): 'gray' | 'green' | 'blue' | 'yello
   }
 }
 
-function getHorasOciosasBgColor(horas: number): string {
-  if (horas < 3) return tokens.colors.green;
-  if (horas <= 8) return tokens.colors.yellow;
-  return tokens.colors.red;
-}
-
-function formatNumber(num: number): string {
-  return num.toLocaleString('es-MX');
+function getEstadoLabel(estado: string): string {
+  switch (estado) {
+    case 'en_movimiento': return 'En Movimiento';
+    case 'detenido': return 'Detenido';
+    case 'sin_senal': return 'Sin SeÃ±al';
+    case 'disponible': return 'Disponible';
+    case 'en_viaje': return 'En Viaje';
+    case 'taller': return 'Taller';
+    default: return estado;
+  }
 }
 
 export default function ControlTractos() {
   const [tractos, setTractos] = useState<TractoRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filtroEmpresa, setFiltroEmpresa] = useState('');
+  const [filtroEstado, setFiltroEstado] = useState('');
 
   useEffect(() => {
     const fetchTractos = async () => {
       try {
         setLoading(true);
-        const { data, error } = await supabase
-          .from('tractos')
-          .select('*');
 
-        if (error) {
-          console.error('Error fetching tractos:', error);
+        // MASTER: Pull ALL tractos from gps_tracking where tipo_unidad = 'tracto'
+        const { data: gpsData, error: gpsError } = await supabase
+          .from('gps_tracking')
+          .select('*')
+          .eq('tipo_unidad', 'tracto')
+          .order('empresa', { ascending: true });
+
+        if (gpsError) {
+          console.error('Error fetching GPS tractos:', gpsError);
           setTractos([]);
           return;
         }
 
-        const formattedTractos = (data || []).map((tracto: any) => ({
-          id: tracto.id?.toString() || '',
-          economico: tracto.economico || '',
-          empresa: tracto.empresa || '',
-          segmento: tracto.segmento || '',
-          estado: tracto.estado || 'disponible',
-          operador: tracto.operador || '—',
-          km_acumulados: tracto.km_acumulados || 0,
-          horas_ociosas: tracto.horas_ociosas || 0,
-          viaje_actual: tracto.viaje_actual || '—',
-        }));
+        // Enrich with tractos table (operador, etc.)
+        const { data: tractosDB } = await supabase
+          .from('tractos')
+          .select('numero_economico, operador, estado');
+
+        const tractosMap = new Map<string, any>();
+        (tractosDB || []).forEach((t) => {
+          if (t.numero_economico) tractosMap.set(t.numero_economico, t);
+        });
+
+        const formattedTractos = (gpsData || []).map((gps, idx) => {
+          const tractoInfo = tractosMap.get(gps.economico);
+          const tieneCoords = gps.latitud && gps.longitud && gps.latitud !== 0;
+          const velocidad = gps.velocidad || 0;
+
+          let estado = 'sin_senal';
+          if (tieneCoords) {
+            estado = velocidad > 0 ? 'en_movimiento' : 'detenido';
+          }
+
+          return {
+            id: gps.id?.toString() || idx.toString(),
+            economico: gps.economico || '\u2014',
+            empresa: gps.empresa || '\u2014',
+            segmento: gps.segmento || '\u2014',
+            estado,
+            operador: tractoInfo?.operador || '\u2014',
+            ubicacion: gps.ubicacion || 'Sin ubicaciÃ³n',
+            latitud: gps.latitud || null,
+            longitud: gps.longitud || null,
+            conGPS: !!tieneCoords,
+            velocidad,
+            ultimaSenal: gps.ultima_actualizacion
+              ? new Date(gps.ultima_actualizacion).toLocaleString('es-MX', {
+                  day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit',
+                })
+              : '\u2014',
+          };
+        });
 
         setTractos(formattedTractos);
       } catch (err) {
@@ -84,76 +129,152 @@ export default function ControlTractos() {
     fetchTractos();
   }, []);
 
+  // Get unique empresas for filter
+  const empresas = [...new Set(tractos.map(t => t.empresa).filter(e => e !== '\u2014'))];
+
+  // Filter
+  const tractosFiltrados = tractos.filter(t => {
+    if (filtroEmpresa && t.empresa !== filtroEmpresa) return false;
+    if (filtroEstado && t.estado !== filtroEstado) return false;
+    return true;
+  });
+
+  const total = tractos.length;
+  const enMovimiento = tractos.filter(t => t.estado === 'en_movimiento').length;
+  const detenidos = tractos.filter(t => t.estado === 'detenido').length;
+  const sinSenal = tractos.filter(t => t.estado === 'sin_senal').length;
+  const conGPS = tractos.filter(t => t.conGPS).length;
+
   const columns = [
-    { key: 'economico', label: 'Económico', width: '12%' },
-    { key: 'empresa', label: 'Empresa', width: '18%' },
-    { key: 'segmento', label: 'Segmento', width: '12%' },
+    { key: 'economico', label: 'EconÃ³mico' },
+    { key: 'empresa', label: 'Empresa' },
+    { key: 'segmento', label: 'Segmento' },
     {
       key: 'estado',
       label: 'Estado',
-      width: '12%',
       render: (row: TractoRow) => (
         <Badge color={getEstadoBadgeColor(row.estado)}>
-          {row.estado === 'en_viaje' ? 'En Viaje' : row.estado === 'taller' ? 'Taller' : 'Disponible'}
+          {getEstadoLabel(row.estado)}
         </Badge>
       ),
     },
-    { key: 'operador', label: 'Operador', width: '15%' },
+    { key: 'operador', label: 'Operador' },
     {
-      key: 'km_acumulados',
-      label: 'Km Acumulados',
-      width: '12%',
-      render: (row: TractoRow) => formatNumber(row.km_acumulados),
-    },
-    {
-      key: 'horas_ociosas',
-      label: 'Horas Ociosas',
-      width: '12%',
+      key: 'ubicacion',
+      label: 'UbicaciÃ³n GPS',
       render: (row: TractoRow) => (
-        <div
-          style={{
-            backgroundColor: getHorasOciosasBgColor(row.horas_ociosas),
-            color: '#fff',
-            padding: `${tokens.spacing.xs} ${tokens.spacing.sm}`,
-            borderRadius: tokens.radius.lg,
-            textAlign: 'center',
-          }}
-        >
-          {row.horas_ociosas.toFixed(1)}h
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span
+            style={{
+              display: 'inline-block',
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: row.conGPS ? tokens.colors.green : tokens.colors.red,
+              flexShrink: 0,
+            }}
+          />
+          <span style={{ color: row.conGPS ? tokens.colors.textPrimary : tokens.colors.textMuted }}>
+            {row.ubicacion}
+          </span>
         </div>
       ),
     },
-    { key: 'viaje_actual', label: 'Viaje Actual', width: '15%' },
+    {
+      key: 'velocidad',
+      label: 'Velocidad',
+      render: (row: TractoRow) => (
+        <span style={{ color: row.velocidad > 0 ? tokens.colors.green : tokens.colors.textMuted }}>
+          {row.velocidad > 0 ? `${row.velocidad} km/h` : '\u2014'}
+        </span>
+      ),
+    },
+    { key: 'ultimaSenal', label: 'Ãltima SeÃ±al' },
   ];
 
   return (
     <ModuleLayout titulo="Control de Tractos">
+      {/* KPIs */}
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridTemplateColumns: 'repeat(5, 1fr)',
           gap: tokens.spacing.md,
           marginBottom: tokens.spacing.lg,
         }}
       >
-        <KPICard titulo="Total" valor={tractos.length.toString()} color="gray" />
-        <KPICard titulo="Disponibles" valor={tractos.filter(t => t.estado === 'disponible').length.toString()} color="green" />
-        <KPICard titulo="En Viaje" valor={tractos.filter(t => t.estado === 'en_viaje').length.toString()} color="blue" />
-        <KPICard titulo="Taller" valor={tractos.filter(t => t.estado === 'taller').length.toString()} color="yellow" />
+        <KPICard titulo="Total Tractos GPS" valor={total.toString()} color="primary" />
+        <KPICard titulo="En Movimiento" valor={enMovimiento.toString()} color="green" />
+        <KPICard titulo="Detenidos" valor={detenidos.toString()} color="yellow" />
+        <KPICard titulo="Sin SeÃ±al" valor={sinSenal.toString()} color="red" />
+        <KPICard titulo="Con PosiciÃ³n" valor={`${conGPS} / ${total}`} color="green" />
       </div>
 
+      {/* Filtros */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: tokens.spacing.md,
+          marginBottom: tokens.spacing.lg,
+          maxWidth: '500px',
+        }}
+      >
+        <select
+          value={filtroEmpresa}
+          onChange={(e) => setFiltroEmpresa(e.target.value)}
+          style={{
+            padding: '8px 12px',
+            borderRadius: tokens.radius.md,
+            border: `1px solid ${tokens.colors.border}`,
+            background: tokens.colors.bgCard,
+            color: tokens.colors.textPrimary,
+            fontSize: '14px',
+          }}
+        >
+          <option value="">Todas las empresas</option>
+          {empresas.map(e => <option key={e} value={e}>{e}</option>)}
+        </select>
+        <select
+          value={filtroEstado}
+          onChange={(e) => setFiltroEstado(e.target.value)}
+          style={{
+            padding: '8px 12px',
+            borderRadius: tokens.radius.md,
+            border: `1px solid ${tokens.colors.border}`,
+            background: tokens.colors.bgCard,
+            color: tokens.colors.textPrimary,
+            fontSize: '14px',
+          }}
+        >
+          <option value="">Todos los estados</option>
+          <option value="en_movimiento">En Movimiento</option>
+          <option value="detenido">Detenido</option>
+          <option value="sin_senal">Sin SeÃ±al</option>
+        </select>
+      </div>
+
+      {/* Tractos DataTable */}
       <Card>
+        <div style={{ marginBottom: tokens.spacing.md, paddingBottom: tokens.spacing.md, borderBottom: `1px solid ${tokens.colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>
+            Tractos GPS â {tractosFiltrados.length} unidades
+          </h3>
+          <span style={{ color: tokens.colors.textMuted, fontSize: '13px' }}>
+            Fuente: GPS Master (tipo_unidad = tracto)
+          </span>
+        </div>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
-            <p>Cargando...</p>
+            <p>Cargando tractos desde GPS Master...</p>
           </div>
-        ) : tractos.length === 0 ? (
+        ) : tractosFiltrados.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
             <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
-            <p style={{ fontSize: '14px', marginTop: '4px' }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
+            <p style={{ fontSize: '14px', marginTop: '4px' }}>No se encontraron tractos en el GPS Master</p>
           </div>
         ) : (
-          <DataTable columns={columns} data={tractos} />
+          <DataTable columns={columns} data={tractosFiltrados} />
         )}
       </Card>
     </ModuleLayout>
