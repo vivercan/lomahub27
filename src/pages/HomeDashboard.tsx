@@ -2,9 +2,10 @@
 
 
 
+
 // Dashboard 14 modulos
         {/* Status bar — pulso operativo */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '14px 24px', margin: '0 0 24px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', maxWidth: '1440px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', animation: 'statusFadeIn 0.5s ease forwards', padding: '14px 24px', margin: '0 0 24px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', maxWidth: '1440px' }}>
         {[
           { num: '18', label: 'viajes activos', color: '#10B981' },
           { num: '42', label: 'unidades GPS', color: '#10B981' },
@@ -25,7 +26,7 @@
       <div style={{ padding: '0 16px', maxWidth: '100%', margin: '0 auto' }}>
         {[1, 2].map(row => (
           <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '16px', marginBottom: '16px' }}>
-            {modules.filter(m => m.row === row).map(mod => (
+            {modules.filter(m => m.row === row).map((mod, idx) => (
               <button
                 key={mod.id}
                 onClick={() => navigate(mod.route)}
@@ -40,7 +41,7 @@
                   border: `1px solid ${mod.isWarRoom ? 'rgba(232,97,26,0.15)' : hover === mod.id ? 'rgba(244,123,32,0.22)' : 'rgba(255,255,255,0.07)'}`,
                   borderRadius: '16px', cursor: 'pointer',
                   transition: 'all 0.25s ease',
-                  boxShadow: hover === mod.id ? '0 12px 32px rgba(0,0,0,0.25), 0 0 20px rgba(244,123,32,0.06)' : '0 4px 12px rgba(0,0,0,0.15)',
+                  boxShadow: mod.isWarRoom && hover === mod.id ? '0 12px 32px rgba(0,0,0,0.3), 0 0 40px rgba(244,123,32,0.18), 0 0 80px rgba(232,97,26,0.08)' : hover === mod.id ? '0 12px 32px rgba(0,0,0,0.25), 0 0 20px rgba(244,123,32,0.06)' : '0 4px 12px rgba(0,0,0,0.15)',
                   transform: hover === mod.id ? 'translateY(-3px)' : 'none',
                   fontFamily: "'Montserrat', sans-serif",
                   WebkitFontSmoothing: 'antialiased' as any,
@@ -69,7 +70,24 @@ import AppHeader from '../components/layout/AppHeader'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 
-// ── Iconos SVG custom (inline para control total) ──
+
+// Inject animation keyframes
+const ANIM_STYLE = document.createElement('style')
+ANIM_STYLE.textContent = \`
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes statusFadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+\`
+if (!document.getElementById('lh27-anims')) {
+  ANIM_STYLE.id = 'lh27-anims'
+  document.head.appendChild(ANIM_STYLE)
+}
+\n// ── Iconos SVG custom (inline para control total) ──
 const icons = {
   warRoom: (
     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
