@@ -52,3 +52,33 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #374151;
 }
+
+
+/* ══ Dashboard animations — LomaHUB27 ══ */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes statusFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stagger delays for 14 module cards */
+.dash-card-0 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 0ms; opacity: 0; }
+.dash-card-1 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 60ms; opacity: 0; }
+.dash-card-2 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 120ms; opacity: 0; }
+.dash-card-3 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 180ms; opacity: 0; }
+.dash-card-4 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 240ms; opacity: 0; }
+.dash-card-5 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 300ms; opacity: 0; }
+.dash-card-6 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 360ms; opacity: 0; }
+.dash-card-7 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 420ms; opacity: 0; }
+.dash-card-8 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 480ms; opacity: 0; }
+.dash-card-9 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 540ms; opacity: 0; }
+.dash-card-10 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 600ms; opacity: 0; }
+.dash-card-11 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 660ms; opacity: 0; }
+.dash-card-12 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 720ms; opacity: 0; }
+.dash-card-13 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 780ms; opacity: 0; }
+
+.dash-status-bar { animation: statusFadeIn 0.5s ease forwards; }
