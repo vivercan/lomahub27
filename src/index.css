@@ -8,11 +8,21 @@
   box-sizing: border-box;
 }
 
+html, body {
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
 body {
   background-color: #0B1220;
   color: #F9FAFB;
   font-family: 'Exo 2', sans-serif;
-  min-height: 100vh;
+}
+
+#root {
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* Glassmorphism base */
@@ -38,23 +48,17 @@ body {
   background: linear-gradient(135deg, #0B1220 0%, #0D1B2A 50%, #0B1220 100%);
 }
 
-/* Scrollbar styling */
+/* Scrollbar hidden globally */
 ::-webkit-scrollbar {
-  width: 6px;
+  display: none;
 }
-::-webkit-scrollbar-track {
-  background: #0B1220;
-}
-::-webkit-scrollbar-thumb {
-  background: #1F2937;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #374151;
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 
-/* ══ Dashboard animations — LomaHUB27 ══ */
+/* Dashboard animations */
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
