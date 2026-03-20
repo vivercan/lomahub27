@@ -24,7 +24,7 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children }: ModuleLa
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#2a2a36' }}>
+    <div style={{ height: '100vh', overflow: 'hidden', background: '#2a2a36', display: 'flex', flexDirection: 'column' }}>
       <AppHeader
         onLogout={handleLogout}
         userName={user?.email?.split('@')[0] || 'Usuario'}
@@ -33,7 +33,8 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children }: ModuleLa
 
       <div style={{
         display: 'flex', alignItems: 'center', gap: '16px',
-        padding: '16px 36px', borderBottom: '1px solid rgba(255,255,255,0.06)',
+        padding: '12px 36px', borderBottom: '1px solid rgba(255,255,255,0.06)',
+        flexShrink: 0,
       }}>
         <button onClick={() => navigate('/dashboard')} style={{
           display: 'flex', alignItems: 'center', gap: '6px',
@@ -62,7 +63,7 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children }: ModuleLa
         {acciones && <div style={{ marginLeft: 'auto' }}>{acciones}</div>}
       </div>
 
-      <main style={{ padding: '24px 36px' }}>
+      <main style={{ flex: 1, overflow: 'hidden', padding: '24px 36px' }}>
         {children}
       </main>
     </div>
