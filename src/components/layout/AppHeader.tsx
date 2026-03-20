@@ -1,4 +1,5 @@
 // src/components/layout/AppHeader.tsx
+
 // Header 3D cristal — Design System LomaHUB27 (Notion p.18)
 // APROBADO POR JJ 18/Mar/2026
 
@@ -100,10 +101,9 @@ export default function AppHeader({ onLogout, userName, userRole }: AppHeaderPro
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', boxShadow: '0 0 10px rgba(232,97,26,0.20)',
           }} title="Cerrar sesion">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16,17 21,12 16,7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
+              <line x1="12" y1="2" x2="12" y2="12"/>
             </svg>
           </button>
         </div>
