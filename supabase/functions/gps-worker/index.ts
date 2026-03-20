@@ -27,8 +27,25 @@ Deno.serve(async (_req) => {
     const xmlText = await response.text()
     const units = parseGPSResponse(xmlText)
 
+    // Cargar lookup de tractos y cajas para clasificar tipo_unidad
+    const { data: tractosData } = await supabase.from('tractos').select('numero_economico')
+    const { data: cajasData } = await supabase.from('cajas').select('numero_economico')
+    const tractosSet = new Set((tractosData || []).map(t => t.numero_economico))
+    const cajasSet = new Set((cajasData || []).map(c => c.numero_economico))
+
     // Upsert en gps_tracking
     for (const unit of units) {
+      // Clasificar tipo_unidad: caja si es trailer/segmento o está en tabla cajas
+      let tipo_unidad = 'tracto'
+      const segLower = (unit.segmento || '').toLowerCase()
+      if (segLower.includes('trailer')) {
+        tipo_unidad = 'caja'
+      } else if (cajasSet.has(unit.economico)) {
+        tipo_unidad = 'caja'
+      } else if (tractosSet.has(unit.economico)) {
+        tipo_unidad = 'tracto'
+      }
+
       await supabase.from('gps_tracking').upsert({
         economico: unit.economico,
         empresa: unit.empresa,
@@ -38,6 +55,7 @@ Deno.serve(async (_req) => {
         velocidad: unit.speed,
         ubicacion: unit.location,
         estatus: unit.status,
+        tipo_unidad,
         ultima_actualizacion: new Date().toISOString()
       }, { onConflict: 'economico' })
 
