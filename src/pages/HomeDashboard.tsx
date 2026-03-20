@@ -12,19 +12,19 @@ import { supabase } from '../lib/supabase'
 // ── Iconos SVG custom (inline para control total) ──
 const icons = {
   warRoom: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       <circle cx="12" cy="11" r="2.5" strokeWidth="1.5"/>
     </svg>
   ),
   ventas: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <polyline points="3,17 9,11 13,15 21,7"/>
       <polyline points="17,7 21,7 21,11"/>
     </svg>
   ),
   clientes: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <circle cx="9" cy="7" r="3"/>
       <path d="M1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
       <circle cx="18" cy="8" r="2.5" strokeWidth="1.5"/>
@@ -32,14 +32,14 @@ const icons = {
     </svg>
   ),
   servicio: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
       <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/>
       <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
     </svg>
   ),
   torre: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
       <circle cx="12" cy="12" r="10" strokeWidth="1.5"/>
       <circle cx="12" cy="12" r="6" strokeWidth="1.2" opacity="0.6"/>
       <circle cx="12" cy="12" r="2" strokeWidth="1.5"/>
@@ -47,13 +47,13 @@ const icons = {
     </svg>
   ),
   mapa: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
       <circle cx="12" cy="10" r="3"/>
     </svg>
   ),
   flota: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <rect x="1" y="3" width="15" height="13" rx="1"/>
       <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
       <circle cx="5.5" cy="18.5" r="2.5"/>
@@ -61,7 +61,7 @@ const icons = {
     </svg>
   ),
   dedicados: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <polyline points="17 1 21 5 17 9"/>
       <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
       <polyline points="7 23 3 19 7 15"/>
@@ -69,20 +69,20 @@ const icons = {
     </svg>
   ),
   cobranza: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <line x1="12" y1="1" x2="12" y2="23"/>
       <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
     </svg>
   ),
   indicadores: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
       <rect x="4" y="14" width="4" height="8" rx="0.5"/>
       <rect x="10" y="8" width="4" height="14" rx="0.5"/>
       <rect x="16" y="3" width="4" height="19" rx="0.5"/>
     </svg>
   ),
   rentabilidad: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <line x1="12" y1="3" x2="12" y2="21"/>
       <line x1="4" y1="3" x2="20" y2="3"/>
       <path d="M4 3L2 10h8L8 3"/>
@@ -91,20 +91,20 @@ const icons = {
     </svg>
   ),
   comunicaciones: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
       <polyline points="22,6 12,13 2,6"/>
     </svg>
   ),
   reportes: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
       <polyline points="14 2 14 8 20 8"/>
       <polyline points="9 15 11 17 15 13" strokeWidth="2.2"/>
     </svg>
   ),
   config: (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <circle cx="12" cy="12" r="3"/>
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
     </svg>
@@ -171,7 +171,7 @@ export default function HomeDashboard() {
       {/* Grid de modulos */}
       <div style={{ padding: '0 36px', maxWidth: '1440px', margin: '0 auto' }}>
         {[1, 2].map(row => (
-          <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px', marginBottom: '14px' }}>
+          <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '16px', marginBottom: '16px' }}>
             {modules.filter(m => m.row === row).map(mod => (
               <button
                 key={mod.id}
@@ -180,12 +180,12 @@ export default function HomeDashboard() {
                 onMouseLeave={() => setHover(null)}
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center',
-                  justifyContent: 'center', gap: '8px', padding: '22px 12px 20px',
+                  justifyContent: 'center', gap: '10px', padding: '32px 16px 28px',
                   background: mod.isWarRoom
                     ? 'linear-gradient(135deg, rgba(232,97,26,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)'
                     : 'linear-gradient(135deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)',
                   border: `1px solid ${mod.isWarRoom ? 'rgba(232,97,26,0.15)' : hover === mod.id ? 'rgba(244,123,32,0.22)' : 'rgba(255,255,255,0.07)'}`,
-                  borderRadius: '14px', cursor: 'pointer',
+                  borderRadius: '16px', cursor: 'pointer',
                   transition: 'all 0.25s ease',
                   boxShadow: hover === mod.id ? '0 12px 32px rgba(0,0,0,0.25), 0 0 20px rgba(244,123,32,0.06)' : '0 4px 12px rgba(0,0,0,0.15)',
                   transform: hover === mod.id ? 'translateY(-3px)' : 'none',
@@ -204,25 +204,25 @@ export default function HomeDashboard() {
                 }} />
 
                 {/* Icon */}
-                <div style={{ height: '30px', transition: 'color 0.25s' }}>
+                <div style={{ height: '36px', transition: 'color 0.25s' }}>
                   {mod.icon}
                 </div>
 
                 {/* Name */}
                 <span style={{
-                  fontWeight: 600, fontSize: '12px', textAlign: 'center', lineHeight: 1.2,
+                  fontWeight: 600, fontSize: '13.5px', textAlign: 'center', lineHeight: 1.2,
                   color: mod.isWarRoom ? 'rgba(255,255,255,0.70)' : hover === mod.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.50)',
                   transition: 'color 0.25s',
                 }}>{mod.name}</span>
 
                 {/* KPI */}
                 <div style={{
-                  fontWeight: 700, fontSize: '11px', textAlign: 'center',
+                  fontWeight: 700, fontSize: '12px', textAlign: 'center',
                   color: hover === mod.id ? 'rgba(255,255,255,0.60)' : 'rgba(255,255,255,0.30)',
                   transition: 'color 0.25s', letterSpacing: '0.3px',
                 }}>
                   {mod.kpiType === 'number' && (
-                    <><span style={{ fontWeight: 800, fontSize: '18px', display: 'block', marginBottom: '1px', color: hover === mod.id ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.55)' }}>{mod.kpi}</span>{mod.kpiLabel}</>
+                    <><span style={{ fontWeight: 800, fontSize: '22px', display: 'block', marginBottom: '1px', color: hover === mod.id ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.55)' }}>{mod.kpi}</span>{mod.kpiLabel}</>
                   )}
                   {mod.kpiType === 'status' && (
                     <><span style={{ display: 'inline-block', width: '5px', height: '5px', borderRadius: '50%', marginRight: '4px', verticalAlign: 'middle', background: mod.statusColor === 'g' ? '#10B981' : '#F59E0B' }} />{mod.statusLabel}</>
