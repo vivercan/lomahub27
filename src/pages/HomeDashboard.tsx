@@ -3,6 +3,7 @@
 
 
 
+
 // Dashboard 14 modulos
         {/* Status bar — pulso operativo */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', animation: 'statusFadeIn 0.5s ease forwards', padding: '14px 24px', margin: '0 0 24px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', maxWidth: '1440px' }}>
@@ -41,6 +42,9 @@
                   border: `1px solid ${mod.isWarRoom ? 'rgba(232,97,26,0.15)' : hover === mod.id ? 'rgba(244,123,32,0.22)' : 'rgba(255,255,255,0.07)'}`,
                   borderRadius: '16px', cursor: 'pointer',
                   transition: 'all 0.25s ease',
+                  animation: 'fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards',
+                  animationDelay: `${(row === 1 ? idx : idx + 7) * 60}ms`,
+                  opacity: 0,
                   boxShadow: mod.isWarRoom && hover === mod.id ? '0 12px 32px rgba(0,0,0,0.3), 0 0 40px rgba(244,123,32,0.18), 0 0 80px rgba(232,97,26,0.08)' : hover === mod.id ? '0 12px 32px rgba(0,0,0,0.25), 0 0 20px rgba(244,123,32,0.06)' : '0 4px 12px rgba(0,0,0,0.15)',
                   transform: hover === mod.id ? 'translateY(-3px)' : 'none',
                   fontFamily: "'Montserrat', sans-serif",
@@ -71,23 +75,7 @@ import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 
 
-// Inject animation keyframes
-const ANIM_STYLE = document.createElement('style')
-ANIM_STYLE.textContent = \`
-  @keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes statusFadeIn {
-    from { opacity: 0; transform: translateY(-8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-\`
-if (!document.getElementById('lh27-anims')) {
-  ANIM_STYLE.id = 'lh27-anims'
-  document.head.appendChild(ANIM_STYLE)
-}
-\n// ── Iconos SVG custom (inline para control total) ──
+// ── Iconos SVG custom (inline para control total) ──
 const icons = {
   warRoom: (
     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -210,6 +198,25 @@ export default function HomeDashboard() {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
   const [hover, setHover] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (document.getElementById('lh27-anims')) return
+    const s = document.createElement('style')
+    s.id = 'lh27-anims'
+    s.textContent = [
+      '@keyframes fadeSlideUp {',
+      '  from { opacity: 0; transform: translateY(16px); }',
+      '  to { opacity: 1; transform: translateY(0); }',
+      '}',
+      '@keyframes statusFadeIn {',
+      '  from { opacity: 0; transform: translateY(-8px); }',
+      '  to { opacity: 1; transform: translateY(0); }',
+      '}',
+    ].join('\n')
+    document.head.appendChild(s)
+    return () => { s.remove() }
+  }, [])
+
 
   const handleLogout = async () => { await logout() }
 
