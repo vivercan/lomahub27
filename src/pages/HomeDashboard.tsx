@@ -151,7 +151,7 @@ export default function HomeDashboard() {
       />
 
       {/* Status bar — pulso operativo */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '28px', padding: '14px 24px', margin: '28px 36px 24px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', maxWidth: '1440px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '28px', padding: '14px 24px', margin: '28px 16px 24px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', maxWidth: '1440px' }}>
         {[
           { num: '18', label: 'viajes activos', color: '#10B981' },
           { num: '42', label: 'unidades GPS', color: '#10B981' },
@@ -169,7 +169,7 @@ export default function HomeDashboard() {
       </div>
 
       {/* Grid de modulos */}
-      <div style={{ padding: '0 36px', maxWidth: '1440px', margin: '0 auto' }}>
+      <div style={{ padding: '0 16px', maxWidth: '100%', margin: '0 auto' }}>
         {[1, 2].map(row => (
           <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '16px', marginBottom: '16px' }}>
             {modules.filter(m => m.row === row).map(mod => (
