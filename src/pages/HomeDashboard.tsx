@@ -152,7 +152,7 @@ export default function HomeDashboard() {
       />
 
       {/* Status bar — pulso operativo */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '28px', padding: '14px 24px', margin: '28px 16px 24px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', maxWidth: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '14px 24px', margin: '28px 16px 24px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', maxWidth: '1440px' }}>
         {[
           { num: '18', label: 'viajes activos', color: '#10B981' },
           { num: '42', label: 'unidades GPS', color: '#10B981' },
