@@ -3,6 +3,7 @@
 
 
 
+
 // Dashboard 14 modulos — Grid 7x2 — Iconos custom — V22b
 // APROBADO POR JJ 19/Mar/2026
 
@@ -116,14 +117,14 @@ const icons = {
 
 const modules = [
   { id: 1,  name: 'War Room',         icon: icons.warRoom,       route: '/war-room',                row: 1, kpi: null,   kpiType: 'status', statusLabel: 'Operativo',  statusColor: 'g', isWarRoom: true },
-  { id: 2,  name: 'Ventas',           icon: icons.ventas,        route: '/ventas/mis-leads',        row: 1, kpi: '24',   kpiType: 'number', kpiLabel: 'leads activos' },
-  { id: 3,  name: 'Clientes',         icon: icons.clientes,      route: '/clientes/alta',           row: 1, kpi: '152',  kpiType: 'number', kpiLabel: 'contactos' },
+  { id: 2,  name: 'Ventas',           icon: icons.ventas,        route: '/ventas/mis-leads',        row: 1, kpi: String(counts.leads || 0),   kpiType: 'number', kpiLabel: 'leads activos' },
+  { id: 3,  name: 'Clientes',         icon: icons.clientes,      route: '/clientes/alta',           row: 1, kpi: String(counts.clientes || 0),  kpiType: 'number', kpiLabel: 'contactos' },
   { id: 4,  name: 'Servicio',         icon: icons.servicio,      route: '/servicio/dashboard',      row: 1, kpi: '4',    kpiType: 'number', kpiLabel: 'ejecutivas' },
-  { id: 5,  name: 'Torre de Control', icon: icons.torre,         route: '/operaciones/torre-control', row: 1, kpi: '18',   kpiType: 'number', kpiLabel: 'viajes activos' },
-  { id: 6,  name: 'Mapa GPS',         icon: icons.mapa,          route: '/operaciones/mapa',        row: 1, kpi: '42',   kpiType: 'number', kpiLabel: 'unidades' },
-  { id: 7,  name: 'Flota',            icon: icons.flota,         route: '/flota/tractos',           row: 1, kpi: '783',  kpiType: 'number', kpiLabel: 'unidades' },
+  { id: 5,  name: 'Torre de Control', icon: icons.torre,         route: '/operaciones/torre-control', row: 1, kpi: String(counts.viajes || 0),   kpiType: 'number', kpiLabel: 'viajes activos' },
+  { id: 6,  name: 'Mapa GPS',         icon: icons.mapa,          route: '/operaciones/mapa',        row: 1, kpi: String(counts.gps || 0),   kpiType: 'number', kpiLabel: 'unidades' },
+  { id: 7,  name: 'Flota',            icon: icons.flota,         route: '/flota/tractos',           row: 1, kpi: String((counts.tractos + counts.cajas) || 0),  kpiType: 'number', kpiLabel: 'unidades' },
   { id: 8,  name: 'Dedicados',        icon: icons.dedicados,     route: '/operaciones/dedicados',   row: 2, kpi: '4',    kpiType: 'number', kpiLabel: 'segmentos' },
-  { id: 9,  name: 'Cobranza',         icon: icons.cobranza,      route: '/cxc/cartera',             row: 2, kpi: '19',   kpiType: 'number', kpiLabel: 'cuentas CXC' },
+  { id: 9,  name: 'Cobranza',         icon: icons.cobranza,      route: '/cxc/cartera',             row: 2, kpi: String(counts.cxc || 0),   kpiType: 'number', kpiLabel: 'cuentas CXC' },
   { id: 10, name: 'Indicadores',      icon: icons.indicadores,   route: '/inteligencia',            row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Rankings',    statusColor: 'g' },
   { id: 11, name: 'Rentabilidad',     icon: icons.rentabilidad,  route: '/operaciones/rentabilidad', row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Margen',      statusColor: 'a' },
   { id: 12, name: 'Comunicaciones',   icon: icons.comunicaciones, route: '/servicio/whatsapp',       row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Activo',      statusColor: 'g' },
@@ -135,6 +136,34 @@ export default function HomeDashboard() {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
   const [hover, setHover] = useState<number | null>(null)
+  const [counts, setCounts] = useState({
+    leads: 0, clientes: 0, viajes: 0, tractos: 0, cajas: 0, gps: 0, cxc: 0,
+  })
+
+  useEffect(() => {
+    async function fetchCounts() {
+      const [leadsR, clientesR, viajesR, tractosR, cajasR, gpsR, cxcR] = await Promise.all([
+        supabase.from('leads').select('id', { count: 'exact', head: true }),
+        supabase.from('clientes').select('id', { count: 'exact', head: true }),
+        supabase.from('viajes').select('id', { count: 'exact', head: true }),
+        supabase.from('tractos').select('id', { count: 'exact', head: true }),
+        supabase.from('cajas').select('id', { count: 'exact', head: true }),
+        supabase.from('gps_tracking').select('id', { count: 'exact', head: true }),
+        supabase.from('cxc_cartera').select('id', { count: 'exact', head: true }),
+      ])
+      setCounts({
+        leads: leadsR.count || 0,
+        clientes: clientesR.count || 0,
+        viajes: viajesR.count || 0,
+        tractos: tractosR.count || 0,
+        cajas: cajasR.count || 0,
+        gps: gpsR.count || 0,
+        cxc: cxcR.count || 0,
+      })
+    }
+    fetchCounts()
+  }, [])
+
 
   const handleLogout = async () => { await logout() }
 
@@ -156,11 +185,11 @@ export default function HomeDashboard() {
       {/* Status bar — pulso operativo */}
       <div className="dash-status-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '14px 24px', margin: '28px 16px 24px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', }}>
         {[
-          { num: '18', label: 'viajes activos', color: '#10B981' },
-          { num: '42', label: 'unidades GPS', color: '#10B981' },
+          { num: String(counts.viajes || 0), label: 'viajes activos', color: '#10B981' },
+          { num: String(counts.gps || 0), label: 'unidades GPS', color: '#10B981' },
           { num: '3', label: 'alertas hoy', color: '#F59E0B' },
           { num: '$847K', label: 'facturado hoy', color: '#10B981' },
-          { num: '24', label: 'leads pipeline', color: '#10B981' },
+          { num: String(counts.leads || 0), label: 'leads pipeline', color: '#10B981' },
         ].map((s, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {i > 0 && <div style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.06)', marginRight: '20px' }} />}
