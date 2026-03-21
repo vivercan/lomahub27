@@ -107,7 +107,7 @@ export default function Configuracion() {
   ];
 
   return (
-    <ModuleLayout titulo="ConfiguraciÃ³n del Sistema">
+    <ModuleLayout titulo="Configuración del Sistema">
       <div style={{ marginBottom: tokens.spacing.lg }}>
         <div
           style={{
@@ -166,7 +166,7 @@ export default function Configuracion() {
           {usuarios.length === 0 ? (
             <div style={{ textAlign: 'center', padding: tokens.spacing.lg, color: tokens.colors.textSecondary }}>
               <p style={{ fontSize: '1.1rem', fontWeight: '500', margin: 0 }}>Sin datos</p>
-              <p style={{ fontSize: '0.85rem', marginTop: tokens.spacing.sm }}>Los datos se cargarÃ¡n cuando estÃ©n disponibles en el sistema</p>
+              <p style={{ fontSize: '0.85rem', marginTop: tokens.spacing.sm }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
             </div>
           ) : (
             <DataTable columns={usuarioColumns} data={usuarios} />
@@ -183,7 +183,7 @@ export default function Configuracion() {
               color: tokens.colors.textSecondary,
             }}
           >
-            <p style={{ margin: 0 }}>GestiÃ³n de CatÃ¡logos (Implementar segÃºn especificaciones)</p>
+            <p style={{ margin: 0 }}>Gestión de Catálogos (Implementar según especificaciones)</p>
           </div>
         </Card>
       )}
@@ -197,7 +197,7 @@ export default function Configuracion() {
               color: tokens.colors.textSecondary,
             }}
           >
-            <p style={{ margin: 0 }}>ParÃ¡metros del Sistema (Implementar segÃºn especificaciones)</p>
+            <p style={{ margin: 0 }}>Parámetros del Sistema (Implementar según especificaciones)</p>
           </div>
         </Card>
       )}
@@ -211,7 +211,7 @@ export default function Configuracion() {
               color: tokens.colors.textSecondary,
             }}
           >
-            <p style={{ margin: 0 }}>Integraciones (Implementar segÃºn especificaciones)</p>
+            <p style={{ margin: 0 }}>Integraciones (Implementar según especificaciones)</p>
           </div>
         </Card>
       )}
@@ -225,7 +225,7 @@ export default function Configuracion() {
               color: tokens.colors.textSecondary,
             }}
           >
-            <p style={{ margin: 0 }}>AuditorÃ­a del Sistema (Implementar segÃºn especificaciones)</p>
+            <p style={{ margin: 0 }}>Auditoría del Sistema (Implementar según especificaciones)</p>
           </div>
         </Card>
       )}
