@@ -1,6 +1,12 @@
 // src/pages/HomeDashboard.tsx
-// Dashboard 14 modulos — Grid 7x2 — Iconos custom — V26b
-// Tarjetas grandes — Iconos 48px — Montserrat
+
+
+
+
+
+// V26c: Dashboard 14 modulos — Tarjetas grandes 48px
+// Dashboard 14 modulos — Grid 7x2 — Iconos custom — V22b
+// APROBADO POR JJ 19/Mar/2026
 
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -8,6 +14,7 @@ import AppHeader from '../components/layout/AppHeader'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 
+// ── Iconos SVG custom (inline para control total) ──
 const icons = {
   warRoom: (
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -20,7 +27,8 @@ const icons = {
       <polyline points="3,17 9,11 13,15 21,7"/>
       <polyline points="17,7 21,7 21,11"/>
     </svg>
-  ),  clientes: (
+  ),
+  clientes: (
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <circle cx="9" cy="7" r="3"/>
       <path d="M1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
@@ -82,7 +90,7 @@ const icons = {
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <line x1="12" y1="3" x2="12" y2="21"/>
       <line x1="4" y1="3" x2="20" y2="3"/>
-      <path d="M4 3L1 8h8L6 3"/>
+      <path d="M4 3L2 10h8L8 3"/>
       <path d="M16 3l2 7h-8l2-7"/>
       <line x1="8" y1="21" x2="16" y2="21"/>
     </svg>
@@ -107,21 +115,22 @@ const icons = {
     </svg>
   ),
 }
+
 const modules = [
-  { id: 1, name: 'War Room', icon: icons.warRoom, route: '/war-room', row: 1, kpi: null, kpiType: 'status', statusLabel: 'Operativo', statusColor: 'g', isWarRoom: true },
-  { id: 2, name: 'Ventas', icon: icons.ventas, route: '/ventas/mis-leads', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'leads activos' },
-  { id: 3, name: 'Clientes', icon: icons.clientes, route: '/clientes/alta', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'contactos' },
-  { id: 4, name: 'Servicio', icon: icons.servicio, route: '/servicio/dashboard', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'ejecutivas' },
-  { id: 5, name: 'Torre de Control', icon: icons.torre, route: '/operaciones/torre-control', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'viajes activos' },
-  { id: 6, name: 'Mapa GPS', icon: icons.mapa, route: '/operaciones/mapa', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'unidades' },
-  { id: 7, name: 'Flota', icon: icons.flota, route: '/flota/tractos', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'unidades' },
-  { id: 8, name: 'Dedicados', icon: icons.dedicados, route: '/operaciones/dedicados', row: 2, kpi: '—', kpiType: 'number', kpiLabel: 'segmentos' },
-  { id: 9, name: 'Cobranza', icon: icons.cobranza, route: '/cxc/cartera', row: 2, kpi: '—', kpiType: 'number', kpiLabel: 'cuentas CXC' },
-  { id: 10, name: 'Indicadores', icon: icons.indicadores, route: '/inteligencia', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Rankings', statusColor: 'g' },
-  { id: 11, name: 'Rentabilidad', icon: icons.rentabilidad, route: '/operaciones/rentabilidad', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Margen', statusColor: 'a' },
-  { id: 12, name: 'Comunicaciones', icon: icons.comunicaciones, route: '/servicio/whatsapp', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Activo', statusColor: 'g' },
-  { id: 13, name: 'Reportes', icon: icons.reportes, route: '/inteligencia/presupuesto', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Disponible', statusColor: 'g' },
-  { id: 14, name: 'Configuración', icon: icons.config, route: '/admin/configuracion', row: 2, kpi: null, kpiType: 'text', kpiLabel: '—' },
+  { id: 1,  name: 'War Room',         icon: icons.warRoom,       route: '/war-room',                row: 1, kpi: null,   kpiType: 'status', statusLabel: 'Operativo',  statusColor: 'g', isWarRoom: true },
+  { id: 2,  name: 'Ventas',           icon: icons.ventas,        route: '/ventas/mis-leads',        row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'leads activos' },
+  { id: 3,  name: 'Clientes',         icon: icons.clientes,      route: '/clientes/alta',           row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'contactos' },
+  { id: 4,  name: 'Servicio',         icon: icons.servicio,      route: '/servicio/dashboard',      row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'ejecutivas' },
+  { id: 5,  name: 'Torre de Control', icon: icons.torre,         route: '/operaciones/torre-control', row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'viajes activos' },
+  { id: 6,  name: 'Mapa GPS',         icon: icons.mapa,          route: '/operaciones/mapa',        row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'unidades' },
+  { id: 7,  name: 'Flota',            icon: icons.flota,         route: '/flota/tractos',           row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'unidades' },
+  { id: 8,  name: 'Dedicados',        icon: icons.dedicados,     route: '/operaciones/dedicados',   row: 2, kpi: '—',    kpiType: 'number', kpiLabel: 'segmentos' },
+  { id: 9,  name: 'Cobranza',         icon: icons.cobranza,      route: '/cxc/cartera',             row: 2, kpi: '—',    kpiType: 'number', kpiLabel: 'cuentas CXC' },
+  { id: 10, name: 'Indicadores',      icon: icons.indicadores,   route: '/inteligencia',            row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Rankings',    statusColor: 'g' },
+  { id: 11, name: 'Rentabilidad',     icon: icons.rentabilidad,  route: '/operaciones/rentabilidad', row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Margen',      statusColor: 'a' },
+  { id: 12, name: 'Comunicaciones',   icon: icons.comunicaciones, route: '/servicio/whatsapp',       row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Activo',      statusColor: 'g' },
+  { id: 13, name: 'Reportes',         icon: icons.reportes,      route: '/inteligencia/presupuesto', row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Disponible',  statusColor: 'g' },
+  { id: 14, name: 'Configuración', icon: icons.config,     route: '/admin/configuracion',     row: 2, kpi: null,   kpiType: 'text',   kpiLabel: '—' },
 ]
 
 export default function HomeDashboard() {
@@ -153,23 +162,26 @@ export default function HomeDashboard() {
     return m.kpi
   }
 
+
   const handleLogout = async () => { await logout() }
+
+  // Format user name: "Juan Viveros" from email
   const formatName = (email?: string) => {
     if (!email) return 'Usuario'
     const name = email.split('@')[0].replace(/[._]/g, ' ')
     return name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
   }
+
   return (
     <div style={{ height: '100vh', overflow: 'hidden', background: '#2a2a36', display: 'flex', flexDirection: 'column' }}>
-      <AppHeader onLogout={handleLogout} userName={formatName(user?.email)} userRole={user?.rol || 'admin'} />
+      <AppHeader
+        onLogout={handleLogout}
+        userName={formatName(user?.email)}
+        userRole={user?.rol || 'admin'}
+      />
 
-      {/* Status bar */}
-      <div className="dash-status-bar" style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-evenly',
-        padding: '12px 32px', margin: '16px 16px 12px',
-        background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)',
-        borderRadius: '12px', flexShrink: 0, fontFamily: "'Montserrat', sans-serif"
-      }}>
+      {/* Status bar — pulso operativo */}
+      <div className="dash-status-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '12px 32px', margin: '16px 16px 12px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', flexShrink: 0 }}>
         {[
           { num: String(counts.viajes || 0), label: 'viajes activos', color: '#10B981' },
           { num: String(counts.gps_tracking || 0), label: 'unidades GPS', color: '#10B981' },
@@ -185,12 +197,9 @@ export default function HomeDashboard() {
           </div>
         ))}
       </div>
+
       {/* Grid de modulos */}
-      <div style={{
-        flex: 1, padding: '0 16px', maxWidth: '100%', margin: '0 auto',
-        overflow: 'hidden', display: 'flex', flexDirection: 'column',
-        justifyContent: 'center', gap: '16px'
-      }}>
+      <div style={{ flex: 1, padding: '0 16px', maxWidth: '100%', margin: '0 auto', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '16px' }}>
         {[1, 2].map(row => (
           <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
             {modules.filter(m => m.row === row).map((mod, idx) => (
@@ -202,8 +211,7 @@ export default function HomeDashboard() {
                 onMouseLeave={() => setHover(null)}
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center',
-                  justifyContent: 'center', gap: '10px',
-                  padding: '28px 16px 24px',
+                  justifyContent: 'center', gap: '8px', padding: '28px 16px 24px',
                   background: mod.isWarRoom
                     ? 'linear-gradient(135deg, rgba(232,97,26,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)'
                     : 'linear-gradient(135deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)',
@@ -218,29 +226,37 @@ export default function HomeDashboard() {
                   color: mod.isWarRoom ? '#E8611A' : hover === mod.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.45)',
                 }}
               >
-                <div style={{ position: 'absolute', top: 0, left: '20%', right: '20%', height: '1px',
+                {/* Top accent line */}
+                <div style={{
+                  position: 'absolute', top: 0, left: '20%', right: '20%', height: '1px',
                   background: 'linear-gradient(90deg, transparent, rgba(232,97,26,0.15), transparent)',
-                  opacity: mod.isWarRoom ? 0.6 : hover === mod.id ? 1 : 0, transition: 'opacity 0.3s',
+                  opacity: mod.isWarRoom ? 0.6 : hover === mod.id ? 1 : 0,
+                  transition: 'opacity 0.3s',
                 }} />
-                <div style={{ height: '48px', transition: 'color 0.25s' }}>{mod.icon}</div>
-                <span style={{ fontWeight: 600, fontSize: '15px', textAlign: 'center', lineHeight: 1.2,
+
+                {/* Icon */}
+                <div style={{ height: '48px', transition: 'color 0.25s' }}>
+                  {mod.icon}
+                </div>
+
+                {/* Name */}
+                <span style={{
+                  fontWeight: 600, fontSize: '15px', textAlign: 'center', lineHeight: 1.2,
                   color: mod.isWarRoom ? 'rgba(255,255,255,0.70)' : hover === mod.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.50)',
                   transition: 'color 0.25s',
                 }}>{mod.name}</span>
-                <div style={{ fontWeight: 700, fontSize: '13px', textAlign: 'center',
+
+                {/* KPI */}
+                <div style={{
+                  fontWeight: 700, fontSize: '13px', textAlign: 'center',
                   color: hover === mod.id ? 'rgba(255,255,255,0.60)' : 'rgba(255,255,255,0.30)',
                   transition: 'color 0.25s', letterSpacing: '0.3px',
                 }}>
                   {mod.kpiType === 'number' && (
-                    <><span style={{ fontWeight: 800, fontSize: '28px', display: 'block', marginBottom: '2px',
-                      color: hover === mod.id ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.55)'
-                    }}>{getKpi(mod)}</span><span style={{ fontSize: '13px' }}>{mod.kpiLabel}</span></>
+                    <><span style={{ fontWeight: 800, fontSize: '28px', display: 'block', marginBottom: '1px', color: hover === mod.id ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.55)' }}>{mod.kpiType === 'number' ? getKpi(mod) : mod.kpi}</span>{mod.kpiLabel}</>
                   )}
                   {mod.kpiType === 'status' && (
-                    <><span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%',
-                      marginRight: '5px', verticalAlign: 'middle',
-                      background: mod.statusColor === 'g' ? '#10B981' : '#F59E0B'
-                    }} />{mod.statusLabel}</>
+                    <><span style={{ display: 'inline-block', width: '5px', height: '5px', borderRadius: '50%', marginRight: '4px', verticalAlign: 'middle', background: mod.statusColor === 'g' ? '#10B981' : '#F59E0B' }} />{mod.statusLabel}</>
                   )}
                   {mod.kpiType === 'text' && mod.kpiLabel}
                 </div>
@@ -252,4 +268,3 @@ export default function HomeDashboard() {
     </div>
   )
 }
-h
