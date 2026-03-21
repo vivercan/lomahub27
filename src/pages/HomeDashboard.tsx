@@ -4,7 +4,7 @@
 
 
 
-// V27e: Final micro-calibration — icon consistency, subtitle subordination, Comms authority — elite precision — Tarjetas grandes 48px
+// V27f: Final optical unification — Servicio tamed, subtitle legibility, icon family — icon consistency, subtitle subordination, Comms authority — elite precision — Tarjetas grandes 48px
 // Dashboard 14 modulos — Grid 7x2 — Iconos custom — V22b
 // APROBADO POR JJ 19/Mar/2026
 
@@ -37,7 +37,7 @@ const icons = {
     </svg>
   ),
   servicio: (
-    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
       <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/>
       <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
@@ -255,7 +255,7 @@ export default function HomeDashboard() {
                 {/* KPI */}
                 <div style={{
                   fontWeight: 500, fontSize: '11.5px', textAlign: 'center',
-                  color: hover === mod.id ? 'rgba(255,255,255,0.50)' : 'rgba(255,255,255,0.24)',
+                  color: hover === mod.id ? 'rgba(255,255,255,0.48)' : 'rgba(255,255,255,0.28)',
                   transition: 'color 0.25s', letterSpacing: '0.3px',
                 }}>
                   {mod.kpiType === 'number' && (
