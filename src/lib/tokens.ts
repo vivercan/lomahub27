@@ -55,8 +55,8 @@ export const tokens = {
 
   // ─── TIPOGRAFÍA ──────────────────────────────────────
   fonts: {
-    heading: 'Orbitron, sans-serif',
-    body:    '"Exo 2", sans-serif',
+    heading: "'Montserrat', sans-serif",
+    body:    "'Montserrat', sans-serif",
   },
 
   // ─── EFECTOS ─────────────────────────────────────────
