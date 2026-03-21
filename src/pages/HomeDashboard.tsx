@@ -4,7 +4,7 @@
 
 
 
-// Dashboard 14 modulos â Grid 7x2 â Iconos custom â V22b
+// Dashboard 14 modulos — Grid 7x2 — Iconos custom — V22b
 // APROBADO POR JJ 19/Mar/2026
 
 import { useNavigate } from 'react-router-dom'
@@ -13,7 +13,7 @@ import AppHeader from '../components/layout/AppHeader'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 
-// ââ Iconos SVG custom (inline para control total) ââ
+// ── Iconos SVG custom (inline para control total) ──
 const icons = {
   warRoom: (
     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -117,19 +117,19 @@ const icons = {
 
 const modules = [
   { id: 1,  name: 'War Room',         icon: icons.warRoom,       route: '/war-room',                row: 1, kpi: null,   kpiType: 'status', statusLabel: 'Operativo',  statusColor: 'g', isWarRoom: true },
-  { id: 2,  name: 'Ventas',           icon: icons.ventas,        route: '/ventas/mis-leads',        row: 1, kpi: 'â',    kpiType: 'number', kpiLabel: 'â' },
-  { id: 3,  name: 'Clientes',         icon: icons.clientes,      route: '/clientes/alta',           row: 1, kpi: 'â',    kpiType: 'number', kpiLabel: 'â' },
-  { id: 4,  name: 'Servicio',         icon: icons.servicio,      route: '/servicio/dashboard',      row: 1, kpi: 'â',    kpiType: 'number', kpiLabel: 'â' },
-  { id: 5,  name: 'Torre de Control', icon: icons.torre,         route: '/operaciones/torre-control', row: 1, kpi: 'â',    kpiType: 'number', kpiLabel: 'â' },
-  { id: 6,  name: 'Mapa GPS',         icon: icons.mapa,          route: '/operaciones/mapa',        row: 1, kpi: 'â',    kpiType: 'number', kpiLabel: 'â' },
-  { id: 7,  name: 'Flota',            icon: icons.flota,         route: '/flota/tractos',           row: 1, kpi: 'â',    kpiType: 'number', kpiLabel: 'â' },
-  { id: 8,  name: 'Dedicados',        icon: icons.dedicados,     route: '/operaciones/dedicados',   row: 2, kpi: 'â',    kpiType: 'number', kpiLabel: 'â' },
-  { id: 9,  name: 'Cobranza',         icon: icons.cobranza,      route: '/cxc/cartera',             row: 2, kpi: 'â',    kpiType: 'number', kpiLabel: 'â' },
+  { id: 2,  name: 'Ventas',           icon: icons.ventas,        route: '/ventas/mis-leads',        row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'leads activos' },
+  { id: 3,  name: 'Clientes',         icon: icons.clientes,      route: '/clientes/alta',           row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'contactos' },
+  { id: 4,  name: 'Servicio',         icon: icons.servicio,      route: '/servicio/dashboard',      row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'ejecutivas' },
+  { id: 5,  name: 'Torre de Control', icon: icons.torre,         route: '/operaciones/torre-control', row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'viajes activos' },
+  { id: 6,  name: 'Mapa GPS',         icon: icons.mapa,          route: '/operaciones/mapa',        row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'unidades' },
+  { id: 7,  name: 'Flota',            icon: icons.flota,         route: '/flota/tractos',           row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'unidades' },
+  { id: 8,  name: 'Dedicados',        icon: icons.dedicados,     route: '/operaciones/dedicados',   row: 2, kpi: '—',    kpiType: 'number', kpiLabel: 'segmentos' },
+  { id: 9,  name: 'Cobranza',         icon: icons.cobranza,      route: '/cxc/cartera',             row: 2, kpi: '—',    kpiType: 'number', kpiLabel: 'cuentas CXC' },
   { id: 10, name: 'Indicadores',      icon: icons.indicadores,   route: '/inteligencia',            row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Rankings',    statusColor: 'g' },
   { id: 11, name: 'Rentabilidad',     icon: icons.rentabilidad,  route: '/operaciones/rentabilidad', row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Margen',      statusColor: 'a' },
   { id: 12, name: 'Comunicaciones',   icon: icons.comunicaciones, route: '/servicio/whatsapp',       row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Activo',      statusColor: 'g' },
   { id: 13, name: 'Reportes',         icon: icons.reportes,      route: '/inteligencia/presupuesto', row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Disponible',  statusColor: 'g' },
-  { id: 14, name: 'ConfiguraciÃ³n', icon: icons.config,     route: '/admin/configuracion',     row: 2, kpi: null,   kpiType: 'text',   kpiLabel: 'â' },
+  { id: 14, name: 'Configuración', icon: icons.config,     route: '/admin/configuracion',     row: 2, kpi: null,   kpiType: 'text',   kpiLabel: '—' },
 ]
 
 export default function HomeDashboard() {
@@ -179,13 +179,13 @@ export default function HomeDashboard() {
         userRole={user?.rol || 'admin'}
       />
 
-      {/* Status bar â pulso operativo */}
+      {/* Status bar — pulso operativo */}
       <div className="dash-status-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '10px 24px', margin: '16px 16px 12px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', flexShrink: 0 }}>
         {[
           { num: String(counts.viajes || 0), label: 'viajes activos', color: '#10B981' },
           { num: String(counts.gps_tracking || 0), label: 'unidades GPS', color: '#10B981' },
-          { num: 'â', label: 'alertas hoy', color: '#F59E0B' },
-          { num: 'â', label: 'facturado hoy', color: '#10B981' },
+          { num: '—', label: 'alertas hoy', color: '#F59E0B' },
+          { num: '—', label: 'facturado hoy', color: '#10B981' },
           { num: String(counts.leads || 0), label: 'leads pipeline', color: '#10B981' },
         ].map((s, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
