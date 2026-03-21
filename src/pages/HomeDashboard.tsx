@@ -4,7 +4,7 @@
 
 
 
-// V27b: Second-pass premium correction — Tarjetas grandes 48px
+// V27b: Second-pass premium correction (safe) — Tarjetas grandes 48px
 // Dashboard 14 modulos — Grid 7x2 — Iconos custom — V22b
 // APROBADO POR JJ 19/Mar/2026
 
@@ -216,15 +216,15 @@ export default function HomeDashboard() {
                   background: mod.isWarRoom
                     ? 'linear-gradient(180deg, rgba(56,50,56,1) 0%, rgba(42,38,48,1) 45%, rgba(31,30,40,1) 100%)'
                     : 'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 45%, rgba(33,33,43,1) 100%)',
-                  borderTop: `1px solid ${mod.isWarRoom ? 'rgba(210,165,120,0.18)' : `rgba(155,168,195,${mod.priority === 'high' ? 0.18 : 0.14})`}`,
-                  borderLeft: `1px solid ${mod.isWarRoom ? 'rgba(210,165,120,0.13)' : `rgba(155,168,195,${mod.priority === 'high' ? 0.13 : 0.09})`}`,
+                  borderTop: `1px solid ${mod.isWarRoom ? 'rgba(200,160,120,0.14)' : `rgba(160,170,190,${mod.priority === 'high' ? 0.14 : 0.11})`}`,
+                  borderLeft: `1px solid ${mod.isWarRoom ? 'rgba(200,160,120,0.10)' : `rgba(160,170,190,${mod.priority === 'high' ? 0.10 : 0.07})`}`,
                   borderBottom: '1px solid rgba(0,0,0,0.42)',
                   borderRight: '1px solid rgba(0,0,0,0.32)',
                   borderRadius: '20px', cursor: 'pointer',
                   transition: 'all 0.18s ease',
                   boxShadow: hover === mod.id
-                    ? `0 12px 28px rgba(0,0,0,0.4), 0 3px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -2px 4px rgba(0,0,0,0.18)${mod.isWarRoom ? ', 0 0 20px rgba(232,97,26,0.06)' : ''}`
-                    : `0 10px 24px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,${mod.priority === 'high' ? '0.07' : '0.05'}), inset 0 -3px 6px rgba(0,0,0,0.14)`,
+                    ? `0 10px 22px rgba(0,0,0,0.35), 0 3px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.15)${mod.isWarRoom ? ', 0 0 20px rgba(232,97,26,0.06)' : ''}`
+                    : `0 8px 20px rgba(0,0,0,0.22), 0 2px 6px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,${mod.priority === 'high' ? '0.05' : '0.04'}), inset 0 -2px 4px rgba(0,0,0,0.10)`,
                   transform: hover === mod.id ? 'translateY(-2px)' : 'none',
                   fontFamily: "'Montserrat', sans-serif",
                   WebkitFontSmoothing: 'antialiased' as any,
@@ -241,7 +241,7 @@ export default function HomeDashboard() {
                 }} />
 
                 {/* Icon */}
-                <div style={{ height: '55px', position: 'relative', transition: 'all 0.2s', filter: hover === mod.id ? 'drop-shadow(0 0 8px rgba(255,255,255,0.08)) brightness(1.15)' : `drop-shadow(0 0 ${mod.priority === 'high' ? '6' : '4'}px rgba(255,255,255,${mod.priority === 'high' ? '0.05' : '0.03'}))` }}>
+                <div style={{ height: '55px', position: 'relative', transition: 'all 0.2s', filter: hover === mod.id ? 'brightness(1.18)' : 'brightness(1.0)' }}>
                   {mod.icon}
                 </div>
 
