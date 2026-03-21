@@ -42,7 +42,7 @@ const S = {
     display: 'grid' as const,
     gridTemplateColumns: '560px 1fr',
     width: '100%',
-    minHeight: '100vh',
+    height: '100vh',
     background: L.bg,
     fontFamily: L.font,
     position: 'relative' as const,
@@ -352,7 +352,7 @@ export default function Login() {
     try {
       await loginWithGoogleIdToken(response.credential)
     } catch (err: any) {
-      setError(err.message || 'Error al iniciar sesi\u00f3n con Google')
+      setError(err.message || 'Error al iniciar sesión con Google')
     } finally {
       setGoogleLoading(false)
     }
@@ -481,7 +481,7 @@ export default function Login() {
 
       <div style={S.statusBar}>
         <span style={S.statusR}>
-          Grupo Loma 2026 {"\u00b7"} <a href="mailto:hola@trob.com.mx" onDoubleClick={(e) => { e.preventDefault(); navigator.clipboard.writeText('hola@trob.com.mx') }} style={{ color: 'inherit', textDecoration: 'none', cursor: 'pointer' }}>hola@trob.com.mx</a> {"\u00b7"} Operaci{"\u00f3"}n inteligente... Resultados reales
+          Grupo Loma 2026 {"·"} <a href="mailto:hola@trob.com.mx" onDoubleClick={(e) => { e.preventDefault(); navigator.clipboard.writeText('hola@trob.com.mx') }} style={{ color: 'inherit', textDecoration: 'none', cursor: 'pointer' }}>hola@trob.com.mx</a> {"·"} Operación inteligente... Resultados reales
         </span>
       </div>
     </div>
