@@ -199,9 +199,9 @@ export default function HomeDashboard() {
       </div>
 
       {/* Grid de modulos */}
-      <div style={{ flex: 1, padding: '0 20px', maxWidth: '100%',  overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div style={{ flex: 1, padding: '10px 20px', maxWidth: '100%',  overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {[1, 2].map(row => (
-          <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '10px', flex: 1 }}>
+          <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '10px' }}>
             {modules.filter(m => m.row === row).map((mod, idx) => (
               <button
                 key={mod.id}
@@ -212,13 +212,17 @@ export default function HomeDashboard() {
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center',
                   justifyContent: 'center', gap: '8px', padding: '16px 10px 14px',
+                  aspectRatio: '1 / 1',
                   background: mod.isWarRoom
-                    ? 'linear-gradient(135deg, rgba(232,97,26,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)'
-                    : 'linear-gradient(135deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)',
-                  border: `1px solid ${mod.isWarRoom ? 'rgba(232,97,26,0.15)' : hover === mod.id ? 'rgba(244,123,32,0.22)' : 'rgba(255,255,255,0.07)'}`,
+                    ? 'linear-gradient(145deg, rgba(232,97,26,0.08) 0%, rgba(45,45,58,1) 40%, rgba(35,35,48,1) 100%)'
+                    : 'linear-gradient(145deg, rgba(60,60,75,1) 0%, rgba(45,45,58,1) 40%, rgba(35,35,48,1) 100%)',
+                  borderTop: `1px solid ${mod.isWarRoom ? 'rgba(232,97,26,0.25)' : 'rgba(255,255,255,0.12)'}`,
+                  borderLeft: `1px solid ${mod.isWarRoom ? 'rgba(232,97,26,0.2)' : 'rgba(255,255,255,0.08)'}`,
+                  borderBottom: `1px solid rgba(0,0,0,0.3)`,
+                  borderRight: `1px solid rgba(0,0,0,0.2)`,
                   borderRadius: '12px', cursor: 'pointer',
                   transition: 'all 0.25s ease',
-                  boxShadow: hover === mod.id ? '0 12px 32px rgba(0,0,0,0.25), 0 0 20px rgba(244,123,32,0.06)' : '0 4px 12px rgba(0,0,0,0.15)',
+                  boxShadow: hover === mod.id ? '0 8px 24px rgba(0,0,0,0.4), 0 0 15px rgba(244,123,32,0.08), inset 0 1px 0 rgba(255,255,255,0.05)' : '4px 4px 12px rgba(0,0,0,0.3), -2px -2px 8px rgba(255,255,255,0.02), inset 0 1px 0 rgba(255,255,255,0.04)',
                   transform: hover === mod.id ? 'translateY(-3px)' : 'none',
                   fontFamily: "'Montserrat', sans-serif",
                   WebkitFontSmoothing: 'antialiased' as any,
