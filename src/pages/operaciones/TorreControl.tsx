@@ -35,7 +35,7 @@ const estadoToSemaforo = (estado: string): SemaforoEstado => {
 
 const estadoLabel = (estado: string): string => {
   switch (estado) {
-    case 'en_transito': return 'En Tránsito';
+    case 'en_transito': return 'En TrÃ¡nsito';
     case 'programado': return 'Programado';
     case 'en_riesgo': return 'En Riesgo';
     case 'retrasado': return 'Retrasado';
@@ -80,12 +80,12 @@ export default function TorreControl(): ReactElement {
           const diffMin = eta && cita ? Math.round((eta.getTime() - cita.getTime()) / 60000) : 0;
 
           return {
-            folio: viaje.id?.substring(0, 8)?.toUpperCase() || '—',
-            cliente: viaje.cliente?.nombre || '—',
-            ruta: `${viaje.origen || '?'} → ${viaje.destino || '?'}`,
-            tracto: viaje.tracto?.numero_economico || '—',
-            eta: eta ? eta.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
-            cita: cita ? cita.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
+            folio: viaje.id?.substring(0, 8)?.toUpperCase() || 'â',
+            cliente: viaje.cliente?.nombre || 'â',
+            ruta: `${viaje.origen || '?'} â ${viaje.destino || '?'}`,
+            tracto: viaje.tracto?.numero_economico || 'â',
+            eta: eta ? eta.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'â',
+            cita: cita ? cita.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'â',
             diferencia: diffMin,
             estadoViaje: viaje.estado || 'programado',
             semaforo: estadoToSemaforo(viaje.estado || 'programado'),
@@ -113,7 +113,7 @@ export default function TorreControl(): ReactElement {
   const viajesColumns = [
     { key: 'folio', label: 'Folio' },
     { key: 'cliente', label: 'Cliente' },
-    { key: 'ruta', label: 'Origen → Destino' },
+    { key: 'ruta', label: 'Origen â Destino' },
     { key: 'tracto', label: 'Tracto' },
     { key: 'eta', label: 'ETA' },
     { key: 'cita', label: 'Cita' },
@@ -149,7 +149,7 @@ export default function TorreControl(): ReactElement {
           marginBottom: tokens.spacing.lg,
         }}
       >
-        <KPICard titulo="En Tránsito" valor={viajes.filter(v => v.estadoViaje === 'en_transito').length.toString()} color="green" />
+        <KPICard titulo="En TrÃ¡nsito" valor={viajes.filter(v => v.estadoViaje === 'en_transito').length.toString()} color="green" />
         <KPICard titulo="En Riesgo" valor={viajes.filter(v => v.estadoViaje === 'en_riesgo').length.toString()} color="yellow" />
         <KPICard titulo="Retrasados" valor={viajes.filter(v => v.estadoViaje === 'retrasado').length.toString()} color="red" />
         <KPICard titulo="Programados" valor={viajes.filter(v => v.estadoViaje === 'programado').length.toString()} color="primary" />
@@ -168,25 +168,21 @@ export default function TorreControl(): ReactElement {
           label="Empresa"
           placeholder="Todas las empresas"
           options={[
-            { value: 'tdn', label: 'TDN México' },
-            { value: 'logi', label: 'Logística Integral' },
+            { value: 'tdn', label: 'TDN MÃ©xico' },
+            { value: 'logi', label: 'LogÃ­stica Integral' },
             { value: 'tds', label: 'Transportes del Sur' },
           ]}
         />
         <Select
           label="CS Asignada"
           placeholder="Todos los CS"
-          options={[
-            { value: 'carlos', label: 'Carlos M.' },
-            { value: 'maria', label: 'María G.' },
-            { value: 'juan', label: 'Juan R.' },
-          ]}
+          options={[]}
         />
         <Select
           label="Estado"
           placeholder="Todos los estados"
           options={[
-            { value: 'en_transito', label: 'En Tránsito' },
+            { value: 'en_transito', label: 'En TrÃ¡nsito' },
             { value: 'en_riesgo', label: 'En Riesgo' },
             { value: 'retrasado', label: 'Retrasado' },
             { value: 'programado', label: 'Programado' },
@@ -204,7 +200,7 @@ export default function TorreControl(): ReactElement {
         ) : viajes.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
             <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
-            <p style={{ fontSize: '14px', marginTop: '4px' }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
+            <p style={{ fontSize: '14px', marginTop: '4px' }}>Los datos se cargarÃ¡n cuando estÃ©n disponibles en el sistema</p>
           </div>
         ) : (
           <DataTable columns={viajesColumns} data={viajes} />
