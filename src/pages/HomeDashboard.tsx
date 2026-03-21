@@ -4,7 +4,7 @@
 
 
 
-// V27: Premium executive visual treatment — Tarjetas grandes 48px
+// V27b: Second-pass premium correction — Tarjetas grandes 48px
 // Dashboard 14 modulos — Grid 7x2 — Iconos custom — V22b
 // APROBADO POR JJ 19/Mar/2026
 
@@ -37,7 +37,7 @@ const icons = {
     </svg>
   ),
   servicio: (
-    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
       <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/>
       <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
@@ -66,7 +66,7 @@ const icons = {
     </svg>
   ),
   dedicados: (
-    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <polyline points="17 1 21 5 17 9"/>
       <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
       <polyline points="7 23 3 19 7 15"/>
@@ -74,7 +74,7 @@ const icons = {
     </svg>
   ),
   cobranza: (
-    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <line x1="12" y1="1" x2="12" y2="23"/>
       <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
     </svg>
@@ -87,7 +87,7 @@ const icons = {
     </svg>
   ),
   rentabilidad: (
-    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <line x1="12" y1="3" x2="12" y2="21"/>
       <line x1="4" y1="3" x2="20" y2="3"/>
       <path d="M4 3L2 10h8L8 3"/>
@@ -102,7 +102,7 @@ const icons = {
     </svg>
   ),
   reportes: (
-    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
       <polyline points="14 2 14 8 20 8"/>
       <polyline points="9 15 11 17 15 13" strokeWidth="2.2"/>
@@ -214,17 +214,17 @@ export default function HomeDashboard() {
                   justifyContent: 'center', gap: '8px', padding: '20px 14px 18px',
                   aspectRatio: '1 / 1',
                   background: mod.isWarRoom
-                    ? 'linear-gradient(180deg, rgba(52,48,55,1) 0%, rgba(40,38,48,1) 50%, rgba(33,32,42,1) 100%)'
-                    : 'linear-gradient(180deg, rgba(50,50,62,1) 0%, rgba(42,42,54,1) 50%, rgba(36,36,47,1) 100%)',
-                  borderTop: `1px solid ${mod.isWarRoom ? 'rgba(200,160,120,0.14)' : `rgba(160,170,190,${mod.priority === 'high' ? 0.14 : 0.11})`}`,
-                  borderLeft: `1px solid ${mod.isWarRoom ? 'rgba(200,160,120,0.10)' : `rgba(160,170,190,${mod.priority === 'high' ? 0.10 : 0.07})`}`,
-                  borderBottom: '1px solid rgba(0,0,0,0.35)',
-                  borderRight: '1px solid rgba(0,0,0,0.25)',
+                    ? 'linear-gradient(180deg, rgba(56,50,56,1) 0%, rgba(42,38,48,1) 45%, rgba(31,30,40,1) 100%)'
+                    : 'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 45%, rgba(33,33,43,1) 100%)',
+                  borderTop: `1px solid ${mod.isWarRoom ? 'rgba(210,165,120,0.18)' : `rgba(155,168,195,${mod.priority === 'high' ? 0.18 : 0.14})`}`,
+                  borderLeft: `1px solid ${mod.isWarRoom ? 'rgba(210,165,120,0.13)' : `rgba(155,168,195,${mod.priority === 'high' ? 0.13 : 0.09})`}`,
+                  borderBottom: '1px solid rgba(0,0,0,0.42)',
+                  borderRight: '1px solid rgba(0,0,0,0.32)',
                   borderRadius: '20px', cursor: 'pointer',
                   transition: 'all 0.18s ease',
                   boxShadow: hover === mod.id
-                    ? `0 10px 22px rgba(0,0,0,0.35), 0 3px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.15)${mod.isWarRoom ? ', 0 0 20px rgba(232,97,26,0.06)' : ''}`
-                    : `0 8px 20px rgba(0,0,0,0.22), 0 2px 6px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,${mod.priority === 'high' ? '0.05' : '0.04'}), inset 0 -2px 4px rgba(0,0,0,0.10)`,
+                    ? `0 12px 28px rgba(0,0,0,0.4), 0 3px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -2px 4px rgba(0,0,0,0.18)${mod.isWarRoom ? ', 0 0 20px rgba(232,97,26,0.06)' : ''}`
+                    : `0 10px 24px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,${mod.priority === 'high' ? '0.07' : '0.05'}), inset 0 -3px 6px rgba(0,0,0,0.14)`,
                   transform: hover === mod.id ? 'translateY(-2px)' : 'none',
                   fontFamily: "'Montserrat', sans-serif",
                   WebkitFontSmoothing: 'antialiased' as any,
@@ -236,12 +236,12 @@ export default function HomeDashboard() {
                 <div style={{
                   position: 'absolute', top: 0, left: '15%', right: '15%', height: '1px',
                   background: mod.isWarRoom ? 'linear-gradient(90deg, transparent, rgba(232,97,26,0.2), transparent)' : 'linear-gradient(90deg, transparent, rgba(160,170,190,0.12), transparent)',
-                  opacity: mod.isWarRoom ? 0.7 : mod.priority === 'high' ? 0.5 : hover === mod.id ? 0.7 : 0.25,
+                  opacity: mod.isWarRoom ? 0.85 : mod.priority === 'high' ? 0.65 : hover === mod.id ? 0.75 : 0.3,
                   transition: 'opacity 0.3s',
                 }} />
 
                 {/* Icon */}
-                <div style={{ height: '55px', position: 'relative', transition: 'all 0.2s', filter: hover === mod.id ? 'brightness(1.12)' : 'none' }}>
+                <div style={{ height: '55px', position: 'relative', transition: 'all 0.2s', filter: hover === mod.id ? 'drop-shadow(0 0 8px rgba(255,255,255,0.08)) brightness(1.15)' : `drop-shadow(0 0 ${mod.priority === 'high' ? '6' : '4'}px rgba(255,255,255,${mod.priority === 'high' ? '0.05' : '0.03'}))` }}>
                   {mod.icon}
                 </div>
 
@@ -259,7 +259,7 @@ export default function HomeDashboard() {
                   transition: 'color 0.25s', letterSpacing: '0.3px',
                 }}>
                   {mod.kpiType === 'number' && (
-                    <><span style={{ fontWeight: 800, fontSize: '26px', display: 'block', marginBottom: '1px', color: hover === mod.id ? 'rgba(255,255,255,0.88)' : mod.priority === 'high' ? 'rgba(255,255,255,0.62)' : 'rgba(255,255,255,0.52)' }}>{mod.kpiType === 'number' ? getKpi(mod) : mod.kpi}</span>{mod.kpiLabel}</>
+                    <><span style={{ fontWeight: 800, fontSize: '30px', display: 'block', marginBottom: '1px', color: hover === mod.id ? 'rgba(255,255,255,0.92)' : mod.priority === 'high' ? 'rgba(255,255,255,0.72)' : 'rgba(255,255,255,0.58)' }}>{mod.kpiType === 'number' ? getKpi(mod) : mod.kpi}</span>{mod.kpiLabel}</>
                   )}
                   {mod.kpiType === 'status' && (
                     <><span style={{ display: 'inline-block', width: '4px', height: '4px', borderRadius: '50%', marginRight: '4px', verticalAlign: 'middle', background: mod.statusColor === 'g' ? '#10B981' : '#F59E0B' }} />{mod.statusLabel}</>
