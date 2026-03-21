@@ -216,7 +216,7 @@ export default function MisLeads() {
         <div className="grid grid-cols-2 gap-2 text-xs mb-3">
           <div><p style={{ color: tokens.colors.textSecondary }}>Valor</p><p className="font-semibold" style={{ color: tokens.colors.textPrimary }}>{formatCurrency(lead.valor_estimado)}</p></div>
           <div><p style={{ color: tokens.colors.textSecondary }}>Probabilidad</p><p className="font-semibold" style={{ color: tokens.colors.textPrimary }}>{lead.probabilidad}%</p></div>
-          <div><p style={{ color: tokens.colors.textSecondary }}>D\u00edas sin actividad</p><p className="font-semibold" style={{ color: tokens.colors.textPrimary }}>{daysSinceActivity}</p></div>
+          <div><p style={{ color: tokens.colors.textSecondary }}>DÃ­as sin actividad</p><p className="font-semibold" style={{ color: tokens.colors.textPrimary }}>{daysSinceActivity}</p></div>
           <div><p style={{ color: tokens.colors.textSecondary }}>Ejecutivo</p><p className="font-semibold text-xs" style={{ color: tokens.colors.textPrimary }}>{lead.ejecutivo_nombre}</p></div>
         </div>
         <div className="flex gap-2">
@@ -226,7 +226,7 @@ export default function MisLeads() {
               style={{ borderColor: tokens.colors.border }}
             >
               <Upload size={14} />
-              {uploading ? 'Subiendo...' : 'Cotizaci\u00f3n'}
+              {uploading ? 'Subiendo...' : 'CotizaciÃ³n'}
             </button>
           )}
           <button
@@ -276,7 +276,7 @@ export default function MisLeads() {
           <Card>
             <div className="text-center py-12">
               <p className="text-lg font-medium" style={{ color: tokens.colors.textSecondary }}>No hay leads activos.</p>
-              <p className="text-sm mt-2" style={{ color: tokens.colors.textSecondary }}>Los leads aparecerán aquí cuando se registren en el sistema.</p>
+              <p className="text-sm mt-2" style={{ color: tokens.colors.textSecondary }}>Los leads aparecerÃ¡n aquÃ­ cuando se registren en el sistema.</p>
             </div>
           </Card>
         ) : (
@@ -288,7 +288,7 @@ export default function MisLeads() {
                   <div className={`${stage.color} h-1 -mx-6 -mt-6 mb-4 rounded-t-lg`} />
                   <div className="mb-4">
                     <h3 className="font-semibold text-sm" style={{ color: tokens.colors.textPrimary }}>{stage.label}</h3>
-                    <p className="text-xs" style={{ color: tokens.colors.textSecondary }}>{stageLeads.length} leads \u2022 {stage.probability}%</p>
+                    <p className="text-xs" style={{ color: tokens.colors.textSecondary }}>{stageLeads.length} leads â¢ {stage.probability}%</p>
                   </div>
                   <div className="space-y-2">
                     {stageLeads.length === 0 ? (
@@ -308,15 +308,15 @@ export default function MisLeads() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <Card className="max-w-2xl w-full mx-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold" style={{ color: tokens.colors.textPrimary }}>An\u00e1lisis IA - {selectedLead?.empresa}</h3>
-              <button onClick={() => { setAiModalOpen(false); setAiResult(null) }} className="text-xl leading-none">\u00d7</button>
+              <h3 className="text-lg font-semibold" style={{ color: tokens.colors.textPrimary }}>AnÃ¡lisis IA - {selectedLead?.empresa}</h3>
+              <button onClick={() => { setAiModalOpen(false); setAiResult(null) }} className="text-xl leading-none">Ã</button>
             </div>
             {aiLoading ? (
               <div className="flex items-center justify-center py-12"><Loader className="animate-spin" size={32} style={{ color: tokens.colors.textSecondary }} /></div>
             ) : aiResult ? (
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-sm mb-2" style={{ color: tokens.colors.textPrimary }}>Pr\u00f3ximos Pasos</h4>
+                  <h4 className="font-semibold text-sm mb-2" style={{ color: tokens.colors.textPrimary }}>PrÃ³ximos Pasos</h4>
                   <ul className="list-disc list-inside text-sm space-y-1" style={{ color: tokens.colors.textSecondary }}>
                     {aiResult.next_steps.map((step, idx) => (<li key={idx}>{step}</li>))}
                   </ul>
@@ -339,7 +339,7 @@ export default function MisLeads() {
                 </div>
               </div>
             ) : (
-              <p style={{ color: tokens.colors.textSecondary }}>Error al cargar el an\u00e1lisis</p>
+              <p style={{ color: tokens.colors.textSecondary }}>Error al cargar el anÃ¡lisis</p>
             )}
             <div className="mt-6 flex justify-end">
               <button onClick={() => { setAiModalOpen(false); setAiResult(null) }} className="px-4 py-2 text-sm rounded border hover:bg-gray-50" style={{ borderColor: tokens.colors.border }}>Cerrar</button>
