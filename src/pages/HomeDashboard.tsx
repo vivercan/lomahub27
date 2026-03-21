@@ -4,7 +4,7 @@
 
 
 
-// V27b: Second-pass premium correction (safe) — Tarjetas grandes 48px
+// V27c: Final visual calibration — elite precision — Tarjetas grandes 48px
 // Dashboard 14 modulos — Grid 7x2 — Iconos custom — V22b
 // APROBADO POR JJ 19/Mar/2026
 
@@ -44,7 +44,7 @@ const icons = {
     </svg>
   ),
   torre: (
-    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+    <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <circle cx="12" cy="12" r="10" strokeWidth="1.8"/>
       <circle cx="12" cy="12" r="6" strokeWidth="1.5" opacity="0.6"/>
       <circle cx="12" cy="12" r="2" strokeWidth="1.8"/>
@@ -66,7 +66,7 @@ const icons = {
     </svg>
   ),
   dedicados: (
-    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round">
       <polyline points="17 1 21 5 17 9"/>
       <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
       <polyline points="7 23 3 19 7 15"/>
@@ -74,7 +74,7 @@ const icons = {
     </svg>
   ),
   cobranza: (
-    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round">
       <line x1="12" y1="1" x2="12" y2="23"/>
       <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
     </svg>
@@ -87,7 +87,7 @@ const icons = {
     </svg>
   ),
   rentabilidad: (
-    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round">
       <line x1="12" y1="3" x2="12" y2="21"/>
       <line x1="4" y1="3" x2="20" y2="3"/>
       <path d="M4 3L2 10h8L8 3"/>
@@ -96,13 +96,13 @@ const icons = {
     </svg>
   ),
   comunicaciones: (
-    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+    <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
       <polyline points="22,6 12,13 2,6"/>
     </svg>
   ),
   reportes: (
-    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
       <polyline points="14 2 14 8 20 8"/>
       <polyline points="9 15 11 17 15 13" strokeWidth="2.2"/>
@@ -221,9 +221,9 @@ export default function HomeDashboard() {
                   borderBottom: '1px solid rgba(0,0,0,0.42)',
                   borderRight: '1px solid rgba(0,0,0,0.32)',
                   borderRadius: '20px', cursor: 'pointer',
-                  transition: 'all 0.18s ease',
+                  transition: 'all 0.16s ease',
                   boxShadow: hover === mod.id
-                    ? `0 10px 22px rgba(0,0,0,0.35), 0 3px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.15)${mod.isWarRoom ? ', 0 0 20px rgba(232,97,26,0.06)' : ''}`
+                    ? `0 10px 22px rgba(0,0,0,0.35), 0 3px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(200,210,225,0.09), inset 0 -1px 0 rgba(0,0,0,0.15)${mod.isWarRoom ? ', 0 0 20px rgba(232,97,26,0.06)' : ''}`
                     : `0 8px 20px rgba(0,0,0,0.22), 0 2px 6px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,${mod.priority === 'high' ? '0.05' : '0.04'}), inset 0 -2px 4px rgba(0,0,0,0.10)`,
                   transform: hover === mod.id ? 'translateY(-2px)' : 'none',
                   fontFamily: "'Montserrat', sans-serif",
@@ -262,7 +262,7 @@ export default function HomeDashboard() {
                     <><span style={{ fontWeight: 800, fontSize: '30px', display: 'block', marginBottom: '1px', color: hover === mod.id ? 'rgba(255,255,255,0.92)' : mod.priority === 'high' ? 'rgba(255,255,255,0.72)' : 'rgba(255,255,255,0.58)' }}>{mod.kpiType === 'number' ? getKpi(mod) : mod.kpi}</span>{mod.kpiLabel}</>
                   )}
                   {mod.kpiType === 'status' && (
-                    <><span style={{ display: 'inline-block', width: '4px', height: '4px', borderRadius: '50%', marginRight: '4px', verticalAlign: 'middle', background: mod.statusColor === 'g' ? '#10B981' : '#F59E0B' }} />{mod.statusLabel}</>
+                    <><span style={{ display: 'inline-block', width: '3px', height: '3px', borderRadius: '50%', marginRight: '4px', verticalAlign: 'middle', background: mod.statusColor === 'g' ? '#10B981' : '#F59E0B' }} />{mod.statusLabel}</>
                   )}
                   {mod.kpiType === 'text' && mod.kpiLabel}
                 </div>
