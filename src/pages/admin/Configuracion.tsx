@@ -49,7 +49,7 @@ export default function Configuracion() {
     const fetchUsuarios = async () => {
       try {
         const { data, error } = await supabase
-          .from('usuarios')
+          .from('usuarios_autorizados')
           .select('id, nombre, email, rol, empresa, estado')
           .order('nombre', { ascending: true });
 
