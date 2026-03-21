@@ -17,7 +17,7 @@ html, body {
 body {
   background-color: #0B1220;
   color: #F9FAFB;
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 #root {
@@ -48,13 +48,14 @@ body {
   background: linear-gradient(135deg, #0B1220 0%, #0D1B2A 50%, #0B1220 100%);
 }
 
-/* Scrollbar hidden globally */
+/* Scrollbar invisible but functional — scroll works, bar hidden */
 ::-webkit-scrollbar {
-  display: none;
+  width: 0px;
+  background: transparent;
 }
 * {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 
 
