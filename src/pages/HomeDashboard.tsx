@@ -181,7 +181,7 @@ export default function HomeDashboard() {
       />
 
       {/* Status bar — pulso operativo */}
-      <div className="dash-status-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '12px 32px', margin: '8px 16px 4px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', flexShrink: 0 }}>
+      <div className="dash-status-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '10px 24px', margin: '0 0 0', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '0', flexShrink: 0 }}>
         {[
           { num: String(counts.viajes || 0), label: 'viajes activos', color: '#10B981' },
           { num: String(counts.gps_tracking || 0), label: 'unidades GPS', color: '#10B981' },
@@ -199,9 +199,9 @@ export default function HomeDashboard() {
       </div>
 
       {/* Grid de modulos */}
-      <div style={{ flex: 1, padding: '4px 16px 12px', maxWidth: '100%', margin: '0 auto', overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div style={{ flex: 1, padding: '0', maxWidth: '100%', margin: '0 auto', overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {[1, 2].map(row => (
-          <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px', flex: 1 }}>
+          <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '10px', flex: 1 }}>
             {modules.filter(m => m.row === row).map((mod, idx) => (
               <button
                 key={mod.id}
@@ -211,12 +211,12 @@ export default function HomeDashboard() {
                 onMouseLeave={() => setHover(null)}
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center',
-                  justifyContent: 'center', gap: '8px', padding: '20px 14px 18px',
+                  justifyContent: 'center', gap: '8px', padding: '16px 10px 14px',
                   background: mod.isWarRoom
                     ? 'linear-gradient(135deg, rgba(232,97,26,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)'
                     : 'linear-gradient(135deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)',
                   border: `1px solid ${mod.isWarRoom ? 'rgba(232,97,26,0.15)' : hover === mod.id ? 'rgba(244,123,32,0.22)' : 'rgba(255,255,255,0.07)'}`,
-                  borderRadius: '16px', cursor: 'pointer',
+                  borderRadius: '12px', cursor: 'pointer',
                   transition: 'all 0.25s ease',
                   boxShadow: hover === mod.id ? '0 12px 32px rgba(0,0,0,0.25), 0 0 20px rgba(244,123,32,0.06)' : '0 4px 12px rgba(0,0,0,0.15)',
                   transform: hover === mod.id ? 'translateY(-3px)' : 'none',
