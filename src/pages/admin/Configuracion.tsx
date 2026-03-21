@@ -50,8 +50,8 @@ export default function Configuracion() {
       try {
         const { data, error } = await supabase
           .from('usuarios_autorizados')
-          .select('id, nombre, email, rol, empresa, estado')
-          .order('nombre', { ascending: true });
+          .select('email, rol, empresa, activo, permisos_custom')
+          .order('email', { ascending: true });
 
         if (error) {
           console.error('Error fetching usuarios:', error);
