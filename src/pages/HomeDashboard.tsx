@@ -199,7 +199,7 @@ export default function HomeDashboard() {
       </div>
 
       {/* Grid de modulos */}
-      <div style={{ flex: 1, padding: '0', maxWidth: '100%', margin: '0 auto', overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div style={{ flex: 1, padding: '0 20px', maxWidth: '100%',  overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {[1, 2].map(row => (
           <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '10px', flex: 1 }}>
             {modules.filter(m => m.row === row).map((mod, idx) => (
