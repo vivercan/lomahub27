@@ -34,7 +34,7 @@ export default function WhatsApp() {
   };
 
   return (
-    <ModuleLayout titulo="WhatsApp \u2014 Bandeja de Mensajes">
+    <ModuleLayout titulo="WhatsApp — Bandeja de Mensajes">
       <div
         style={{
           display: 'grid',
@@ -79,8 +79,8 @@ export default function WhatsApp() {
           >
             {conversaciones.length === 0 ? (
               <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textSecondary }}>
-                <p style={{ fontSize: '1rem', fontWeight: 500, margin: 0 }}>Integraci\u00f3n WhatsApp pendiente</p>
-                <p style={{ fontSize: '0.85rem', marginTop: tokens.spacing.sm }}>Los mensajes aparecer\u00e1n aqu\u00ed cuando se configure la integraci\u00f3n</p>
+                <p style={{ fontSize: '1rem', fontWeight: 500, margin: 0 }}>Integración WhatsApp pendiente</p>
+                <p style={{ fontSize: '0.85rem', marginTop: tokens.spacing.sm }}>Los mensajes aparecerán aquí cuando se configure la integración</p>
               </div>
             ) : (
               conversaciones.map((conv) => (
@@ -173,7 +173,7 @@ export default function WhatsApp() {
                 margin: 0,
               }}
             >
-              Conversaci\u00f3n
+              Conversación
             </h3>
           </div>
 
@@ -189,8 +189,8 @@ export default function WhatsApp() {
           >
             {chatMessages.length === 0 ? (
               <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textSecondary }}>
-                <p style={{ fontSize: '1rem', fontWeight: 500, margin: 0 }}>Integraci\u00f3n WhatsApp pendiente</p>
-                <p style={{ fontSize: '0.85rem', marginTop: tokens.spacing.sm }}>Los mensajes aparecer\u00e1n aqu\u00ed cuando se configure la integraci\u00f3n</p>
+                <p style={{ fontSize: '1rem', fontWeight: 500, margin: 0 }}>Integración WhatsApp pendiente</p>
+                <p style={{ fontSize: '0.85rem', marginTop: tokens.spacing.sm }}>Los mensajes aparecerán aquí cuando se configure la integración</p>
               </div>
             ) : (
               chatMessages.map((msg) => (
