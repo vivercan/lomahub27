@@ -38,8 +38,8 @@ export default function FichaLead() {
   const pipelineSteps = [
     { nombre: 'Nuevo', activo: false },
     { nombre: 'Contactado', activo: false },
-    { nombre: 'Cotizaci\u00f3n', activo: false },
-    { nombre: 'Negociaci\u00f3n', activo: false },
+    { nombre: 'CotizaciÃ³n', activo: false },
+    { nombre: 'NegociaciÃ³n', activo: false },
     { nombre: 'Ganado', activo: false },
   ]
 
@@ -86,7 +86,7 @@ export default function FichaLead() {
         const colorMap: Record<string, 'primary' | 'green' | 'yellow' | 'orange' | 'red' | 'blue' | 'gray'> = {
           Llamada: 'blue',
           Email: 'gray',
-          Reuni\u00f3n: 'primary',
+          ReuniÃ³n: 'primary',
         }
         return <Badge color={colorMap[row.tipo] || 'gray'}>{row.tipo}</Badge>
       },
@@ -109,14 +109,14 @@ export default function FichaLead() {
       <ModuleLayout titulo="Lead">
         <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>
           <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Lead no encontrado</p>
-          <p style={{ fontSize: '14px', marginTop: tokens.spacing.sm }}>No hay informaci\u00f3n disponible para este lead</p>
+          <p style={{ fontSize: '14px', marginTop: tokens.spacing.sm }}>No hay informaciÃ³n disponible para este lead</p>
         </div>
       </ModuleLayout>
     )
   }
 
   return (
-    <ModuleLayout titulo={`Lead \u2014 ${leadData.nombre}`}>
+    <ModuleLayout titulo={`Lead â  ${leadData.nombre}`}>
       <div className="grid grid-cols-3 gap-6">
         <div>
           <Card glow="primary">
@@ -149,8 +149,8 @@ export default function FichaLead() {
 
               {(leadData.ruta || leadData.fuente) && (
                 <div className="pt-4 border-t" style={{ borderColor: tokens.colors.border }}>
-                  <p className="text-xs uppercase tracking-wider mb-2" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>Informaci\u00f3n</p>
-                  <div className="space-y-2">
+                  <p className="text-xs uppercase tracking-wider mb-2" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>InformaciÃ³n</p>
+                 <div className="space-y-2">
                     {leadData.ruta && (
                       <div>
                         <p className="text-xs" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>Ruta</p>
@@ -219,7 +219,7 @@ export default function FichaLead() {
               <Plus className="w-4 h-4" />
               Registrar Actividad
             </Button>
-            <Button variant="secondary">Crear Cotizaci\u00f3n</Button>
+            <Button variant="secondary">Crear CotizaciÃ³n</Button>
             <Button variant="secondary">Convertir a Cliente</Button>
           </div>
         </div>
