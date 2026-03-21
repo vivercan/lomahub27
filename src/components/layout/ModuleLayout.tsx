@@ -63,7 +63,7 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children }: ModuleLa
         {acciones && <div style={{ marginLeft: 'auto' }}>{acciones}</div>}
       </div>
 
-      <main style={{ flex: 1, overflow: 'hidden', padding: '24px 36px' }}>
+      <main style={{ flex: 1, overflow: 'auto', padding: '24px 36px' }}>
         {children}
       </main>
     </div>
