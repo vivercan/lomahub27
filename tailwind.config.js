@@ -14,11 +14,10 @@ export default {
         'fx-orange': '#F59E0B',
       },
       fontFamily: {
-        orbitron: ['Orbitron', 'sans-serif'],
-        exo2: ['"Exo 2"', 'sans-serif'],
+        orbitron: ['Montserrat', 'sans-serif'],
+        exo2: ['Montserrat', 'sans-serif'],
       },
     },
   },
   plugins: [],
 }
-
