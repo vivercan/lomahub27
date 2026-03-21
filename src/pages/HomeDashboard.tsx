@@ -4,7 +4,7 @@
 
 
 
-// V26c: Dashboard 14 modulos — Tarjetas grandes 48px
+// V27: Premium executive visual treatment — Tarjetas grandes 48px
 // Dashboard 14 modulos — Grid 7x2 — Iconos custom — V22b
 // APROBADO POR JJ 19/Mar/2026
 
@@ -17,48 +17,48 @@ import { supabase } from '../lib/supabase'
 // ── Iconos SVG custom (inline para control total) ──
 const icons = {
   warRoom: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-      <circle cx="12" cy="11" r="2.5" strokeWidth="1.5"/>
+      <circle cx="12" cy="11" r="2.5" strokeWidth="1.8"/>
     </svg>
   ),
   ventas: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <polyline points="3,17 9,11 13,15 21,7"/>
       <polyline points="17,7 21,7 21,11"/>
     </svg>
   ),
   clientes: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <circle cx="9" cy="7" r="3"/>
       <path d="M1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
-      <circle cx="18" cy="8" r="2.5" strokeWidth="1.5"/>
+      <circle cx="18" cy="8" r="2.5" strokeWidth="1.8"/>
       <path d="M21 21v-1.5a3 3 0 0 0-2-2.8"/>
     </svg>
   ),
   servicio: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
       <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/>
       <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
     </svg>
   ),
   torre: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-      <circle cx="12" cy="12" r="10" strokeWidth="1.5"/>
-      <circle cx="12" cy="12" r="6" strokeWidth="1.2" opacity="0.6"/>
-      <circle cx="12" cy="12" r="2" strokeWidth="1.5"/>
-      <line x1="12" y1="12" x2="18" y2="6" strokeWidth="2"/>
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+      <circle cx="12" cy="12" r="10" strokeWidth="1.8"/>
+      <circle cx="12" cy="12" r="6" strokeWidth="1.5" opacity="0.6"/>
+      <circle cx="12" cy="12" r="2" strokeWidth="1.8"/>
+      <line x1="12" y1="12" x2="18" y2="6" strokeWidth="2.1"/>
     </svg>
   ),
   mapa: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
       <circle cx="12" cy="10" r="3"/>
     </svg>
   ),
   flota: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <rect x="1" y="3" width="15" height="13" rx="1"/>
       <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
       <circle cx="5.5" cy="18.5" r="2.5"/>
@@ -66,7 +66,7 @@ const icons = {
     </svg>
   ),
   dedicados: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <polyline points="17 1 21 5 17 9"/>
       <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
       <polyline points="7 23 3 19 7 15"/>
@@ -74,20 +74,20 @@ const icons = {
     </svg>
   ),
   cobranza: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <line x1="12" y1="1" x2="12" y2="23"/>
       <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
     </svg>
   ),
   indicadores: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <rect x="4" y="14" width="4" height="8" rx="0.5"/>
       <rect x="10" y="8" width="4" height="14" rx="0.5"/>
       <rect x="16" y="3" width="4" height="19" rx="0.5"/>
     </svg>
   ),
   rentabilidad: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <line x1="12" y1="3" x2="12" y2="21"/>
       <line x1="4" y1="3" x2="20" y2="3"/>
       <path d="M4 3L2 10h8L8 3"/>
@@ -96,20 +96,20 @@ const icons = {
     </svg>
   ),
   comunicaciones: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
       <polyline points="22,6 12,13 2,6"/>
     </svg>
   ),
   reportes: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
       <polyline points="14 2 14 8 20 8"/>
       <polyline points="9 15 11 17 15 13" strokeWidth="2.2"/>
     </svg>
   ),
   config: (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
       <circle cx="12" cy="12" r="3"/>
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
     </svg>
@@ -117,15 +117,15 @@ const icons = {
 }
 
 const modules = [
-  { id: 1,  name: 'War Room',         icon: icons.warRoom,       route: '/war-room',                row: 1, kpi: null,   kpiType: 'status', statusLabel: 'Operativo',  statusColor: 'g', isWarRoom: true },
-  { id: 2,  name: 'Ventas',           icon: icons.ventas,        route: '/ventas/mis-leads',        row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'leads activos' },
-  { id: 3,  name: 'Clientes',         icon: icons.clientes,      route: '/clientes/alta',           row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'contactos' },
-  { id: 4,  name: 'Servicio',         icon: icons.servicio,      route: '/servicio/dashboard',      row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'ejecutivas' },
-  { id: 5,  name: 'Torre de Control', icon: icons.torre,         route: '/operaciones/torre-control', row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'viajes activos' },
+  { id: 1,  name: 'War Room',         icon: icons.warRoom,       route: '/war-room',                row: 1, kpi: null,   kpiType: 'status', statusLabel: 'Operativo',  statusColor: 'g', isWarRoom: true, priority: 'high' },
+  { id: 2,  name: 'Ventas',           icon: icons.ventas,        route: '/ventas/mis-leads',        row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'leads activos', priority: 'high' },
+  { id: 3,  name: 'Clientes',         icon: icons.clientes,      route: '/clientes/alta',           row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'contactos', priority: 'mid' },
+  { id: 4,  name: 'Servicio',         icon: icons.servicio,      route: '/servicio/dashboard',      row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'ejecutivas', priority: 'low' },
+  { id: 5,  name: 'Torre de Control', icon: icons.torre,         route: '/operaciones/torre-control', row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'viajes activos', priority: 'high' },
   { id: 6,  name: 'Mapa GPS',         icon: icons.mapa,          route: '/operaciones/mapa',        row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'unidades' },
   { id: 7,  name: 'Flota',            icon: icons.flota,         route: '/flota/tractos',           row: 1, kpi: '—',    kpiType: 'number', kpiLabel: 'unidades' },
-  { id: 8,  name: 'Dedicados',        icon: icons.dedicados,     route: '/operaciones/dedicados',   row: 2, kpi: '—',    kpiType: 'number', kpiLabel: 'segmentos' },
-  { id: 9,  name: 'Cobranza',         icon: icons.cobranza,      route: '/cxc/cartera',             row: 2, kpi: '—',    kpiType: 'number', kpiLabel: 'cuentas CXC' },
+  { id: 8,  name: 'Dedicados',        icon: icons.dedicados,     route: '/operaciones/dedicados',   row: 2, kpi: '—',    kpiType: 'number', kpiLabel: 'segmentos', priority: 'low' },
+  { id: 9,  name: 'Cobranza',         icon: icons.cobranza,      route: '/cxc/cartera',             row: 2, kpi: '—',    kpiType: 'number', kpiLabel: 'cuentas CXC', priority: 'mid' },
   { id: 10, name: 'Indicadores',      icon: icons.indicadores,   route: '/inteligencia',            row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Rankings',    statusColor: 'g' },
   { id: 11, name: 'Rentabilidad',     icon: icons.rentabilidad,  route: '/operaciones/rentabilidad', row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Margen',      statusColor: 'a' },
   { id: 12, name: 'Comunicaciones',   icon: icons.comunicaciones, route: '/servicio/whatsapp',       row: 2, kpi: null,   kpiType: 'status', statusLabel: 'Activo',      statusColor: 'g' },
@@ -211,19 +211,21 @@ export default function HomeDashboard() {
                 onMouseLeave={() => setHover(null)}
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center',
-                  justifyContent: 'center', gap: '8px', padding: '16px 10px 14px',
+                  justifyContent: 'center', gap: '8px', padding: '20px 14px 18px',
                   aspectRatio: '1 / 1',
                   background: mod.isWarRoom
-                    ? 'linear-gradient(145deg, rgba(232,97,26,0.08) 0%, rgba(45,45,58,1) 40%, rgba(35,35,48,1) 100%)'
-                    : 'linear-gradient(145deg, rgba(60,60,75,1) 0%, rgba(45,45,58,1) 40%, rgba(35,35,48,1) 100%)',
-                  borderTop: `1px solid ${mod.isWarRoom ? 'rgba(232,97,26,0.25)' : 'rgba(255,255,255,0.12)'}`,
-                  borderLeft: `1px solid ${mod.isWarRoom ? 'rgba(232,97,26,0.2)' : 'rgba(255,255,255,0.08)'}`,
-                  borderBottom: `1px solid rgba(0,0,0,0.3)`,
-                  borderRight: `1px solid rgba(0,0,0,0.2)`,
-                  borderRadius: '12px', cursor: 'pointer',
-                  transition: 'all 0.25s ease',
-                  boxShadow: hover === mod.id ? '0 8px 24px rgba(0,0,0,0.4), 0 0 15px rgba(244,123,32,0.08), inset 0 1px 0 rgba(255,255,255,0.05)' : '4px 4px 12px rgba(0,0,0,0.3), -2px -2px 8px rgba(255,255,255,0.02), inset 0 1px 0 rgba(255,255,255,0.04)',
-                  transform: hover === mod.id ? 'translateY(-3px)' : 'none',
+                    ? 'linear-gradient(180deg, rgba(52,48,55,1) 0%, rgba(40,38,48,1) 50%, rgba(33,32,42,1) 100%)'
+                    : 'linear-gradient(180deg, rgba(50,50,62,1) 0%, rgba(42,42,54,1) 50%, rgba(36,36,47,1) 100%)',
+                  borderTop: `1px solid ${mod.isWarRoom ? 'rgba(200,160,120,0.14)' : `rgba(160,170,190,${mod.priority === 'high' ? 0.14 : 0.11})`}`,
+                  borderLeft: `1px solid ${mod.isWarRoom ? 'rgba(200,160,120,0.10)' : `rgba(160,170,190,${mod.priority === 'high' ? 0.10 : 0.07})`}`,
+                  borderBottom: '1px solid rgba(0,0,0,0.35)',
+                  borderRight: '1px solid rgba(0,0,0,0.25)',
+                  borderRadius: '20px', cursor: 'pointer',
+                  transition: 'all 0.18s ease',
+                  boxShadow: hover === mod.id
+                    ? `0 10px 22px rgba(0,0,0,0.35), 0 3px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.15)${mod.isWarRoom ? ', 0 0 20px rgba(232,97,26,0.06)' : ''}`
+                    : `0 8px 20px rgba(0,0,0,0.22), 0 2px 6px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,${mod.priority === 'high' ? '0.05' : '0.04'}), inset 0 -2px 4px rgba(0,0,0,0.10)`,
+                  transform: hover === mod.id ? 'translateY(-2px)' : 'none',
                   fontFamily: "'Montserrat', sans-serif",
                   WebkitFontSmoothing: 'antialiased' as any,
                   position: 'relative' as const, overflow: 'hidden',
@@ -232,20 +234,20 @@ export default function HomeDashboard() {
               >
                 {/* Top accent line */}
                 <div style={{
-                  position: 'absolute', top: 0, left: '20%', right: '20%', height: '1px',
-                  background: 'linear-gradient(90deg, transparent, rgba(232,97,26,0.15), transparent)',
-                  opacity: mod.isWarRoom ? 0.6 : hover === mod.id ? 1 : 0,
+                  position: 'absolute', top: 0, left: '15%', right: '15%', height: '1px',
+                  background: mod.isWarRoom ? 'linear-gradient(90deg, transparent, rgba(232,97,26,0.2), transparent)' : 'linear-gradient(90deg, transparent, rgba(160,170,190,0.12), transparent)',
+                  opacity: mod.isWarRoom ? 0.7 : mod.priority === 'high' ? 0.5 : hover === mod.id ? 0.7 : 0.25,
                   transition: 'opacity 0.3s',
                 }} />
 
                 {/* Icon */}
-                <div style={{ height: '48px', transition: 'color 0.25s' }}>
+                <div style={{ height: '55px', position: 'relative', transition: 'all 0.2s', filter: hover === mod.id ? 'brightness(1.12)' : 'none' }}>
                   {mod.icon}
                 </div>
 
                 {/* Name */}
                 <span style={{
-                  fontWeight: 600, fontSize: '15px', textAlign: 'center', lineHeight: 1.2,
+                  fontWeight: 600, fontSize: '14px', letterSpacing: '0.3px', textAlign: 'center', lineHeight: 1.2,
                   color: mod.isWarRoom ? 'rgba(255,255,255,0.70)' : hover === mod.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.50)',
                   transition: 'color 0.25s',
                 }}>{mod.name}</span>
@@ -257,10 +259,10 @@ export default function HomeDashboard() {
                   transition: 'color 0.25s', letterSpacing: '0.3px',
                 }}>
                   {mod.kpiType === 'number' && (
-                    <><span style={{ fontWeight: 800, fontSize: '28px', display: 'block', marginBottom: '1px', color: hover === mod.id ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.55)' }}>{mod.kpiType === 'number' ? getKpi(mod) : mod.kpi}</span>{mod.kpiLabel}</>
+                    <><span style={{ fontWeight: 800, fontSize: '26px', display: 'block', marginBottom: '1px', color: hover === mod.id ? 'rgba(255,255,255,0.88)' : mod.priority === 'high' ? 'rgba(255,255,255,0.62)' : 'rgba(255,255,255,0.52)' }}>{mod.kpiType === 'number' ? getKpi(mod) : mod.kpi}</span>{mod.kpiLabel}</>
                   )}
                   {mod.kpiType === 'status' && (
-                    <><span style={{ display: 'inline-block', width: '5px', height: '5px', borderRadius: '50%', marginRight: '4px', verticalAlign: 'middle', background: mod.statusColor === 'g' ? '#10B981' : '#F59E0B' }} />{mod.statusLabel}</>
+                    <><span style={{ display: 'inline-block', width: '4px', height: '4px', borderRadius: '50%', marginRight: '4px', verticalAlign: 'middle', background: mod.statusColor === 'g' ? '#10B981' : '#F59E0B' }} />{mod.statusLabel}</>
                   )}
                   {mod.kpiType === 'text' && mod.kpiLabel}
                 </div>
