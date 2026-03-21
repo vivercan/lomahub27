@@ -115,7 +115,7 @@ export default function TrazabilidadViaje(): ReactElement {
   ];
 
   return (
-    <ModuleLayout titulo={`Trazabilidad \u2014 Viaje #${viaje.id}`}>
+    <ModuleLayout titulo={`Trazabilidad — Viaje #${viaje.id}`}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: tokens.spacing.lg }}>
         {/* Left: Timeline */}
         <Card>
@@ -124,7 +124,7 @@ export default function TrazabilidadViaje(): ReactElement {
             {eventos.length === 0 ? (
               <div className="text-center py-12 text-gray-400">
                 <p className="text-lg font-medium">Sin datos</p>
-                <p className="text-sm mt-1">Los datos se cargar\u00e1n cuando est\u00e9n disponibles en el sistema</p>
+                <p className="text-sm mt-1">Los datos se cargarán cuando estén disponibles en el sistema</p>
               </div>
             ) : (
               eventos.map((evento, index) => (
@@ -189,7 +189,7 @@ export default function TrazabilidadViaje(): ReactElement {
               <div style={{ textAlign: 'center' }}>
                 <p style={{ marginBottom: tokens.spacing.sm, fontFamily: tokens.fonts.body }}>Mapa de Ruta</p>
                 <p style={{ fontSize: '12px', fontFamily: tokens.fonts.body }}>
-                  CDMX \u2192 Toluca \u2192 Quer\u00e9taro \u2192 Guanajuato
+                  CDMX → Toluca → Querétaro → Guanajuato
                 </p>
               </div>
             </div>
