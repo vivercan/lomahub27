@@ -4,7 +4,7 @@
 
 
 
-// V27c: Final visual calibration — elite precision — Tarjetas grandes 48px
+// V27d: Metrics strip spacing correction — elite precision — Tarjetas grandes 48px
 // Dashboard 14 modulos — Grid 7x2 — Iconos custom — V22b
 // APROBADO POR JJ 19/Mar/2026
 
@@ -181,7 +181,7 @@ export default function HomeDashboard() {
       />
 
       {/* Status bar — pulso operativo */}
-      <div className="dash-status-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '10px 24px', margin: '0 0 0', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '0', flexShrink: 0 }}>
+      <div className="dash-status-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '14px 28px', margin: '14px 0 10px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '0', flexShrink: 0 }}>
         {[
           { num: String(counts.viajes || 0), label: 'viajes activos', color: '#10B981' },
           { num: String(counts.gps_tracking || 0), label: 'unidades GPS', color: '#10B981' },
@@ -199,7 +199,7 @@ export default function HomeDashboard() {
       </div>
 
       {/* Grid de modulos */}
-      <div style={{ flex: 1, padding: '10px 20px', maxWidth: '100%',  overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div style={{ flex: 1, padding: '4px 20px', maxWidth: '100%',  overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {[1, 2].map(row => (
           <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '10px' }}>
             {modules.filter(m => m.row === row).map((mod, idx) => (
