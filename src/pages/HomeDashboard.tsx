@@ -181,7 +181,7 @@ export default function HomeDashboard() {
       />
 
       {/* Status bar — pulso operativo */}
-      <div className="dash-status-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '12px 32px', margin: '16px 16px 12px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', flexShrink: 0 }}>
+      <div className="dash-status-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', padding: '12px 32px', margin: '8px 16px 4px', background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', flexShrink: 0 }}>
         {[
           { num: String(counts.viajes || 0), label: 'viajes activos', color: '#10B981' },
           { num: String(counts.gps_tracking || 0), label: 'unidades GPS', color: '#10B981' },
@@ -199,9 +199,9 @@ export default function HomeDashboard() {
       </div>
 
       {/* Grid de modulos */}
-      <div style={{ flex: 1, padding: '0 16px', maxWidth: '100%', margin: '0 auto', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '16px' }}>
+      <div style={{ flex: 1, padding: '4px 16px 12px', maxWidth: '100%', margin: '0 auto', overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {[1, 2].map(row => (
-          <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
+          <div key={row} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px', flex: 1 }}>
             {modules.filter(m => m.row === row).map((mod, idx) => (
               <button
                 key={mod.id}
@@ -211,7 +211,7 @@ export default function HomeDashboard() {
                 onMouseLeave={() => setHover(null)}
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center',
-                  justifyContent: 'center', gap: '8px', padding: '28px 16px 24px',
+                  justifyContent: 'center', gap: '8px', padding: '20px 14px 18px',
                   background: mod.isWarRoom
                     ? 'linear-gradient(135deg, rgba(232,97,26,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)'
                     : 'linear-gradient(135deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.035) 100%)',
