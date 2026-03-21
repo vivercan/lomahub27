@@ -83,7 +83,7 @@ export default function NuevaCotizacion() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('CotizaciÃ³n enviada:', formData, file)
+    console.log('Cotización enviada:', formData, file)
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +93,7 @@ export default function NuevaCotizacion() {
   }
 
   return (
-    <ModuleLayout titulo="Nueva CotizaciÃ³n" subtitulo="Cotizador rÃ¡pido">
+    <ModuleLayout titulo="Nueva Cotización" subtitulo="Cotizador rápido">
       <div className="space-y-6 max-w-2xl">
         <Card>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -146,7 +146,7 @@ export default function NuevaCotizacion() {
               <Input
                 label="Costo Base ($)"
                 type="number"
-                placeholder="Costo de operaciÃ³n"
+                placeholder="Costo de operación"
                 value={formData.costoBase}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('costoBase', e.target.value)}
               />
@@ -180,7 +180,7 @@ export default function NuevaCotizacion() {
             </div>
 
             <Button variant="primary" className="w-full">
-              Enviar CotizaciÃ³n
+              Enviar Cotización
             </Button>
           </form>
         </Card>
@@ -252,7 +252,7 @@ export default function NuevaCotizacion() {
                   fontFamily: tokens.fonts.body,
                 }}
               >
-                â {file.name} seleccionado
+                ✓ {file.name} seleccionado
               </p>
             )}
           </div>
