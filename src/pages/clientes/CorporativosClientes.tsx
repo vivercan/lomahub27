@@ -65,7 +65,7 @@ interface GrupoCorporativo {
 /* ───────── styles ───────── */
 const sCard: React.CSSProperties = {
   background: tokens.colors.bgCard,
-  borderRadius: tokens.borderRadius.lg,
+  borderRadius: tokens.radius.lg,
   border: `1px solid ${tokens.colors.border}`,
   padding: tokens.spacing.lg,
 };
@@ -75,7 +75,7 @@ const sBtn = (variant: 'primary' | 'ghost' = 'primary'): React.CSSProperties => 
   alignItems: 'center',
   gap: '6px',
   padding: variant === 'primary' ? '8px 16px' : '6px 10px',
-  borderRadius: tokens.borderRadius.md,
+  borderRadius: tokens.radius.md,
   border: variant === 'primary' ? 'none' : `1px solid ${tokens.colors.border}`,
   background: variant === 'primary' ? tokens.colors.primary : 'transparent',
   color: variant === 'primary' ? '#fff' : tokens.colors.textSecondary,
@@ -90,7 +90,7 @@ const sInput: React.CSSProperties = {
   padding: '10px 14px 10px 38px',
   background: tokens.colors.bgMain,
   border: `1px solid ${tokens.colors.border}`,
-  borderRadius: tokens.borderRadius.md,
+  borderRadius: tokens.radius.md,
   color: tokens.colors.textPrimary,
   fontSize: '14px',
   fontFamily: tokens.fonts.body,
@@ -529,7 +529,7 @@ export default function CorporativosClientes(): ReactElement {
           <div
             style={{
               background: tokens.colors.bgCard,
-              borderRadius: tokens.borderRadius.lg,
+              borderRadius: tokens.radius.lg,
               border: `1px solid ${tokens.colors.border}`,
               padding: tokens.spacing.lg,
               width: 520,
