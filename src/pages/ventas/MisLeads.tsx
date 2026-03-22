@@ -6,6 +6,7 @@ import {
   Loader, Eye, Edit3, Zap, Upload, ArrowUpDown, X, RotateCcw
 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
+import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { useAuthContext } from '../../hooks/AuthContext'
 
@@ -486,24 +487,20 @@ export default function MisLeads() {
   }
 
   return (
-    <div style={s.page}>
-      {/* ── HEADER ── */}
-      <div style={s.header}>
-        <div>
-          <div style={s.title}>Panel de Oportunidades</div>
-          <div style={s.subtitle}>{totalActive} oportunidades activas &bull; {formatCurrency(totalValue)} en pipeline</div>
-        </div>
-        <button
-          style={s.addBtn}
-          onClick={() => navigate('/ventas/leads/nuevo')}
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.primaryHover }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.primary }}
-        >
-          <Plus size={15} />
-          Agregar Lead
-        </button>
-      </div>
-
+    <ModuleLayout
+        titulo="Panel de Oportunidades"
+        subtitulo={`${totalActive} oportunidades activas • ${formatCurrency(totalValue)} en pipeline`}
+        acciones={
+          <button
+            style={s.addBtn}
+            onClick={() => navigate('/ventas/leads/nuevo')}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.primaryHover }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.primary }}
+          >
+            <Plus size={15} /> Agregar Lead
+          </button>
+        }
+      >
       {/* ── TOOLBAR ── */}
       <div style={s.toolbar}>
         {/* Search */}
@@ -817,6 +814,6 @@ export default function MisLeads() {
 
       {/* CSS for spinner animation */}
       <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
-    </div>
+    </ModuleLayout>
   )
 }
