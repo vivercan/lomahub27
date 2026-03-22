@@ -16,12 +16,12 @@ const colorClasses = {
 export function KPICard({ titulo, valor, subtitulo, color = 'blue' }: KPICardProps) {
   return (
     <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-      <p className="text-gray-400 text-sm font-exo2">{titulo}</p>
-      <p className={`text-3xl font-orbitron font-bold ${colorClasses[color]} mt-1`}>
+      <p className="text-gray-400 text-sm font-montserrat">{titulo}</p>
+      <p className={`text-3xl font-montserrat font-bold ${colorClasses[color]} mt-1`}>
         {valor}
       </p>
       {subtitulo && (
-        <p className="text-gray-500 text-xs mt-1 font-exo2">{subtitulo}</p>
+        <p className="text-gray-500 text-xs mt-1 font-montserrat">{subtitulo}</p>
       )}
     </div>
   )
