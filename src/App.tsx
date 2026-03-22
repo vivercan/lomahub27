@@ -52,6 +52,8 @@ import Analisis8020 from './pages/inteligencia/Analisis8020'
 
 // Admin
 import Configuracion from './pages/admin/Configuracion'
+import TicketsQuejas from './pages/servicio/TicketsQuejas'
+import ProgramacionIMPEX from './pages/operaciones/ProgramacionIMPEX'
 
 function App() {
   return (
@@ -214,6 +216,11 @@ e allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <Rentabilidad />
             </ProtectedRoute>
           } />
+          <Route path="/operaciones/programacion-impex" element={
+            <ProtectedRoute allowedRoles={['superadmin','admin','operaciones','gerente_ops','direccion']}>
+              <ProgramacionIMPEX />
+            </ProtectedRoute>
+          } />
 
           {/* ─── 20. WhatsApp — cs sí, ventas NO ─── */}
           <Route path="/servicio/whatsapp" element={
@@ -226,6 +233,11 @@ e allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
           <Route path="/servicio/metricas" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion']}>
               <MetricasServicio />
+            </ProtectedRoute>
+          } />
+          <Route path="/servicio/tickets" element={
+            <ProtectedRoute allowedRoles={['superadmin','admin','cs','supervisor_cs','direccion']}>
+              <TicketsQuejas />
             </ProtectedRoute>
           } />
 
