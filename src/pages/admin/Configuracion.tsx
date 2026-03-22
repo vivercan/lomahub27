@@ -9,35 +9,50 @@ import { tokens } from '../../lib/tokens';
 import { supabase } from '../../lib/supabase';
 
 interface Usuario {
-  id: string;
-  nombre: string;
+  id?: string;
   email: string;
-  rol: 'Admin' | 'Gerente' | 'Operador' | 'Ejecutivo' | 'Visualizador';
+  rol: 'superadmin' | 'admin' | 'ventas' | 'cs' | 'supervisor_cs' | 'cxc' | 'pricing' | 'operaciones' | 'gerente_comercial' | 'gerente_ops' | 'direccion';
   empresa: string;
-  estado: 'activo' | 'inactivo';
+  activo: boolean;
+  permisos_custom?: any;
 }
 
 type TabType = 'usuarios' | 'catalogos' | 'parametros' | 'integraciones' | 'auditoria';
 
+function extractNameFromEmail(email: string): string {
+  const namePart = email.split('@')[0];
+  return namePart
+    .split(/[._-]/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
 function getRolBadgeColor(rol: string): 'primary' | 'green' | 'yellow' | 'red' | 'gray' | 'blue' | 'orange' {
   switch (rol) {
-    case 'Admin':
+    case 'superadmin':
+    case 'admin':
       return 'red';
-    case 'Gerente':
+    case 'gerente_comercial':
+    case 'gerente_ops':
+    case 'direccion':
       return 'yellow';
-    case 'Operador':
+    case 'ventas':
+    case 'gerente_comercial':
       return 'blue';
-    case 'Ejecutivo':
+    case 'cs':
+    case 'supervisor_cs':
       return 'green';
-    case 'Visualizador':
-      return 'gray';
+    case 'cxc':
+    case 'pricing':
+    case 'operaciones':
+      return 'orange';
     default:
       return 'gray';
   }
 }
 
-function getEstadoBadgeColor(estado: string): 'green' | 'gray' {
-  return estado === 'activo' ? 'green' : 'gray';
+function getEstadoBadgeColor(activo: boolean): 'green' | 'gray' {
+  return activo ? 'green' : 'gray';
 }
 
 export default function Configuracion() {
@@ -73,7 +88,12 @@ export default function Configuracion() {
   const tabs: TabType[] = ['usuarios', 'catalogos', 'parametros', 'integraciones', 'auditoria'];
 
   const usuarioColumns = [
-    { key: 'nombre', label: 'Nombre', width: '20%' },
+    {
+      key: 'nombre',
+      label: 'Nombre',
+      width: '20%',
+      render: (row: Usuario) => extractNameFromEmail(row.email),
+    },
     { key: 'email', label: 'Email', width: '25%' },
     {
       key: 'rol',
@@ -87,8 +107,8 @@ export default function Configuracion() {
       label: 'Estado',
       width: '15%',
       render: (row: Usuario) => (
-        <Badge color={getEstadoBadgeColor(row.estado)}>
-          {row.estado === 'activo' ? 'Activo' : 'Inactivo'}
+        <Badge color={getEstadoBadgeColor(row.activo)}>
+          {row.activo ? 'Activo' : 'Inactivo'}
         </Badge>
       ),
     },
