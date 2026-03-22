@@ -117,17 +117,15 @@ const icons = {
 }
 
 const modules = [
-  // Row 1: 5 modules
-  { id: 1, name: 'Comercial', icon: icons.ventas, route: '/comercial', row: 1, kpi: null, kpiType: 'number', kpiLabel: 'leads activos', priority: 'high' },
-  { id: 2, name: 'Operaciones', icon: icons.torre, route: '/operaciones', row: 1, kpi: null, kpiType: 'number', kpiLabel: 'viajes activos', priority: 'high' },
-  { id: 3, name: 'Servicio', icon: icons.servicio, route: '/servicio', row: 1, kpi: null, kpiType: 'number', kpiLabel: 'clientes', priority: 'high' },
-  { id: 4, name: 'Dedicados', icon: icons.dedicados, route: '/dedicados', row: 1, kpi: null, kpiType: 'number', kpiLabel: 'segmentos', priority: 'mid' },
-  { id: 5, name: 'Cobranza', icon: icons.cobranza, route: '/cobranza', row: 1, kpi: null, kpiType: 'number', kpiLabel: 'cuentas CXC', priority: 'mid' },
-  // Row 2: 4 modules
-  { id: 6, name: 'Comunicaciones', icon: icons.comunicaciones, route: '/comunicaciones', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Activo', statusColor: 'g', priority: 'mid' },
-  { id: 7, name: 'Configuración', icon: icons.config, route: '/configuracion', row: 2, kpi: null, kpiType: 'text', kpiLabel: '—', priority: 'low' },
-  { id: 8, name: 'Actividades', icon: icons.indicadores, route: '/actividades', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Próximamente', statusColor: 'a', priority: 'low' },
-  { id: 9, name: 'Documentos', icon: icons.reportes, route: '/documentos', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Próximamente', statusColor: 'a', priority: 'low' },
+  { id: 1, name: 'Comercial', icon: icons.ventas, route: '/ventas/mis-leads', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'leads activos', priority: 'high', isWarRoom: true },
+  { id: 2, name: 'Operaciones', icon: icons.torre, route: '/operaciones/torre-control', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'viajes activos', priority: 'high' },
+  { id: 3, name: 'Servicio', icon: icons.clientes, route: '/servicio/dashboard', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'clientes', priority: 'high' },
+  { id: 4, name: 'Dedicados', icon: icons.dedicados, route: '/operaciones/dedicados', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'segmentos', priority: 'mid' },
+  { id: 5, name: 'Cobranza', icon: icons.cobranza, route: '/cxc/cartera', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'cuentas CXC', priority: 'mid' },
+  { id: 6, name: 'Comunicaciones', icon: icons.comunicaciones, route: '/servicio/whatsapp', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Activo', statusColor: 'g', priority: 'mid' },
+  { id: 7, name: 'Configuración', icon: icons.config, route: '/admin/configuracion', row: 2, kpi: null, kpiType: 'text', kpiLabel: '—', priority: 'low' },
+  { id: 8, name: 'Actividades', icon: icons.indicadores, route: '/inteligencia', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Próximamente', statusColor: 'a', priority: 'low' },
+  { id: 9, name: 'Documentos', icon: icons.reportes, route: '/inteligencia/presupuesto', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Próximamente', statusColor: 'a', priority: 'low' },
 ]
 
 export default function HomeDashboard() {
@@ -151,11 +149,10 @@ export default function HomeDashboard() {
 
   const getKpi = (m: typeof modules[0]) => {
     if (m.id === 1) return String(counts.leads || 0)
-    if (m.id === 3) return String(counts.clientes || 0)
     if (m.id === 2) return String(counts.viajes || 0)
-    // removed - GPS merged into Operaciones
-    if (m.id === 5) return String(counts.cxc_cartera || 0)
+    if (m.id === 3) return String(counts.clientes || 0)
     if (m.id === 4) return String(counts.tractos || 0)
+    if (m.id === 5) return String(counts.cxc_cartera || 0)
     return m.kpi
   }
 
@@ -198,7 +195,7 @@ export default function HomeDashboard() {
       {/* Grid de modulos */}
       <div style={{ flex: 1, padding: '4px 20px', maxWidth: '100%',  overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {[1, 2].map(row => (
-          <div key={row} style={{ display: 'grid', gridTemplateColumns: row === 1 ? 'repeat(5, 1fr)' : 'repeat(4, 1fr)', gap: '10px' }}>
+          <div key={row} style={{ display: 'grid', gridTemplateColumns: `repeat(${row === 1 ? 5 : 4}, 1fr)`, gap: '10px' }}>
             {modules.filter(m => m.row === row).map((mod, idx) => (
               <button
                 key={mod.id}
@@ -210,30 +207,30 @@ export default function HomeDashboard() {
                   display: 'flex', flexDirection: 'column', alignItems: 'center',
                   justifyContent: 'center', gap: '8px', padding: '20px 14px 18px',
                   aspectRatio: '1 / 1',
-                  background: mod.id === 1
+                  background: mod.isWarRoom
                     ? 'linear-gradient(180deg, rgba(56,50,56,1) 0%, rgba(42,38,48,1) 45%, rgba(31,30,40,1) 100%)'
                     : 'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 45%, rgba(33,33,43,1) 100%)',
-                  borderTop: `1px solid ${mod.id === 1 ? 'rgba(200,160,120,0.14)' : `rgba(160,170,190,${mod.priority === 'high' ? 0.14 : 0.11})`}`,
-                  borderLeft: `1px solid ${mod.id === 1 ? 'rgba(200,160,120,0.10)' : `rgba(160,170,190,${mod.priority === 'high' ? 0.10 : 0.07})`}`,
+                  borderTop: `1px solid ${mod.isWarRoom ? 'rgba(200,160,120,0.14)' : `rgba(160,170,190,${mod.priority === 'high' ? 0.14 : 0.11})`}`,
+                  borderLeft: `1px solid ${mod.isWarRoom ? 'rgba(200,160,120,0.10)' : `rgba(160,170,190,${mod.priority === 'high' ? 0.10 : 0.07})`}`,
                   borderBottom: '1px solid rgba(0,0,0,0.42)',
                   borderRight: '1px solid rgba(0,0,0,0.32)',
                   borderRadius: '20px', cursor: 'pointer',
                   transition: 'all 0.16s ease',
                   boxShadow: hover === mod.id
-                    ? `0 10px 22px rgba(0,0,0,0.35), 0 3px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(200,210,225,0.09), inset 0 -1px 0 rgba(0,0,0,0.15)${mod.id === 1 ? ', 0 0 20px rgba(232,97,26,0.06)' : ''}`
+                    ? `0 10px 22px rgba(0,0,0,0.35), 0 3px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(200,210,225,0.09), inset 0 -1px 0 rgba(0,0,0,0.15)${mod.isWarRoom ? ', 0 0 20px rgba(232,97,26,0.06)' : ''}`
                     : `0 8px 20px rgba(0,0,0,0.22), 0 2px 6px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,${mod.priority === 'high' ? '0.05' : '0.04'}), inset 0 -2px 4px rgba(0,0,0,0.10)`,
                   transform: hover === mod.id ? 'translateY(-2px)' : 'none',
                   fontFamily: "'Montserrat', sans-serif",
                   WebkitFontSmoothing: 'antialiased' as any,
                   position: 'relative' as const, overflow: 'hidden',
-                  color: mod.id === 1 ? '#E8611A' : hover === mod.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.45)',
+                  color: mod.isWarRoom ? '#E8611A' : hover === mod.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.45)',
                 }}
               >
                 {/* Top accent line */}
                 <div style={{
                   position: 'absolute', top: 0, left: '15%', right: '15%', height: '1px',
-                  background: mod.id === 1 ? 'linear-gradient(90deg, transparent, rgba(232,97,26,0.2), transparent)' : 'linear-gradient(90deg, transparent, rgba(160,170,190,0.12), transparent)',
-                  opacity: mod.id === 1 ? 0.85 : mod.priority === 'high' ? 0.65 : hover === mod.id ? 0.75 : 0.3,
+                  background: mod.isWarRoom ? 'linear-gradient(90deg, transparent, rgba(232,97,26,0.2), transparent)' : 'linear-gradient(90deg, transparent, rgba(160,170,190,0.12), transparent)',
+                  opacity: mod.isWarRoom ? 0.85 : mod.priority === 'high' ? 0.65 : hover === mod.id ? 0.75 : 0.3,
                   transition: 'opacity 0.3s',
                 }} />
 
@@ -245,7 +242,7 @@ export default function HomeDashboard() {
                 {/* Name */}
                 <span style={{
                   fontWeight: 600, fontSize: '14px', letterSpacing: '0.3px', textAlign: 'center', lineHeight: 1.2,
-                  color: mod.id === 1 ? 'rgba(255,255,255,0.70)' : hover === mod.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.50)',
+                  color: mod.isWarRoom ? 'rgba(255,255,255,0.70)' : hover === mod.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.50)',
                   transition: 'color 0.25s',
                 }}>{mod.name}</span>
 
