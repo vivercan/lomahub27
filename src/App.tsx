@@ -16,7 +16,6 @@ import NuevoLead from './pages/ventas/NuevoLead'
 import FichaLead from './pages/ventas/FichaLead'
 import ProgramaSemanal from './pages/ventas/ProgramaSemanal'
 import Comisiones from './pages/ventas/Comisiones'
-import FunnelVentas from './pages/ventas/FunnelVentas'
 
 // Cotizador
 import NuevaCotizacion from './pages/cotizador/NuevaCotizacion'
@@ -52,6 +51,7 @@ import Analisis8020 from './pages/inteligencia/Analisis8020'
 
 // Admin
 import Configuracion from './pages/admin/Configuracion'
+import FunnelVentas from './pages/ventas/FunnelVentas'
 import TicketsQuejas from './pages/servicio/TicketsQuejas'
 import ProgramacionIMPEX from './pages/operaciones/ProgramacionIMPEX'
 
@@ -78,10 +78,9 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/+ ─── 04. Panel Personal Vendedor ─── */}
+          {/* ─── 04. Panel Personal Vendedor ─── */}
           <Route path="/ventas/mis-leads" element={
-            <ProtectedRoute
-e allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <MisLeads />
             </ProtectedRoute>
           } />
@@ -217,7 +216,7 @@ e allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
             </ProtectedRoute>
           } />
           <Route path="/operaciones/programacion-impex" element={
-            <ProtectedRoute allowedRoles={['superadmin','admin','operaciones','gerente_ops','direccion']}>
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops', 'direccion']}>
               <ProgramacionIMPEX />
             </ProtectedRoute>
           } />
@@ -236,7 +235,7 @@ e allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
             </ProtectedRoute>
           } />
           <Route path="/servicio/tickets" element={
-            <ProtectedRoute allowedRoles={['superadmin','admin','cs','supervisor_cs','direccion']}>
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion']}>
               <TicketsQuejas />
             </ProtectedRoute>
           } />
@@ -248,17 +247,15 @@ e allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
             </ProtectedRoute>
           } />
 
-          {/* ─── Funnel de Ventas ─── */}
-          <Route path="/ventas/funnel" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial', 'direccion']}>
-              <FunnelVentas />
-            </ProtectedRoute>
-          } />
-
           {/* ─── 28. Comisiones por Ejecutivo ─── */}
           <Route path="/ventas/comisiones" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'gerente_comercial', 'direccion']}>
               <Comisiones />
+            </ProtectedRoute>
+          } />
+          <Route path="/ventas/funnel" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial', 'direccion']}>
+              <FunnelVentas />
             </ProtectedRoute>
           } />
 
