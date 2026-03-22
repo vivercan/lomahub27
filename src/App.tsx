@@ -128,15 +128,15 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* ─── 08. Alta de Cliente ─── */}
-          <Route path="/cli          {/* ─── 08b. Clientes Corporativos ─── */}
+          {/* ─── 08b. Clientes Corporativos ─── */}
           <Route path="/clientes/corporativos" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas']}>
               <CorporativosClientes />
             </ProtectedRoute>
           } />
 
-entes/alta" element={
+          {/* ─── 08. Alta de Cliente ─── */}
+          <Route path="/clientes/alta" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs', 'cxc', 'pricing']}>
               <AltaCliente />
             </ProtectedRoute>
