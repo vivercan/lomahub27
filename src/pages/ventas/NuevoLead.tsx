@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Globe, User, Phone, Mail, AlertCircle, CheckCircle, Building2, MapPin, Target, Zap, Save } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
+import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { useAuthContext } from '../../hooks/AuthContext'
 
@@ -222,15 +223,7 @@ export default function NuevoLead(): ReactElement {
   })
 
   return (
-    <div style={page}>
-      {/* HEADER */}
-      <div style={header}>
-        <button style={backBtn} onClick={() => navigate('/ventas/mis-leads')}>
-          <ArrowLeft size={18} />
-        </button>
-        <h1 style={titleStyle}>Agregar Lead</h1>
-      </div>
-
+    <ModuleLayout titulo="Agregar Lead">
       {/* 3 COLUMN GRID */}
       <div style={grid3}>
         {/* ─── LEFT: N1 - EMPRESA ─── */}
@@ -418,6 +411,6 @@ export default function NuevoLead(): ReactElement {
           {saving ? 'GUARDANDO...' : 'GUARDAR LEAD'}
         </button>
       </div>
-    </div>
+    </ModuleLayout>
   )
 }
