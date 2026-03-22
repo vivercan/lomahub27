@@ -23,8 +23,8 @@ const navItems: NavItem[] = [
   { label: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} />, roles: ['superadmin', 'admin'] },
   // Ventas
   { label: 'Dashboard Ventas', path: '/ventas/dashboard', icon: <TrendingUp size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
-  { label: 'Mis Leads', path: '/ventas/mis-leads', icon: <Target size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
-  { label: 'Nuevo Lead', path: '/ventas/leads/nuevo', icon: <Users size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
+  { label: 'Panel de Oportunidades', path: '/ventas/mis-leads', icon: <Target size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
+  { label: 'Agregar Lead', path: '/ventas/leads/nuevo', icon: <Users size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
   { label: 'Programa Semanal', path: '/ventas/programa-semanal', icon: <Calendar size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'direccion'] },
   { label: 'Comisiones', path: '/ventas/comisiones', icon: <DollarSign size={18} />, roles: ['superadmin', 'admin', 'gerente_comercial', 'direccion'] },
   // Cotizador
@@ -58,7 +58,7 @@ const navItems: NavItem[] = [
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const { user, logout } = useAuthContext()
-  const _navigate = useNavigate()
+  const navigate = useNavigate()
 
   if (!user) return null
 
@@ -138,4 +138,4 @@ export function Sidebar() {
       </div>
     </aside>
   )
-}
+  }
