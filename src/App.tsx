@@ -24,6 +24,7 @@ import NuevaCotizacion from './pages/cotizador/NuevaCotizacion'
 import AltaCliente from './pages/clientes/AltaCliente'
 import FichaCliente from './pages/clientes/FichaCliente'
 import RadiografiaFinanciera from './pages/clientes/RadiografiaFinanciera'
+import CorporativosClientes from './pages/clientes/CorporativosClientes'
 
 // Operaciones
 import Despachos from './pages/operaciones/Despachos'
@@ -128,7 +129,14 @@ function App() {
           } />
 
           {/* ─── 08. Alta de Cliente ─── */}
-          <Route path="/clientes/alta" element={
+          <Route path="/cli          {/* ─── 08b. Clientes Corporativos ─── */}
+          <Route path="/clientes/corporativos" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas']}>
+              <CorporativosClientes />
+            </ProtectedRoute>
+          } />
+
+entes/alta" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs', 'cxc', 'pricing']}>
               <AltaCliente />
             </ProtectedRoute>
