@@ -4,7 +4,7 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { DataTable } from '../../components/ui/DataTable';
-import { Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { tokens } from '../../lib/tokens';
 import { supabase } from '../../lib/supabase';
 
@@ -18,6 +18,8 @@ interface Usuario {
 }
 
 type TabType = 'usuarios' | 'catalogos' | 'parametros' | 'integraciones' | 'auditoria';
+
+const ROLES = ['superadmin', 'admin', 'ventas', 'cs', 'supervisor_cs', 'cxc', 'pricing', 'operaciones', 'gerente_comercial', 'gerente_ops', 'direccion'] as const;
 
 function extractNameFromEmail(email: string): string {
   const namePart = email.split('@')[0];
@@ -37,7 +39,6 @@ function getRolBadgeColor(rol: string): 'primary' | 'green' | 'yellow' | 'red' |
     case 'direccion':
       return 'yellow';
     case 'ventas':
-    case 'gerente_comercial':
       return 'blue';
     case 'cs':
     case 'supervisor_cs':
@@ -55,35 +56,108 @@ function getEstadoBadgeColor(activo: boolean): 'green' | 'gray' {
   return activo ? 'green' : 'gray';
 }
 
+// ── Inline modal styles ──
+const overlayStyle: React.CSSProperties = {
+  position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+  background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)',
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
+  zIndex: 9999,
+};
+
+const modalStyle: React.CSSProperties = {
+  background: tokens.colors.bgCard, borderRadius: tokens.radius.lg,
+  border: `1px solid ${tokens.colors.border}`, padding: '28px',
+  width: '480px', maxWidth: '90vw',
+  boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+};
+
+const inputStyle: React.CSSProperties = {
+  width: '100%', padding: '10px 12px', borderRadius: tokens.radius.md,
+  border: `1px solid ${tokens.colors.border}`, background: tokens.colors.bgHover,
+  color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body, fontSize: '14px',
+  outline: 'none', boxSizing: 'border-box',
+};
+
+const selectStyle: React.CSSProperties = {
+  ...inputStyle, cursor: 'pointer', appearance: 'auto' as any,
+};
+
+const labelStyle: React.CSSProperties = {
+  display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600,
+  color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body,
+};
+
 export default function Configuracion() {
   const [activeTab, setActiveTab] = useState<TabType>('usuarios');
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUsuarios = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('usuarios_autorizados')
-          .select('email, rol, empresa, activo, permisos_custom')
-          .order('email', { ascending: true });
+  // Modal state
+  const [editUser, setEditUser] = useState<Usuario | null>(null);
+  const [editRol, setEditRol] = useState('');
+  const [editEmpresa, setEditEmpresa] = useState('');
+  const [editActivo, setEditActivo] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-        if (error) {
-          console.error('Error fetching usuarios:', error);
-          setUsuarios([]);
-        } else if (data) {
-          setUsuarios(data as Usuario[]);
-        }
-      } catch (err) {
-        console.error('Unexpected error:', err);
+  const fetchUsuarios = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('usuarios_autorizados')
+        .select('email, rol, empresa, activo, permisos_custom')
+        .order('email', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching usuarios:', error);
         setUsuarios([]);
-      } finally {
-        setLoading(false);
+      } else if (data) {
+        setUsuarios(data as Usuario[]);
       }
-    };
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      setUsuarios([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchUsuarios();
   }, []);
+
+  const openEditModal = (user: Usuario) => {
+    setEditUser(user);
+    setEditRol(user.rol);
+    setEditEmpresa(user.empresa);
+    setEditActivo(user.activo);
+  };
+
+  const closeModal = () => {
+    setEditUser(null);
+    setSaving(false);
+  };
+
+  const handleSave = async () => {
+    if (!editUser) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('usuarios_autorizados')
+        .update({ rol: editRol, empresa: editEmpresa, activo: editActivo })
+        .eq('email', editUser.email);
+
+      if (error) {
+        console.error('Error updating user:', error);
+        alert('Error al guardar: ' + error.message);
+      } else {
+        await fetchUsuarios();
+        closeModal();
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const tabs: TabType[] = ['usuarios', 'catalogos', 'parametros', 'integraciones', 'auditoria'];
 
@@ -105,7 +179,7 @@ export default function Configuracion() {
     {
       key: 'estado',
       label: 'Estado',
-      width: '15%',
+      width: '10%',
       render: (row: Usuario) => (
         <Badge color={getEstadoBadgeColor(row.activo)}>
           {row.activo ? 'Activo' : 'Inactivo'}
@@ -115,10 +189,10 @@ export default function Configuracion() {
     {
       key: 'actions',
       label: 'Acciones',
-      width: '5%',
-      render: (_row: Usuario) => (
+      width: '10%',
+      render: (row: Usuario) => (
         <div style={{ display: 'flex', gap: tokens.spacing.xs }}>
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={() => openEditModal(row)}>
             Editar
           </Button>
         </div>
@@ -128,6 +202,90 @@ export default function Configuracion() {
 
   return (
     <ModuleLayout titulo="Configuración del Sistema">
+      {/* Edit User Modal */}
+      {editUser && (
+        <div style={overlayStyle} onClick={closeModal}>
+          <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body, fontSize: '18px' }}>
+                Editar Usuario
+              </h3>
+              <button onClick={closeModal} style={{ background: 'none', border: 'none', cursor: 'pointer', color: tokens.colors.textMuted, padding: '4px' }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={labelStyle}>Email</label>
+              <div style={{ ...inputStyle, background: tokens.colors.bgCard, opacity: 0.7, cursor: 'not-allowed' }}>
+                {editUser.email}
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={labelStyle}>Nombre</label>
+              <div style={{ ...inputStyle, background: tokens.colors.bgCard, opacity: 0.7, cursor: 'not-allowed' }}>
+                {extractNameFromEmail(editUser.email)}
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={labelStyle}>Rol</label>
+              <select
+                value={editRol}
+                onChange={(e) => setEditRol(e.target.value)}
+                style={selectStyle}
+              >
+                {ROLES.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={labelStyle}>Empresa</label>
+              <input
+                type="text"
+                value={editEmpresa}
+                onChange={(e) => setEditEmpresa(e.target.value)}
+                style={inputStyle}
+                placeholder="Nombre de empresa"
+              />
+            </div>
+
+            <div style={{ marginBottom: '24px' }}>
+              <label style={labelStyle}>Estado</label>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                {[true, false].map((val) => (
+                  <button
+                    key={String(val)}
+                    onClick={() => setEditActivo(val)}
+                    style={{
+                      padding: '8px 20px', borderRadius: tokens.radius.md, fontSize: '13px',
+                      fontFamily: tokens.fonts.body, fontWeight: 600, border: 'none', cursor: 'pointer',
+                      background: editActivo === val ? (val ? tokens.colors.green : tokens.colors.red || '#EF4444') : tokens.colors.bgHover,
+                      color: editActivo === val ? '#fff' : tokens.colors.textSecondary,
+                      transition: 'all 0.15s',
+                    }}
+                  >
+                    {val ? 'Activo' : 'Inactivo'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+              <Button variant="secondary" size="sm" onClick={closeModal}>
+                Cancelar
+              </Button>
+              <Button variant="primary" size="sm" onClick={handleSave}>
+                {saving ? 'Guardando...' : 'Guardar Cambios'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{ marginBottom: tokens.spacing.lg }}>
         <div
           style={{
@@ -196,13 +354,7 @@ export default function Configuracion() {
 
       {activeTab === 'catalogos' && (
         <Card>
-          <div
-            style={{
-              padding: tokens.spacing.lg,
-              textAlign: 'center',
-              color: tokens.colors.textSecondary,
-            }}
-          >
+          <div style={{ padding: tokens.spacing.lg, textAlign: 'center', color: tokens.colors.textSecondary }}>
             <p style={{ margin: 0 }}>Gestión de Catálogos (Implementar según especificaciones)</p>
           </div>
         </Card>
@@ -210,13 +362,7 @@ export default function Configuracion() {
 
       {activeTab === 'parametros' && (
         <Card>
-          <div
-            style={{
-              padding: tokens.spacing.lg,
-              textAlign: 'center',
-              color: tokens.colors.textSecondary,
-            }}
-          >
+          <div style={{ padding: tokens.spacing.lg, textAlign: 'center', color: tokens.colors.textSecondary }}>
             <p style={{ margin: 0 }}>Parámetros del Sistema (Implementar según especificaciones)</p>
           </div>
         </Card>
@@ -224,13 +370,7 @@ export default function Configuracion() {
 
       {activeTab === 'integraciones' && (
         <Card>
-          <div
-            style={{
-              padding: tokens.spacing.lg,
-              textAlign: 'center',
-              color: tokens.colors.textSecondary,
-            }}
-          >
+          <div style={{ padding: tokens.spacing.lg, textAlign: 'center', color: tokens.colors.textSecondary }}>
             <p style={{ margin: 0 }}>Integraciones (Implementar según especificaciones)</p>
           </div>
         </Card>
@@ -238,17 +378,11 @@ export default function Configuracion() {
 
       {activeTab === 'auditoria' && (
         <Card>
-          <div
-            style={{
-              padding: tokens.spacing.lg,
-              textAlign: 'center',
-              color: tokens.colors.textSecondary,
-            }}
-          >
+          <div style={{ padding: tokens.spacing.lg, textAlign: 'center', color: tokens.colors.textSecondary }}>
             <p style={{ margin: 0 }}>Auditoría del Sistema (Implementar según especificaciones)</p>
           </div>
         </Card>
       )}
     </ModuleLayout>
-  );
-}
+  
+ "���� 
