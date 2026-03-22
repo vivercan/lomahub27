@@ -43,7 +43,7 @@ export default function CerebroTarifario() {
   const [tarifas, setTarifas] = useState<Tarifa[]>([])
   const [loading, setLoading] = useState(true)
   const [busqueda, setBusqueda] = useState('')
-  const [filtroEstado, setFiltroEstado] = useState<string | null>(null)(null)
+  const [filtroEstado, setFiltroEstado] = useState<string | null>(null)
 
   useEffect(() => {
     fetchTarifas()
