@@ -17,7 +17,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
       <div className="min-h-screen bg-fx-bg flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-fx-primary border-t-transparent rounded-full animate-spin" />
-          <p className="text-fx-text-secondary font-exo2">Cargando...</p>
+          <p className="text-fx-text-secondary font-montserrat">Cargando...</p>
         </div>
       </div>
     )
