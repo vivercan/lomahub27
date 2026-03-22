@@ -1,401 +1,423 @@
-import { useState, useEffect, useCallback } from 'react'
-import { AlertCircle, CheckCircle, X } from 'lucide-react'
+import type { ReactElement } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ModuleLayout } from '../../components/layout/ModuleLayout'
-import { Card } from '../../components/ui/Card'
-import { Button } from '../../components/ui/Button'
-import { Input } from '../../components/ui/Input'
-import { Select } from '../../components/ui/Select'
+import { ArrowLeft, Globe, User, Phone, Mail, AlertCircle, CheckCircle, Building2, MapPin, Target, Zap, Save } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 import { useAuthContext } from '../../hooks/AuthContext'
 
 const TIPO_SERVICIO = ['Seco', 'Refrigerado', 'Seco Hazmat', 'Refri Hazmat']
 const TIPO_VIAJE = ['Impo', 'Expo', 'Nacional', 'Dedicado']
-const HITOS = [
-  { key: 'n4_alta', label: 'N4 Alta' },
-  { key: 'n5_sop', label: 'N5 SOP' },
-  { key: 'n6_junta', label: 'N6 Junta Arranque' },
-  { key: 'n7_facturado', label: 'N7 Facturado' },
+const TIPO_EMPRESA_OPTS = [
+  { value: '', label: 'Selecciona...' },
+  { value: 'Naviera', label: 'Naviera' },
+  { value: 'Freight Forwarder', label: 'Freight Forwarder' },
+  { value: 'Directo', label: 'Directo' },
+  { value: 'Broker', label: 'Broker' },
+  { value: 'Otro', label: 'Otro' },
+]
+const PRIORIDAD_OPTS = [
+  { value: 'media', label: 'Media', color: tokens.colors.yellow },
+  { value: 'alta', label: 'Alta', color: tokens.colors.red },
+  { value: 'baja', label: 'Baja', color: tokens.colors.green },
+]
+const TAMANO_OPTS = [
+  { value: '', label: '-' },
+  { value: 'chico', label: 'Chico' },
+  { value: 'mediano', label: 'Mediano' },
+  { value: 'grande', label: 'Grande' },
+  { value: 'enterprise', label: 'Enterprise' },
 ]
 
-const toUpperCaseVal = (v: string) => v.toUpperCase()
-const toTitleCase = (v: string) =>
-  v.replace(/\w\S*/g, (t) => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase())
-
-export default function NuevoLead() {
+export default function NuevoLead(): ReactElement {
   const navigate = useNavigate()
   const { user } = useAuthContext()
   const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
-  const [duplicates, setDuplicates] = useState<string[]>([])
-  const [checkingDup, setCheckingDup] = useState(false)
 
-  const [form, setForm] = useState({
-    empresa: '',
-    web: '',
-    contacto: '',
-    telefono: '',
-    email: '',
-    tipoEmpresa: '',
-    ciudad: '',
-    estado: '',
-    prioridad: '',
-    tamano: '',
-    fechaCierre: '',
-    tipoServicio: [] as string[],
-    tipoViaje: [] as string[],
-    transbordo: false,
-    dtd: false,
-    proximosPasos: '',
-    ruta: '',
-    viajesMes: '',
-    tarifa: '',
-    proyectadoUsd: '',
-    hitos: {} as Record<string, boolean>,
-    fuente: '',
-    notas: '',
-  })
+  const [empresa, setEmpresa] = useState('')
+  const [web, setWeb] = useState('')
+  const [contacto, setContacto] = useState('')
+  const [telefono, setTelefono] = useState('')
+  const [email, setEmail] = useState('')
+  const [tipoEmpresa, setTipoEmpresa] = useState('')
+  const [ciudad, setCiudad] = useState('')
+  const [estadoMx, setEstadoMx] = useState('')
+  const [prioridad, setPrioridad] = useState('media')
+  const [tamano, setTamano] = useState('')
+  const [fechaCierre, setFechaCierre] = useState('')
 
-  const toggleChip = (field: 'tipoServicio' | 'tipoViaje', value: string) => {
-    setForm((p) => {
-      const arr = p[field]
-      return { ...p, [field]: arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value] }
-    })
-  }
+  const [tipoServicio, setTipoServicio] = useState<string[]>([])
+  const [tipoViaje, setTipoViaje] = useState<string[]>([])
+  const [transbordo, setTransbordo] = useState(false)
+  const [dtd, setDtd] = useState(false)
+  const [proximosPasos, setProximosPasos] = useState('')
 
-  const set = (field: string, value: any) => {
-    setForm((p) => ({ ...p, [field]: value }))
-    setError(null)
-  }
+  const [ruta, setRuta] = useState('')
+  const [viajesMes, setViajesMes] = useState('')
+  const [tarifa, setTarifa] = useState('')
+  const [proyectadoUsd, setProyectadoUsd] = useState('')
 
-  // Duplicate check with debounce
-  const checkDuplicates = useCallback(async (empresa: string) => {
-    if (empresa.length < 3) { setDuplicates([]); return }
-    setCheckingDup(true)
-    try {
-      const term = `%${empresa}%`
-      const [leadsRes, clientesRes] = await Promise.all([
-        supabase.from('leads').select('empresa').ilike('empresa', term).limit(5),
-        supabase.from('sc_contactos_clientes').select('nombre_cliente').ilike('nombre_cliente', term).limit(5),
-      ])
-      const found: string[] = []
-      leadsRes.data?.forEach((l: any) => found.push(`Lead: ${l.empresa}`))
-      clientesRes.data?.forEach((c: any) => found.push(`Cliente: ${c.nombre_cliente}`))
-      setDuplicates(found)
-    } catch { setDuplicates([]) }
-    finally { setCheckingDup(false) }
-  }, [])
+  const [hitoN4, setHitoN4] = useState(false)
+  const [hitoN5, setHitoN5] = useState(false)
+  const [hitoN6, setHitoN6] = useState(false)
+  const [hitoN7, setHitoN7] = useState(false)
+
+  const [dupWarning, setDupWarning] = useState(false)
 
   useEffect(() => {
-    const t = setTimeout(() => checkDuplicates(form.empresa), 400)
-    return () => clearTimeout(t)
-  }, [form.empresa, checkDuplicates])
+    const vm = parseInt(viajesMes) || 0
+    const t = parseFloat(tarifa) || 0
+    if (vm > 0 && t > 0) setProyectadoUsd((vm * t).toFixed(0))
+  }, [viajesMes, tarifa])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!form.empresa.trim()) { setError('El nombre de la empresa es obligatorio'); return }
-    setSaving(true)
-    setError(null)
-    try {
-      const { error: insertError } = await supabase.from('leads').insert([{
-        empresa: form.empresa.trim(),
-        contacto: form.contacto.trim(),
-        telefono: form.telefono.trim(),
-        email: form.email.trim(),
-        ciudad: form.ciudad.trim(),
-        ruta_interes: form.ruta.trim(),
-        tipo_carga: form.tipoServicio.join(', '),
-        tipo_viaje: form.tipoViaje.join(', '),
-        fuente: form.fuente || 'Manual',
-        notas: form.notas.trim(),
-        estado: 'Nuevo',
-        probabilidad: 10,
-        ejecutivo_nombre: user?.email || 'Sin asignar',
-        web: form.web.trim(),
-        tipo_empresa: form.tipoEmpresa,
-        estado_mx: form.estado.trim(),
-        prioridad: form.prioridad,
-        tamano: form.tamano,
-        fecha_cierre: form.fechaCierre || null,
-        transbordo: form.transbordo,
-        dtd: form.dtd,
-        proximos_pasos: form.proximosPasos.trim(),
-        viajes_mes: form.viajesMes ? parseInt(form.viajesMes) : null,
-        tarifa: form.tarifa ? parseFloat(form.tarifa) : null,
-        proyectado_usd: form.proyectadoUsd ? parseFloat(form.proyectadoUsd) : null,
-        valor_estimado: form.proyectadoUsd ? parseFloat(form.proyectadoUsd) : 0,
-      }])
-      if (insertError) throw insertError
-      setSuccess(true)
-      setTimeout(() => navigate('/ventas/mis-leads'), 1200)
-    } catch (err: any) {
-      setError(err.message || 'Error al guardar el lead')
-    } finally { setSaving(false) }
+  const toggleChip = (arr: string[], val: string, setter: (v: string[]) => void) => {
+    setter(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val])
   }
 
-  const Chip = ({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) => (
-    <button type="button" onClick={onClick}
-      className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
-      style={{
-        background: active ? tokens.colors.primary : tokens.colors.bgHover,
-        color: active ? '#fff' : tokens.colors.textSecondary,
-        border: `1px solid ${active ? tokens.colors.primary : tokens.colors.border}`,
-      }}>
-      {label}
-    </button>
-  )
+  const checkDuplicate = async (name: string) => {
+    if (name.length < 3) { setDupWarning(false); return }
+    const { data } = await supabase.from('leads').select('id').ilike('empresa', '%' + name + '%').limit(1)
+    setDupWarning((data || []).length > 0)
+  }
 
-  const SectionTitle = ({ children }: { children: string }) => (
-    <p className="text-[10px] uppercase tracking-widest font-bold mb-3"
-      style={{ color: tokens.colors.orange, fontFamily: tokens.fonts.heading }}>
-      {children}
-    </p>
-  )
+  const handleSave = async () => {
+    if (!empresa.trim()) { setError('Empresa es obligatoria'); return }
+    setSaving(true); setError('')
+    try {
+      const { error: err } = await supabase.from('leads').insert([{
+        empresa: empresa.trim().toUpperCase(),
+        contacto: contacto.trim(),
+        telefono: telefono.trim(),
+        email: email.trim(),
+        web: web.trim(),
+        tipo_empresa: tipoEmpresa,
+        ciudad: ciudad.trim(),
+        estado_mx: estadoMx.trim(),
+        prioridad,
+        tamano,
+        fecha_cierre: fechaCierre || null,
+        tipo_carga: tipoServicio.join(', '),
+        tipo_viaje: tipoViaje.join(', '),
+        transbordo,
+        dtd,
+        proximos_pasos: proximosPasos.trim(),
+        ruta_interes: ruta.trim(),
+        viajes_mes: parseInt(viajesMes) || 0,
+        tarifa: parseFloat(tarifa) || 0,
+        proyectado_usd: parseFloat(proyectadoUsd) || 0,
+        valor_estimado: parseFloat(proyectadoUsd) || 0,
+        estado: 'Nuevo',
+        probabilidad: 10,
+        fuente: 'Manual',
+        ejecutivo_id: user?.id || '',
+        ejecutivo_nombre: user?.nombre || user?.email || 'Sin asignar',
+        fecha_creacion: new Date().toISOString(),
+        fecha_ultimo_mov: new Date().toISOString(),
+      }])
+      if (err) throw err
+      setSuccess(true)
+      setTimeout(() => navigate('/ventas/mis-leads'), 1200)
+    } catch (e: any) { setError(e.message || 'Error al guardar') }
+    finally { setSaving(false) }
+  }
 
-  const tipoEmpresaOpts = [
-    { value: '', label: 'Seleccionar...' },
-    { value: 'fabricante', label: 'Fabricante' },
-    { value: 'distribuidor', label: 'Distribuidor' },
-    { value: 'maquiladora', label: 'Maquiladora' },
-    { value: 'comercializadora', label: 'Comercializadora' },
-    { value: 'broker', label: 'Broker Logístico' },
-    { value: 'otro', label: 'Otro' },
-  ]
-  const prioridadOpts = [
-    { value: '', label: 'Seleccionar...' },
-    { value: 'alta', label: 'Alta' },
-    { value: 'media', label: 'Media' },
-    { value: 'baja', label: 'Baja' },
-  ]
-  const tamanoOpts = [
-    { value: '', label: 'Seleccionar...' },
-    { value: 'grande', label: 'Grande (50+ viajes/mes)' },
-    { value: 'mediana', label: 'Mediana (10-49 viajes/mes)' },
-    { value: 'chica', label: 'Chica (1-9 viajes/mes)' },
-  ]
-  const fuenteOpts = [
-    { value: '', label: 'Seleccionar...' },
-    { value: 'referencia', label: 'Referencia' },
-    { value: 'llamada', label: 'Llamada Entrante' },
-    { value: 'web', label: 'Sitio Web' },
-    { value: 'feria', label: 'Feria/Evento' },
-    { value: 'prospeccion', label: 'Prospección Directa' },
-    { value: 'otro', label: 'Otro' },
-  ]
+  // ─── STYLES ──────────────────────────────────────────
+  const page: React.CSSProperties = {
+    minHeight: '100vh', background: tokens.colors.bgMain,
+    display: 'flex', flexDirection: 'column',
+    fontFamily: tokens.fonts.body, color: tokens.colors.textPrimary,
+  }
+  const header: React.CSSProperties = {
+    display: 'flex', alignItems: 'center', gap: '16px',
+    padding: '20px 32px', borderBottom: '1px solid ' + tokens.colors.border,
+  }
+  const backBtn: React.CSSProperties = {
+    width: 36, height: 36, borderRadius: tokens.radius.md,
+    background: tokens.colors.orange, border: 'none', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
+  }
+  const titleStyle: React.CSSProperties = {
+    fontSize: '24px', fontWeight: 800, margin: 0,
+    fontFamily: tokens.fonts.heading, color: tokens.colors.textPrimary,
+  }
+  const grid3: React.CSSProperties = {
+    display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
+    gap: '24px', padding: '24px 32px', flex: 1,
+  }
+  const section = (borderColor: string): React.CSSProperties => ({
+    background: tokens.colors.bgCard, borderRadius: tokens.radius.lg,
+    border: '1px solid ' + tokens.colors.border,
+    borderLeft: '4px solid ' + borderColor,
+    padding: '20px',
+  })
+  const sectionNoBorder: React.CSSProperties = {
+    background: tokens.colors.bgCard, borderRadius: tokens.radius.lg,
+    border: '1px solid ' + tokens.colors.border,
+    padding: '20px',
+  }
+  const sectionTitle = (color: string): React.CSSProperties => ({
+    fontSize: '12px', fontWeight: 800, textTransform: 'uppercase' as const,
+    letterSpacing: '0.1em', color, marginBottom: '16px',
+    fontFamily: tokens.fonts.heading,
+    display: 'flex', alignItems: 'center', gap: '8px',
+  })
+  const inputStyle: React.CSSProperties = {
+    width: '100%', padding: '10px 12px', fontSize: '13px',
+    background: tokens.colors.bgHover, border: '1px solid ' + tokens.colors.border,
+    borderRadius: tokens.radius.md, color: tokens.colors.textPrimary,
+    outline: 'none', fontFamily: tokens.fonts.body,
+    boxSizing: 'border-box' as const,
+  }
+  const labelStyle: React.CSSProperties = {
+    fontSize: '11px', fontWeight: 600, color: tokens.colors.textMuted,
+    marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px',
+    fontFamily: tokens.fonts.body,
+  }
+  const row2: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }
+  const row3: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }
+  const fieldWrap: React.CSSProperties = { marginBottom: '12px' }
+  const chip = (active: boolean): React.CSSProperties => ({
+    padding: '8px 16px', borderRadius: tokens.radius.md,
+    fontSize: '12px', fontWeight: 600, cursor: 'pointer',
+    background: active ? tokens.colors.primary : tokens.colors.bgHover,
+    color: active ? '#fff' : tokens.colors.textSecondary,
+    border: '1px solid ' + (active ? tokens.colors.primary : tokens.colors.border),
+    fontFamily: tokens.fonts.body, textAlign: 'center' as const,
+    transition: 'all 0.15s ease',
+  })
+  const chipGrid: React.CSSProperties = {
+    display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px',
+  }
+  const checkRow: React.CSSProperties = {
+    display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px',
+    fontSize: '13px', color: tokens.colors.textSecondary, cursor: 'pointer',
+    fontFamily: tokens.fonts.body,
+  }
+  const footer: React.CSSProperties = {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '16px 32px', borderTop: '1px solid ' + tokens.colors.border,
+    background: tokens.colors.bgCard,
+  }
+  const saveBtn: React.CSSProperties = {
+    padding: '12px 28px', borderRadius: tokens.radius.md, cursor: 'pointer',
+    background: tokens.colors.primary, color: '#fff', border: 'none',
+    fontSize: '13px', fontWeight: 700, fontFamily: tokens.fonts.heading,
+    display: 'flex', alignItems: 'center', gap: '8px',
+    boxShadow: tokens.effects.glowPrimary, letterSpacing: '0.05em',
+    textTransform: 'uppercase' as const,
+    opacity: saving || success ? 0.6 : 1,
+  }
+  const selectStyle: React.CSSProperties = {
+    ...inputStyle, appearance: 'auto' as const,
+  }
+  const prioBtn = (val: string, color: string): React.CSSProperties => ({
+    padding: '8px 12px', borderRadius: tokens.radius.md,
+    fontSize: '11px', fontWeight: 600, cursor: 'pointer',
+    background: prioridad === val ? color : tokens.colors.bgHover,
+    color: prioridad === val ? '#fff' : tokens.colors.textSecondary,
+    border: '1px solid ' + (prioridad === val ? color : tokens.colors.border),
+    fontFamily: tokens.fonts.body, display: 'flex', alignItems: 'center', gap: '4px',
+  })
 
   return (
-    <ModuleLayout titulo="Agregar Lead" subtitulo="Captura completa de prospecto">
-      <form onSubmit={handleSubmit}>
-        {/* 3 columns */}
-        <div className="grid grid-cols-3 gap-4" style={{ minHeight: 0 }}>
+    <div style={page}>
+      {/* HEADER */}
+      <div style={header}>
+        <button style={backBtn} onClick={() => navigate('/ventas/mis-leads')}>
+          <ArrowLeft size={18} />
+        </button>
+        <h1 style={titleStyle}>Agregar Lead</h1>
+      </div>
 
-          {/* COL 1: EMPRESA */}
-          <Card>
-            <SectionTitle>N1 — Empresa</SectionTitle>
-            <div className="space-y-2.5">
-              <Input label="Empresa *" placeholder="NOMBRE DE LA EMPRESA"
-                value={form.empresa}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('empresa', toUpperCaseVal(e.target.value))} required />
-              <Input label="Sitio Web" placeholder="www.empresa.com"
-                value={form.web}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('web', e.target.value)} />
-              <Input label="Contacto" placeholder="Nombre Del Contacto"
-                value={form.contacto}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('contacto', toTitleCase(e.target.value))} />
-              <div className="grid grid-cols-2 gap-2">
-                <Input label="Teléfono" placeholder="+52 ..."
-                  value={form.telefono}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('telefono', e.target.value)} />
-                <Input label="Email" type="email" placeholder="email@empresa.com"
-                  value={form.email}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('email', e.target.value)} />
+      {/* 3 COLUMN GRID */}
+      <div style={grid3}>
+        {/* ─── LEFT: N1 - EMPRESA ─── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={section(tokens.colors.green)}>
+            <div style={sectionTitle(tokens.colors.green)}>
+              <Building2 size={14} /> N1 - EMPRESA
+            </div>
+            <div style={fieldWrap}>
+              <input style={{ ...inputStyle, fontSize: '15px', fontWeight: 700, fontFamily: tokens.fonts.heading, textTransform: 'uppercase' }}
+                placeholder="EMPRESA S.A. DE C.V."
+                value={empresa}
+                onChange={e => { setEmpresa(e.target.value); checkDuplicate(e.target.value) }} />
+            </div>
+            <div style={{ ...row2, ...fieldWrap }}>
+              <div>
+                <div style={labelStyle}><Globe size={12} /> Web</div>
+                <input style={inputStyle} placeholder="www.empresa.com" value={web} onChange={e => setWeb(e.target.value)} />
               </div>
-              <Select label="Tipo de Empresa" options={tipoEmpresaOpts} value={form.tipoEmpresa}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => set('tipoEmpresa', e.target.value)} />
-              <div className="grid grid-cols-2 gap-2">
-                <Input label="Ciudad" placeholder="Ciudad"
-                  value={form.ciudad}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('ciudad', e.target.value)} />
-                <Input label="Estado" placeholder="Estado"
-                  value={form.estado}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('estado', e.target.value)} />
+              <div>
+                <div style={labelStyle}><User size={12} /> Contacto</div>
+                <input style={inputStyle} placeholder="Juan Pérez" value={contacto} onChange={e => setContacto(e.target.value)} />
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <Select label="Prioridad" options={prioridadOpts} value={form.prioridad}
-                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => set('prioridad', e.target.value)} />
-                <Select label="Tamaño" options={tamanoOpts} value={form.tamano}
-                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => set('tamano', e.target.value)} />
+            </div>
+            <div style={{ ...row2, ...fieldWrap }}>
+              <div>
+                <div style={labelStyle}><Phone size={12} /> Teléfono</div>
+                <input style={inputStyle} placeholder="55 1234 5678" value={telefono} onChange={e => setTelefono(e.target.value)} />
               </div>
-              <Input label="Fecha Cierre Estimada" type="date" value={form.fechaCierre}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('fechaCierre', e.target.value)} />
-            </div>
-          </Card>
-
-          {/* COL 2: SERVICIO + VIAJE */}
-          <Card>
-            <SectionTitle>N2 — Tipo de Servicio</SectionTitle>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {TIPO_SERVICIO.map((ts) => (
-                <Chip key={ts} label={ts} active={form.tipoServicio.includes(ts)}
-                  onClick={() => toggleChip('tipoServicio', ts)} />
-              ))}
-            </div>
-            <SectionTitle>Tipo de Viaje</SectionTitle>
-            <div className="flex flex-wrap gap-2 mb-3">
-              {TIPO_VIAJE.map((tv) => (
-                <Chip key={tv} label={tv} active={form.tipoViaje.includes(tv)}
-                  onClick={() => toggleChip('tipoViaje', tv)} />
-              ))}
-            </div>
-            <div className="flex gap-4 mb-4">
-              <label className="flex items-center gap-2 text-xs cursor-pointer" style={{ color: tokens.colors.textSecondary }}>
-                <input type="checkbox" checked={form.transbordo} onChange={(e) => set('transbordo', e.target.checked)}
-                  className="rounded" style={{ accentColor: tokens.colors.primary }} />
-                Transbordo
-              </label>
-              <label className="flex items-center gap-2 text-xs cursor-pointer" style={{ color: tokens.colors.textSecondary }}>
-                <input type="checkbox" checked={form.dtd} onChange={(e) => set('dtd', e.target.checked)}
-                  className="rounded" style={{ accentColor: tokens.colors.primary }} />
-                Door-to-Door
-              </label>
-            </div>
-            <div className="mb-4">
-              <Select label="Fuente" options={fuenteOpts} value={form.fuente}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => set('fuente', e.target.value)} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1"
-                style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
-                Próximos Pasos
-              </label>
-              <textarea placeholder="Acciones a tomar con este prospecto..."
-                value={form.proximosPasos}
-                onChange={(e) => set('proximosPasos', e.target.value)}
-                className="w-full rounded-lg px-3 py-2 text-sm outline-none resize-none"
-                style={{
-                  background: tokens.colors.bgHover,
-                  border: `1px solid ${tokens.colors.border}`,
-                  color: tokens.colors.textPrimary,
-                  fontFamily: tokens.fonts.body,
-                }} rows={3} />
-            </div>
-            <div className="mt-3">
-              <label className="block text-sm font-medium mb-1"
-                style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
-                Notas
-              </label>
-              <textarea placeholder="Notas adicionales..."
-                value={form.notas}
-                onChange={(e) => set('notas', e.target.value)}
-                className="w-full rounded-lg px-3 py-2 text-sm outline-none resize-none"
-                style={{
-                  background: tokens.colors.bgHover,
-                  border: `1px solid ${tokens.colors.border}`,
-                  color: tokens.colors.textPrimary,
-                  fontFamily: tokens.fonts.body,
-                }} rows={3} />
-            </div>
-          </Card>
-
-          {/* COL 3: FINANZAS + HITOS */}
-          <Card>
-            <SectionTitle>N3 — Finanzas</SectionTitle>
-            <div className="space-y-2.5 mb-5">
-              <Input label="Ruta Principal" placeholder="CDMX — MTY — LRD"
-                value={form.ruta}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('ruta', e.target.value)} />
-              <div className="grid grid-cols-2 gap-2">
-                <Input label="Viajes / Mes" type="number" placeholder="0"
-                  value={form.viajesMes}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('viajesMes', e.target.value)} />
-                <Input label="Tarifa (USD)" type="number" placeholder="0.00"
-                  value={form.tarifa}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('tarifa', e.target.value)} />
+              <div>
+                <div style={labelStyle}><Mail size={12} /> Email</div>
+                <input style={inputStyle} placeholder="mail@empresa.com" value={email} onChange={e => setEmail(e.target.value)} />
               </div>
-              <Input label="Proyectado Mensual (USD)" type="number" placeholder="0.00"
-                value={form.proyectadoUsd}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('proyectadoUsd', e.target.value)} />
-              {form.viajesMes && form.tarifa && (
-                <div className="p-3 rounded-lg" style={{ background: tokens.colors.blueBg, border: `1px solid ${tokens.colors.blue}33` }}>
-                  <p className="text-xs" style={{ color: tokens.colors.textSecondary }}>Cálculo automático</p>
-                  <p className="text-lg font-bold" style={{ color: tokens.colors.blue, fontFamily: tokens.fonts.heading }}>
-                    ${(parseFloat(form.viajesMes) * parseFloat(form.tarifa)).toLocaleString('en-US', { minimumFractionDigits: 2 })} USD/mes
-                  </p>
-                </div>
-              )}
             </div>
-
-            <SectionTitle>Hitos del Cliente</SectionTitle>
-            <div className="space-y-2 mb-5">
-              {HITOS.map((h) => (
-                <label key={h.key} className="flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors"
-                  style={{ background: form.hitos[h.key] ? tokens.colors.greenBg : 'transparent' }}>
-                  <input type="checkbox" checked={!!form.hitos[h.key]}
-                    onChange={(e) => set('hitos', { ...form.hitos, [h.key]: e.target.checked })}
-                    className="rounded" style={{ accentColor: tokens.colors.green }} />
-                  <span className="text-sm" style={{
-                    color: form.hitos[h.key] ? tokens.colors.green : tokens.colors.textSecondary,
-                    fontFamily: tokens.fonts.body,
-                  }}>{h.label}</span>
-                </label>
-              ))}
+            <div style={fieldWrap}>
+              <div style={labelStyle}><Building2 size={12} /> Tipo de Empresa</div>
+              <select style={selectStyle} value={tipoEmpresa} onChange={e => setTipoEmpresa(e.target.value)}>
+                {TIPO_EMPRESA_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
             </div>
-
-            {/* Duplicate warning */}
-            {duplicates.length > 0 && (
-              <div className="p-3 rounded-lg mb-3" style={{ background: tokens.colors.yellowBg, border: `1px solid ${tokens.colors.yellow}33` }}>
-                <div className="flex items-center gap-2 mb-1">
-                  <AlertCircle size={14} style={{ color: tokens.colors.yellow }} />
-                  <p className="text-xs font-bold" style={{ color: tokens.colors.yellow }}>Posibles duplicados</p>
-                </div>
-                {duplicates.map((d, i) => (
-                  <p key={i} className="text-xs ml-5" style={{ color: tokens.colors.textSecondary }}>{d}</p>
-                ))}
+            <div style={{ ...row2, ...fieldWrap }}>
+              <div>
+                <div style={labelStyle}>Ciudad</div>
+                <input style={inputStyle} placeholder="Monterrey" value={ciudad} onChange={e => setCiudad(e.target.value)} />
               </div>
-            )}
-
-            {error && (
-              <div className="p-3 rounded-lg mb-3" style={{ background: tokens.colors.redBg, border: `1px solid ${tokens.colors.red}33` }}>
-                <div className="flex items-center gap-2">
-                  <AlertCircle size={14} style={{ color: tokens.colors.red }} />
-                  <p className="text-xs" style={{ color: tokens.colors.red }}>{error}</p>
+              <div>
+                <div style={labelStyle}>Estado</div>
+                <input style={inputStyle} placeholder="Nuevo León" value={estadoMx} onChange={e => setEstadoMx(e.target.value)} />
+              </div>
+            </div>
+            <div style={row3}>
+              <div>
+                <div style={labelStyle}><Target size={12} /> Prior.</div>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  {PRIORIDAD_OPTS.map(p => (
+                    <button key={p.value} style={prioBtn(p.value, p.color)} onClick={() => setPrioridad(p.value)}>
+                      {p.label}
+                    </button>
+                  ))}
                 </div>
               </div>
-            )}
-
-            {success && (
-              <div className="p-3 rounded-lg mb-3" style={{ background: tokens.colors.greenBg, border: `1px solid ${tokens.colors.green}33` }}>
-                <div className="flex items-center gap-2">
-                  <CheckCircle size={14} style={{ color: tokens.colors.green }} />
-                  <p className="text-xs" style={{ color: tokens.colors.green }}>Lead guardado. Redirigiendo...</p>
-                </div>
+              <div>
+                <div style={labelStyle}><Zap size={12} /> Tamaño</div>
+                <select style={selectStyle} value={tamano} onChange={e => setTamano(e.target.value)}>
+                  {TAMANO_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                </select>
               </div>
-            )}
-          </Card>
-        </div>
-
-        {/* FOOTER */}
-        <div className="flex items-center justify-between mt-4 px-1">
-          <div className="flex items-center gap-4">
-            <p className="text-xs" style={{ color: tokens.colors.textMuted }}>
-              Vendedor: <span style={{ color: tokens.colors.textSecondary }}>{user?.email || '—'}</span>
-            </p>
-            <p className="text-xs" style={{ color: tokens.colors.textMuted }}>
-              Fecha: <span style={{ color: tokens.colors.textSecondary }}>{new Date().toLocaleDateString('es-MX')}</span>
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => navigate('/ventas/mis-leads')} disabled={saving}>
-              Cancelar
-            </Button>
-            <Button variant="primary" disabled={saving || success} loading={saving}>
-              {saving ? 'Guardando...' : 'Guardar Lead'}
-            </Button>
+              <div>
+                <div style={labelStyle}>Cierre</div>
+                <input style={inputStyle} type="date" value={fechaCierre} onChange={e => setFechaCierre(e.target.value)} />
+              </div>
+            </div>
           </div>
         </div>
-      </form>
-    </ModuleLayout>
+
+        {/* ─── CENTER: SERVICIO + VIAJE + PROX PASOS ─── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={sectionNoBorder}>
+            <div style={sectionTitle(tokens.colors.primary)}>
+              <Zap size={14} /> TIPO DE SERVICIO
+            </div>
+            <div style={chipGrid}>
+              {TIPO_SERVICIO.map(s => (
+                <button key={s} style={chip(tipoServicio.includes(s))} onClick={() => toggleChip(tipoServicio, s, setTipoServicio)}>
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div style={sectionNoBorder}>
+            <div style={sectionTitle(tokens.colors.green)}>
+              <MapPin size={14} /> TIPO DE VIAJE
+            </div>
+            <div style={chipGrid}>
+              {TIPO_VIAJE.map(v => (
+                <button key={v} style={chip(tipoViaje.includes(v))} onClick={() => toggleChip(tipoViaje, v, setTipoViaje)}>
+                  {v}
+                </button>
+              ))}
+            </div>
+            <div style={{ display: 'flex', gap: '24px' }}>
+              <label style={checkRow}>
+                <input type="checkbox" checked={transbordo} onChange={e => setTransbordo(e.target.checked)} /> Transbordo
+              </label>
+              <label style={checkRow}>
+                <input type="checkbox" checked={dtd} onChange={e => setDtd(e.target.checked)} /> DTD
+              </label>
+            </div>
+          </div>
+          <div style={sectionNoBorder}>
+            <div style={sectionTitle(tokens.colors.orange)}>
+              <AlertCircle size={14} /> PRÓXIMOS PASOS
+            </div>
+            <textarea
+              style={{ ...inputStyle, minHeight: '160px', resize: 'vertical' as const }}
+              placeholder="Describe los próximos pasos..."
+              value={proximosPasos}
+              onChange={e => setProximosPasos(e.target.value)} />
+          </div>
+        </div>
+
+        {/* ─── RIGHT: N3 - FINANZAS + HITOS ─── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={section(tokens.colors.orange)}>
+            <div style={sectionTitle(tokens.colors.orange)}>
+              <Zap size={14} /> N3 - FINANZAS
+            </div>
+            <div style={fieldWrap}>
+              <input style={inputStyle} placeholder="CDMX - MTY - GDL" value={ruta} onChange={e => setRuta(e.target.value)} />
+            </div>
+            <div style={{ ...row2, ...fieldWrap }}>
+              <div>
+                <div style={labelStyle}>Viajes/Mes</div>
+                <input style={inputStyle} type="number" placeholder="0" value={viajesMes} onChange={e => setViajesMes(e.target.value)} />
+              </div>
+              <div>
+                <div style={labelStyle}>Tarifa</div>
+                <input style={inputStyle} type="number" placeholder="0" value={tarifa} onChange={e => setTarifa(e.target.value)} />
+              </div>
+            </div>
+            <div style={fieldWrap}>
+              <div style={labelStyle}>Proyectado USD: ${proyectadoUsd ? Number(proyectadoUsd).toLocaleString() : '0'}</div>
+              <input style={inputStyle} placeholder="$50k-$100k" value={proyectadoUsd} onChange={e => setProyectadoUsd(e.target.value)} />
+            </div>
+          </div>
+          <div style={sectionNoBorder}>
+            <div style={sectionTitle(tokens.colors.blue)}>
+              <Zap size={14} /> HITOS DEL CLIENTE
+            </div>
+            <label style={checkRow}><input type="checkbox" checked={hitoN4} onChange={e => setHitoN4(e.target.checked)} /> N4 · Alta de Cliente</label>
+            <label style={checkRow}><input type="checkbox" checked={hitoN5} onChange={e => setHitoN5(e.target.checked)} /> N5 · Generación SOP</label>
+            <label style={checkRow}><input type="checkbox" checked={hitoN6} onChange={e => setHitoN6(e.target.checked)} /> N6 · Junta de Arranque</label>
+            <label style={checkRow}><input type="checkbox" checked={hitoN7} onChange={e => setHitoN7(e.target.checked)} /> N7 · Facturado</label>
+          </div>
+        </div>
+      </div>
+
+      {/* ALERTS */}
+      {dupWarning && (
+        <div style={{ margin: '0 32px 12px', padding: '10px 14px', borderRadius: tokens.radius.md, background: tokens.colors.yellowBg, border: '1px solid rgba(245,158,11,0.2)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <AlertCircle size={14} style={{ color: tokens.colors.yellow }} />
+          <span style={{ fontSize: '12px', color: tokens.colors.yellow }}>Posible empresa duplicada en base de datos.</span>
+        </div>
+      )}
+      {error && (
+        <div style={{ margin: '0 32px 12px', padding: '10px 14px', borderRadius: tokens.radius.md, background: tokens.colors.redBg, border: '1px solid rgba(239,68,68,0.2)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <AlertCircle size={14} style={{ color: tokens.colors.red }} />
+          <span style={{ fontSize: '12px', color: tokens.colors.red }}>{error}</span>
+        </div>
+      )}
+      {success && (
+        <div style={{ margin: '0 32px 12px', padding: '10px 14px', borderRadius: tokens.radius.md, background: tokens.colors.greenBg, border: '1px solid rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <CheckCircle size={14} style={{ color: tokens.colors.green }} />
+          <span style={{ fontSize: '12px', color: tokens.colors.green }}>Lead guardado correctamente.</span>
+        </div>
+      )}
+
+      {/* FOOTER */}
+      <div style={footer}>
+        <span style={{ fontSize: '12px', color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
+          Vendedor: <strong style={{ color: tokens.colors.textPrimary }}>{user?.nombre || user?.email || '—'}</strong> · {new Date().toLocaleDateString('es-MX')}
+        </span>
+        <button style={saveBtn} onClick={handleSave} disabled={saving || success}>
+          <Save size={15} />
+          {saving ? 'GUARDANDO...' : 'GUARDAR LEAD'}
+        </button>
+      </div>
+    </div>
   )
 }
