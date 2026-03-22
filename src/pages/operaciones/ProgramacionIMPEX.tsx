@@ -4,7 +4,7 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { KPICard } from '../../components/ui/KPICard';
-import { DataTable, Column } from '../../components/ui/DataTable';
+import { DataTable, type Column } from '../../components/ui/DataTable';
 import { tokens } from '../../lib/tokens';
 import { supabase } from '../../lib/supabase';
 import {
