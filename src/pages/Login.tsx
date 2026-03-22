@@ -14,6 +14,9 @@ declare global {
           initialize: (config: any) => void
           renderButton: (element: HTMLElement, config: any) => void
           prompt: () => void
+          cancel: () => void
+          disableAutoSelect: () => void
+          revoke: (hint: string, callback?: () => void) => void
         }
       }
     }
@@ -58,7 +61,10 @@ const S = {
   },
   grain: {
     position: 'fixed' as const,
-    top: 0, left: 0, right: 0, bottom: 0,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     pointerEvents: 'none' as const,
     zIndex: 1,
     opacity: 0.007,
@@ -66,21 +72,25 @@ const S = {
   },
   amb1: {
     position: 'fixed' as const,
-    width: '900px', height: '900px',
+    width: '900px',
+    height: '900px',
     borderRadius: '50%',
     filter: 'blur(150px)',
     background: 'radial-gradient(circle, rgba(232,97,26,0.07), transparent 65%)',
-    top: '-30%', right: '-15%',
+    top: '-30%',
+    right: '-15%',
     pointerEvents: 'none' as const,
     zIndex: 0,
   },
   amb2: {
     position: 'fixed' as const,
-    width: '400px', height: '400px',
+    width: '400px',
+    height: '400px',
     borderRadius: '50%',
     filter: 'blur(150px)',
     background: 'radial-gradient(circle, rgba(255,255,255,0.015), transparent 70%)',
-    bottom: '-10%', left: '30%',
+    bottom: '-10%',
+    left: '30%',
     pointerEvents: 'none' as const,
     zIndex: 0,
   },
@@ -94,7 +104,9 @@ const S = {
   },
   divider: {
     position: 'absolute' as const,
-    top: '15%', bottom: '15%', right: '7px',
+    top: '15%',
+    bottom: '15%',
+    right: '7px',
     width: '1px',
     background: 'linear-gradient(to bottom, transparent, rgba(232,97,26,0.10), transparent)',
   },
@@ -113,7 +125,9 @@ const S = {
   },
   cardLine: {
     position: 'absolute' as const,
-    top: 0, left: '10%', right: '10%',
+    top: 0,
+    left: '10%',
+    right: '10%',
     height: '1px',
     background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15) 30%, rgba(232,97,26,0.3) 50%, rgba(255,255,255,0.15) 70%, transparent)',
   },
@@ -171,7 +185,8 @@ const S = {
     marginTop: '12px',
   },
   spinner: {
-    width: '14px', height: '14px',
+    width: '14px',
+    height: '14px',
     border: `2px solid ${L.w20}`,
     borderTopColor: 'transparent',
     borderRadius: '50%',
@@ -193,7 +208,8 @@ const S = {
     animation: 'loginFadeIn 0.6s cubic-bezier(0.16,1,0.3,1) both',
   },
   lineTop: {
-    width: '100%', height: '2px',
+    width: '100%',
+    height: '2px',
     marginBottom: '16px',
     background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08) 10%, rgba(255,255,255,0.25) 40%, rgba(232,97,26,0.5) 75%, rgba(232,97,26,0.2) 90%, transparent)',
     borderRadius: '2px',
@@ -207,29 +223,37 @@ const S = {
     userSelect: 'none' as const,
   },
   logoLoma: {
-    fontSize: '148px', fontWeight: 800,
+    fontSize: '148px',
+    fontWeight: 800,
     fontStyle: 'italic' as const,
-    color: L.w90, letterSpacing: '-6px',
+    color: L.w90,
+    letterSpacing: '-6px',
   },
   logoHub: {
-    fontSize: '148px', fontWeight: 800,
+    fontSize: '148px',
+    fontWeight: 800,
     fontStyle: 'italic' as const,
-    color: L.w90, letterSpacing: '-6px',
+    color: L.w90,
+    letterSpacing: '-6px',
   },
   logo27: {
-    fontSize: '148px', fontWeight: 800,
+    fontSize: '148px',
+    fontWeight: 800,
     fontStyle: 'italic' as const,
-    color: '#E8611A', letterSpacing: '-6px',
+    color: '#E8611A',
+    letterSpacing: '-6px',
     textShadow: '0 0 80px rgba(232,97,26,0.25)',
   },
   lineBot: {
-    width: '100%', height: '3px',
+    width: '100%',
+    height: '3px',
     margin: '8px 0 8px',
     background: 'linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.25) 25%, rgba(255,255,255,0.45) 45%, rgba(232,97,26,0.6) 70%, rgba(232,97,26,0.25) 88%, transparent)',
     borderRadius: '2px',
   },
   tagline: {
-    fontSize: '20px', fontWeight: 400,
+    fontSize: '20px',
+    fontWeight: 400,
     fontStyle: 'italic' as const,
     letterSpacing: '3px',
     color: 'rgba(180,180,180,0.55)',
@@ -238,7 +262,9 @@ const S = {
   },
   statusBar: {
     position: 'fixed' as const,
-    bottom: 0, left: 0, right: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
     height: '32px',
     display: 'flex' as const,
     alignItems: 'center' as const,
@@ -265,7 +291,8 @@ const S = {
   },
   dot: {
     display: 'inline-block',
-    width: '5px', height: '5px',
+    width: '5px',
+    height: '5px',
     borderRadius: '50%',
     background: L.green,
     boxShadow: '0 0 6px rgba(46,204,113,0.4)',
@@ -273,6 +300,7 @@ const S = {
 }
 
 const kfId = 'login-kf'
+
 function injectKF() {
   if (typeof document !== 'undefined' && !document.getElementById(kfId)) {
     const el = document.createElement('style')
@@ -291,12 +319,15 @@ export default function Login() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [hover, setHover] = useState(false)
   const [pressed, setPressed] = useState(false)
+  const [gsiReady, setGsiReady] = useState(false)
   const { user, loading, loginWithGoogleIdToken, getRutaInicial } = useAuthContext()
   const navigate = useNavigate()
   const googleBtnRef = useRef<HTMLDivElement>(null)
   const hiddenGoogleRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => { injectKF() }, [])
+  useEffect(() => {
+    injectKF()
+  }, [])
 
   useEffect(() => {
     if (!loading && user) {
@@ -305,46 +336,79 @@ export default function Login() {
   }, [loading, user])
 
   useEffect(() => {
-    const loadGSI = () => {
-      const existing = document.getElementById('gsi-script')
-      if (existing && !window.google?.accounts?.id) existing.remove()
-      if (!document.getElementById('gsi-script')) {
-        const s = document.createElement('script')
-        s.id = 'gsi-script'
-        s.src = 'https://accounts.google.com/gsi/client'
-        s.async = true
-        s.onload = () => setTimeout(initGSI, 100)
-        document.head.appendChild(s)
-      } else if (window.google?.accounts?.id) {
-        initGSI()
-      }
-    }
-    loadGSI()
-  }, [])
+    let mounted = true
 
-  const initGSI = () => {
-    if (!window.google?.accounts?.id) return
-    try {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleCredential,
-        auto_select: false,
-      })
-      if (hiddenGoogleRef.current) {
-        window.google.accounts.id.renderButton(hiddenGoogleRef.current, {
-          type: 'standard',
-          theme: 'filled_black',
-          size: 'large',
-          text: 'signin_with',
-          shape: 'rectangular',
-          width: 300,
-          locale: 'es',
+    const initGSI = () => {
+      if (!window.google?.accounts?.id || !mounted) return
+
+      try {
+        // Cancel any pending prompts from previous session
+        try { window.google.accounts.id.cancel() } catch (_) { /* ignore */ }
+
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleCredential,
+          auto_select: false,
+          cancel_on_tap_outside: true,
         })
+
+        if (hiddenGoogleRef.current) {
+          // Clear previous rendered button content
+          hiddenGoogleRef.current.innerHTML = ''
+          window.google.accounts.id.renderButton(hiddenGoogleRef.current, {
+            type: 'standard',
+            theme: 'filled_black',
+            size: 'large',
+            text: 'signin_with',
+            shape: 'rectangular',
+            width: 300,
+            locale: 'es',
+          })
+        }
+        if (mounted) setGsiReady(true)
+      } catch (e) {
+        console.error('GSI init error:', e)
       }
-    } catch (e) {
-      console.error('GSI init error:', e)
     }
-  }
+
+    const loadGSI = () => {
+      // Always remove existing script to force fresh load after logout
+      const existing = document.getElementById('gsi-script')
+      if (existing) existing.remove()
+
+      // Reset Google global if script was removed
+      // This forces a clean re-initialization
+      const s = document.createElement('script')
+      s.id = 'gsi-script'
+      s.src = 'https://accounts.google.com/gsi/client'
+      s.async = true
+      s.onload = () => {
+        // Wait for Google library to fully initialize
+        const waitForGoogle = (retries: number) => {
+          if (!mounted) return
+          if (window.google?.accounts?.id) {
+            initGSI()
+          } else if (retries > 0) {
+            setTimeout(() => waitForGoogle(retries - 1), 100)
+          } else {
+            console.error('GSI library failed to initialize after retries')
+          }
+        }
+        waitForGoogle(10) // Try up to 10 times (1 second total)
+      }
+      document.head.appendChild(s)
+    }
+
+    loadGSI()
+
+    return () => {
+      mounted = false
+      // Cleanup: cancel any pending Google prompts on unmount
+      if (window.google?.accounts?.id) {
+        try { window.google.accounts.id.cancel() } catch (_) { /* ignore */ }
+      }
+    }
+  }, [])
 
   const handleCredential = async (response: { credential: string }) => {
     setError('')
@@ -352,13 +416,14 @@ export default function Login() {
     try {
       await loginWithGoogleIdToken(response.credential)
     } catch (err: any) {
-      setError(err.message || 'Error al iniciar sesión con Google')
+      setError(err.message || 'Error al iniciar sesiÃ³n con Google')
     } finally {
       setGoogleLoading(false)
     }
   }
 
   const triggerGoogleSignIn = () => {
+    // First try the hidden rendered Google button
     if (hiddenGoogleRef.current) {
       const btn = hiddenGoogleRef.current.querySelector('div[role="button"]') as HTMLElement
       if (btn) {
@@ -366,6 +431,7 @@ export default function Login() {
         return
       }
     }
+    // Fallback: use Google One Tap prompt
     if (window.google?.accounts?.id) {
       window.google.accounts.id.prompt()
     }
@@ -394,6 +460,7 @@ export default function Login() {
         <div style={S.divider} />
         <div style={S.card}>
           <div style={S.cardLine} />
+
           <h1 style={S.title}>Bienvenido</h1>
 
           {error && (
@@ -406,19 +473,33 @@ export default function Login() {
           {/* Hidden Google button for auth flow */}
           <div ref={hiddenGoogleRef} style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', height: 0, overflow: 'hidden' }} />
 
-          {/* Custom blue Google button */}
+          {/* Custom styled Google button */}
           <button
             style={{
               ...S.customBtn,
-              background: pressed ? 'rgba(244,123,32,0.06)' : hover ? 'rgba(244,123,32,0.06)' : 'rgba(255,255,255,0.04)',
-              borderColor: pressed ? 'rgba(244,123,32,0.45)' : hover ? 'rgba(244,123,32,0.60)' : 'rgba(255,255,255,0.10)',
+              background: pressed
+                ? 'rgba(244,123,32,0.06)'
+                : hover
+                  ? 'rgba(244,123,32,0.06)'
+                  : 'rgba(255,255,255,0.04)',
+              borderColor: pressed
+                ? 'rgba(244,123,32,0.45)'
+                : hover
+                  ? 'rgba(244,123,32,0.60)'
+                  : 'rgba(255,255,255,0.10)',
               boxShadow: pressed
                 ? '0 1px 4px rgba(0,0,0,0.5), 0 0 15px rgba(244,123,32,0.18), inset 0 2px 6px rgba(0,0,0,0.4)'
                 : hover
-                ? '0 8px 32px rgba(0,0,0,0.3), 0 0 35px rgba(244,123,32,0.28), 4px 0 20px rgba(244,123,32,0.14)'
-                : '0 2px 12px rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.06) inset',
-              transform: pressed ? 'translateY(2px) scale(0.98)' : hover ? 'translateY(-1px)' : 'none',
-              transition: pressed ? 'all 0.08s ease' : 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+                  ? '0 8px 32px rgba(0,0,0,0.3), 0 0 35px rgba(244,123,32,0.28), 4px 0 20px rgba(244,123,32,0.14)'
+                  : '0 2px 12px rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.06) inset',
+              transform: pressed
+                ? 'translateY(2px) scale(0.98)'
+                : hover
+                  ? 'translateY(-1px)'
+                  : 'none',
+              transition: pressed
+                ? 'all 0.08s ease'
+                : 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
             }}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => { setHover(false); setPressed(false) }}
@@ -427,7 +508,8 @@ export default function Login() {
             onClick={triggerGoogleSignIn}
           >
             <div style={{
-              position: 'absolute', inset: 0,
+              position: 'absolute',
+              inset: 0,
               background: 'linear-gradient(270deg, rgba(244,123,32,0.50) 0%, rgba(244,123,32,0.22) 40%, rgba(232,97,26,0.04) 100%)',
               opacity: hover ? 1 : 0,
               transition: 'opacity 0.3s ease',
@@ -451,19 +533,19 @@ export default function Login() {
           )}
         </div>
 
-          {/* Separador + Security */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', margin: '14px 0 4px' }}>
-            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-            <span style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,255,0.18)', textTransform: 'uppercase' as const, letterSpacing: '2px' }}>Acceso autorizado</span>
-            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px' }}>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.30)" strokeWidth="2" strokeLinecap="round" style={{ opacity: 0.5 }}>
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-            <span style={{ fontSize: '11px', fontWeight: 500, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.3px' }}>Conexión cifrada · Solo personal autorizado</span>
-          </div>
+        {/* Separador + Security */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', margin: '14px 0 4px' }}>
+          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+          <span style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,255,0.18)', textTransform: 'uppercase' as const, letterSpacing: '2px' }}>Acceso autorizado</span>
+          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px' }}>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.30)" strokeWidth="2" strokeLinecap="round" style={{ opacity: 0.5 }}>
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span style={{ fontSize: '11px', fontWeight: 500, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.3px' }}>ConexiÃ³n cifrada Â· Solo personal autorizado</span>
+        </div>
       </div>
 
       <div style={S.right}>
@@ -481,7 +563,11 @@ export default function Login() {
 
       <div style={S.statusBar}>
         <span style={S.statusR}>
-          Grupo Loma 2026 {"·"} <a href="mailto:hola@trob.com.mx" onDoubleClick={(e) => { e.preventDefault(); navigator.clipboard.writeText('hola@trob.com.mx') }} style={{ color: 'inherit', textDecoration: 'none', cursor: 'pointer' }}>hola@trob.com.mx</a> {"·"} Operación inteligente... Resultados reales
+          Grupo Loma 2026 {"Â·"} <a
+            href="mailto:hola@trob.com.mx"
+            onDoubleClick={(e) => { e.preventDefault(); navigator.clipboard.writeText('hola@trob.com.mx') }}
+            style={{ color: 'inherit', textDecoration: 'none', cursor: 'pointer' }}
+          >hola@trob.com.mx</a> {"Â·"} OperaciÃ³n inteligente... Resultados reales
         </span>
       </div>
     </div>
