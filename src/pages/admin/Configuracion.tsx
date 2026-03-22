@@ -384,5 +384,5 @@ export default function Configuracion() {
         </Card>
       )}
     </ModuleLayout>
-  
- "���� 
+  );
+}
