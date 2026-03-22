@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { AlertCircle, CheckCircle } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { AlertCircle, CheckCircle, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
@@ -10,241 +10,392 @@ import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 import { useAuthContext } from '../../hooks/AuthContext'
 
+const TIPO_SERVICIO = ['Seco', 'Refrigerado', 'Seco Hazmat', 'Refri Hazmat']
+const TIPO_VIAJE = ['Impo', 'Expo', 'Nacional', 'Dedicado']
+const HITOS = [
+  { key: 'n4_alta', label: 'N4 Alta' },
+  { key: 'n5_sop', label: 'N5 SOP' },
+  { key: 'n6_junta', label: 'N6 Junta Arranque' },
+  { key: 'n7_facturado', label: 'N7 Facturado' },
+]
+
+const toUpperCaseVal = (v: string) => v.toUpperCase()
+const toTitleCase = (v: string) =>
+  v.replace(/\w\S*/g, (t) => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase())
+
 export default function NuevoLead() {
   const navigate = useNavigate()
   const { user } = useAuthContext()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-  const [formData, setFormData] = useState({
+  const [duplicates, setDuplicates] = useState<string[]>([])
+  const [checkingDup, setCheckingDup] = useState(false)
+
+  const [form, setForm] = useState({
     empresa: '',
+    web: '',
     contacto: '',
     telefono: '',
     email: '',
+    tipoEmpresa: '',
     ciudad: '',
-    rutaInteres: '',
-    tipoCarga: '',
+    estado: '',
+    prioridad: '',
+    tamano: '',
+    fechaCierre: '',
+    tipoServicio: [] as string[],
+    tipoViaje: [] as string[],
+    transbordo: false,
+    dtd: false,
+    proximosPasos: '',
+    ruta: '',
+    viajesMes: '',
+    tarifa: '',
+    proyectadoUsd: '',
+    hitos: {} as Record<string, boolean>,
     fuente: '',
     notas: '',
   })
 
-  const [showDuplicateWarning, setShowDuplicateWarning] = useState(false)
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    setError(null)
-
-    if (field === 'empresa') {
-      setShowDuplicateWarning(value.toLowerCase().includes('transportes'))
-    }
+  const toggleChip = (field: 'tipoServicio' | 'tipoViaje', value: string) => {
+    setForm((p) => {
+      const arr = p[field]
+      return { ...p, [field]: arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value] }
+    })
   }
+
+  const set = (field: string, value: any) => {
+    setForm((p) => ({ ...p, [field]: value }))
+    setError(null)
+  }
+
+  // Duplicate check with debounce
+  const checkDuplicates = useCallback(async (empresa: string) => {
+    if (empresa.length < 3) { setDuplicates([]); return }
+    setCheckingDup(true)
+    try {
+      const term = `%${empresa}%`
+      const [leadsRes, clientesRes] = await Promise.all([
+        supabase.from('leads').select('empresa').ilike('empresa', term).limit(5),
+        supabase.from('sc_contactos_clientes').select('nombre_cliente').ilike('nombre_cliente', term).limit(5),
+      ])
+      const found: string[] = []
+      leadsRes.data?.forEach((l: any) => found.push(`Lead: ${l.empresa}`))
+      clientesRes.data?.forEach((c: any) => found.push(`Cliente: ${c.nombre_cliente}`))
+      setDuplicates(found)
+    } catch { setDuplicates([]) }
+    finally { setCheckingDup(false) }
+  }, [])
+
+  useEffect(() => {
+    const t = setTimeout(() => checkDuplicates(form.empresa), 400)
+    return () => clearTimeout(t)
+  }, [form.empresa, checkDuplicates])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!formData.empresa.trim()) {
-      setError('El nombre de la empresa es obligatorio')
-      return
-    }
+    if (!form.empresa.trim()) { setError('El nombre de la empresa es obligatorio'); return }
     setSaving(true)
     setError(null)
     try {
       const { error: insertError } = await supabase.from('leads').insert([{
-        empresa: formData.empresa.trim(),
-        contacto: formData.contacto.trim(),
-        telefono: formData.telefono.trim(),
-        email: formData.email.trim(),
-        ciudad: formData.ciudad.trim(),
-        ruta_interes: formData.rutaInteres.trim(),
-        tipo_carga: formData.tipoCarga,
-        fuente: formData.fuente || 'Manual',
-        notas: formData.notas.trim(),
+        empresa: form.empresa.trim(),
+        contacto: form.contacto.trim(),
+        telefono: form.telefono.trim(),
+        email: form.email.trim(),
+        ciudad: form.ciudad.trim(),
+        ruta_interes: form.ruta.trim(),
+        tipo_carga: form.tipoServicio.join(', '),
+        tipo_viaje: form.tipoViaje.join(', '),
+        fuente: form.fuente || 'Manual',
+        notas: form.notas.trim(),
         estado: 'Nuevo',
         probabilidad: 10,
         ejecutivo_nombre: user?.email || 'Sin asignar',
+        web: form.web.trim(),
+        tipo_empresa: form.tipoEmpresa,
+        estado_mx: form.estado.trim(),
+        prioridad: form.prioridad,
+        tamano: form.tamano,
+        fecha_cierre: form.fechaCierre || null,
+        transbordo: form.transbordo,
+        dtd: form.dtd,
+        proximos_pasos: form.proximosPasos.trim(),
+        viajes_mes: form.viajesMes ? parseInt(form.viajesMes) : null,
+        tarifa: form.tarifa ? parseFloat(form.tarifa) : null,
+        proyectado_usd: form.proyectadoUsd ? parseFloat(form.proyectadoUsd) : null,
+        valor_estimado: form.proyectadoUsd ? parseFloat(form.proyectadoUsd) : 0,
       }])
       if (insertError) throw insertError
       setSuccess(true)
-      setTimeout(() => navigate('/ventas/mis-leads'), 1500)
+      setTimeout(() => navigate('/ventas/mis-leads'), 1200)
     } catch (err: any) {
       setError(err.message || 'Error al guardar el lead')
-    } finally {
-      setSaving(false)
-    }
+    } finally { setSaving(false) }
   }
 
-  const fuenteOptions = [
-    { value: '', label: 'Seleccionar fuente...' },
+  const Chip = ({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) => (
+    <button type="button" onClick={onClick}
+      className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
+      style={{
+        background: active ? tokens.colors.primary : tokens.colors.bgHover,
+        color: active ? '#fff' : tokens.colors.textSecondary,
+        border: `1px solid ${active ? tokens.colors.primary : tokens.colors.border}`,
+      }}>
+      {label}
+    </button>
+  )
+
+  const SectionTitle = ({ children }: { children: string }) => (
+    <p className="text-[10px] uppercase tracking-widest font-bold mb-3"
+      style={{ color: tokens.colors.orange, fontFamily: tokens.fonts.heading }}>
+      {children}
+    </p>
+  )
+
+  const tipoEmpresaOpts = [
+    { value: '', label: 'Seleccionar...' },
+    { value: 'fabricante', label: 'Fabricante' },
+    { value: 'distribuidor', label: 'Distribuidor' },
+    { value: 'maquiladora', label: 'Maquiladora' },
+    { value: 'comercializadora', label: 'Comercializadora' },
+    { value: 'broker', label: 'Broker Logístico' },
+    { value: 'otro', label: 'Otro' },
+  ]
+  const prioridadOpts = [
+    { value: '', label: 'Seleccionar...' },
+    { value: 'alta', label: 'Alta' },
+    { value: 'media', label: 'Media' },
+    { value: 'baja', label: 'Baja' },
+  ]
+  const tamanoOpts = [
+    { value: '', label: 'Seleccionar...' },
+    { value: 'grande', label: 'Grande (50+ viajes/mes)' },
+    { value: 'mediana', label: 'Mediana (10-49 viajes/mes)' },
+    { value: 'chica', label: 'Chica (1-9 viajes/mes)' },
+  ]
+  const fuenteOpts = [
+    { value: '', label: 'Seleccionar...' },
     { value: 'referencia', label: 'Referencia' },
     { value: 'llamada', label: 'Llamada Entrante' },
     { value: 'web', label: 'Sitio Web' },
     { value: 'feria', label: 'Feria/Evento' },
+    { value: 'prospeccion', label: 'Prospección Directa' },
     { value: 'otro', label: 'Otro' },
   ]
 
-  const tipoCargaOptions = [
-    { value: '', label: 'Seleccionar tipo...' },
-    { value: 'general', label: 'Carga General' },
-    { value: 'refrigerado', label: 'Refrigerado' },
-    { value: 'peligroso', label: 'Material Peligroso' },
-    { value: 'especializado', label: 'Especializado' },
-  ]
-
   return (
-    <ModuleLayout titulo="Captura de Lead" subtitulo="Registrar nuevo prospecto">
-      <div className="space-y-6 max-w-3xl">
-        {/* Form Card */}
-        <Card>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                label="Empresa *"
-                placeholder="Nombre de la empresa"
-                value={formData.empresa}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('empresa', e.target.value)}
-                required
-              />
-              <Input
-                label="Contacto"
-                placeholder="Nombre del contacto"
-                value={formData.contacto}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('contacto', e.target.value)}
-              />
-            </div>
+    <ModuleLayout titulo="Agregar Lead" subtitulo="Captura completa de prospecto">
+      <form onSubmit={handleSubmit}>
+        {/* 3 columns */}
+        <div className="grid grid-cols-3 gap-4" style={{ minHeight: 0 }}>
 
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                label="Teléfono"
-                placeholder="+52 1234567890"
-                value={formData.telefono}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('telefono', e.target.value)}
-              />
-              <Input
-                label="Email"
-                type="email"
-                placeholder="contacto@empresa.com"
-                value={formData.email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('email', e.target.value)}
-              />
+          {/* COL 1: EMPRESA */}
+          <Card>
+            <SectionTitle>N1 — Empresa</SectionTitle>
+            <div className="space-y-2.5">
+              <Input label="Empresa *" placeholder="NOMBRE DE LA EMPRESA"
+                value={form.empresa}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('empresa', toUpperCaseVal(e.target.value))} required />
+              <Input label="Sitio Web" placeholder="www.empresa.com"
+                value={form.web}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('web', e.target.value)} />
+              <Input label="Contacto" placeholder="Nombre Del Contacto"
+                value={form.contacto}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('contacto', toTitleCase(e.target.value))} />
+              <div className="grid grid-cols-2 gap-2">
+                <Input label="Teléfono" placeholder="+52 ..."
+                  value={form.telefono}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('telefono', e.target.value)} />
+                <Input label="Email" type="email" placeholder="email@empresa.com"
+                  value={form.email}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('email', e.target.value)} />
+              </div>
+              <Select label="Tipo de Empresa" options={tipoEmpresaOpts} value={form.tipoEmpresa}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => set('tipoEmpresa', e.target.value)} />
+              <div className="grid grid-cols-2 gap-2">
+                <Input label="Ciudad" placeholder="Ciudad"
+                  value={form.ciudad}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('ciudad', e.target.value)} />
+                <Input label="Estado" placeholder="Estado"
+                  value={form.estado}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('estado', e.target.value)} />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Select label="Prioridad" options={prioridadOpts} value={form.prioridad}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => set('prioridad', e.target.value)} />
+                <Select label="Tamaño" options={tamanoOpts} value={form.tamano}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => set('tamano', e.target.value)} />
+              </div>
+              <Input label="Fecha Cierre Estimada" type="date" value={form.fechaCierre}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('fechaCierre', e.target.value)} />
             </div>
+          </Card>
 
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                label="Ciudad"
-                placeholder="Ciudad"
-                value={formData.ciudad}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('ciudad', e.target.value)}
-              />
-              <Input
-                label="Ruta de Interés"
-                placeholder="Ej: CDMX - Monterrey"
-                value={formData.rutaInteres}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('rutaInteres', e.target.value)}
-              />
+          {/* COL 2: SERVICIO + VIAJE */}
+          <Card>
+            <SectionTitle>N2 — Tipo de Servicio</SectionTitle>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {TIPO_SERVICIO.map((ts) => (
+                <Chip key={ts} label={ts} active={form.tipoServicio.includes(ts)}
+                  onClick={() => toggleChip('tipoServicio', ts)} />
+              ))}
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <Select
-                label="Tipo de Carga"
-                options={tipoCargaOptions}
-                value={formData.tipoCarga}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleInputChange('tipoCarga', e.target.value)}
-              />
-              <Select
-                label="Fuente"
-                options={fuenteOptions}
-                value={formData.fuente}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleInputChange('fuente', e.target.value)}
-              />
+            <SectionTitle>Tipo de Viaje</SectionTitle>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {TIPO_VIAJE.map((tv) => (
+                <Chip key={tv} label={tv} active={form.tipoViaje.includes(tv)}
+                  onClick={() => toggleChip('tipoViaje', tv)} />
+              ))}
             </div>
-
-            <div>
-              <label
-                className="block text-sm font-medium mb-2"
-                style={{
-                  color: tokens.colors.textSecondary,
-                  fontFamily: tokens.fonts.body,
-                }}
-              >
-                Notas
+            <div className="flex gap-4 mb-4">
+              <label className="flex items-center gap-2 text-xs cursor-pointer" style={{ color: tokens.colors.textSecondary }}>
+                <input type="checkbox" checked={form.transbordo} onChange={(e) => set('transbordo', e.target.checked)}
+                  className="rounded" style={{ accentColor: tokens.colors.primary }} />
+                Transbordo
               </label>
-              <textarea
-                placeholder="Notas adicionales sobre el prospecto..."
-                value={formData.notas}
-                onChange={(e) => handleInputChange('notas', e.target.value)}
-                className="w-full rounded-lg px-4 py-2.5 text-sm outline-none transition-colors focus:ring-2 resize-none"
+              <label className="flex items-center gap-2 text-xs cursor-pointer" style={{ color: tokens.colors.textSecondary }}>
+                <input type="checkbox" checked={form.dtd} onChange={(e) => set('dtd', e.target.checked)}
+                  className="rounded" style={{ accentColor: tokens.colors.primary }} />
+                Door-to-Door
+              </label>
+            </div>
+            <div className="mb-4">
+              <Select label="Fuente" options={fuenteOpts} value={form.fuente}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => set('fuente', e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1"
+                style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
+                Próximos Pasos
+              </label>
+              <textarea placeholder="Acciones a tomar con este prospecto..."
+                value={form.proximosPasos}
+                onChange={(e) => set('proximosPasos', e.target.value)}
+                className="w-full rounded-lg px-3 py-2 text-sm outline-none resize-none"
                 style={{
                   background: tokens.colors.bgHover,
                   border: `1px solid ${tokens.colors.border}`,
                   color: tokens.colors.textPrimary,
                   fontFamily: tokens.fonts.body,
-                  // @ts-expect-error CSS custom property
-                  '--tw-ring-color': tokens.colors.primary,
-                }}
-                rows={4}
-              />
+                }} rows={3} />
             </div>
-
-            {/* Duplicate Warning */}
-            {showDuplicateWarning && (
-              <div
-                className="flex items-start gap-3 p-3 rounded-lg border"
+            <div className="mt-3">
+              <label className="block text-sm font-medium mb-1"
+                style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
+                Notas
+              </label>
+              <textarea placeholder="Notas adicionales..."
+                value={form.notas}
+                onChange={(e) => set('notas', e.target.value)}
+                className="w-full rounded-lg px-3 py-2 text-sm outline-none resize-none"
                 style={{
-                  background: `${tokens.colors.yellow}1a`,
-                  borderColor: `${tokens.colors.yellow}33`,
-                }}
-              >
-                <AlertCircle
-                  className="w-5 h-5 shrink-0 mt-0.5"
-                  style={{ color: tokens.colors.yellow }}
-                />
-                <div>
-                  <p
-                    className="text-sm font-medium"
-                    style={{
-                      color: tokens.colors.yellow,
-                      fontFamily: tokens.fonts.body,
-                    }}
-                  >
-                    Posible empresa duplicada
-                  </p>
-                  <p
-                    className="text-xs mt-1"
-                    style={{
-                      color: tokens.colors.textSecondary,
-                      fontFamily: tokens.fonts.body,
-                    }}
-                  >
-                    Ya existe una empresa con nombre similar en tu cartera.
+                  background: tokens.colors.bgHover,
+                  border: `1px solid ${tokens.colors.border}`,
+                  color: tokens.colors.textPrimary,
+                  fontFamily: tokens.fonts.body,
+                }} rows={3} />
+            </div>
+          </Card>
+
+          {/* COL 3: FINANZAS + HITOS */}
+          <Card>
+            <SectionTitle>N3 — Finanzas</SectionTitle>
+            <div className="space-y-2.5 mb-5">
+              <Input label="Ruta Principal" placeholder="CDMX — MTY — LRD"
+                value={form.ruta}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('ruta', e.target.value)} />
+              <div className="grid grid-cols-2 gap-2">
+                <Input label="Viajes / Mes" type="number" placeholder="0"
+                  value={form.viajesMes}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('viajesMes', e.target.value)} />
+                <Input label="Tarifa (USD)" type="number" placeholder="0.00"
+                  value={form.tarifa}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('tarifa', e.target.value)} />
+              </div>
+              <Input label="Proyectado Mensual (USD)" type="number" placeholder="0.00"
+                value={form.proyectadoUsd}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => set('proyectadoUsd', e.target.value)} />
+              {form.viajesMes && form.tarifa && (
+                <div className="p-3 rounded-lg" style={{ background: tokens.colors.blueBg, border: `1px solid ${tokens.colors.blue}33` }}>
+                  <p className="text-xs" style={{ color: tokens.colors.textSecondary }}>Cálculo automático</p>
+                  <p className="text-lg font-bold" style={{ color: tokens.colors.blue, fontFamily: tokens.fonts.heading }}>
+                    ${(parseFloat(form.viajesMes) * parseFloat(form.tarifa)).toLocaleString('en-US', { minimumFractionDigits: 2 })} USD/mes
                   </p>
                 </div>
+              )}
+            </div>
+
+            <SectionTitle>Hitos del Cliente</SectionTitle>
+            <div className="space-y-2 mb-5">
+              {HITOS.map((h) => (
+                <label key={h.key} className="flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors"
+                  style={{ background: form.hitos[h.key] ? tokens.colors.greenBg : 'transparent' }}>
+                  <input type="checkbox" checked={!!form.hitos[h.key]}
+                    onChange={(e) => set('hitos', { ...form.hitos, [h.key]: e.target.checked })}
+                    className="rounded" style={{ accentColor: tokens.colors.green }} />
+                  <span className="text-sm" style={{
+                    color: form.hitos[h.key] ? tokens.colors.green : tokens.colors.textSecondary,
+                    fontFamily: tokens.fonts.body,
+                  }}>{h.label}</span>
+                </label>
+              ))}
+            </div>
+
+            {/* Duplicate warning */}
+            {duplicates.length > 0 && (
+              <div className="p-3 rounded-lg mb-3" style={{ background: tokens.colors.yellowBg, border: `1px solid ${tokens.colors.yellow}33` }}>
+                <div className="flex items-center gap-2 mb-1">
+                  <AlertCircle size={14} style={{ color: tokens.colors.yellow }} />
+                  <p className="text-xs font-bold" style={{ color: tokens.colors.yellow }}>Posibles duplicados</p>
+                </div>
+                {duplicates.map((d, i) => (
+                  <p key={i} className="text-xs ml-5" style={{ color: tokens.colors.textSecondary }}>{d}</p>
+                ))}
               </div>
             )}
 
             {error && (
-              <div className="flex items-start gap-3 p-3 rounded-lg border" style={{ background: `${tokens.colors.red}1a`, borderColor: `${tokens.colors.red}33` }}>
-                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: tokens.colors.red }} />
-                <p className="text-sm" style={{ color: tokens.colors.red, fontFamily: tokens.fonts.body }}>{error}</p>
+              <div className="p-3 rounded-lg mb-3" style={{ background: tokens.colors.redBg, border: `1px solid ${tokens.colors.red}33` }}>
+                <div className="flex items-center gap-2">
+                  <AlertCircle size={14} style={{ color: tokens.colors.red }} />
+                  <p className="text-xs" style={{ color: tokens.colors.red }}>{error}</p>
+                </div>
               </div>
             )}
 
             {success && (
-              <div className="flex items-start gap-3 p-3 rounded-lg border" style={{ background: `${tokens.colors.green}1a`, borderColor: `${tokens.colors.green}33` }}>
-                <CheckCircle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: tokens.colors.green }} />
-                <p className="text-sm" style={{ color: tokens.colors.green, fontFamily: tokens.fonts.body }}>Lead guardado exitosamente. Redirigiendo...</p>
+              <div className="p-3 rounded-lg mb-3" style={{ background: tokens.colors.greenBg, border: `1px solid ${tokens.colors.green}33` }}>
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={14} style={{ color: tokens.colors.green }} />
+                  <p className="text-xs" style={{ color: tokens.colors.green }}>Lead guardado. Redirigiendo...</p>
+                </div>
               </div>
             )}
+          </Card>
+        </div>
 
-            <div className="flex gap-2 pt-4">
-              <Button variant="primary" disabled={saving || success} loading={saving}>
-                {saving ? 'Guardando...' : 'Guardar Lead'}
-              </Button>
-              <Button variant="secondary" onClick={() => navigate('/ventas/mis-leads')} disabled={saving}>
-                Cancelar
-              </Button>
-            </div>
-          </form>
-        </Card>
-      </div>
+        {/* FOOTER */}
+        <div className="flex items-center justify-between mt-4 px-1">
+          <div className="flex items-center gap-4">
+            <p className="text-xs" style={{ color: tokens.colors.textMuted }}>
+              Vendedor: <span style={{ color: tokens.colors.textSecondary }}>{user?.email || '—'}</span>
+            </p>
+            <p className="text-xs" style={{ color: tokens.colors.textMuted }}>
+              Fecha: <span style={{ color: tokens.colors.textSecondary }}>{new Date().toLocaleDateString('es-MX')}</span>
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={() => navigate('/ventas/mis-leads')} disabled={saving}>
+              Cancelar
+            </Button>
+            <Button variant="primary" disabled={saving || success} loading={saving}>
+              {saving ? 'Guardando...' : 'Guardar Lead'}
+            </Button>
+          </div>
+        </div>
+      </form>
     </ModuleLayout>
   )
-      }
+}
