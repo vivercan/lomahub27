@@ -206,7 +206,7 @@ export default function HomeDashboard() {
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center',
                   justifyContent: 'center', gap: '8px', padding: '20px 14px 18px',
-                  aspectRatio: '1 / 1',
+                  
                   background: mod.isWarRoom
                     ? 'linear-gradient(180deg, rgba(56,50,56,1) 0%, rgba(42,38,48,1) 45%, rgba(31,30,40,1) 100%)'
                     : 'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 45%, rgba(33,33,43,1) 100%)',
