@@ -15,8 +15,6 @@ export default {
       },
       fontFamily: {
         montserrat: ['Montserrat', 'sans-serif'],
-        orbitron: ['Montserrat', 'sans-serif'],
-        exo2: ['Montserrat', 'sans-serif'],
       },
     },
   },
