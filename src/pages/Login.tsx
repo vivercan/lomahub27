@@ -36,7 +36,7 @@ const L = {
   w04: 'rgba(255,255,255,0.04)',
   w02: 'rgba(255,255,255,0.02)',
   red: '#EF4444',
-  green: '#2ECC71',
+  green: '#10B981',
   font: "'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif",
 } as const
 
@@ -295,7 +295,7 @@ const S = {
     height: '5px',
     borderRadius: '50%',
     background: L.green,
-    boxShadow: '0 0 6px rgba(46,204,113,0.4)',
+    boxShadow: '0 0 6px rgba(16,185,129,0.4)',
   },
 }
 
