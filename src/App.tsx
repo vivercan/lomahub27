@@ -16,6 +16,7 @@ import NuevoLead from './pages/ventas/NuevoLead'
 import FichaLead from './pages/ventas/FichaLead'
 import ProgramaSemanal from './pages/ventas/ProgramaSemanal'
 import Comisiones from './pages/ventas/Comisiones'
+import FunnelVentas from './pages/ventas/FunnelVentas'
 
 // Cotizador
 import NuevaCotizacion from './pages/cotizador/NuevaCotizacion'
@@ -75,7 +76,7 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* ─── 04. Panel Personal Vendedor ─── */}
+          {/+ ─── 04. Panel Personal Vendedor ─── */}
           <Route path="/ventas/mis-leads" element={
             <ProtectedRoute
 e allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
@@ -232,6 +233,13 @@ e allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
           <Route path="/inteligencia" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops']}>
               <Inteligencia />
+            </ProtectedRoute>
+          } />
+
+          {/* ─── Funnel de Ventas ─── */}
+          <Route path="/ventas/funnel" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial', 'direccion']}>
+              <FunnelVentas />
             </ProtectedRoute>
           } />
 
