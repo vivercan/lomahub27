@@ -55,6 +55,15 @@ import FunnelVentas from './pages/ventas/FunnelVentas'
 import TicketsQuejas from './pages/servicio/TicketsQuejas'
 import ProgramacionIMPEX from './pages/operaciones/ProgramacionIMPEX'
 
+// Módulos V28 nuevos
+import Actividades from './pages/actividades/Actividades'
+import Documentos from './pages/documentos/Documentos'
+import CerebroTarifario from './pages/pricing/CerebroTarifario'
+import CorreosAutomaticos from './pages/comunicaciones/CorreosAutomaticos'
+import Notificaciones from './pages/comunicaciones/Notificaciones'
+import PanelIntegraciones from './pages/admin/PanelIntegraciones'
+import ProgramacionDedicados from './pages/operaciones/ProgramacionDedicados'
+
 function App() {
   return (
     <BrowserRouter>
@@ -277,6 +286,55 @@ function App() {
           <Route path="/cxc/cartera" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'cxc', 'direccion']}>
               <Cartera />
+            </ProtectedRoute>
+          } />
+
+          {/* ─── Actividades ─── */}
+          <Route path="/actividades" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs']}>
+              <Actividades />
+            </ProtectedRoute>
+          } />
+
+          {/* ─── Documentos ─── */}
+          <Route path="/documentos" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops', 'cxc']}>
+              <Documentos />
+            </ProtectedRoute>
+          } />
+
+          {/* ─── Cerebro Tarifario ─── */}
+          <Route path="/pricing/cerebro-tarifario" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'pricing', 'gerente_comercial', 'direccion']}>
+              <CerebroTarifario />
+            </ProtectedRoute>
+          } />
+
+          {/* ─── Correos Automáticos ─── */}
+          <Route path="/comunicaciones/correos" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
+              <CorreosAutomaticos />
+            </ProtectedRoute>
+          } />
+
+          {/* ─── Notificaciones ─── */}
+          <Route path="/comunicaciones/notificaciones" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops', 'supervisor_cs', 'direccion']}>
+              <Notificaciones />
+            </ProtectedRoute>
+          } />
+
+          {/* ─── Panel Integraciones ─── */}
+          <Route path="/admin/integraciones" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
+              <PanelIntegraciones />
+            </ProtectedRoute>
+          } />
+
+          {/* ─── Programación Dedicados ─── */}
+          <Route path="/operaciones/programacion-dedicados" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops', 'direccion']}>
+              <ProgramacionDedicados />
             </ProtectedRoute>
           } />
 
