@@ -122,10 +122,9 @@ const modules = [
   { id: 3, name: 'Servicio', icon: icons.clientes, route: '/servicio/dashboard', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'clientes', priority: 'high' },
   { id: 4, name: 'Dedicados', icon: icons.dedicados, route: '/operaciones/dedicados', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'segmentos', priority: 'mid' },
   { id: 5, name: 'Cobranza', icon: icons.cobranza, route: '/cxc/cartera', row: 1, kpi: '—', kpiType: 'number', kpiLabel: 'cuentas CXC', priority: 'mid' },
-  { id: 6, name: 'Comunicaciones', icon: icons.comunicaciones, route: '/servicio/whatsapp', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Activo', statusColor: 'g', priority: 'mid' },
+  { id: 6, name: 'Comunicaciones', icon: icons.comunicaciones, route: '/comunicaciones/correos', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Activo', statusColor: 'g', priority: 'mid' },
   { id: 7, name: 'Configuración', icon: icons.config, route: '/admin/configuracion', row: 2, kpi: null, kpiType: 'text', kpiLabel: '—', priority: 'low' },
-  { id: 8, name: 'Actividades', icon: icons.indicadores, route: '/inteligencia', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Próximamente', statusColor: 'a', priority: 'low' },
-  { id: 9, name: 'Documentos', icon: icons.reportes, route: '/inteligencia/presupuesto', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Próximamente', statusColor: 'a', priority: 'low' },
+  { id:{ id: 8, name: 'Actividades', icon: icons.indicadores, route: '/actividades', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Activo', statusColor: 'g', priority: 'low' }d: 9, name: 'Documentos', icon: icons.reportes, route: '/documentos', row: 2, kpi: null, kpiType: 'status', statusLabel: 'Activo', statusColor: 'g', priority: 'low' } },
 ]
 
 export default function HomeDashboard() {
