@@ -14,6 +14,7 @@ export default {
         'fx-orange': '#F59E0B',
       },
       fontFamily: {
+        montserrat: ['Montserrat', 'sans-serif'],
         orbitron: ['Montserrat', 'sans-serif'],
         exo2: ['Montserrat', 'sans-serif'],
       },
