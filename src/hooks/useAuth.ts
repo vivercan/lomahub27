@@ -17,7 +17,9 @@ export function useAuth() {
       email: supabaseUser.email || '',
       rol: (meta.rol as Rol) || 'ventas',
       empresa: meta.empresa || '',
-      permisosCustom: Array.isArray(meta.permisosCustom) ? meta.permisosCustom : undefined,
+      permisosCustom: Array.isArray(meta.permisosCustom)
+        ? meta.permisosCustom
+        : undefined,
     }
   }, [])
 
@@ -30,7 +32,9 @@ export function useAuth() {
     })
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session)
         setUser(parseUser(session?.user ?? null))
@@ -60,20 +64,36 @@ export function useAuth() {
   }
 
   const logout = async () => {
+    // Disable Google auto-select before signing out
+    // This prevents FedCM from auto-selecting the previous account
+    if (window.google?.accounts?.id) {
+      try {
+        window.google.accounts.id.disableAutoSelect()
+        window.google.accounts.id.cancel()
+      } catch (_) { /* ignore GSI errors */ }
+    }
+
+    // Remove GSI script so Login component forces a fresh load
+    const gsiScript = document.getElementById('gsi-script')
+    if (gsiScript) gsiScript.remove()
+
     const { error } = await supabase.auth.signOut()
     if (error) throw error
-    // Force page reload to re-initialize Google GSI script
-    window.location.reload()
+
+    // Navigate to login instead of reload for cleaner UX
+    window.location.href = '/login'
   }
 
   const getRutaInicial = (): string => {
     if (!user) return '/login'
+
     // If user has permisosCustom, route to first allowed module
     if (user.permisosCustom && user.permisosCustom.length > 0) {
       const firstPermiso = user.permisosCustom[0]
       const routes = PERMISOS_CUSTOM_ROUTES[firstPermiso]
       if (routes && routes.length > 0) return routes[0]
     }
+
     return RUTAS_INICIALES[user.rol] || '/dashboard'
   }
 
