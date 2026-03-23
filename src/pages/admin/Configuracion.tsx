@@ -354,29 +354,29 @@ export default function Configuracion() {
 
       {activeTab === 'catalogos' && (
         <Card>
-          <div style={{ padding: tks.spacing.lg }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: tks.spacing.lg }}>
-              <h3 style={{ margin: 0, color: tks.colors.textPrimary, fontFamily: tks.fonts.heading, fontSize: '18px' }}>
+          <div style={{ padding: tokens.spacing.lg }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: tokens.spacing.lg }}>
+              <h3 style={{ margin: 0, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, fontSize: '18px' }}>
                 Catálogos del Sistema
               </h3>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: tks.spacing.md }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: tokens.spacing.md }}>
               {[
-                { name: 'Empresas', count: 4, items: ['TROB', 'WExpress', 'SpeedyHaul', 'TROB USA'], color: tks.colors.blue },
-                { name: 'Segmentos', count: 242, items: ['Automotriz', 'Electrónica', 'Farmacéutico', 'Agroindustrial'], color: tks.colors.green },
-                { name: 'Plazas', count: 12, items: ['Laredo', 'Monterrey', 'CDMX', 'Guadalajara'], color: tks.colors.yellow },
-                { name: 'Tractos', count: 500, items: ['Registro de tractocamiones activos'], color: tks.colors.primary },
-                { name: 'Cajas/Remolques', count: 283, items: ['Secas', 'Refrigeradas', 'Plataformas'], color: tks.colors.orange },
-                { name: 'Accesoriales', count: 40, items: ['Stop Off', 'Demoras', 'Inspecciones', 'Lumper'], color: tks.colors.red },
+                { name: 'Empresas', count: 4, items: ['TROB', 'WExpress', 'SpeedyHaul', 'TROB USA'], color: tokens.colors.blue },
+                { name: 'Segmentos', count: 242, items: ['Automotriz', 'Electrónica', 'Farmacéutico', 'Agroindustrial'], color: tokens.colors.green },
+                { name: 'Plazas', count: 12, items: ['Laredo', 'Monterrey', 'CDMX', 'Guadalajara'], color: tokens.colors.yellow },
+                { name: 'Tractos', count: 500, items: ['Registro de tractocamiones activos'], color: tokens.colors.primary },
+                { name: 'Cajas/Remolques', count: 283, items: ['Secas', 'Refrigeradas', 'Plataformas'], color: tokens.colors.orange },
+                { name: 'Accesoriales', count: 40, items: ['Stop Off', 'Demoras', 'Inspecciones', 'Lumper'], color: tokens.colors.red },
               ].map((cat) => (
                 <div key={cat.name} style={{
-                  background: tks.colors.bgCard,
+                  background: tokens.colors.bgCard,
                   borderRadius: '12px',
-                  padding: tks.spacing.md,
-                  border: `1px solid ${tks.colors.border}`,
+                  padding: tokens.spacing.md,
+                  border: `1px solid ${tokens.colors.border}`,
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <span style={{ color: tks.colors.textPrimary, fontWeight: 600, fontSize: '14px' }}>{cat.name}</span>
+                    <span style={{ color: tokens.colors.textPrimary, fontWeight: 600, fontSize: '14px' }}>{cat.name}</span>
                     <span style={{
                       background: cat.color + '22',
                       color: cat.color,
@@ -389,8 +389,8 @@ export default function Configuracion() {
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
                     {cat.items.map((item) => (
                       <span key={item} style={{
-                        background: tks.colors.bgHover,
-                        color: tks.colors.textSecondary,
+                        background: tokens.colors.bgHover,
+                        color: tokens.colors.textSecondary,
                         padding: '2px 8px',
                         borderRadius: '6px',
                         fontSize: '11px',
@@ -406,11 +406,11 @@ export default function Configuracion() {
 
       {activeTab === 'parametros' && (
         <Card>
-          <div style={{ padding: tks.spacing.lg }}>
-            <h3 style={{ margin: '0 0 16px 0', color: tks.colors.textPrimary, fontFamily: tks.fonts.heading, fontSize: '18px' }}>
+          <div style={{ padding: tokens.spacing.lg }}>
+            <h3 style={{ margin: '0 0 16px 0', color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, fontSize: '18px' }}>
               Parámetros del Sistema
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: tks.spacing.md }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: tokens.spacing.md }}>
               {[
                 { group: 'Tipo de Cambio', params: [
                   { label: 'USD/MXN', value: '$17.92', desc: 'Actualización automática diaria' },
@@ -434,21 +434,21 @@ export default function Configuracion() {
                 ]},
               ].map((group) => (
                 <div key={group.group} style={{
-                  background: tks.colors.bgCard,
+                  background: tokens.colors.bgCard,
                   borderRadius: '12px',
-                  padding: tks.spacing.md,
-                  border: `1px solid ${tks.colors.border}`,
+                  padding: tokens.spacing.md,
+                  border: `1px solid ${tokens.colors.border}`,
                 }}>
-                  <h4 style={{ margin: '0 0 10px 0', color: tks.colors.primary, fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  <h4 style={{ margin: '0 0 10px 0', color: tokens.colors.primary, fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                     {group.group}
                   </h4>
                   {group.params.map((p) => (
                     <div key={p.label} style={{ marginBottom: '8px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ color: tks.colors.textSecondary, fontSize: '13px' }}>{p.label}</span>
-                        <span style={{ color: tks.colors.textPrimary, fontWeight: 700, fontSize: '14px' }}>{p.value}</span>
+                        <span style={{ color: tokens.colors.textSecondary, fontSize: '13px' }}>{p.label}</span>
+                        <span style={{ color: tokens.colors.textPrimary, fontWeight: 700, fontSize: '14px' }}>{p.value}</span>
                       </div>
-                      <span style={{ color: tks.colors.textMuted, fontSize: '11px' }}>{p.desc}</span>
+                      <span style={{ color: tokens.colors.textMuted, fontSize: '11px' }}>{p.desc}</span>
                     </div>
                   ))}
                 </div>
@@ -460,17 +460,17 @@ export default function Configuracion() {
 
       {activeTab === 'integraciones' && (
         <Card>
-          <div style={{ padding: tks.spacing.lg }}>
-            <h3 style={{ margin: '0 0 16px 0', color: tks.colors.textPrimary, fontFamily: tks.fonts.heading, fontSize: '18px' }}>
+          <div style={{ padding: tokens.spacing.lg }}>
+            <h3 style={{ margin: '0 0 16px 0', color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, fontSize: '18px' }}>
               Integraciones Activas
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: tks.spacing.md }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: tokens.spacing.md }}>
               {[
                 {
                   name: 'WideTech GPS',
                   protocol: 'SOAP / XML',
                   status: 'Activo',
-                  statusColor: tks.colors.green,
+                  statusColor: tokens.colors.green,
                   desc: 'Rastreo GPS de 271 unidades con UPSERT cada 10 minutos',
                   endpoint: 'api.widetech.com.mx',
                   cron: 'Cada 10 min (gps-worker)',
@@ -480,7 +480,7 @@ export default function Configuracion() {
                   name: 'ANODOS TMS',
                   protocol: 'REST / JSON',
                   status: 'Activo',
-                  statusColor: tks.colors.green,
+                  statusColor: tokens.colors.green,
                   desc: 'Sincronización de formatos de venta y datos operativos',
                   endpoint: 'api.anodos.com.mx',
                   cron: 'Cada 10 min (sync-anodos)',
@@ -490,7 +490,7 @@ export default function Configuracion() {
                   name: 'Google Maps',
                   protocol: 'REST / JSON',
                   status: 'Activo',
-                  statusColor: tks.colors.green,
+                  statusColor: tokens.colors.green,
                   desc: 'Distance Matrix + Places para cotizador cross-border',
                   endpoint: 'maps.googleapis.com',
                   cron: 'On-demand',
@@ -500,7 +500,7 @@ export default function Configuracion() {
                   name: 'Anthropic Claude',
                   protocol: 'REST / JSON',
                   status: 'Configurar',
-                  statusColor: tks.colors.yellow,
+                  statusColor: tokens.colors.yellow,
                   desc: 'Análisis IA de cotizaciones PDF y validación de documentos',
                   endpoint: 'api.anthropic.com',
                   cron: 'On-demand (Edge Function)',
@@ -510,7 +510,7 @@ export default function Configuracion() {
                   name: 'Resend',
                   protocol: 'REST / JSON',
                   status: 'Activo',
-                  statusColor: tks.colors.green,
+                  statusColor: tokens.colors.green,
                   desc: 'Correos transaccionales desde mail.jjcrm27.com',
                   endpoint: 'api.resend.com',
                   cron: 'Event-driven',
@@ -520,7 +520,7 @@ export default function Configuracion() {
                   name: 'Meta WhatsApp',
                   protocol: 'Cloud API',
                   status: 'Pendiente',
-                  statusColor: tks.colors.textMuted,
+                  statusColor: tokens.colors.textMuted,
                   desc: 'WhatsApp Business para notificaciones de tracking y ETAs',
                   endpoint: 'graph.facebook.com',
                   cron: 'Event-driven',
@@ -528,10 +528,10 @@ export default function Configuracion() {
                 },
               ].map((intg) => (
                 <div key={intg.name} style={{
-                  background: tks.colors.bgCard,
+                  background: tokens.colors.bgCard,
                   borderRadius: '12px',
-                  padding: tks.spacing.md,
-                  border: `1px solid ${tks.colors.border}`,
+                  padding: tokens.spacing.md,
+                  border: `1px solid ${tokens.colors.border}`,
                   display: 'flex',
                   flexDirection: 'column' as const,
                   gap: '10px',
@@ -540,8 +540,8 @@ export default function Configuracion() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{ fontSize: '24px' }}>{intg.icon}</span>
                       <div>
-                        <div style={{ color: tks.colors.textPrimary, fontWeight: 700, fontSize: '14px' }}>{intg.name}</div>
-                        <div style={{ color: tks.colors.textMuted, fontSize: '11px' }}>{intg.protocol}</div>
+                        <div style={{ color: tokens.colors.textPrimary, fontWeight: 700, fontSize: '14px' }}>{intg.name}</div>
+                        <div style={{ color: tokens.colors.textMuted, fontSize: '11px' }}>{intg.protocol}</div>
                       </div>
                     </div>
                     <span style={{
@@ -553,29 +553,29 @@ export default function Configuracion() {
                       fontWeight: 700,
                     }}>{intg.status}</span>
                   </div>
-                  <p style={{ margin: 0, color: tks.colors.textSecondary, fontSize: '12px', lineHeight: '1.4' }}>
+                  <p style={{ margin: 0, color: tokens.colors.textSecondary, fontSize: '12px', lineHeight: '1.4' }}>
                     {intg.desc}
                   </p>
-                  <div style={{ borderTop: `1px solid ${tks.colors.border}`, paddingTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: tks.colors.textMuted, fontSize: '11px' }}>{intg.endpoint}</span>
-                    <span style={{ color: tks.colors.textMuted, fontSize: '11px' }}>{intg.cron}</span>
+                  <div style={{ borderTop: `1px solid ${tokens.colors.border}`, paddingTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: tokens.colors.textMuted, fontSize: '11px' }}>{intg.endpoint}</span>
+                    <span style={{ color: tokens.colors.textMuted, fontSize: '11px' }}>{intg.cron}</span>
                   </div>
                 </div>
               ))}
             </div>
             <div style={{
-              marginTop: tks.spacing.md,
-              padding: tks.spacing.md,
-              background: tks.colors.primary + '11',
+              marginTop: tokens.spacing.md,
+              padding: tokens.spacing.md,
+              background: tokens.colors.primary + '11',
               borderRadius: '10px',
-              border: `1px solid ${tks.colors.primary}33`,
+              border: `1px solid ${tokens.colors.primary}33`,
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <span style={{ color: tks.colors.primary, fontWeight: 700, fontSize: '13px' }}>Edge Functions Activas</span>
-                  <span style={{ color: tks.colors.textSecondary, fontSize: '12px', marginLeft: '12px' }}>26 funciones desplegadas + 5 cron jobs</span>
+                  <span style={{ color: tokens.colors.primary, fontWeight: 700, fontSize: '13px' }}>Edge Functions Activas</span>
+                  <span style={{ color: tokens.colors.textSecondary, fontSize: '12px', marginLeft: '12px' }}>26 funciones desplegadas + 5 cron jobs</span>
                 </div>
-                <span style={{ color: tks.colors.green, fontWeight: 700, fontSize: '14px' }}>Operativo</span>
+                <span style={{ color: tokens.colors.green, fontWeight: 700, fontSize: '14px' }}>Operativo</span>
               </div>
             </div>
           </div>
@@ -584,30 +584,30 @@ export default function Configuracion() {
 
       {activeTab === 'auditoria' && (
         <Card>
-          <div style={{ padding: tks.spacing.lg }}>
-            <h3 style={{ margin: '0 0 16px 0', color: tks.colors.textPrimary, fontFamily: tks.fonts.heading, fontSize: '18px' }}>
+          <div style={{ padding: tokens.spacing.lg }}>
+            <h3 style={{ margin: '0 0 16px 0', color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, fontSize: '18px' }}>
               Registro de Auditoría
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '8px' }}>
               {[
-                { time: 'Hoy 14:30', user: 'juan.viveros', action: 'Login exitoso', module: 'Auth', color: tks.colors.green },
-                { time: 'Hoy 14:28', user: 'Sistema', action: 'GPS sync completado — 271 posiciones', module: 'GPS Worker', color: tks.colors.blue },
-                { time: 'Hoy 14:20', user: 'Sistema', action: 'ANODOS sync — 1,283 formatos actualizados', module: 'Sync ANODOS', color: tks.colors.blue },
-                { time: 'Hoy 13:45', user: 'isis.estrada', action: 'Lead creado: ACME Corp', module: 'Comercial', color: tks.colors.yellow },
-                { time: 'Hoy 12:10', user: 'liz.garcia', action: 'Cliente actualizado: FEMSA', module: 'Servicio', color: tks.colors.primary },
-                { time: 'Hoy 11:30', user: 'jose.rodriguez', action: 'Viaje #1087 actualizado — En tránsito', module: 'Operaciones', color: tks.colors.orange },
-                { time: 'Ayer 18:00', user: 'Sistema', action: 'Tipo de cambio actualizado: $17.92', module: 'Parámetros', color: tks.colors.blue },
-                { time: 'Ayer 16:20', user: 'jennifer.sanchez', action: 'Usuario editado: marcos.pineda', module: 'Config', color: tks.colors.red },
+                { time: 'Hoy 14:30', user: 'juan.viveros', action: 'Login exitoso', module: 'Auth', color: tokens.colors.green },
+                { time: 'Hoy 14:28', user: 'Sistema', action: 'GPS sync completado — 271 posiciones', module: 'GPS Worker', color: tokens.colors.blue },
+                { time: 'Hoy 14:20', user: 'Sistema', action: 'ANODOS sync — 1,283 formatos actualizados', module: 'Sync ANODOS', color: tokens.colors.blue },
+                { time: 'Hoy 13:45', user: 'isis.estrada', action: 'Lead creado: ACME Corp', module: 'Comercial', color: tokens.colors.yellow },
+                { time: 'Hoy 12:10', user: 'liz.garcia', action: 'Cliente actualizado: FEMSA', module: 'Servicio', color: tokens.colors.primary },
+                { time: 'Hoy 11:30', user: 'jose.rodriguez', action: 'Viaje #1087 actualizado — En tránsito', module: 'Operaciones', color: tokens.colors.orange },
+                { time: 'Ayer 18:00', user: 'Sistema', action: 'Tipo de cambio actualizado: $17.92', module: 'Parámetros', color: tokens.colors.blue },
+                { time: 'Ayer 16:20', user: 'jennifer.sanchez', action: 'Usuario editado: marcos.pineda', module: 'Config', color: tokens.colors.red },
               ].map((log, idx) => (
                 <div key={idx} style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
                   padding: '10px 14px',
-                  background: idx % 2 === 0 ? tks.colors.bgCard : 'transparent',
+                  background: idx % 2 === 0 ? tokens.colors.bgCard : 'transparent',
                   borderRadius: '8px',
                 }}>
-                  <span style={{ color: tks.colors.textMuted, fontSize: '12px', minWidth: '90px' }}>{log.time}</span>
+                  <span style={{ color: tokens.colors.textMuted, fontSize: '12px', minWidth: '90px' }}>{log.time}</span>
                   <span style={{
                     background: log.color + '22',
                     color: log.color,
@@ -618,13 +618,13 @@ export default function Configuracion() {
                     minWidth: '90px',
                     textAlign: 'center' as const,
                   }}>{log.module}</span>
-                  <span style={{ color: tks.colors.textPrimary, fontSize: '13px', fontWeight: 600, minWidth: '130px' }}>{log.user}</span>
-                  <span style={{ color: tks.colors.textSecondary, fontSize: '13px' }}>{log.action}</span>
+                  <span style={{ color: tokens.colors.textPrimary, fontSize: '13px', fontWeight: 600, minWidth: '130px' }}>{log.user}</span>
+                  <span style={{ color: tokens.colors.textSecondary, fontSize: '13px' }}>{log.action}</span>
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: tks.spacing.md, textAlign: 'center' as const }}>
-              <span style={{ color: tks.colors.textMuted, fontSize: '12px' }}>
+            <div style={{ marginTop: tokens.spacing.md, textAlign: 'center' as const }}>
+              <span style={{ color: tokens.colors.textMuted, fontSize: '12px' }}>
                 Mostrando últimos 8 eventos — El historial completo se almacena en Supabase
               </span>
             </div>
