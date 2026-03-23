@@ -342,7 +342,7 @@ export default function CorporativosClientes(): ReactElement {
             <p style={{ color: tokens.colors.textSecondary, marginTop: tokens.spacing.sm, fontSize: '14px' }}>
               {clientes.length > 0
                 ? 'Marca un cliente como tipo "corporativo" y vincula subsidiarias con el botón +'
-                : 'Ejecutar migración 012 en Supabase para habilitar campo corporativo_id'}
+                : 'Vincula clientes como subsidiarias para crear grupos corporativos'}
             </p>
           </div>
         </Card>
