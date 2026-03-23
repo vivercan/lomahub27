@@ -74,7 +74,7 @@ export default function ControlCajas(): ReactElement {
             empresa: gps.empresa || '\u2014',
             tipo: cajaInfo?.tipo || (gps.segmento?.toLowerCase().includes('refriger') ? 'refrigerado' : 'seco'),
             estado,
-            ubicacion: gps.ubicacion || 'Sin ubicaciÃ³n',
+            ubicacion: gps.ubicacion || 'Sin ubicación',
             latitud: gps.latitud || null,
             longitud: gps.longitud || null,
             conGPS: !!tieneCoords,
@@ -129,13 +129,13 @@ export default function ControlCajas(): ReactElement {
     switch (estado) {
       case 'en_movimiento': return 'En Movimiento';
       case 'detenida': return 'Detenida';
-      case 'sin_senal': return 'Sin SeÃ±al';
+      case 'sin_senal': return 'Sin Señal';
       default: return estado;
     }
   };
 
   const cajasColumns = [
-    { key: 'economico', label: 'NÂ° EconÃ³mico' },
+    { key: 'economico', label: 'NÂ° Económico' },
     { key: 'empresa', label: 'Empresa' },
     { key: 'segmento', label: 'Segmento' },
     {
@@ -145,7 +145,7 @@ export default function ControlCajas(): ReactElement {
     },
     {
       key: 'ubicacion',
-      label: 'UbicaciÃ³n GPS',
+      label: 'Ubicación GPS',
       render: (row: CajaRow) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span
@@ -173,7 +173,7 @@ export default function ControlCajas(): ReactElement {
         </span>
       ),
     },
-    { key: 'ultimaActualizacion', label: 'Ãltima SeÃ±al' },
+    { key: 'ultimaActualizacion', label: 'Última Señal' },
   ];
 
   return (
@@ -190,8 +190,8 @@ export default function ControlCajas(): ReactElement {
         <KPICard titulo="Total Cajas GPS" valor={totalCajas.toString()} color="primary" />
         <KPICard titulo="En Movimiento" valor={enMovimiento.toString()} color="green" />
         <KPICard titulo="Detenidas" valor={detenidas.toString()} color="yellow" />
-        <KPICard titulo="Sin SeÃ±al" valor={sinSenal.toString()} color="red" />
-        <KPICard titulo="Con PosiciÃ³n" valor={`${conGPS} / ${totalCajas}`} color="green" />
+        <KPICard titulo="Sin Señal" valor={sinSenal.toString()} color="red" />
+        <KPICard titulo="Con Posición" valor={`${conGPS} / ${totalCajas}`} color="green" />
       </div>
 
       {/* Filtros */}
@@ -223,7 +223,7 @@ export default function ControlCajas(): ReactElement {
             { value: '', label: 'Todos' },
             { value: 'en_movimiento', label: 'En Movimiento' },
             { value: 'detenida', label: 'Detenida' },
-            { value: 'sin_senal', label: 'Sin SeÃ±al' },
+            { value: 'sin_senal', label: 'Sin Señal' },
           ]}
         />
       </div>
