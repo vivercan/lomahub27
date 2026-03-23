@@ -45,7 +45,7 @@ function getEstadoLabel(estado: string): string {
   switch (estado) {
     case 'en_movimiento': return 'En Movimiento';
     case 'detenido': return 'Detenido';
-    case 'sin_senal': return 'Sin SeÃ±al';
+    case 'sin_senal': return 'Sin Señal';
     case 'disponible': return 'Disponible';
     case 'en_viaje': return 'En Viaje';
     case 'taller': return 'Taller';
@@ -104,7 +104,7 @@ export default function ControlTractos() {
             segmento: gps.segmento || '\u2014',
             estado,
             operador: tractoInfo?.operador || '\u2014',
-            ubicacion: gps.ubicacion || 'Sin ubicaciÃ³n',
+            ubicacion: gps.ubicacion || 'Sin ubicación',
             latitud: gps.latitud || null,
             longitud: gps.longitud || null,
             conGPS: !!tieneCoords,
@@ -146,7 +146,7 @@ export default function ControlTractos() {
   const conGPS = tractos.filter(t => t.conGPS).length;
 
   const columns = [
-    { key: 'economico', label: 'EconÃ³mico' },
+    { key: 'economico', label: 'Económico' },
     { key: 'empresa', label: 'Empresa' },
     { key: 'segmento', label: 'Segmento' },
     {
@@ -161,7 +161,7 @@ export default function ControlTractos() {
     { key: 'operador', label: 'Operador' },
     {
       key: 'ubicacion',
-      label: 'UbicaciÃ³n GPS',
+      label: 'Ubicación GPS',
       render: (row: TractoRow) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span
@@ -189,7 +189,7 @@ export default function ControlTractos() {
         </span>
       ),
     },
-    { key: 'ultimaSenal', label: 'Ãltima SeÃ±al' },
+    { key: 'ultimaSenal', label: 'Última Señal' },
   ];
 
   return (
@@ -206,8 +206,8 @@ export default function ControlTractos() {
         <KPICard titulo="Total Tractos GPS" valor={total.toString()} color="primary" />
         <KPICard titulo="En Movimiento" valor={enMovimiento.toString()} color="green" />
         <KPICard titulo="Detenidos" valor={detenidos.toString()} color="yellow" />
-        <KPICard titulo="Sin SeÃ±al" valor={sinSenal.toString()} color="red" />
-        <KPICard titulo="Con PosiciÃ³n" valor={`${conGPS} / ${total}`} color="green" />
+        <KPICard titulo="Sin Señal" valor={sinSenal.toString()} color="red" />
+        <KPICard titulo="Con Posición" valor={`${conGPS} / ${total}`} color="green" />
       </div>
 
       {/* Filtros */}
@@ -250,7 +250,7 @@ export default function ControlTractos() {
           <option value="">Todos los estados</option>
           <option value="en_movimiento">En Movimiento</option>
           <option value="detenido">Detenido</option>
-          <option value="sin_senal">Sin SeÃ±al</option>
+          <option value="sin_senal">Sin Señal</option>
         </select>
       </div>
 
