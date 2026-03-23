@@ -172,7 +172,7 @@ export default function ControlTemperatura(): ReactElement {
                 Sin unidades refrigeradas monitoreadas
               </p>
               <p style={{ fontSize: '14px', color: tokens.colors.textMuted, marginTop: tokens.spacing.xs }}>
-                Ejecutar migración 012 en Supabase para habilitar tabla control_temperatura
+                Asigna sensores a unidades refrigeradas para monitorear temperatura
               </p>
             </div>
           ) : (
