@@ -127,10 +127,8 @@ const modules: ModuleConfig[] = [
   {
     id: 1, name: 'Comercial', icon: icons.ventas, row: 1, kpi: null, kpiType: 'number', kpiLabel: 'leads activos', priority: 'high', isWarRoom: true,
     submodulos: [
-      { name: 'Mis Leads', route: '/ventas/mis-leads', icon: si.leads, desc: 'Pipeline de prospectos' },
-      { name: 'Funnel', route: '/ventas/funnel', icon: si.funnel, desc: 'Embudo de conversión' },
-      { name: 'Programa Semanal', route: '/ventas/programa-semanal', icon: si.programa, desc: 'Agenda de visitas' },
-      { name: 'Comisiones', route: '/ventas/comisiones', icon: si.comisiones, desc: 'Comisiones por ejecutivo' },
+      { name: 'Panel de Oportunidades', route: '/ventas/mis-leads', icon: si.leads, desc: 'Pipeline de prospectos' },
+      { name: 'Agregar Lead', route: '/ventas/leads/nuevo', icon: si.funnel, desc: 'Nueva oportunidad comercial' },
     ]
   },
   {
