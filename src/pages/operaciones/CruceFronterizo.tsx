@@ -173,7 +173,7 @@ export default function CruceFronterizo(): ReactElement {
                 Sin cruces fronterizos registrados
               </p>
               <p style={{ fontSize: '14px', color: tokens.colors.textMuted, marginTop: tokens.spacing.xs }}>
-                Ejecutar migración 012 en Supabase para habilitar tabla cruce_documentos
+                Registra un cruce fronterizo para comenzar el tracking
               </p>
             </div>
           ) : (
