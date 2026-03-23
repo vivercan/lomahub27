@@ -1,27 +1,64 @@
+import type { ReactNode } from 'react'
+import { tokens } from '../lib/tokens'
+
 interface KPICardProps {
-  titulo: string
-  valor: string | number
+  /** New API */
+  icon?: ReactNode
+  label?: string
+  value?: string | number
+  /** Legacy API */
+  titulo?: string
+  valor?: string | number
   subtitulo?: string
-  color?: 'blue' | 'emerald' | 'amber' | 'red' | 'orange'
+  icono?: ReactNode
+  /** Shared */
+  color?: 'primary' | 'green' | 'yellow' | 'red' | 'gray' | 'blue' | 'orange'
+  onClick?: () => void
 }
 
-const colorClasses = {
-  blue: 'text-blue-400',
-  emerald: 'text-emerald-400',
-  amber: 'text-amber-400',
-  red: 'text-red-400',
-  orange: 'text-orange-400',
+const colorMap: Record<string, string> = {
+  primary: tokens.colors.primary,
+  green: tokens.colors.green,
+  yellow: tokens.colors.yellow,
+  red: tokens.colors.red,
+  gray: tokens.colors.gray,
+  blue: tokens.colors.blue,
+  orange: tokens.colors.orange,
 }
 
-export function KPICard({ titulo, valor, subtitulo, color = 'blue' }: KPICardProps) {
+export function KPICard({
+  icon, label, value,
+  titulo, valor, subtitulo, icono,
+  color = 'primary', onClick,
+}: KPICardProps) {
+  const displayLabel = label ?? titulo ?? ''
+  const displayValue = value ?? valor ?? ''
+  const displayIcon = icon ?? icono ?? null
+
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-      <p className="text-gray-400 text-sm font-montserrat">{titulo}</p>
-      <p className={`text-3xl font-montserrat font-bold ${colorClasses[color]} mt-1`}>
-        {valor}
+    <div
+      onClick={onClick}
+      style={{
+        background: tokens.colors.bgCard,
+        border: `1px solid ${tokens.colors.border}`,
+        borderRadius: tokens.radius.lg,
+        padding: tokens.spacing.md,
+        cursor: onClick ? 'pointer' : 'default',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+        <p style={{ fontSize: '13px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body, margin: 0 }}>
+          {displayLabel}
+        </p>
+        {displayIcon && <span style={{ color: colorMap[color] }}>{displayIcon}</span>}
+      </div>
+      <p style={{ fontSize: '28px', fontWeight: 700, color: colorMap[color], fontFamily: tokens.fonts.heading, margin: 0 }}>
+        {displayValue}
       </p>
       {subtitulo && (
-        <p className="text-gray-500 text-xs mt-1 font-montserrat">{subtitulo}</p>
+        <p style={{ fontSize: '12px', color: tokens.colors.textMuted, fontFamily: tokens.fonts.body, marginTop: '4px', margin: 0 }}>
+          {subtitulo}
+        </p>
       )}
     </div>
   )
