@@ -27,8 +27,7 @@ export default function DashboardCS(): ReactElement {
       try {
         const { data: clientesData, error: clientesError } = await supabase
           .from('clientes')
-          .select('id, razon_social, tipo, ciudad, estado')
-            .limit(1000);
+          .select('*');
 
         if (clientesError) throw clientesError;
 
