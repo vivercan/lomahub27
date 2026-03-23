@@ -178,7 +178,7 @@ export default function ComunicacionProactiva(): ReactElement {
                 Sin alertas proactivas
               </p>
               <p style={{ fontSize: '14px', color: tokens.colors.textMuted, marginTop: tokens.spacing.xs }}>
-                Ejecutar migración 012 para habilitar tabla alertas_proactivas
+                Las alertas proactivas se generan automáticamente cuando hay viajes activos
               </p>
             </div>
           ) : (
