@@ -30,10 +30,6 @@ const navItems: NavItem[] = [
   { label: 'Dashboard Ventas', path: '/ventas/dashboard', icon: <TrendingUp size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
   { label: 'Panel de Oportunidades', path: '/ventas/mis-leads', icon: <Target size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
   { label: 'Agregar Lead', path: '/ventas/leads/nuevo', icon: <Users size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
-  { label: 'Funnel de Ventas', path: '/ventas/funnel', icon: <Filter size={18} />, roles: ['superadmin', 'admin', 'ventas', 'gerente_comercial', 'direccion'] },
-  { label: 'ProspecciÃ³n', path: '/ventas/prospeccion', icon: <Search size={18} />, roles: ['superadmin', 'admin', 'ventas', 'gerente_comercial'] },
-  { label: 'Programa Semanal', path: '/ventas/programa-semanal', icon: <Calendar size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'direccion'] },
-  { label: 'Comisiones', path: '/ventas/comisiones', icon: <DollarSign size={18} />, roles: ['superadmin', 'admin', 'gerente_comercial', 'direccion'] },
 
   // âââ Cotizador / Pricing âââ
   { label: 'Cotizador', path: '/cotizador/nueva', icon: <FileText size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'pricing'] },
