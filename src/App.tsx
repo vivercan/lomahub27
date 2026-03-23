@@ -16,9 +16,11 @@ import NuevoLead from './pages/ventas/NuevoLead'
 import FichaLead from './pages/ventas/FichaLead'
 import ProgramaSemanal from './pages/ventas/ProgramaSemanal'
 import Comisiones from './pages/ventas/Comisiones'
+import ProspeccionExterna from './pages/ventas/ProspeccionExterna'
 
 // Cotizador
 import NuevaCotizacion from './pages/cotizador/NuevaCotizacion'
+import FirmaDigital from './pages/cotizador/FirmaDigital'
 
 // Clientes
 import AltaCliente from './pages/clientes/AltaCliente'
@@ -37,11 +39,15 @@ import ControlTractos from './pages/operaciones/ControlTractos'
 import Disponibilidad from './pages/operaciones/Disponibilidad'
 import OfertaEquipo from './pages/operaciones/OfertaEquipo'
 import Rentabilidad from './pages/operaciones/Rentabilidad'
+import CruceFronterizo from './pages/operaciones/CruceFronterizo'
+import ControlTemperatura from './pages/operaciones/ControlTemperatura'
+import PlaneacionFlota from './pages/operaciones/PlaneacionFlota'
 
 // Servicio
 import DashboardCS from './pages/servicio/DashboardCS'
 import WhatsAppBandeja from './pages/servicio/WhatsApp'
 import MetricasServicio from './pages/servicio/MetricasServicio'
+import ComunicacionProactiva from './pages/servicio/ComunicacionProactiva'
 
 // CXC
 import Cartera from './pages/cxc/Cartera'
@@ -116,6 +122,13 @@ function App() {
             </ProtectedRoute>
           } />
 
+          {/* ─── Prospección Externa ─── */}
+          <Route path="/ventas/prospeccion" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial']}>
+              <ProspeccionExterna />
+            </ProtectedRoute>
+          } />
+
           {/* ─── 07. Cotizador ─── */}
           <Route path="/cotizador/nueva" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'pricing']}>
@@ -125,6 +138,13 @@ function App() {
           <Route path="/cotizador/tarifas" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'pricing']}>
               <NuevaCotizacion />
+            </ProtectedRoute>
+          } />
+
+          {/* ─── Firma Digital ─── */}
+          <Route path="/cotizador/firma-digital" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial', 'pricing']}>
+              <FirmaDigital />
             </ProtectedRoute>
           } />
 
@@ -212,6 +232,13 @@ function App() {
             </ProtectedRoute>
           } />
 
+          {/* ─── Cruce Fronterizo ─── */}
+          <Route path="/operaciones/cruce-fronterizo" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops']}>
+              <CruceFronterizo />
+            </ProtectedRoute>
+          } />
+
           {/* ─── 18. Disponibilidad ─── */}
           <Route path="/operaciones/disponibilidad" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_ops', 'direccion']}>
@@ -219,10 +246,24 @@ function App() {
             </ProtectedRoute>
           } />
 
+          {/* ─── Control Temperatura ─── */}
+          <Route path="/operaciones/control-temperatura" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops']}>
+              <ControlTemperatura />
+            </ProtectedRoute>
+          } />
+
           {/* ─── 19. Oferta de Equipo ─── */}
           <Route path="/operaciones/oferta-equipo" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas']}>
               <OfertaEquipo />
+            </ProtectedRoute>
+          } />
+
+          {/* ─── Planeación Flota ─── */}
+          <Route path="/operaciones/planeacion-flota" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops']}>
+              <PlaneacionFlota />
             </ProtectedRoute>
           } />
 
@@ -254,6 +295,13 @@ function App() {
           <Route path="/servicio/tickets" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion']}>
               <TicketsQuejas />
+            </ProtectedRoute>
+          } />
+
+          {/* ─── Comunicación Proactiva ─── */}
+          <Route path="/servicio/comunicacion-proactiva" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs']}>
+              <ComunicacionProactiva />
             </ProtectedRoute>
           } />
 
