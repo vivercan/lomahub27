@@ -1,70 +1,82 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { Phone, Mail, MapPin, Plus } from 'lucide-react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Phone, Mail, MapPin, Building2, TrendingUp, User, Calendar, ArrowLeft, Plus, FileText, UserCheck, Edit3, Truck, DollarSign, Target, MessageSquare } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
-import { Card } from '../../components/ui/Card'
-import { Button } from '../../components/ui/Button'
-import { Badge } from '../../components/ui/Badge'
-import { DataTable } from '../../components/ui/DataTable'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
-import type { Column } from '../../components/ui/DataTable'
 
-interface Activity {
-  fecha: string
-  tipo: string
-  resultado: string
+interface Lead {
+  id: string
+  empresa: string
+  contacto: string
+  email: string
+  telefono: string
+  ciudad: string
+  ruta_interes: string
+  tipo_carga: string
+  tipo_viaje: string
+  estado: string
+  ejecutivo_id: string
+  ejecutivo_nombre: string
+  valor_estimado: number
+  probabilidad: number
+  fuente: string
+  notas: string
+  cotizacion_url: string | null
+  viajes_mes: number
+  tarifa: number
+  proyectado_usd: number
+  fecha_creacion: string
+  fecha_ultimo_mov: string
+  eliminado?: boolean
 }
 
-interface Cliente {
-  id: string
-  nombre: string
-  telefono: string | null
-  email: string | null
-  ciudad: string | null
-  ruta: string | null
-  fuente: string | null
+const PIPELINE_STAGES = [
+  { id: 'Nuevo', label: 'Nuevo', color: tokens.colors.blue },
+  { id: 'Contactado', label: 'Contactado', color: tokens.colors.yellow },
+  { id: 'Cotizado', label: 'Cotizado', color: tokens.colors.orange },
+  { id: 'Negociacion', label: 'Negociación', color: '#A855F7' },
+  { id: 'Cerrado Ganado', label: 'Cerrado Ganado', color: tokens.colors.green },
+  { id: 'Cerrado Perdido', label: 'Cerrado Perdido', color: tokens.colors.red },
+]
+
+const formatCurrency = (v: number): string => {
+  if (!v) return '$0'
+  return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v)
+}
+
+const formatDate = (d: string): string => {
+  if (!d) return '\u2014'
+  const date = new Date(d)
+  return date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: '2-digit' })
 }
 
 export default function FichaLead() {
-  const [searchParams] = useSearchParams()
-  const leadId = searchParams.get('id')
-
-  const [leadData, setLeadData] = useState<Cliente | null>(null)
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const [lead, setLead] = useState<Lead | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
-  const [actividades, setActividades] = useState<Activity[]>([])
-
-  const pipelineSteps = [
-    { nombre: 'Nuevo', activo: false },
-    { nombre: 'Contactado', activo: false },
-    { nombre: 'Cotización', activo: false },
-    { nombre: 'Negociación', activo: false },
-    { nombre: 'Ganado', activo: false },
-  ]
 
   useEffect(() => {
     const fetchLead = async () => {
       try {
-        if (!leadId) {
+        if (!id) {
           setNotFound(true)
           setLoading(false)
           return
         }
-
         const { data, error } = await supabase
-          .from('clientes')
+          .from('leads')
           .select('*')
-          .eq('id', leadId)
+          .eq('id', id)
           .single()
 
         if (error || !data) {
           setNotFound(true)
         } else {
-          setLeadData(data)
+          setLead(data)
         }
-
-        setActividades([])
       } catch (err) {
         console.error('Error fetching lead:', err)
         setNotFound(true)
@@ -72,155 +84,380 @@ export default function FichaLead() {
         setLoading(false)
       }
     }
-
     fetchLead()
-  }, [leadId])
+  }, [id])
 
-  const activityColumns: Column<Activity>[] = [
-    { key: 'fecha', label: 'Fecha', width: '20%' },
-    {
-      key: 'tipo',
-      label: 'Tipo',
-      width: '20%',
-      render: (row: Activity) => {
-        const colorMap: Record<string, 'primary' | 'green' | 'yellow' | 'orange' | 'red' | 'blue' | 'gray'> = {
-          Llamada: 'blue',
-          Email: 'gray',
-          Reunión: 'primary',
-        }
-        return <Badge color={colorMap[row.tipo] || 'gray'}>{row.tipo}</Badge>
-      },
+  const currentStageIdx = lead ? PIPELINE_STAGES.findIndex(s => s.id === lead.estado) : -1
+
+  const s = {
+    backBtn: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px',
+      padding: '6px 12px',
+      borderRadius: tokens.radius.md,
+      border: `1px solid ${tokens.colors.border}`,
+      background: tokens.colors.bgCard,
+      color: tokens.colors.textSecondary,
+      fontSize: '13px',
+      fontFamily: tokens.fonts.body,
+      cursor: 'pointer',
+      transition: 'all 0.15s',
     },
-    { key: 'resultado', label: 'Resultado', width: '60%' },
-  ]
+    card: {
+      background: tokens.colors.bgCard,
+      border: `1px solid ${tokens.colors.border}`,
+      borderRadius: tokens.radius.lg,
+      padding: '20px',
+    },
+    label: {
+      fontSize: '11px',
+      fontWeight: 600,
+      color: tokens.colors.textMuted,
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.06em',
+      fontFamily: tokens.fonts.body,
+      marginBottom: '4px',
+    },
+    value: {
+      fontSize: '14px',
+      color: tokens.colors.textPrimary,
+      fontFamily: tokens.fonts.body,
+    },
+    valueMuted: {
+      fontSize: '14px',
+      color: tokens.colors.textSecondary,
+      fontFamily: tokens.fonts.body,
+    },
+    sectionTitle: {
+      fontFamily: tokens.fonts.heading,
+      fontSize: '14px',
+      fontWeight: 700,
+      color: tokens.colors.textPrimary,
+      letterSpacing: '0.04em',
+      textTransform: 'uppercase' as const,
+      marginBottom: '16px',
+    },
+    actionBtn: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px',
+      padding: '8px 16px',
+      borderRadius: tokens.radius.md,
+      border: `1px solid ${tokens.colors.border}`,
+      background: tokens.colors.bgHover,
+      color: tokens.colors.textSecondary,
+      fontSize: '13px',
+      fontFamily: tokens.fonts.body,
+      cursor: 'pointer',
+      transition: 'all 0.15s',
+    },
+    primaryBtn: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px',
+      padding: '8px 16px',
+      borderRadius: tokens.radius.md,
+      border: 'none',
+      background: tokens.colors.primary,
+      color: '#FFF',
+      fontSize: '13px',
+      fontWeight: 600,
+      fontFamily: tokens.fonts.body,
+      cursor: 'pointer',
+      transition: 'all 0.15s',
+    },
+    stageDot: (active: boolean, color: string) => ({
+      width: '36px',
+      height: '36px',
+      borderRadius: '50%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '12px',
+      fontWeight: 700,
+      fontFamily: tokens.fonts.body,
+      background: active ? color : tokens.colors.bgHover,
+      color: active ? '#FFF' : tokens.colors.textMuted,
+      border: `2px solid ${active ? color : tokens.colors.border}`,
+      transition: 'all 0.2s',
+    }),
+    stageLine: (active: boolean, color: string) => ({
+      flex: 1,
+      height: '2px',
+      background: active ? color : tokens.colors.border,
+      transition: 'all 0.2s',
+    }),
+    infoRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
+      padding: '8px 0',
+    },
+    kpiCard: {
+      background: tokens.colors.bgHover,
+      border: `1px solid ${tokens.colors.border}`,
+      borderRadius: tokens.radius.md,
+      padding: '16px',
+      textAlign: 'center' as const,
+    },
+  }
 
   if (loading) {
     return (
       <ModuleLayout titulo="Lead">
-        <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>
-          <p>Cargando...</p>
+        <div style={{ textAlign: 'center', padding: '60px', color: tokens.colors.textMuted }}>
+          <p style={{ fontFamily: tokens.fonts.body }}>Cargando...</p>
         </div>
       </ModuleLayout>
     )
   }
 
-  if (notFound || !leadData) {
+  if (notFound || !lead) {
     return (
       <ModuleLayout titulo="Lead">
-        <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>
-          <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Lead no encontrado</p>
-          <p style={{ fontSize: '14px', marginTop: tokens.spacing.sm }}>No hay información disponible para este lead</p>
+        <div style={{ textAlign: 'center', padding: '60px', color: tokens.colors.textMuted }}>
+          <p style={{ fontSize: '18px', fontWeight: 500, margin: 0, fontFamily: tokens.fonts.heading }}>Lead no encontrado</p>
+          <p style={{ fontSize: '14px', marginTop: '8px', fontFamily: tokens.fonts.body }}>No hay información disponible para este lead</p>
+          <button style={{ ...s.actionBtn, marginTop: '16px', display: 'inline-flex' }} onClick={() => navigate('/ventas/mis-leads')}>
+            <ArrowLeft size={14} /> Volver al Panel
+          </button>
         </div>
       </ModuleLayout>
     )
   }
 
+  const stageInfo = PIPELINE_STAGES.find(st => st.id === lead.estado)
+
   return (
-    <ModuleLayout titulo={`Lead — ${leadData.nombre}`}>
-      <div className="grid grid-cols-3 gap-6">
-        <div>
-          <Card glow="primary">
-            <div className="space-y-4">
-              <div>
-                <p className="text-xs uppercase tracking-wider mb-1" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>Empresa</p>
-                <p className="text-lg font-bold" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>{leadData.nombre}</p>
-              </div>
-
-              {leadData.telefono && (
-                <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4" style={{ color: tokens.colors.primary }} />
-                  <p style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>{leadData.telefono}</p>
-                </div>
-              )}
-
-              {leadData.email && (
-                <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4" style={{ color: tokens.colors.primary }} />
-                  <p style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>{leadData.email}</p>
-                </div>
-              )}
-
-              {leadData.ciudad && (
-                <div className="flex items-center gap-3">
-                  <MapPin className="w-4 h-4" style={{ color: tokens.colors.primary }} />
-                  <p style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>{leadData.ciudad}</p>
-                </div>
-              )}
-
-              {(leadData.ruta || leadData.fuente) && (
-                <div className="pt-4 border-t" style={{ borderColor: tokens.colors.border }}>
-                  <p className="text-xs uppercase tracking-wider mb-2" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>Información</p>
-                  <div className="space-y-2">
-                    {leadData.ruta && (
-                      <div>
-                        <p className="text-xs" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>Ruta</p>
-                        <p style={{           color: tokens.colors.textSecondary,
-                            fontFamily: tokens.fonts.body,
-                          }}
-                        >
-                          {leadData.ruta}
-                        </p>
-                      </div>
-                    )}
-                    {leadData.fuente && (
-                      <div>
-                        <p className="text-xs" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>Fuente</p>
-                        <Badge>{leadData.fuente}</Badge>
-                      </div>
-                    )}
+    <ModuleLayout
+      titulo={`Lead — ${lead.empresa}`}
+      acciones={
+        <button
+          style={s.backBtn}
+          onClick={() => navigate('/ventas/mis-leads')}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgCard }}
+        >
+          <ArrowLeft size={14} /> Volver
+        </button>
+      }
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%', overflow: 'hidden' }}>
+        {/* ── PIPELINE ── */}
+        <div style={s.card}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {PIPELINE_STAGES.map((stage, idx) => {
+              const isActive = idx <= currentStageIdx
+              const color = isActive ? (stage.color || tokens.colors.primary) : tokens.colors.border
+              return (
+                <div key={stage.id} style={{ display: 'flex', alignItems: 'center', flex: idx < PIPELINE_STAGES.length - 1 ? 1 : undefined, gap: '0' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', minWidth: '60px' }}>
+                    <div style={s.stageDot(isActive, stage.color)}>
+                      {idx + 1}
+                    </div>
+                    <span style={{ fontSize: '10px', color: isActive ? stage.color : tokens.colors.textMuted, fontFamily: tokens.fonts.body, fontWeight: isActive ? 600 : 400, textAlign: 'center', whiteSpace: 'nowrap' }}>
+                      {stage.label}
+                    </span>
                   </div>
+                  {idx < PIPELINE_STAGES.length - 1 && (
+                    <div style={s.stageLine(isActive && idx < currentStageIdx, stage.color)} />
+                  )}
                 </div>
-              )}
-            </div>
-          </Card>
+              )
+            })}
+          </div>
         </div>
 
-        <div className="col-span-2 space-y-6">
-          <Card>
-            <div className="mb-4">
-              <p className="text-sm uppercase tracking-wider mb-4" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>Pipeline</p>
-            </div>
-            <div className="flex justify-between items-center">
-              {pipelineSteps.map((step, idx) => (
-                <div key={step.nombre} className="flex flex-col items-center">
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold border mb-2"
-                    style={{
-                      background: step.activo ? tokens.colors.primary : tokens.colors.bgHover,
-                      borderColor: step.activo ? tokens.colors.primary : tokens.colors.border,
-                      color: step.activo ? '#fff' : tokens.colors.textSecondary,
-                    }}
-                  >
-                    {idx + 1}
+        {/* ── BODY: 2 columns ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px', flex: 1, minHeight: 0, overflow: 'auto' }}>
+
+          {/* LEFT: Info del lead */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Datos de contacto */}
+            <div style={s.card}>
+              <p style={s.sectionTitle}>Datos de Contacto</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div style={s.infoRow}>
+                  <Building2 size={15} style={{ color: tokens.colors.primary, flexShrink: 0 }} />
+                  <div>
+                    <p style={s.label}>Empresa</p>
+                    <p style={{ ...s.value, fontWeight: 600, fontSize: '16px' }}>{lead.empresa || '\u2014'}</p>
                   </div>
-                  <p className="text-xs text-center" style={{ color: step.activo ? tokens.colors.primary : tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
-                    {step.nombre}
-                  </p>
                 </div>
-              ))}
-            </div>
-          </Card>
-
-          <Card>
-            <div className="mb-4">
-              <h3 className="text-lg font-bold" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>Historial de Actividades</h3>
-            </div>
-            {actividades.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>
-                <p style={{ fontSize: '14px', margin: 0 }}>Sin actividades registradas</p>
+                <div style={s.infoRow}>
+                  <User size={15} style={{ color: tokens.colors.primary, flexShrink: 0 }} />
+                  <div>
+                    <p style={s.label}>Contacto</p>
+                    <p style={s.value}>{lead.contacto || '\u2014'}</p>
+                  </div>
+                </div>
+                {lead.telefono && (
+                  <div style={s.infoRow}>
+                    <Phone size={15} style={{ color: tokens.colors.primary, flexShrink: 0 }} />
+                    <div>
+                      <p style={s.label}>Teléfono</p>
+                      <p style={s.value}>{lead.telefono}</p>
+                    </div>
+                  </div>
+                )}
+                {lead.email && (
+                  <div style={s.infoRow}>
+                    <Mail size={15} style={{ color: tokens.colors.primary, flexShrink: 0 }} />
+                    <div>
+                      <p style={s.label}>Email</p>
+                      <p style={s.value}>{lead.email}</p>
+                    </div>
+                  </div>
+                )}
+                {lead.ciudad && (
+                  <div style={s.infoRow}>
+                    <MapPin size={15} style={{ color: tokens.colors.primary, flexShrink: 0 }} />
+                    <div>
+                      <p style={s.label}>Ciudad</p>
+                      <p style={s.value}>{lead.ciudad}</p>
+                    </div>
+                  </div>
+                )}
               </div>
-            ) : (
-              <DataTable columns={activityColumns} data={actividades} />
-            )}
-          </Card>
+            </div>
 
-          <div className="flex gap-2">
-            <Button variant="primary">
-              <Plus className="w-4 h-4" />
-              Registrar Actividad
-            </Button>
-            <Button variant="secondary">Crear Cotización</Button>
-            <Button variant="secondary">Convertir a Cliente</Button>
+            {/* Info comercial */}
+            <div style={s.card}>
+              <p style={s.sectionTitle}>Información Comercial</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {lead.ruta_interes && (
+                  <div style={s.infoRow}>
+                    <Truck size={15} style={{ color: tokens.colors.primary, flexShrink: 0 }} />
+                    <div>
+                      <p style={s.label}>Ruta</p>
+                      <p style={s.value}>{lead.ruta_interes}</p>
+                    </div>
+                  </div>
+                )}
+                {lead.tipo_carga && (
+                  <div style={s.infoRow}>
+                    <FileText size={15} style={{ color: tokens.colors.primary, flexShrink: 0 }} />
+                    <div>
+                      <p style={s.label}>Tipo Servicio</p>
+                      <p style={s.value}>{lead.tipo_carga}</p>
+                    </div>
+                  </div>
+                )}
+                {lead.tipo_viaje && (
+                  <div style={s.infoRow}>
+                    <Target size={15} style={{ color: tokens.colors.primary, flexShrink: 0 }} />
+                    <div>
+                      <p style={s.label}>Tipo Viaje</p>
+                      <p style={s.value}>{lead.tipo_viaje}</p>
+                    </div>
+                  </div>
+                )}
+                {lead.fuente && (
+                  <div style={s.infoRow}>
+                    <TrendingUp size={15} style={{ color: tokens.colors.primary, flexShrink: 0 }} />
+                    <div>
+                      <p style={s.label}>Fuente</p>
+                      <p style={s.value}>{lead.fuente}</p>
+                    </div>
+                  </div>
+                )}
+                <div style={s.infoRow}>
+                  <User size={15} style={{ color: tokens.colors.primary, flexShrink: 0 }} />
+                  <div>
+                    <p style={s.label}>Ejecutivo</p>
+                    <p style={s.value}>{lead.ejecutivo_nombre || '\u2014'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT: KPIs + Notas + Acciones */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* KPI Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+              <div style={s.kpiCard}>
+                <p style={s.label}>Valor Estimado</p>
+                <p style={{ fontSize: '18px', fontWeight: 700, color: tokens.colors.green, fontFamily: tokens.fonts.heading }}>
+                  {formatCurrency(lead.valor_estimado || 0)}
+                </p>
+              </div>
+              <div style={s.kpiCard}>
+                <p style={s.label}>Proyectado USD</p>
+                <p style={{ fontSize: '18px', fontWeight: 700, color: tokens.colors.primary, fontFamily: tokens.fonts.heading }}>
+                  {formatCurrency(lead.proyectado_usd || 0)}
+                </p>
+              </div>
+              <div style={s.kpiCard}>
+                <p style={s.label}>Viajes / Mes</p>
+                <p style={{ fontSize: '18px', fontWeight: 700, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>
+                  {lead.viajes_mes || 0}
+                </p>
+              </div>
+              <div style={s.kpiCard}>
+                <p style={s.label}>Probabilidad</p>
+                <p style={{ fontSize: '18px', fontWeight: 700, color: tokens.colors.yellow, fontFamily: tokens.fonts.heading }}>
+                  {lead.probabilidad || 0}%
+                </p>
+              </div>
+            </div>
+
+            {/* Fechas */}
+            <div style={s.card}>
+              <div style={{ display: 'flex', gap: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Calendar size={15} style={{ color: tokens.colors.primary }} />
+                  <div>
+                    <p style={s.label}>Creado</p>
+                    <p style={s.value}>{formatDate(lead.fecha_creacion)}</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Calendar size={15} style={{ color: tokens.colors.yellow }} />
+                  <div>
+                    <p style={s.label}>Último Movimiento</p>
+                    <p style={s.value}>{formatDate(lead.fecha_ultimo_mov)}</p>
+                  </div>
+                </div>
+                {stageInfo && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: stageInfo.color }} />
+                    <div>
+                      <p style={s.label}>Etapa Actual</p>
+                      <p style={{ ...s.value, color: stageInfo.color, fontWeight: 600 }}>{stageInfo.label}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Notas */}
+            <div style={s.card}>
+              <p style={s.sectionTitle}>Notas</p>
+              <p style={{ ...s.valueMuted, whiteSpace: 'pre-wrap', minHeight: '40px' }}>
+                {lead.notas || 'Sin notas registradas'}
+              </p>
+            </div>
+
+            {/* Acciones */}
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <button style={s.primaryBtn}>
+                <Plus size={14} /> Registrar Actividad
+              </button>
+              <button style={s.actionBtn}>
+                <FileText size={14} /> Crear Cotización
+              </button>
+              <button style={s.actionBtn}>
+                <UserCheck size={14} /> Convertir a Cliente
+              </button>
+              <button style={s.actionBtn}>
+                <Edit3 size={14} /> Editar Lead
+              </button>
+              <button style={s.actionBtn}>
+                <MessageSquare size={14} /> WhatsApp
+              </button>
+            </div>
           </div>
         </div>
       </div>
