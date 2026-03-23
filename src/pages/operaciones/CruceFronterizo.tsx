@@ -267,7 +267,7 @@ export default function CruceFronterizo(): ReactElement {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   )
                 })}
               </tbody>
