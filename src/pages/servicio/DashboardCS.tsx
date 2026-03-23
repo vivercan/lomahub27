@@ -27,13 +27,14 @@ export default function DashboardCS(): ReactElement {
       try {
         const { data: clientesData, error: clientesError } = await supabase
           .from('clientes')
-          .select('*');
+          .select('id, razon_social, tipo, ciudad, estado')
+            .limit(1000);
 
         if (clientesError) throw clientesError;
 
         const formattedClientes = (clientesData || []).map((cliente: any) => ({
           id: cliente.id,
-          cliente: cliente.nombre,
+          cliente: cliente.razon_social || 'Sin nombre',
           estado: 'verde' as SemaforoEstado,
           ultimoContacto: 'N/A',
           viajesActivos: 0,
