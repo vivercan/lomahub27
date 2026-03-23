@@ -274,7 +274,7 @@ export default function ComunicacionProactiva(): ReactElement {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   )
                 })}
               </tbody>
