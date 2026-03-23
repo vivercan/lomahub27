@@ -29,7 +29,7 @@ const estadoToSemaforo = (estado: string): SemaforoEstado => {
     case 'en_riesgo': return 'amarillo';
     case 'retrasado': return 'rojo';
     case 'entregado': return 'gris';
-    default: return 'gris';
+    default: return 'azul';
   }
 };
 
@@ -40,33 +40,26 @@ const estadoLabel = (estado: string): string => {
     case 'en_riesgo': return 'En Riesgo';
     case 'retrasado': return 'Retrasado';
     case 'entregado': return 'Entregado';
-    default: return estado;
+    default: return estado || 'Sin estado';
   }
 };
 
 export default function TorreControl(): ReactElement {
   const [viajes, setViajes] = useState<Viaje[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filtroEmpresa, setFiltroEmpresa] = useState('');
+  const [filtroEstado, setFiltroEstado] = useState('');
 
   useEffect(() => {
     const fetchViajes = async () => {
       try {
         setLoading(true);
+        // Query WITHOUT joins — avoids FK relationship errors
         const { data, error } = await supabase
           .from('viajes')
-          .select(`
-            id,
-            origen,
-            destino,
-            estado,
-            eta_calculado,
-            cita_descarga,
-            notas,
-            cliente:clientes(nombre),
-            tracto:tractos(numero_economico)
-          `)
+          .select('*')
           .not('estado', 'eq', 'cancelado')
-          .order('cita_descarga', { ascending: true });
+          .order('created_at', { ascending: false });
 
         if (error) {
           console.error('Error fetching viajes:', error);
@@ -80,12 +73,16 @@ export default function TorreControl(): ReactElement {
           const diffMin = eta && cita ? Math.round((eta.getTime() - cita.getTime()) / 60000) : 0;
 
           return {
-            folio: viaje.id?.substring(0, 8)?.toUpperCase() || '—',
-            cliente: viaje.cliente?.nombre || '—',
+            folio: viaje.folio || viaje.id?.substring(0, 8)?.toUpperCase() || '—',
+            cliente: viaje.cliente_nombre || viaje.cliente || '—',
             ruta: `${viaje.origen || '?'} → ${viaje.destino || '?'}`,
-            tracto: viaje.tracto?.numero_economico || '—',
-            eta: eta ? eta.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
-            cita: cita ? cita.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
+            tracto: viaje.tracto_numero || viaje.tracto || '—',
+            eta: eta
+              ? eta.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+              : '—',
+            cita: cita
+              ? cita.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+              : '—',
             diferencia: diffMin,
             estadoViaje: viaje.estado || 'programado',
             semaforo: estadoToSemaforo(viaje.estado || 'programado'),
@@ -109,6 +106,19 @@ export default function TorreControl(): ReactElement {
     if (diferencia <= 60) return tokens.colors.yellow;
     return tokens.colors.red;
   };
+
+  // Apply filters
+  const filteredViajes = viajes.filter(v => {
+    if (filtroEstado && v.estadoViaje !== filtroEstado) return false;
+    if (filtroEmpresa && !v.cliente.toLowerCase().includes(filtroEmpresa.toLowerCase())) return false;
+    return true;
+  });
+
+  // Compute KPIs from all viajes (not filtered)
+  const enTransito = viajes.filter(v => v.estadoViaje === 'en_transito').length;
+  const enRiesgo = viajes.filter(v => v.estadoViaje === 'en_riesgo').length;
+  const retrasados = viajes.filter(v => v.estadoViaje === 'retrasado').length;
+  const programados = viajes.filter(v => v.estadoViaje === 'programado').length;
 
   const viajesColumns = [
     { key: 'folio', label: 'Folio' },
@@ -138,6 +148,9 @@ export default function TorreControl(): ReactElement {
     },
   ];
 
+  // Extract unique empresas for filter
+  const empresasUnicas = [...new Set(viajes.map(v => v.cliente).filter(c => c !== '—'))];
+
   return (
     <ModuleLayout titulo="Torre de Control">
       {/* KPIs */}
@@ -149,10 +162,26 @@ export default function TorreControl(): ReactElement {
           marginBottom: tokens.spacing.lg,
         }}
       >
-        <KPICard titulo="En Tránsito" valor={viajes.filter(v => v.estadoViaje === 'en_transito').length.toString()} color="green" />
-        <KPICard titulo="En Riesgo" valor={viajes.filter(v => v.estadoViaje === 'en_riesgo').length.toString()} color="yellow" />
-        <KPICard titulo="Retrasados" valor={viajes.filter(v => v.estadoViaje === 'retrasado').length.toString()} color="red" />
-        <KPICard titulo="Programados" valor={viajes.filter(v => v.estadoViaje === 'programado').length.toString()} color="primary" />
+        <KPICard
+          titulo="En Tránsito"
+          valor={enTransito.toString()}
+          color="green"
+        />
+        <KPICard
+          titulo="En Riesgo"
+          valor={enRiesgo.toString()}
+          color="yellow"
+        />
+        <KPICard
+          titulo="Retrasados"
+          valor={retrasados.toString()}
+          color="red"
+        />
+        <KPICard
+          titulo="Programados"
+          valor={programados.toString()}
+          color="primary"
+        />
       </div>
 
       {/* Filtros */}
@@ -167,11 +196,9 @@ export default function TorreControl(): ReactElement {
         <Select
           label="Empresa"
           placeholder="Todas las empresas"
-          options={[
-            { value: 'tdn', label: 'TDN México' },
-            { value: 'logi', label: 'Logística Integral' },
-            { value: 'tds', label: 'Transportes del Sur' },
-          ]}
+          value={filtroEmpresa}
+          onChange={(val) => setFiltroEmpresa(val)}
+          options={empresasUnicas.map(e => ({ value: e, label: e }))}
         />
         <Select
           label="CS Asignada"
@@ -181,6 +208,8 @@ export default function TorreControl(): ReactElement {
         <Select
           label="Estado"
           placeholder="Todos los estados"
+          value={filtroEstado}
+          onChange={(val) => setFiltroEstado(val)}
           options={[
             { value: 'en_transito', label: 'En Tránsito' },
             { value: 'en_riesgo', label: 'En Riesgo' },
@@ -192,18 +221,27 @@ export default function TorreControl(): ReactElement {
 
       {/* Viajes DataTable */}
       <Card>
-        <h3>Monitoreo de Viajes</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: tokens.spacing.md }}>
+          <h3 style={{ margin: 0 }}>Monitoreo de Viajes</h3>
+          {!loading && viajes.length > 0 && (
+            <span style={{ fontSize: '13px', color: tokens.colors.textSecondary }}>
+              {filteredViajes.length} de {viajes.length} viajes
+            </span>
+          )}
+        </div>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
-            <p>Cargando...</p>
+            <p>Cargando viajes...</p>
           </div>
-        ) : viajes.length === 0 ? (
+        ) : filteredViajes.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
             <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
-            <p style={{ fontSize: '14px', marginTop: '4px' }}>Los datos se cargarán cuando estén disponibles en el sistema</p>
+            <p style={{ fontSize: '14px', marginTop: '4px' }}>
+              {viajes.length > 0 ? 'No hay viajes que coincidan con los filtros' : 'Los datos se cargarán cuando estén disponibles en el sistema'}
+            </p>
           </div>
         ) : (
-          <DataTable columns={viajesColumns} data={viajes} />
+          <DataTable columns={viajesColumns} data={filteredViajes} />
         )}
       </Card>
     </ModuleLayout>
