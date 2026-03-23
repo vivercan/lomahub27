@@ -175,7 +175,7 @@ export default function FirmaDigital(): ReactElement {
                     Sin cotizaciones con firma digital
                   </p>
                   <p style={{ fontSize: '14px', color: tokens.colors.textMuted, marginTop: tokens.spacing.xs }}>
-                    Ejecutar migración 012 para habilitar tabla cotizacion_firmas
+                    Crea una cotización y envíala a firma para comenzar
                   </p>
                 </div>
               ) : (
