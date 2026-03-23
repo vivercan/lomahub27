@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/Card'
 import { KPICard } from '../../components/KPICard'
@@ -195,8 +195,8 @@ export default function ComunicacionProactiva(): ReactElement {
                   const rs = riesgoStyle(a.riesgo)
                   const isOpen = expandedId === a.id
                   return (
-                    <>
-                      <tr key={a.id} style={{ borderBottom: `1px solid ${tokens.colors.border}`, cursor: 'pointer' }}
+                    <Fragment key={a.id}>
+                      <tr style={{ borderBottom: `1px solid ${tokens.colors.border}`, cursor: 'pointer' }}
                         onClick={() => setExpandedId(isOpen ? null : a.id)}>
                         <td style={tdStyle}>{isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}</td>
                         <td style={tdStyle}><span style={{ fontWeight: 600, color: tokens.colors.textPrimary, fontSize: '13px' }}>{a.cliente_nombre}</span></td>
