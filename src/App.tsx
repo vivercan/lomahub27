@@ -302,6 +302,7 @@ function App() {
           <Route path="/servicio/comunicacion-proactiva" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs']}>
               <ComunicacionProactiva />
+            <Route path="/servicio/escalamiento-whatsapp" element={<ProtectedRoute roles={['superadmin','admin','cs']}><Suspense fallback={<LoadingFallback />}><EscalamientoWhatsApp /></Suspense></ProtectedRoute>} />
             </ProtectedRoute>
           } />
 
