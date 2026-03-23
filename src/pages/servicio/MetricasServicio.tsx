@@ -408,7 +408,7 @@ export default function MetricasServicio(): ReactElement {
               </button>
             )}
           </div>
-          <DataTable columns={ticketColumns} data={filteredTickets} loading={loading} emptyMessage="Sin datos • Ejecutar migración 012 en Supabase para crear tabla tickets" />
+          <DataTable columns={ticketColumns} data={filteredTickets} loading={loading} emptyMessage="Sin tickets registrados en este período" />
         </Card>
       </div>
     </ModuleLayout>
