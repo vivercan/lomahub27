@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Search, ChevronDown, Trash2, Filter, Download, Plus, MoreHorizontal,
-  Loader, Eye, Edit3, Zap, Upload, ArrowUpDown, X, RotateCcw
+  Loader, Eye, Edit3, Zap, Upload, ArrowUpDown, X, RotateCcw, FileText
 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
@@ -36,6 +36,16 @@ interface Lead {
   eliminado?: boolean
 }
 
+interface AnalysisResult {
+  resumen: string
+  monto_detectado: number
+  moneda: string
+  vigencia: string
+  etapa_sugerida: string
+  confianza: number
+  notas: string
+}
+
 const PIPELINE_STAGES = [
   { id: 'Nuevo', label: 'Nuevo', color: tokens.colors.blue },
   { id: 'Contactado', label: 'Contactado', color: tokens.colors.yellow },
@@ -62,6 +72,11 @@ export default function MisLeads() {
   const [actionsOpen, setActionsOpen] = useState<string | null>(null)
   const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set())
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // New state for quotation analysis
+  const [analyzingLead, setAnalyzingLead] = useState<Lead | null>(null)
+  const [analyzing, setAnalyzing] = useState(false)
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null)
 
   useEffect(() => {
     fetchLeads()
@@ -146,6 +161,122 @@ export default function MisLeads() {
     } catch (err) {
       console.error('Error updating lead stage:', err)
     }
+  }
+
+  const handleAttachQuotation = (lead: Lead) => {
+    setAnalyzingLead(lead)
+    fileInputRef.current?.click()
+    setActionsOpen(null)
+  }
+
+  const handleFileSelected = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file || !analyzingLead) {
+      setAnalyzingLead(null)
+      return
+    }
+
+    if (file.type !== 'application/pdf') {
+      alert('Por favor selecciona un archivo PDF')
+      setAnalyzingLead(null)
+      return
+    }
+
+    try {
+      setAnalyzing(true)
+      setAnalysisResult(null)
+
+      // Read file as base64
+      const reader = new FileReader()
+      reader.onload = async (e) => {
+        const base64Content = (e.target?.result as string)?.split(',')[1] || ''
+
+        try {
+          // Call Supabase Edge Function
+          const { data, error } = await supabase.functions.invoke('analisis-cotizacion', {
+            body: {
+              file_base64: base64Content,
+              filename: file.name,
+              lead_id: analyzingLead.id,
+              lead_empresa: analyzingLead.empresa,
+            },
+          })
+
+          if (error) {
+            console.error('Error invoking analysis function:', error)
+            alert('Error al analizar la cotización. Intenta de nuevo.')
+            setAnalyzing(false)
+            setAnalyzingLead(null)
+            return
+          }
+
+          if (data) {
+            setAnalysisResult(data)
+          }
+        } catch (err) {
+          console.error('Error calling analysis function:', err)
+          alert('Error al analizar la cotización.')
+          setAnalyzing(false)
+          setAnalyzingLead(null)
+        } finally {
+          setAnalyzing(false)
+        }
+      }
+
+      reader.readAsDataURL(file)
+    } catch (err) {
+      console.error('Error reading file:', err)
+      alert('Error al leer el archivo.')
+      setAnalyzing(false)
+      setAnalyzingLead(null)
+    }
+
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  const handleAcceptAnalysis = async () => {
+    if (!analyzingLead || !analysisResult) return
+
+    try {
+      const timestamp = new Date().toISOString()
+      const { error } = await supabase
+        .from('leads')
+        .update({
+          estado: analysisResult.etapa_sugerida,
+          cotizacion_url: analysisResult.resumen, // Store summary or use a filename if available
+          fecha_ultimo_mov: timestamp,
+        })
+        .eq('id', analyzingLead.id)
+
+      if (error) throw error
+
+      // Update local state
+      setLeads(leads.map(l =>
+        l.id === analyzingLead.id
+          ? {
+              ...l,
+              estado: analysisResult.etapa_sugerida,
+              cotizacion_url: analysisResult.resumen,
+              fecha_ultimo_mov: timestamp,
+            }
+          : l
+      ))
+
+      // Close modal
+      setAnalyzingLead(null)
+      setAnalysisResult(null)
+    } catch (err) {
+      console.error('Error accepting analysis:', err)
+      alert('Error al actualizar el lead.')
+    }
+  }
+
+  const handleCloseAnalysis = () => {
+    setAnalyzingLead(null)
+    setAnalysisResult(null)
   }
 
   const handleExportCSV = () => {
@@ -418,7 +549,7 @@ export default function MisLeads() {
       borderRadius: tokens.radius.md,
       boxShadow: tokens.effects.cardShadow,
       zIndex: 50,
-      minWidth: '160px',
+      minWidth: '180px',
       overflow: 'hidden',
     },
     actionsMenuItem: {
@@ -484,6 +615,151 @@ export default function MisLeads() {
       color: tokens.colors.textMuted,
       fontFamily: tokens.fonts.body,
     },
+    analysisOverlay: {
+      position: 'fixed' as const,
+      inset: 0,
+      background: 'rgba(0,0,0,0.6)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 100,
+    },
+    analysisCard: {
+      background: tokens.colors.bgCard,
+      border: `1px solid ${tokens.colors.border}`,
+      borderRadius: tokens.radius.lg,
+      padding: '28px',
+      width: '540px',
+      maxWidth: '90vw',
+      boxShadow: tokens.effects.cardShadow,
+    },
+    analysisTitle: {
+      fontFamily: tokens.fonts.heading,
+      fontSize: '16px',
+      fontWeight: 700,
+      color: tokens.colors.textPrimary,
+      letterSpacing: '0.04em',
+      textTransform: 'uppercase' as const,
+      marginBottom: '4px',
+    },
+    analysisDivider: {
+      height: '1px',
+      background: tokens.colors.border,
+      margin: '12px 0 20px 0',
+    },
+    analysisGrid: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '16px',
+      marginBottom: '20px',
+    },
+    analysisField: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '4px',
+    },
+    analysisLabel: {
+      fontSize: '11px',
+      fontWeight: 700,
+      color: tokens.colors.textMuted,
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.06em',
+      fontFamily: tokens.fonts.body,
+    },
+    analysisValue: {
+      fontSize: '14px',
+      fontWeight: 600,
+      color: tokens.colors.textPrimary,
+      fontFamily: tokens.fonts.body,
+    },
+    analysisNotesBox: {
+      background: tokens.colors.bgHover,
+      border: `1px solid ${tokens.colors.border}`,
+      borderRadius: tokens.radius.md,
+      padding: '12px',
+      marginBottom: '20px',
+    },
+    analysisNotesLabel: {
+      fontSize: '11px',
+      fontWeight: 700,
+      color: tokens.colors.textMuted,
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.06em',
+      fontFamily: tokens.fonts.body,
+      marginBottom: '6px',
+    },
+    analysisNotesText: {
+      fontSize: '13px',
+      color: tokens.colors.textSecondary,
+      fontFamily: tokens.fonts.body,
+      lineHeight: '1.4',
+    },
+    progressBar: {
+      width: '100%',
+      height: '6px',
+      borderRadius: '3px',
+      background: tokens.colors.bgHover,
+      overflow: 'hidden',
+      marginTop: '6px',
+    },
+    progressFill: (pct: number) => ({
+      height: '100%',
+      width: `${pct}%`,
+      background: pct >= 70 ? tokens.colors.green : pct >= 40 ? tokens.colors.orange : tokens.colors.red,
+      transition: 'width 0.3s',
+    }),
+    confidenceText: {
+      fontSize: '12px',
+      fontWeight: 600,
+      color: tokens.colors.textPrimary,
+      marginTop: '4px',
+      fontFamily: tokens.fonts.body,
+    },
+    analysisButtons: {
+      display: 'flex',
+      gap: '12px',
+      justifyContent: 'flex-end',
+    },
+    acceptBtn: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px',
+      padding: '10px 16px',
+      borderRadius: tokens.radius.md,
+      border: 'none',
+      background: tokens.colors.green,
+      color: '#FFF',
+      fontSize: '13px',
+      fontWeight: 600,
+      fontFamily: tokens.fonts.body,
+      cursor: 'pointer',
+      transition: 'all 0.15s',
+    },
+    closeBtn: {
+      padding: '10px 16px',
+      borderRadius: tokens.radius.md,
+      border: `1px solid ${tokens.colors.border}`,
+      background: tokens.colors.bgHover,
+      color: tokens.colors.textSecondary,
+      fontSize: '13px',
+      fontWeight: 600,
+      fontFamily: tokens.fonts.body,
+      cursor: 'pointer',
+      transition: 'all 0.15s',
+    },
+    loadingBox: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '12px',
+      padding: '40px 20px',
+    },
+    loadingText: {
+      fontSize: '14px',
+      color: tokens.colors.textSecondary,
+      fontFamily: tokens.fonts.body,
+    },
   }
 
   return (
@@ -501,6 +777,15 @@ export default function MisLeads() {
           </button>
         }
       >
+      {/* Hidden file input for quotation PDF */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf"
+        style={{ display: 'none' }}
+        onChange={handleFileSelected}
+      />
+
       {/* ── TOOLBAR ── */}
       <div style={s.toolbar}>
         {/* Search */}
@@ -720,6 +1005,15 @@ export default function MisLeads() {
                           </button>
                           <button
                             style={s.actionsMenuItem}
+                            onClick={e => { e.stopPropagation(); handleAttachQuotation(lead) }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
+                          >
+                            <Upload size={13} style={{ color: tokens.colors.primary }} />
+                            <span style={{ color: tokens.colors.primary }}>Adjuntar Cotización</span>
+                          </button>
+                          <button
+                            style={s.actionsMenuItem}
                             onClick={e => { e.stopPropagation(); handleSoftDelete(lead) }}
                             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
                             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
@@ -800,6 +1094,115 @@ export default function MisLeads() {
                 </span>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── QUOTATION ANALYSIS MODAL ── */}
+      {(analyzingLead && (analyzing || analysisResult)) && (
+        <div
+          style={s.analysisOverlay}
+          onClick={analyzing ? undefined : handleCloseAnalysis}
+        >
+          <div style={s.analysisCard} onClick={e => e.stopPropagation()}>
+            {analyzing ? (
+              <div style={s.loadingBox}>
+                <Loader size={32} style={{ color: tokens.colors.primary, animation: 'spin 1s linear infinite' }} />
+                <span style={s.loadingText}>Analizando cotización con IA...</span>
+              </div>
+            ) : analysisResult ? (
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <div>
+                    <div style={s.analysisTitle}>
+                      Análisis de Cotización
+                    </div>
+                    <div style={{ fontSize: '12px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
+                      {analyzingLead.empresa}
+                    </div>
+                  </div>
+                  <button
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: tokens.colors.textMuted, padding: 0 }}
+                    onClick={handleCloseAnalysis}
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+                <div style={s.analysisDivider} />
+
+                {/* Results Grid */}
+                <div style={s.analysisGrid}>
+                  <div style={s.analysisField}>
+                    <span style={s.analysisLabel}>Monto Detectado</span>
+                    <span style={{ ...s.analysisValue, color: tokens.colors.green }}>
+                      {analysisResult.moneda} {formatCurrency(analysisResult.monto_detectado)}
+                    </span>
+                  </div>
+                  <div style={s.analysisField}>
+                    <span style={s.analysisLabel}>Moneda</span>
+                    <span style={s.analysisValue}>{analysisResult.moneda}</span>
+                  </div>
+                  <div style={s.analysisField}>
+                    <span style={s.analysisLabel}>Vigencia</span>
+                    <span style={s.analysisValue}>{analysisResult.vigencia || '—'}</span>
+                  </div>
+                  <div style={s.analysisField}>
+                    <span style={s.analysisLabel}>Etapa Sugerida</span>
+                    <div style={{ marginTop: '2px' }}>
+                      <span style={{
+                        ...s.stageBadge(STAGE_MAP[analysisResult.etapa_sugerida]?.color || tokens.colors.gray)
+                      }}>
+                        <span style={s.dot(STAGE_MAP[analysisResult.etapa_sugerida]?.color || tokens.colors.gray)} />
+                        {STAGE_MAP[analysisResult.etapa_sugerida]?.label || analysisResult.etapa_sugerida}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Confidence */}
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={s.analysisLabel}>Confianza del Análisis</div>
+                  <div style={s.progressBar}>
+                    <div style={s.progressFill(analysisResult.confianza)} />
+                  </div>
+                  <div style={s.confidenceText}>{analysisResult.confianza}%</div>
+                </div>
+
+                {/* Resumen / Notas */}
+                <div style={s.analysisNotesBox}>
+                  <div style={s.analysisNotesLabel}>Resumen & Análisis</div>
+                  <div style={s.analysisNotesText}>{analysisResult.resumen}</div>
+                </div>
+
+                {analysisResult.notas && (
+                  <div style={s.analysisNotesBox}>
+                    <div style={s.analysisNotesLabel}>Notas Adicionales</div>
+                    <div style={s.analysisNotesText}>{analysisResult.notas}</div>
+                  </div>
+                )}
+
+                {/* Buttons */}
+                <div style={s.analysisButtons}>
+                  <button
+                    style={s.closeBtn}
+                    onClick={handleCloseAnalysis}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgCard }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
+                  >
+                    Cerrar
+                  </button>
+                  <button
+                    style={s.acceptBtn}
+                    onClick={handleAcceptAnalysis}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#0B9566' }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.green }}
+                  >
+                    <FileText size={14} />
+                    Aceptar y Mover a {STAGE_MAP[analysisResult.etapa_sugerida]?.label || analysisResult.etapa_sugerida}
+                  </button>
+                </div>
+              </>
+            ) : null}
           </div>
         </div>
       )}
