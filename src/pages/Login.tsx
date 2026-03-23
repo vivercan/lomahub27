@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
-
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthContext } from '../hooks/AuthContext'
 import { AlertCircle } from 'lucide-react'
 
-const GOOGLE_CLIENT_ID = '431361414884-df5g44uf1b7bv95oh8ecag7j5vir3om4.apps.googleusercontent.com'
+const GOOGLE_CLIENT_ID =
+  '431361414884-df5g44uf1b7bv95oh8ecag7j5vir3om4.apps.googleusercontent.com'
 
 declare global {
   interface Window {
@@ -111,7 +111,8 @@ const S = {
     background: 'linear-gradient(to bottom, transparent, rgba(232,97,26,0.10), transparent)',
   },
   card: {
-    background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.04) 100%)',
+    background:
+      'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.04) 100%)',
     border: '1px solid rgba(255,255,255,0.12)',
     borderRadius: '20px',
     padding: '22px 52px',
@@ -120,7 +121,8 @@ const S = {
     position: 'relative' as const,
     overflow: 'hidden' as const,
     animation: 'loginSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both',
-    boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.08) inset, 0 1px 0 rgba(255,255,255,0.1) inset, 0 -1px 0 rgba(0,0,0,0.2) inset',
+    boxShadow:
+      '0 8px 32px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.08) inset, 0 1px 0 rgba(255,255,255,0.1) inset, 0 -1px 0 rgba(0,0,0,0.2) inset',
     transform: 'perspective(1000px) rotateX(0.5deg)',
   },
   cardLine: {
@@ -129,7 +131,8 @@ const S = {
     left: '10%',
     right: '10%',
     height: '1px',
-    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15) 30%, rgba(232,97,26,0.3) 50%, rgba(255,255,255,0.15) 70%, transparent)',
+    background:
+      'linear-gradient(90deg, transparent, rgba(255,255,255,0.15) 30%, rgba(232,97,26,0.3) 50%, rgba(255,255,255,0.15) 70%, transparent)',
   },
   title: {
     fontSize: '28px',
@@ -149,12 +152,6 @@ const S = {
   },
   errorIcon: { width: '18px', height: '18px', flexShrink: 0, color: L.red },
   errorText: { fontSize: '13px', color: L.red, margin: 0 },
-  googleWrap: {
-    width: '100%',
-    display: 'flex' as const,
-    justifyContent: 'center' as const,
-  },
-  googleDiv: { width: '100%' },
   customBtn: {
     width: '100%',
     height: '52px',
@@ -211,7 +208,8 @@ const S = {
     width: '100%',
     height: '2px',
     marginBottom: '16px',
-    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08) 10%, rgba(255,255,255,0.25) 40%, rgba(232,97,26,0.5) 75%, rgba(232,97,26,0.2) 90%, transparent)',
+    background:
+      'linear-gradient(90deg, transparent, rgba(255,255,255,0.08) 10%, rgba(255,255,255,0.25) 40%, rgba(232,97,26,0.5) 75%, rgba(232,97,26,0.2) 90%, transparent)',
     borderRadius: '2px',
   },
   logoRow: {
@@ -248,7 +246,8 @@ const S = {
     width: '100%',
     height: '3px',
     margin: '8px 0 8px',
-    background: 'linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.25) 25%, rgba(255,255,255,0.45) 45%, rgba(232,97,26,0.6) 70%, rgba(232,97,26,0.25) 88%, transparent)',
+    background:
+      'linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.25) 25%, rgba(255,255,255,0.45) 45%, rgba(232,97,26,0.6) 70%, rgba(232,97,26,0.25) 88%, transparent)',
     borderRadius: '2px',
   },
   tagline: {
@@ -274,14 +273,6 @@ const S = {
     borderTop: `1px solid ${L.w04}`,
     zIndex: 10,
   },
-  statusL: {
-    fontSize: '10px',
-    color: 'rgba(255,255,255,0.15)',
-    letterSpacing: '0.5px',
-    display: 'flex' as const,
-    alignItems: 'center' as const,
-    gap: '6px',
-  },
   statusR: {
     fontSize: '9px',
     color: 'rgba(255,255,255,0.40)',
@@ -289,18 +280,9 @@ const S = {
     textAlign: 'right' as const,
     fontWeight: 400,
   },
-  dot: {
-    display: 'inline-block',
-    width: '5px',
-    height: '5px',
-    borderRadius: '50%',
-    background: L.green,
-    boxShadow: '0 0 6px rgba(16,185,129,0.4)',
-  },
 }
 
 const kfId = 'login-kf'
-
 function injectKF() {
   if (typeof document !== 'undefined' && !document.getElementById(kfId)) {
     const el = document.createElement('style')
@@ -320,9 +302,9 @@ export default function Login() {
   const [hover, setHover] = useState(false)
   const [pressed, setPressed] = useState(false)
   const [gsiReady, setGsiReady] = useState(false)
+  const [gsiAttempt, setGsiAttempt] = useState(0)
   const { user, loading, loginWithGoogleIdToken, getRutaInicial } = useAuthContext()
   const navigate = useNavigate()
-  const googleBtnRef = useRef<HTMLDivElement>(null)
   const hiddenGoogleRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -335,25 +317,44 @@ export default function Login() {
     }
   }, [loading, user])
 
+  const handleCredential = useCallback(
+    async (response: { credential: string }) => {
+      setError('')
+      setGoogleLoading(true)
+      try {
+        await loginWithGoogleIdToken(response.credential)
+      } catch (err: any) {
+        setError(err.message || 'Error al iniciar sesión con Google')
+      } finally {
+        setGoogleLoading(false)
+      }
+    },
+    [loginWithGoogleIdToken]
+  )
+
   useEffect(() => {
     let mounted = true
 
     const initGSI = () => {
-      if (!window.google?.accounts?.id || !mounted) return
-
+      if (!window.google?.accounts?.id || !mounted) return false
       try {
-        // Cancel any pending prompts from previous session
-        try { window.google.accounts.id.cancel() } catch (_) { /* ignore */ }
+        // Always cancel first to clean up any stale state from previous session
+        try {
+          window.google.accounts.id.cancel()
+        } catch (_) {
+          /* ignore */
+        }
 
         window.google.accounts.id.initialize({
           client_id: GOOGLE_CLIENT_ID,
           callback: handleCredential,
           auto_select: false,
           cancel_on_tap_outside: true,
+          itp_support: true,
         })
 
         if (hiddenGoogleRef.current) {
-          // Clear previous rendered button content
+          // Clear previous rendered button completely
           hiddenGoogleRef.current.innerHTML = ''
           window.google.accounts.id.renderButton(hiddenGoogleRef.current, {
             type: 'standard',
@@ -365,36 +366,58 @@ export default function Login() {
             locale: 'es',
           })
         }
+
         if (mounted) setGsiReady(true)
+        return true
       } catch (e) {
         console.error('GSI init error:', e)
+        return false
       }
     }
 
     const loadGSI = () => {
-      // Always remove existing script to force fresh load after logout
+      // 1. Remove any existing GSI script to guarantee fresh load
       const existing = document.getElementById('gsi-script')
       if (existing) existing.remove()
 
-      // Reset Google global if script was removed
-      // This forces a clean re-initialization
+      // 2. Clear Google global to force complete re-initialization
+      // This is the KEY fix for post-logout: Google's library retains
+      // stale FedCM state in the window.google object. By deleting it
+      // before loading a fresh script, we ensure clean initialization.
+      delete (window as any).google
+
+      // 3. Load fresh GSI script with cache-buster to prevent stale cached version
       const s = document.createElement('script')
       s.id = 'gsi-script'
-      s.src = 'https://accounts.google.com/gsi/client'
+      s.src = 'https://accounts.google.com/gsi/client?ts=' + Date.now()
       s.async = true
       s.onload = () => {
-        // Wait for Google library to fully initialize
+        // Wait for Google library to fully initialize (up to 2 seconds)
         const waitForGoogle = (retries: number) => {
           if (!mounted) return
           if (window.google?.accounts?.id) {
-            initGSI()
+            const ok = initGSI()
+            if (!ok && retries > 0) {
+              setTimeout(() => waitForGoogle(retries - 1), 200)
+            }
           } else if (retries > 0) {
-            setTimeout(() => waitForGoogle(retries - 1), 100)
+            setTimeout(() => waitForGoogle(retries - 1), 200)
           } else {
             console.error('GSI library failed to initialize after retries')
+            // Force retry by bumping attempt counter
+            if (mounted) setGsiAttempt((prev) => prev + 1)
           }
         }
-        waitForGoogle(10) // Try up to 10 times (1 second total)
+        waitForGoogle(10)
+      }
+      s.onerror = () => {
+        console.error('Failed to load GSI script')
+        // Retry once on network error
+        if (mounted) {
+          setTimeout(() => {
+            if (mounted) setGsiAttempt((prev) => prev + 1)
+          }, 1000)
+        }
       }
       document.head.appendChild(s)
     }
@@ -403,38 +426,56 @@ export default function Login() {
 
     return () => {
       mounted = false
-      // Cleanup: cancel any pending Google prompts on unmount
       if (window.google?.accounts?.id) {
-        try { window.google.accounts.id.cancel() } catch (_) { /* ignore */ }
+        try {
+          window.google.accounts.id.cancel()
+        } catch (_) {
+          /* ignore */
+        }
       }
     }
-  }, [])
-
-  const handleCredential = async (response: { credential: string }) => {
-    setError('')
-    setGoogleLoading(true)
-    try {
-      await loginWithGoogleIdToken(response.credential)
-    } catch (err: any) {
-      setError(err.message || 'Error al iniciar sesiÃ³n con Google')
-    } finally {
-      setGoogleLoading(false)
-    }
-  }
+  }, [handleCredential, gsiAttempt])
 
   const triggerGoogleSignIn = () => {
-    // First try the hidden rendered Google button
+    // Strategy 1: Click the hidden rendered Google button
     if (hiddenGoogleRef.current) {
-      const btn = hiddenGoogleRef.current.querySelector('div[role="button"]') as HTMLElement
+      const btn = hiddenGoogleRef.current.querySelector(
+        'div[role="button"]'
+      ) as HTMLElement
       if (btn) {
         btn.click()
         return
       }
+      // Also try iframe approach (Google sometimes renders inside iframe)
+      const iframe = hiddenGoogleRef.current.querySelector('iframe')
+      if (iframe) {
+        try {
+          const iframeBtn = iframe.contentDocument?.querySelector(
+            'div[role="button"]'
+          ) as HTMLElement
+          if (iframeBtn) {
+            iframeBtn.click()
+            return
+          }
+        } catch (_) {
+          /* cross-origin, ignore */
+        }
+      }
     }
-    // Fallback: use Google One Tap prompt
+
+    // Strategy 2: Use Google One Tap prompt
     if (window.google?.accounts?.id) {
-      window.google.accounts.id.prompt()
+      try {
+        window.google.accounts.id.prompt()
+        return
+      } catch (_) {
+        /* ignore */
+      }
     }
+
+    // Strategy 3: Force GSI reload if nothing worked
+    console.warn('GSI not available, forcing reload...')
+    setGsiAttempt((prev) => prev + 1)
   }
 
   if (loading) {
@@ -449,7 +490,12 @@ export default function Login() {
     <div style={S.page}>
       <svg style={{ position: 'absolute', width: 0, height: 0 }}>
         <filter id="grain">
-          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.65"
+            numOctaves="3"
+            stitchTiles="stitch"
+          />
         </filter>
       </svg>
       <div style={{ ...S.grain, filter: 'url(#grain)' }} />
@@ -460,7 +506,6 @@ export default function Login() {
         <div style={S.divider} />
         <div style={S.card}>
           <div style={S.cardLine} />
-
           <h1 style={S.title}>Bienvenido</h1>
 
           {error && (
@@ -470,8 +515,18 @@ export default function Login() {
             </div>
           )}
 
-          {/* Hidden Google button for auth flow */}
-          <div ref={hiddenGoogleRef} style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', height: 0, overflow: 'hidden' }} />
+          {/* Hidden Google button for auth flow — key forces remount on retry */}
+          <div
+            key={'gsi-' + gsiAttempt}
+            ref={hiddenGoogleRef}
+            style={{
+              position: 'absolute',
+              opacity: 0,
+              pointerEvents: 'none',
+              height: 0,
+              overflow: 'hidden',
+            }}
+          />
 
           {/* Custom styled Google button */}
           <button
@@ -502,27 +557,66 @@ export default function Login() {
                 : 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
             }}
             onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => { setHover(false); setPressed(false) }}
+            onMouseLeave={() => {
+              setHover(false)
+              setPressed(false)
+            }}
             onMouseDown={() => setPressed(true)}
             onMouseUp={() => setPressed(false)}
             onClick={triggerGoogleSignIn}
           >
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'linear-gradient(270deg, rgba(244,123,32,0.50) 0%, rgba(244,123,32,0.22) 40%, rgba(232,97,26,0.04) 100%)',
-              opacity: hover ? 1 : 0,
-              transition: 'opacity 0.3s ease',
-              pointerEvents: 'none' as const,
-              borderRadius: '12px',
-            }} />
-            <svg width="20" height="20" viewBox="0 0 24 24" style={{ opacity: hover ? 0.95 : 0.55, transition: 'opacity 0.3s ease', position: 'relative' as const, zIndex: 1 }}>
-              <path fill="rgba(255,255,255,0.85)" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
-              <path fill="rgba(255,255,255,0.70)" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="rgba(255,255,255,0.55)" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A11.96 11.96 0 0 0 1 12c0 1.94.46 3.77 1.18 5.07l3.66-2.98z"/>
-              <path fill="rgba(255,255,255,0.90)" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background:
+                  'linear-gradient(270deg, rgba(244,123,32,0.50) 0%, rgba(244,123,32,0.22) 40%, rgba(232,97,26,0.04) 100%)',
+                opacity: hover ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+                pointerEvents: 'none' as const,
+                borderRadius: '12px',
+              }}
+            />
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              style={{
+                opacity: hover ? 0.95 : 0.55,
+                transition: 'opacity 0.3s ease',
+                position: 'relative' as const,
+                zIndex: 1,
+              }}
+            >
+              <path
+                fill="rgba(255,255,255,0.85)"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+              />
+              <path
+                fill="rgba(255,255,255,0.70)"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="rgba(255,255,255,0.55)"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A11.96 11.96 0 0 0 1 12c0 1.94.46 3.77 1.18 5.07l3.66-2.98z"
+              />
+              <path
+                fill="rgba(255,255,255,0.90)"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              />
             </svg>
-            <span style={{ color: hover ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.60)', transition: 'color 0.3s ease', position: 'relative' as const, zIndex: 1 }}>Continuar con Google</span>
+            <span
+              style={{
+                color: hover
+                  ? 'rgba(255,255,255,0.95)'
+                  : 'rgba(255,255,255,0.60)',
+                transition: 'color 0.3s ease',
+                position: 'relative' as const,
+                zIndex: 1,
+              }}
+            >
+              Continuar con Google
+            </span>
           </button>
 
           {googleLoading && (
@@ -534,17 +628,71 @@ export default function Login() {
         </div>
 
         {/* Separador + Security */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', margin: '14px 0 4px' }}>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-          <span style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,255,0.18)', textTransform: 'uppercase' as const, letterSpacing: '2px' }}>Acceso autorizado</span>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
+            margin: '14px 0 4px',
+          }}
+        >
+          <div
+            style={{
+              flex: 1,
+              height: '1px',
+              background: 'rgba(255,255,255,0.06)',
+            }}
+          />
+          <span
+            style={{
+              fontSize: '10px',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.18)',
+              textTransform: 'uppercase' as const,
+              letterSpacing: '2px',
+            }}
+          >
+            Acceso autorizado
+          </span>
+          <div
+            style={{
+              flex: 1,
+              height: '1px',
+              background: 'rgba(255,255,255,0.06)',
+            }}
+          />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px' }}>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.30)" strokeWidth="2" strokeLinecap="round" style={{ opacity: 0.5 }}>
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '7px',
+          }}
+        >
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="rgba(255,255,255,0.30)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            style={{ opacity: 0.5 }}
+          >
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
-          <span style={{ fontSize: '11px', fontWeight: 500, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.3px' }}>ConexiÃ³n cifrada Â· Solo personal autorizado</span>
+          <span
+            style={{
+              fontSize: '11px',
+              fontWeight: 500,
+              color: 'rgba(255,255,255,0.18)',
+              letterSpacing: '0.3px',
+            }}
+          >
+            Conexión cifrada · Solo personal autorizado
+          </span>
         </div>
       </div>
 
@@ -563,11 +711,22 @@ export default function Login() {
 
       <div style={S.statusBar}>
         <span style={S.statusR}>
-          Grupo Loma 2026 {"Â·"} <a
+          Grupo Loma 2026 {'·'}{' '}
+          <a
             href="mailto:hola@trob.com.mx"
-            onDoubleClick={(e) => { e.preventDefault(); navigator.clipboard.writeText('hola@trob.com.mx') }}
-            style={{ color: 'inherit', textDecoration: 'none', cursor: 'pointer' }}
-          >hola@trob.com.mx</a> {"Â·"} OperaciÃ³n inteligente... Resultados reales
+            onDoubleClick={(e) => {
+              e.preventDefault()
+              navigator.clipboard.writeText('hola@trob.com.mx')
+            }}
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            hola@trob.com.mx
+          </a>{' '}
+          {'·'} Operación inteligente... Resultados reales
         </span>
       </div>
     </div>
