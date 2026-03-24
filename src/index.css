@@ -15,7 +15,7 @@ html, body {
 }
 
 body {
-  background-color: #0B1220;
+  background-color: #16161E;
   color: #F9FAFB;
   font-family: 'Montserrat', sans-serif;
 }
@@ -27,7 +27,7 @@ body {
 
 /* Glassmorphism base */
 .glass {
-  background: rgba(17, 24, 39, 0.8);
+  background: rgba(22, 22, 30, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(31, 41, 55, 0.5);
@@ -45,7 +45,7 @@ body {
 
 /* Gradient backgrounds */
 .bg-gradient-fx {
-  background: linear-gradient(135deg, #0B1220 0%, #0D1B2A 50%, #0B1220 100%);
+  background: linear-gradient(135deg, #16161E 0%, #1A1A26 50%, #16161E 100%);
 }
 
 /* Scrollbar invisible but functional — scroll works, bar hidden */
