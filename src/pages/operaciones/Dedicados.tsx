@@ -34,8 +34,8 @@ export default function Dedicados(): ReactElement {
     const load = async () => {
       try {
         const { data, error } = await supabase
-          .from('dedicados_segmentos')
-          .select('*');
+          .from('formatos_venta')
+          .select('*').eq('tipo_servicio', 'DEDICADO');
         if (error) throw error;
         const d = data || [];
         setRows(d);
@@ -54,10 +54,10 @@ export default function Dedicados(): ReactElement {
     load();
   }, []);
 
-  const segmentos = [...new Set(rows.map(r => String(r.segmento || r.tipo_servicio || '')).filter(Boolean))];
+  const segmentos = [...new Set(rows.map(r => String(r.destino || r.tipo_servicio || '')).filter(Boolean))];
 
   const filtered = filtro === 'todos' ? rows : rows.filter(r => {
-    const seg = String(r.segmento || r.tipo_servicio || '');
+    const seg = String(r.destino || r.tipo_servicio || '');
     return seg === filtro;
   });
 
@@ -79,9 +79,9 @@ export default function Dedicados(): ReactElement {
       {/* KPI row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
         {[
-          { label: 'Total Segmentos', value: rows.length, color: '#1E3A5F' },
+          { label: 'Rutas Dedicadas', value: rows.length, color: '#1E3A5F' },
           { label: 'Filtrados', value: filtered.length, color: '#2D6A4F' },
-          { label: 'Segmentos Únicos', value: segmentos.length, color: '#92400E' },
+          { label: 'Clientes Únicos', value: segmentos.length, color: '#92400E' },
         ].map((kpi) => (
           <div key={kpi.label} style={{
             background: tokens.colors.bgCard, borderRadius: tokens.radius.lg,
@@ -104,7 +104,7 @@ export default function Dedicados(): ReactElement {
             padding: '8px 12px', fontFamily: tokens.fonts.body, fontSize: '13px', minWidth: '220px',
           }}
         >
-          <option value="todos">Todos los segmentos</option>
+          <option value="todos">Todos los destinos</option>
           {segmentos.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
         <span style={{ marginLeft: 'auto', color: tokens.colors.textMuted, fontSize: '13px', fontFamily: tokens.fonts.body }}>
@@ -120,7 +120,7 @@ export default function Dedicados(): ReactElement {
           </div>
         ) : filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>
-            <p style={{ fontSize: '16px', fontWeight: 500, margin: 0 }}>Sin segmentos dedicados</p>
+            <p style={{ fontSize: '16px', fontWeight: 500, margin: 0 }}>Sin rutas dedicadas</p>
             <p style={{ fontSize: '13px', marginTop: tokens.spacing.sm }}>Los datos se cargarán cuando estén disponibles</p>
           </div>
         ) : (
