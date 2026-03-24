@@ -210,250 +210,257 @@ export default function NuevoLead(): ReactElement {
 
   const selectBase: React.CSSProperties = { ...inputBase, appearance: 'auto' as const }
 
-  return (
-    <ModuleLayout titulo="Agregar Lead">
-      {/* MAIN CONTENT — fits viewport, no scroll */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1.1fr 0.9fr 1fr',
-        gap: '12px',
-        padding: '10px 16px',
-        flex: 1,
-        alignContent: 'start',
-        overflow: 'hidden',
-      }}>
+  // ── Premium V29 Styles ──
+  const ps = {
+    section: {
+      background: tokens.colors.bgCard,
+      borderRadius: tokens.radius.lg,
+      border: '1px solid ' + tokens.colors.border,
+      padding: '16px',
+      boxShadow: tokens.effects.cardShadow,
+    } as React.CSSProperties,
+    sectionTitle: {
+      display: 'flex', alignItems: 'center', gap: '8px',
+      fontSize: '13px', fontWeight: 700, color: tokens.colors.textPrimary,
+      fontFamily: tokens.fonts.heading, marginBottom: '14px',
+      paddingBottom: '10px', borderBottom: '1px solid ' + tokens.colors.border,
+    } as React.CSSProperties,
+    label: {
+      display: 'block', fontSize: '11px', fontWeight: 600,
+      color: tokens.colors.textSecondary, marginBottom: '4px',
+      textTransform: 'uppercase' as const, letterSpacing: '0.5px',
+    } as React.CSSProperties,
+    input: {
+      width: '100%', padding: '9px 12px', fontSize: '13px',
+      background: tokens.colors.bgMain,
+      border: '1px solid ' + tokens.colors.border,
+      borderRadius: tokens.radius.md, color: tokens.colors.textPrimary,
+      fontFamily: tokens.fonts.body, outline: 'none',
+      boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.2)',
+      transition: 'border-color 0.15s, box-shadow 0.15s',
+    } as React.CSSProperties,
+    select: {
+      width: '100%', padding: '9px 12px', fontSize: '13px',
+      background: tokens.colors.bgMain,
+      border: '1px solid ' + tokens.colors.border,
+      borderRadius: tokens.radius.md, color: tokens.colors.textPrimary,
+      fontFamily: tokens.fonts.body, outline: 'none',
+      boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.2)',
+      appearance: 'none' as const,
+    } as React.CSSProperties,
+    fieldGroup: { marginBottom: '12px' } as React.CSSProperties,
+    row: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' } as React.CSSProperties,
+  }
 
-        {/* ─── COL 1: EMPRESA ─── */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={sectionBox(tokens.colors.green)}>
-            <div style={sectionHead(tokens.colors.textSecondary)}>
-              <Building2 size={12} /> Empresa
+  return (
+    <ModuleLayout titulo="Agregar Lead" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas' }}>
+      {/* MAIN CONTENT — premium V29 sectioned layout */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px', padding: '8px 16px', height: 'calc(100vh - 160px)', overflow: 'hidden' }}>
+
+        {/* ── COL 1: Empresa + Contacto ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', overflow: 'auto', scrollbarWidth: 'none' }}>
+          {/* Empresa Section */}
+          <div style={ps.section}>
+            <div style={ps.sectionTitle}><Building2 size={14} style={{ color: tokens.colors.primary }} /> Empresa</div>
+            <div style={ps.fieldGroup}>
+              <label style={ps.label}>Nombre de empresa *</label>
+              <input style={ps.input} value={empresa} onChange={e => setEmpresa(e.target.value)} placeholder="Ej: Grupo Bimbo" onFocus={e => { e.target.style.borderColor = tokens.colors.primary; e.target.style.boxShadow = tokens.effects.glowPrimary }} onBlur={e => { e.target.style.borderColor = tokens.colors.border; e.target.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)' }} />
             </div>
-            <div style={fw}>
-              <input
-                style={{ ...inputBase, fontSize: '14px', fontWeight: 700, fontFamily: tokens.fonts.heading, textTransform: 'uppercase' }}
-                placeholder="EMPRESA S.A. DE C.V."
-                value={empresa}
-                onChange={e => { setEmpresa(e.target.value); checkDuplicate(e.target.value) }}
-              />
-            </div>
-            <div style={{ ...row2, ...fw }}>
-              <div>
-                <div style={labelBase}><Globe size={10} /> Web</div>
-                <input style={inputBase} placeholder="www.empresa.com" value={web} onChange={e => setWeb(e.target.value)} />
-              </div>
-              <div>
-                <div style={labelBase}><User size={10} /> Contacto</div>
-                <input style={inputBase} placeholder="Juan Pérez" value={contacto} onChange={e => setContacto(e.target.value)} />
-              </div>
-            </div>
-            <div style={{ ...row2, ...fw }}>
-              <div>
-                <div style={labelBase}><Phone size={10} /> Teléfono</div>
-                <input style={inputBase} placeholder="55 1234 5678" value={telefono} onChange={e => setTelefono(e.target.value)} />
-              </div>
-              <div>
-                <div style={labelBase}><Mail size={10} /> Email</div>
-                <input style={inputBase} placeholder="mail@empresa.com" value={email} onChange={e => setEmail(e.target.value)} />
-              </div>
-            </div>
-            <div style={fw}>
-              <div style={labelBase}><Building2 size={10} /> Tipo de Empresa</div>
-              <select style={selectBase} value={tipoEmpresa} onChange={e => setTipoEmpresa(e.target.value)}>
-                {TIPO_EMPRESA_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-            </div>
-            <div style={{ ...row2, ...fw }}>
-              <div>
-                <div style={labelBase}>Ciudad</div>
-                <input style={inputBase} placeholder="Monterrey" value={ciudad} onChange={e => setCiudad(e.target.value)} />
-              </div>
-              <div>
-                <div style={labelBase}>Estado</div>
-                <input style={inputBase} placeholder="Nuevo León" value={estadoMx} onChange={e => setEstadoMx(e.target.value)} />
-              </div>
-            </div>
-            <div style={row3}>
-              <div>
-                <div style={labelBase}><Target size={10} /> Prioridad</div>
-                <div style={{ display: 'flex', gap: '3px' }}>
-                  {PRIORIDAD_OPTS.map(p => (
-                    <button key={p.value} style={prioBtn(p.value, p.color)} onClick={() => setPrioridad(p.value)}>
-                      {p.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <div style={labelBase}><Zap size={10} /> Tamaño</div>
-                <select style={selectBase} value={tamano} onChange={e => setTamano(e.target.value)}>
-                  {TAMANO_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            <div style={ps.row}>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Tipo de empresa</label>
+                <select style={ps.select} value={tipoEmpresa} onChange={e => setTipoEmpresa(e.target.value)}>
+                  <option value="">Seleccionar</option>
+                  <option value="manufacturer">Manufacturer</option>
+                  <option value="broker">Broker</option>
+                  <option value="forwarder">Forwarder</option>
+                  <option value="trading">Trading Co.</option>
+                  <option value="otro">Otro</option>
                 </select>
               </div>
-              <div>
-                <div style={labelBase}>Cierre</div>
-                <input style={inputBase} type="date" value={fechaCierre} onChange={e => setFechaCierre(e.target.value)} />
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Sitio web</label>
+                <input style={ps.input} value={web} onChange={e => setWeb(e.target.value)} placeholder="https://" />
+              </div>
+            </div>
+            <div style={ps.row}>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Ciudad</label>
+                <input style={ps.input} value={ciudad} onChange={e => setCiudad(e.target.value)} placeholder="Ciudad" />
+              </div>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Estado</label>
+                <input style={ps.input} value={estadoMx} onChange={e => setEstadoMx(e.target.value)} placeholder="Estado" />
               </div>
             </div>
           </div>
 
-          {dupWarning && (
-            <div style={{ padding: '6px 10px', borderRadius: tokens.radius.sm, background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <AlertCircle size={12} style={{ color: tokens.colors.yellow }} />
-              <span style={{ fontSize: '11px', color: tokens.colors.yellow }}>Posible empresa duplicada.</span>
+          {/* Contacto Section */}
+          <div style={ps.section}>
+            <div style={ps.sectionTitle}><User size={14} style={{ color: tokens.colors.primary }} /> Contacto</div>
+            <div style={ps.fieldGroup}>
+              <label style={ps.label}>Nombre del contacto *</label>
+              <input style={ps.input} value={contacto} onChange={e => setContacto(e.target.value)} placeholder="Nombre completo" onFocus={e => { e.target.style.borderColor = tokens.colors.primary; e.target.style.boxShadow = tokens.effects.glowPrimary }} onBlur={e => { e.target.style.borderColor = tokens.colors.border; e.target.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)' }} />
+            </div>
+            <div style={ps.row}>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Telefono</label>
+                <input style={ps.input} value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="+52 81 1234 5678" />
+              </div>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Email</label>
+                <input style={ps.input} value={email} onChange={e => setEmail(e.target.value)} placeholder="correo@empresa.com" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── COL 2: Servicio + Ruta ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', overflow: 'auto', scrollbarWidth: 'none' }}>
+          <div style={ps.section}>
+            <div style={ps.sectionTitle}><Target size={14} style={{ color: tokens.colors.primary }} /> Servicio</div>
+            <div style={ps.row}>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Tipo servicio</label>
+                <select style={ps.select} value={tipoServicio} onChange={e => setTipoServicio(e.target.value)}>
+                  <option value="">Seleccionar</option>
+                  <option value="IMPO">IMPO</option>
+                  <option value="EXPO">EXPO</option>
+                  <option value="NAC">NAC</option>
+                  <option value="DEDICADO">DEDICADO</option>
+                </select>
+              </div>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Tipo viaje</label>
+                <select style={ps.select} value={tipoViaje} onChange={e => setTipoViaje(e.target.value)}>
+                  <option value="">Seleccionar</option>
+                  <option value="FTL">FTL</option>
+                  <option value="LTL">LTL</option>
+                  <option value="DRAYAGE">Drayage</option>
+                  <option value="INTERMODAL">Intermodal</option>
+                </select>
+              </div>
+            </div>
+            <div style={ps.fieldGroup}>
+              <label style={ps.label}>Tipo carga</label>
+              <input style={ps.input} value={tipoViaje} onChange={e => setTipoViaje(e.target.value)} placeholder="Ej: Seca, Refrigerada, Peligrosa" />
+            </div>
+            <div style={ps.fieldGroup}>
+              <label style={ps.label}>Ruta principal</label>
+              <input style={ps.input} value={ruta} onChange={e => setRuta(e.target.value)} placeholder="Ej: Laredo TX → Monterrey NL" />
+            </div>
+            <div style={ps.row}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                <input type="checkbox" checked={transbordo} onChange={e => setTransbordo(e.target.checked)} style={{ accentColor: tokens.colors.primary }} />
+                <label style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>Transbordo</label>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                <input type="checkbox" checked={dtd} onChange={e => setDtd(e.target.checked)} style={{ accentColor: tokens.colors.primary }} />
+                <label style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>Door-to-Door</label>
+              </div>
+            </div>
+          </div>
+
+          <div style={ps.section}>
+            <div style={ps.sectionTitle}><MapPin size={14} style={{ color: tokens.colors.primary }} /> Volumen</div>
+            <div style={ps.row}>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Viajes / mes</label>
+                <input style={ps.input} type="number" value={viajesMes} onChange={e => setViajesMes(e.target.value)} placeholder="0" />
+              </div>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Tarifa estimada</label>
+                <input style={ps.input} type="number" value={tarifa} onChange={e => setTarifa(e.target.value)} placeholder="$0 USD" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── COL 3: Valores + Proximos Pasos + Guardar ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', overflow: 'auto', scrollbarWidth: 'none' }}>
+          <div style={ps.section}>
+            <div style={ps.sectionTitle}><Zap size={14} style={{ color: tokens.colors.primary }} /> Oportunidad</div>
+            <div style={ps.row}>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Prioridad</label>
+                <select style={ps.select} value={prioridad} onChange={e => setPrioridad(e.target.value)}>
+                  <option value="media">Media</option>
+                  <option value="alta">Alta</option>
+                  <option value="baja">Baja</option>
+                  <option value="critica">Critica</option>
+                </select>
+              </div>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Tamano cuenta</label>
+                <select style={ps.select} value={tamano} onChange={e => setTamano(e.target.value)}>
+                  <option value="">Seleccionar</option>
+                  <option value="enterprise">Enterprise</option>
+                  <option value="mid_market">Mid-Market</option>
+                  <option value="smb">SMB</option>
+                </select>
+              </div>
+            </div>
+            <div style={ps.row}>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Proyectado USD</label>
+                <input style={ps.input} type="number" value={proyectadoUsd} onChange={e => setProyectadoUsd(e.target.value)} placeholder="$0" />
+              </div>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Fecha cierre est.</label>
+                <input style={{ ...ps.input, colorScheme: 'dark' }} type="date" value={fechaCierre} onChange={e => setFechaCierre(e.target.value)} />
+              </div>
+            </div>
+          </div>
+
+          <div style={ps.section}>
+            <div style={ps.sectionTitle}><FileText size={14} style={{ color: tokens.colors.primary }} /> Notas</div>
+            <div style={ps.fieldGroup}>
+              <label style={ps.label}>Proximos pasos</label>
+              <textarea style={{ ...ps.input, minHeight: '60px', resize: 'none' }} value={proximosPasos} onChange={e => setProximosPasos(e.target.value)} placeholder="Siguiente accion con el prospecto..." />
+            </div>
+            <div style={ps.row}>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Hito N4</label>
+                <input style={ps.input} value={hitoN4} onChange={e => setHitoN4(e.target.value)} placeholder="Hito nivel 4" />
+              </div>
+              <div style={ps.fieldGroup}>
+                <label style={ps.label}>Hito N5</label>
+                <input style={ps.input} value={hitoN5} onChange={e => setHitoN5(e.target.value)} placeholder="Hito nivel 5" />
+              </div>
+            </div>
+          </div>
+
+          {/* Status Messages */}
+          {error && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: tokens.colors.redBg, border: '1px solid ' + tokens.colors.red + '33', borderRadius: tokens.radius.md }}>
+              <AlertCircle size={14} style={{ color: tokens.colors.red }} />
+              <span style={{ fontSize: '12px', color: tokens.colors.red }}>{error}</span>
             </div>
           )}
-        </div>
+          {success && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: tokens.colors.greenBg, border: '1px solid ' + tokens.colors.green + '33', borderRadius: tokens.radius.md }}>
+              <CheckCircle size={14} style={{ color: tokens.colors.green }} />
+              <span style={{ fontSize: '12px', color: tokens.colors.green }}>Lead guardado correctamente</span>
+            </div>
+          )}
 
-        {/* ─── COL 2: SERVICIO + VIAJE + PRÓXIMOS PASOS ─── */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={sectionBox()}>
-            <div style={sectionHead(tokens.colors.textSecondary)}>
-              <Truck size={12} /> Tipo de Servicio
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
-              {TIPO_SERVICIO.map(s => (
-                <button key={s} style={chip(tipoServicio.includes(s))} onClick={() => toggleChip(tipoServicio, s, setTipoServicio)}>
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div style={sectionBox()}>
-            <div style={sectionHead(tokens.colors.textSecondary)}>
-              <MapPin size={12} /> Tipo de Viaje
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '8px' }}>
-              {TIPO_VIAJE.map(v => (
-                <button key={v} style={chip(tipoViaje.includes(v))} onClick={() => toggleChip(tipoViaje, v, setTipoViaje)}>
-                  {v}
-                </button>
-              ))}
-            </div>
-            <div style={{ display: 'flex', gap: '16px' }}>
-              <label style={checkRow}>
-                <input type="checkbox" checked={transbordo} onChange={e => setTransbordo(e.target.checked)} /> Transbordo
-              </label>
-              <label style={checkRow}>
-                <input type="checkbox" checked={dtd} onChange={e => setDtd(e.target.checked)} /> DTD
-              </label>
-            </div>
-          </div>
-
-          <div style={{ ...sectionBox(), flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <div style={sectionHead(tokens.colors.textSecondary)}>
-              <FileText size={12} /> Próximos Pasos
-            </div>
-            <textarea
-              style={{ ...inputBase, flex: 1, minHeight: '80px', resize: 'vertical' as const }}
-              placeholder="Describe los próximos pasos..."
-              value={proximosPasos}
-              onChange={e => setProximosPasos(e.target.value)}
-            />
-          </div>
-        </div>
-
-        {/* ─── COL 3: FINANZAS + HITOS ─── */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={sectionBox(tokens.colors.orange)}>
-            <div style={sectionHead(tokens.colors.textSecondary)}>
-              <DollarSign size={12} /> Finanzas
-            </div>
-            <div style={fw}>
-              <div style={labelBase}><MapPin size={10} /> Ruta</div>
-              <input style={inputBase} placeholder="CDMX - MTY - GDL" value={ruta} onChange={e => setRuta(e.target.value)} />
-            </div>
-            <div style={{ ...row2, ...fw }}>
-              <div>
-                <div style={labelBase}>Viajes/Mes</div>
-                <input style={inputBase} type="number" placeholder="0" value={viajesMes} onChange={e => setViajesMes(e.target.value)} />
-              </div>
-              <div>
-                <div style={labelBase}>Tarifa USD</div>
-                <input style={inputBase} type="number" placeholder="0" value={tarifa} onChange={e => setTarifa(e.target.value)} />
-              </div>
-            </div>
-            <div style={{ padding: '6px 10px', borderRadius: tokens.radius.sm, background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '10px', fontWeight: 600, color: tokens.colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Proyectado USD</span>
-              <span style={{ fontSize: '16px', fontWeight: 700, color: tokens.colors.green, fontFamily: tokens.fonts.heading }}>
-                ${proyectadoUsd ? Number(proyectadoUsd).toLocaleString() : '0'}
-              </span>
-            </div>
-            <div style={{ marginTop: '6px' }}>
-              <div style={labelBase}><TrendingUp size={10} /> Rango estimado</div>
-              <input style={inputBase} placeholder="$50k-$100k" value={proyectadoUsd} onChange={e => setProyectadoUsd(e.target.value)} />
-            </div>
-          </div>
-
-          <div style={sectionBox()}>
-            <div style={sectionHead(tokens.colors.textSecondary)}>
-              <CheckCircle size={12} /> Hitos del Cliente
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={checkRow}><input type="checkbox" checked={hitoN4} onChange={e => setHitoN4(e.target.checked)} /> N4 · Alta de Cliente</label>
-              <label style={checkRow}><input type="checkbox" checked={hitoN5} onChange={e => setHitoN5(e.target.checked)} /> N5 · Generación SOP</label>
-              <label style={checkRow}><input type="checkbox" checked={hitoN6} onChange={e => setHitoN6(e.target.checked)} /> N6 · Junta de Arranque</label>
-              <label style={checkRow}><input type="checkbox" checked={hitoN7} onChange={e => setHitoN7(e.target.checked)} /> N7 · Facturado</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ALERTS */}
-      {error && (
-        <div style={{ margin: '0 16px 6px', padding: '6px 10px', borderRadius: tokens.radius.sm, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <AlertCircle size={12} style={{ color: tokens.colors.red }} />
-          <span style={{ fontSize: '11px', color: tokens.colors.red }}>{error}</span>
-        </div>
-      )}
-      {success && (
-        <div style={{ margin: '0 16px 6px', padding: '6px 10px', borderRadius: tokens.radius.sm, background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <CheckCircle size={12} style={{ color: tokens.colors.green }} />
-          <span style={{ fontSize: '11px', color: tokens.colors.green }}>Lead guardado correctamente.</span>
-        </div>
-      )}
-
-      {/* FOOTER */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '8px 16px',
-        borderTop: '1px solid ' + tokens.colors.border,
-        background: tokens.colors.bgCard,
-        flexShrink: 0,
-      }}>
-        <span style={{ fontSize: '11px', color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-          Vendedor: <strong style={{ color: tokens.colors.textPrimary }}>{user?.nombre || user?.email || '\u2014'}</strong> · {new Date().toLocaleDateString('es-MX')}
-        </span>
-        <button
-          style={{
-            padding: '8px 24px',
-            borderRadius: tokens.radius.md,
-            cursor: 'pointer',
-            background: tokens.colors.primary,
-            color: '#fff',
-            border: 'none',
-            fontSize: '12px',
-            fontWeight: 700,
-            fontFamily: tokens.fonts.heading,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
+          {/* Save Button */}
+          <button onClick={handleSave} disabled={saving || success} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+            width: '100%', padding: '12px', fontSize: '13px', fontWeight: 700,
+            fontFamily: tokens.fonts.heading, textTransform: 'uppercase' as const,
+            letterSpacing: '1px', color: '#fff',
+            background: saving || success ? tokens.colors.bgHover : tokens.colors.primary,
+            border: 'none', borderRadius: tokens.radius.md, cursor: saving || success ? 'default' : 'pointer',
             boxShadow: tokens.effects.glowPrimary,
-            letterSpacing: '0.04em',
-            textTransform: 'uppercase' as const,
             opacity: saving || success ? 0.6 : 1,
             transition: 'all 0.15s',
-          }}
-          onClick={handleSave}
-          disabled={saving || success}
-        >
-          <Save size={14} />
-          {saving ? 'GUARDANDO...' : 'GUARDAR LEAD'}
-        </button>
+          }}>
+            <Save size={14} />
+            {saving ? 'GUARDANDO...' : 'GUARDAR LEAD'}
+          </button>
+        </div>
       </div>
-    </ModuleLayout>
+      </ModuleLayout>
   )
 }
