@@ -908,6 +908,7 @@ export default function MisLeads() {
                 </th>
                 <th style={s.th}>CONTACTO</th>
                 <th style={s.th}>SERVICIO</th>
+                <th style={s.th}>EMAIL</th>
                 <th style={s.th}>VIAJE</th>
                 <th style={s.th} onClick={() => handleSort('proyectado_usd')}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -922,6 +923,7 @@ export default function MisLeads() {
                     <ArrowUpDown size={12} style={{ color: sortField === 'fecha_creacion' ? tokens.colors.primary : tokens.colors.textMuted }} />
                   </span>
                 </th>
+                <th style={s.th}>ACTUALIZADO</th>
                 <th style={{ ...s.th, width: '80px', textAlign: 'center' as const }}>ACCIONES</th>
               </tr>
             </thead>
@@ -960,6 +962,7 @@ export default function MisLeads() {
                       )}
                     </td>
                     <td style={s.tdMuted}>{lead.tipo_carga || '—'}</td>
+                    <td style={s.tdMuted}>{lead.email || '—'}</td>
                     <td style={s.tdMuted}>{lead.tipo_viaje || '—'}</td>
                     <td style={{ ...s.td, fontWeight: 600, color: tokens.colors.green }}>
                       {formatCurrency(lead.proyectado_usd || lead.valor_estimado || 0)}
@@ -970,6 +973,8 @@ export default function MisLeads() {
                       </div>
                     </td>
                     <td style={s.tdMuted}>{formatDate(lead.fecha_creacion)}</td>
+              <td style={s.td}>{lead.updated_at ? formatDate(lead.updated_at) : '—'}</td>
+              <td style={s.td}>{lead.updated_at ? formatDate(lead.updated_at) : '—'}</td>
                     <td style={{ ...s.td, textAlign: 'center' as const, width: '80px', position: 'relative' as const }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
                         {showDeleted ? (
