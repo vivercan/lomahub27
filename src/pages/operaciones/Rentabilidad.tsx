@@ -8,10 +8,8 @@ import { Select } from '../../components/ui/Select'
 import { DataTable } from '../../components/ui/DataTable'
 import type { Column } from '../../components/ui/DataTable'
 import { Badge } from '../../components/ui/Badge'
-import { Semaforo } from '../../components/ui/Semaforo'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
-import type { SemaforoEstado } from '../../lib/tokens'
 
 interface TractoDetalle {
   tracto_id: string
@@ -40,11 +38,11 @@ interface RentabilidadResponse {
   mensaje?: string
 }
 
-function getSemaforoFromMargen(pct: number): SemaforoEstado {
-  if (pct >= 25) return 'verde'
-  if (pct >= 15) return 'amarillo'
-  if (pct >= 5) return 'naranja'
-  return 'rojo'
+function getMargenColor(pct: number): string {
+  if (pct >= 25) return '#2D6A4F'
+  if (pct >= 15) return '#92400E'
+  if (pct >= 5) return '#78350F'
+  return '#991B1B'
 }
 
 function formatCurrency(n: number): string {
@@ -147,7 +145,7 @@ export default function Rentabilidad() {
       key: 'semaforo',
       label: '',
       width: '40px',
-      render: (row) => <Semaforo estado={getSemaforoFromMargen(row.margenPct)} size="sm" />,
+      render: (row) => <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', backgroundColor: getMargenColor(row.margenPct) }} />,
     },
     {
       key: 'numero_economico',
@@ -176,7 +174,7 @@ export default function Rentabilidad() {
       label: 'Ingreso',
       align: 'right',
       render: (row) => (
-        <span style={{ color: tokens.colors.green }}>{formatCurrency(row.ingresoEstimado)}</span>
+        <span style={{ color: '#2D6A4F' }}>{formatCurrency(row.ingresoEstimado)}</span>
       ),
     },
     {
@@ -184,7 +182,7 @@ export default function Rentabilidad() {
       label: 'Costo',
       align: 'right',
       render: (row) => (
-        <span style={{ color: tokens.colors.red }}>{formatCurrency(row.costoEstimado)}</span>
+        <span style={{ color: '#991B1B' }}>{formatCurrency(row.costoEstimado)}</span>
       ),
     },
     {
@@ -192,7 +190,7 @@ export default function Rentabilidad() {
       label: 'Margen',
       align: 'right',
       render: (row) => (
-        <span style={{ color: row.margen >= 0 ? tokens.colors.green : tokens.colors.red, fontWeight: 600 }}>
+        <span style={{ color: row.margen >= 0 ? '#2D6A4F' : '#991B1B', fontWeight: 600 }}>
           {formatCurrency(row.margen)}
         </span>
       ),
@@ -220,7 +218,7 @@ export default function Rentabilidad() {
                 className="h-full rounded-full transition-all"
                 style={{
                   width: `${Math.min(pct, 100)}%`,
-                  background: pct >= 70 ? tokens.colors.green : pct >= 40 ? tokens.colors.yellow : tokens.colors.red,
+                  background: pct >= 70 ? '#2D6A4F' : pct >= 40 ? '#92400E' : '#991B1B',
                 }}
               />
             </div>
@@ -315,7 +313,7 @@ export default function Rentabilidad() {
       {/* Error */}
       {error && (
         <Card glow="red" className="mb-6">
-          <p className="text-sm" style={{ color: tokens.colors.red, fontFamily: tokens.fonts.body }}>
+          <p className="text-sm" style={{ color: '#991B1B', fontFamily: tokens.fonts.body }}>
             {error}
           </p>
         </Card>
