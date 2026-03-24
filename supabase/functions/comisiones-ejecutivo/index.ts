@@ -1,5 +1,5 @@
-// Comisiones por Ejecutivo â CÃ¡lculo automÃ¡tico de comisiones sobre viajes facturados
-// Cruza viajes cerrados con ejecutivo asignado (via leads/clientes) y aplica % de comisiÃ³n
+// Comisiones por Ejecutivo — Cálculo automático de comisiones sobre viajes facturados
+// Cruza viajes cerrados con ejecutivo asignado (via leads/clientes) y aplica % de comisión
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
 
     const clienteMap = new Map((clientes || []).map(c => [c.id, c]))
 
-    // Determine "new" clients â created in same month
+    // Determine "new" clients — created in same month
     const newClientIds = new Set(
       (clientes || [])
         .filter(c => {
