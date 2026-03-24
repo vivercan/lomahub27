@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Search, ChevronDown, Trash2, Filter, Download, Plus, MoreHorizontal,
-  Loader, Eye, Edit3, Zap, Upload, ArrowUpDown, X, RotateCcw, FileText
+  Loader, ExternalLink, Edit3, Zap, Upload, ArrowUpDown, X, RotateCcw, FileText
 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
@@ -111,7 +111,7 @@ export default function MisLeads() {
 
   const formatCurrency = (v: number): string => {
     if (!v) return '$0'
-    return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v)
+    return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }).format(v)
   }
 
   const formatDate = (d: string): string => {
@@ -515,9 +515,9 @@ export default function MisLeads() {
       fontSize: '11px',
       fontWeight: 600,
       fontFamily: tokens.fonts.body,
-      color: color,
-      background: `${color}1a`,
-      border: `1px solid ${color}33`,
+      color: '#fff',
+      background: color,
+      border: 'none',
       whiteSpace: 'nowrap' as const,
     }),
     dot: (color: string) => ({
@@ -991,7 +991,7 @@ export default function MisLeads() {
                               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
                               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
                             >
-                              <Eye size={14} />
+                              <ExternalLink size={14} />
                             </button>
                             <button
                               style={{ ...s.actionBtn, color: tokens.colors.primary }}
@@ -1021,7 +1021,7 @@ export default function MisLeads() {
                             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
                             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
                           >
-                            <Eye size={13} /> Ver Ficha
+                            <ExternalLink size={13} /> Ver Ficha
                           </button>
                           <button
                             style={s.actionsMenuItem}
