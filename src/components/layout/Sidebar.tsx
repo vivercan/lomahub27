@@ -49,7 +49,7 @@ const navItems: NavItem[] = [
   { label: 'Prog. IMPEX', path: '/operaciones/programacion-impex', icon: <ArrowLeftRight size={18} />, roles: ['superadmin', 'admin', 'operaciones', 'gerente_ops', 'direccion'] },
   { label: 'Cruce Fronterizo', path: '/operaciones/cruce-fronterizo', icon: <ArrowLeftRight size={18} />, roles: ['superadmin', 'admin', 'operaciones', 'gerente_ops'] },
   { label: 'Control Temperatura', path: '/operaciones/control-temperatura', icon: <Thermometer size={18} />, roles: ['superadmin', 'admin', 'operaciones', 'gerente_ops'] },
-  { label: 'PlaneaciÃ³n Flota', path: '/operaciones/planeacion-flota', icon: <Layers size={18} />, roles: ['superadmin', 'admin', 'operaciones', 'gerente_ops'] },
+  { label: 'Planeación Flota', path: '/operaciones/planeacion-flota', icon: <Layers size={18} />, roles: ['superadmin', 'admin', 'operaciones', 'gerente_ops'] },
   { label: 'Cajas', path: '/operaciones/cajas', icon: <Package size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'operaciones'] },
   { label: 'Tractos', path: '/operaciones/tractos', icon: <Truck size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops'] },
   { label: 'Disponibilidad', path: '/operaciones/disponibilidad', icon: <Clock size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_ops', 'direccion'] },
@@ -59,29 +59,29 @@ const navItems: NavItem[] = [
   // âââ Servicio âââ
   { label: 'Dashboard CS', path: '/servicio/dashboard', icon: <Headphones size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
   { label: 'WhatsApp', path: '/servicio/whatsapp', icon: <MessageSquare size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
-  { label: 'MÃ©tricas Servicio', path: '/servicio/metricas', icon: <Activity size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion'] },
+  { label: 'Métricas Servicio', path: '/servicio/metricas', icon: <Activity size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion'] },
   { label: 'Tickets / Quejas', path: '/servicio/tickets', icon: <AlertTriangle size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion'] },
-  { label: 'ComunicaciÃ³n Proactiva', path: '/servicio/comunicacion-proactiva', icon: <Bell size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
+  { label: 'Comunicación Proactiva', path: '/servicio/comunicacion-proactiva', icon: <Bell size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
   { label: 'Escalamiento WA', path: '/servicio/escalamiento-whatsapp', icon: <Zap size={18} />, roles: ['superadmin', 'admin', 'cs'] },
 
   // âââ Comunicaciones âââ
-  { label: 'Correos AutomÃ¡ticos', path: '/comunicaciones/correos', icon: <Mail size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
+  { label: 'Correos Automáticos', path: '/comunicaciones/correos', icon: <Mail size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
   { label: 'Notificaciones', path: '/comunicaciones/notificaciones', icon: <Bell size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops', 'supervisor_cs', 'direccion'] },
 
   // âââ Inteligencia âââ
-  { label: 'KPI / AnalÃ­tica', path: '/inteligencia', icon: <BarChart3 size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops'] },
+  { label: 'KPI / Analítica', path: '/inteligencia', icon: <BarChart3 size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops'] },
   { label: 'Presupuesto', path: '/inteligencia/presupuesto', icon: <DollarSign size={18} />, roles: ['superadmin', 'admin', 'direccion', 'gerente_comercial', 'gerente_ops'] },
-  { label: 'AnÃ¡lisis 80/20', path: '/inteligencia/pareto', icon: <Target size={18} />, roles: ['superadmin', 'admin', 'direccion', 'gerente_comercial', 'gerente_ops'] },
+  { label: 'Análisis 80/20', path: '/inteligencia/pareto', icon: <Target size={18} />, roles: ['superadmin', 'admin', 'direccion', 'gerente_comercial', 'gerente_ops'] },
 
   // âââ CXC âââ
   { label: 'CXC / Cartera', path: '/cxc/cartera', icon: <DollarSign size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'cxc', 'direccion'] },
 
-  // âââ MÃ³dulos Fase 2 âââ
+  // âââ Módulos Fase 2 âââ
   { label: 'Actividades', path: '/actividades', icon: <Zap size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs'] },
   { label: 'Documentos', path: '/documentos', icon: <FolderOpen size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops', 'cxc'] },
 
   // âââ Admin âââ
-  { label: 'ConfiguraciÃ³n', path: '/admin/configuracion', icon: <Settings size={18} />, roles: ['superadmin', 'admin'] },
+  { label: 'Configuración', path: '/admin/configuracion', icon: <Settings size={18} />, roles: ['superadmin', 'admin'] },
   { label: 'Integraciones', path: '/admin/integraciones', icon: <Plug size={18} />, roles: ['superadmin', 'admin'] },
 ]
 
@@ -163,7 +163,7 @@ export function Sidebar() {
           style={{ color: tokens.colors.red }}
         >
           <LogOut size={16} />
-          {!collapsed && 'Cerrar SesiÃ³n'}
+          {!collapsed && 'Cerrar Sesión'}
         </button>
       </div>
     </aside>
