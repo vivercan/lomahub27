@@ -809,27 +809,39 @@ export default function MisLeads() {
 
         {/* Vendedores dropdown */}
         <div style={{ position: 'relative' }}>
-          <select
-            style={s.selectDropdown}
-            value={filteredEjecutivo}
-            onChange={e => setFilteredEjecutivo(e.target.value)}
+          <button
+            style={{ ...s.selectDropdown, textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+            onClick={() => setShowEjDropdown(!showEjDropdown)}
           >
-            <option value="">Todos los vendedores</option>
-            {ejecutivos.map(ej => (
-              <option key={ej.id} value={ej.id}>{ej.nombre}</option>
-            ))}
-          </select>
-          <ChevronDown
-            size={14}
-            style={{
-              position: 'absolute',
-              right: '10px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: tokens.colors.textMuted,
-              pointerEvents: 'none',
-            }}
-          />
+            <span>{filteredEjecutivo.length === 0 ? 'Todos los vendedores' : filteredEjecutivo.length === 1 ? ejecutivos.find(e => e.id === filteredEjecutivo[0])?.nombre || '1 vendedor' : filteredEjecutivo.length + ' vendedores'}</span>
+            <ChevronDown size={14} style={{ color: tokens.colors.textMuted }} />
+          </button>
+          {showEjDropdown && (
+            <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50, background: tokens.colors.bgCard, border: '1px solid ' + tokens.colors.border, borderRadius: '8px', marginTop: '4px', maxHeight: '240px', overflowY: 'auto', padding: '4px 0' }}>
+              <button
+                style={{ width: '100%', padding: '8px 12px', background: 'transparent', border: 'none', color: tokens.colors.textSecondary, fontSize: '12px', textAlign: 'left', cursor: 'pointer' }}
+                onClick={() => { setFilteredEjecutivo([]); setShowEjDropdown(false) }}
+              >Todos los vendedores</button>
+              {ejecutivos.map(ej => (
+                <label key={ej.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', cursor: 'pointer', color: tokens.colors.textPrimary, fontSize: '13px' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLLabelElement).style.background = tokens.colors.bgHover }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLLabelElement).style.background = 'transparent' }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={filteredEjecutivo.includes(ej.id)}
+                    onChange={() => {
+                      setFilteredEjecutivo(prev =>
+                        prev.includes(ej.id) ? prev.filter(id => id !== ej.id) : [...prev, ej.id]
+                      )
+                    }}
+                    style={{ accentColor: tokens.colors.primary }}
+                  />
+                  {ej.nombre}
+                </label>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Ver eliminados */}
