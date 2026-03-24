@@ -993,6 +993,13 @@ export default function MisLeads() {
                               <Eye size={14} />
                             </button>
                             <button
+                              style={{ ...s.actionBtn, color: tokens.colors.primary }}
+                              title="Adjuntar Cotización PDF"
+                              onClick={() => handleAttachQuotation(lead)}
+                            >
+                              <Upload size={15} />
+                            </button>
+                            <button
                               style={s.actionBtn}
                               title="Más acciones"
                               onClick={e => { e.stopPropagation(); setActionsOpen(actionsOpen === lead.id ? null : lead.id) }}
