@@ -85,60 +85,60 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* âââ Public âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Public Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
-          {/* âââ 02. War Room âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 02. War Room Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/war-room" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'direccion']}>
               <WarRoom />
             </ProtectedRoute>
           } />
 
-          {/* âââ 03. Dashboard Ventas âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 03. Dashboard Ventas Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/ventas/dashboard" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <DashboardVentas />
             </ProtectedRoute>
           } />
 
-          {/* âââ 04. Panel Personal Vendedor âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 04. Panel Personal Vendedor Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/ventas/mis-leads" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <MisLeads />
             </ProtectedRoute>
           } />
 
-          {/* âââ 05. Captura de Lead âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 05. Captura de Lead Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/ventas/leads/nuevo" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <NuevoLead />
             </ProtectedRoute>
           } />
 
-          {/* âââ 06. Ficha del Lead âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 06. Ficha del Lead Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/ventas/leads/:id" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <FichaLead />
             </ProtectedRoute>
           } />
 
-          {/* âââ 26. Programa Semanal âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 26. Programa Semanal Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/ventas/programa-semanal" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'direccion']}>
               <ProgramaSemanal />
             </ProtectedRoute>
           } />
 
-          {/* âââ Prospección Externa âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Prospección Externa Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/ventas/prospeccion" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial']}>
               <ProspeccionExterna />
             </ProtectedRoute>
           } />
 
-          {/* âââ 07. Cotizador âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 07. Cotizador Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/cotizador/nueva" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'pricing']}>
               <NuevaCotizacion />
@@ -151,133 +151,133 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ Firma Digital âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Firma Digital Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/cotizador/firma-digital" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial', 'pricing']}>
               <FirmaDigital />
             </ProtectedRoute>
           } />
 
-          {/* âââ 08b. Clientes Corporativos âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 08b. Clientes Corporativos Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/clientes/corporativos" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas']}>
               <CorporativosClientes />
             </ProtectedRoute>
           } />
 
-          {/* âââ 08. Alta de Cliente âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 08. Alta de Cliente Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/clientes/alta" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs', 'cxc', 'pricing']}>
               <AltaCliente />
             </ProtectedRoute>
           } />
 
-          {/* âââ 30. Radiografía Financiera âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 30. Radiografía Financiera Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/clientes/:id/radiografia" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'cxc', 'direccion']}>
               <RadiografiaFinanciera />
             </ProtectedRoute>
           } />
 
-          {/* âââ 09. Ficha 360° âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 09. Ficha 360° Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/clientes/:id" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs', 'cxc', 'direccion', 'operaciones', 'gerente_ops']}>
               <FichaCliente />
             </ProtectedRoute>
           } />
 
-          {/* âââ 10. Dashboard CS — cs sí, ventas NO âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 10. Dashboard CS — cs sí, ventas NO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/servicio/dashboard" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs']}>
               <DashboardCS />
             </ProtectedRoute>
           } />
 
-          {/* âââ 11. Despachos âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 11. Despachos Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/despachos" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'supervisor_cs']}>
               <Despachos />
             </ProtectedRoute>
           } />
 
-          {/* âââ 12. Torre de Control âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 12. Torre de Control Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/torre-control" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'supervisor_cs', 'operaciones', 'gerente_ops', 'direccion']}>
               <TorreControl />
             </ProtectedRoute>
           } />
 
-          {/* âââ 13. Mapa GPS âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 13. Mapa GPS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/mapa" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'supervisor_cs', 'operaciones', 'gerente_ops', 'direccion']}>
               <MapaGPS />
             </ProtectedRoute>
           } />
 
-          {/* âââ 14. Monitor Dedicados — operaciones accede aquí âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 14. Monitor Dedicados — operaciones accede aquí Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/dedicados" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops']}>
               <Dedicados />
             </ProtectedRoute>
           } />
 
-          {/* âââ 15. Trazabilidad âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 15. Trazabilidad Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/viajes/:id" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'supervisor_cs', 'operaciones', 'gerente_ops']}>
               <TrazabilidadViaje />
             </ProtectedRoute>
           } />
 
-          {/* âââ 16. Control de Cajas âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 16. Control de Cajas Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/cajas" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones']}>
               <ControlCajas />
             </ProtectedRoute>
           } />
 
-          {/* âââ 17. Control de Tractos âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 17. Control de Tractos Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/tractos" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops']}>
               <ControlTractos />
             </ProtectedRoute>
           } />
 
-          {/* âââ Cruce Fronterizo âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Cruce Fronterizo Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/cruce-fronterizo" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops']}>
               <CruceFronterizo />
             </ProtectedRoute>
           } />
 
-          {/* âââ 18. Disponibilidad âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 18. Disponibilidad Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/disponibilidad" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_ops', 'direccion']}>
               <Disponibilidad />
             </ProtectedRoute>
           } />
 
-          {/* âââ Control Temperatura âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Control Temperatura Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/control-temperatura" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops']}>
               <ControlTemperatura />
             </ProtectedRoute>
           } />
 
-          {/* âââ 19. Oferta de Equipo âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 19. Oferta de Equipo Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/oferta-equipo" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas']}>
               <OfertaEquipo />
             </ProtectedRoute>
           } />
 
-          {/* âââ Planeación Flota âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Planeación Flota Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/planeacion-flota" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops']}>
               <PlaneacionFlota />
             </ProtectedRoute>
           } />
 
-          {/* âââ 25. Rentabilidad por Tracto âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 25. Rentabilidad por Tracto Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/rentabilidad" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops', 'direccion']}>
               <Rentabilidad />
@@ -290,14 +290,14 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ 20. WhatsApp — cs sí, ventas NO âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 20. WhatsApp — cs sí, ventas NO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/servicio/whatsapp" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs']}>
               <WhatsAppBandeja />
             </ProtectedRoute>
           } />
 
-          {/* âââ 21. Métricas Servicio — cs sí, ventas NO âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 21. Métricas Servicio — cs sí, ventas NO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/servicio/metricas" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion']}>
               <MetricasServicio />
@@ -310,28 +310,28 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ Comunicación Proactiva âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Comunicación Proactiva Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/servicio/comunicacion-proactiva" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs']}>
               <ComunicacionProactiva />
             </ProtectedRoute>
           } />
 
-          {/* âââ Escalamiento WhatsApp âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Escalamiento WhatsApp Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/servicio/escalamiento-whatsapp" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs']}>
               <EscalamientoWhatsApp />
             </ProtectedRoute>
           } />
 
-          {/* âââ 22. Inteligencia / Rankings âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 22. Inteligencia / Rankings Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/inteligencia" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops']}>
               <Inteligencia />
             </ProtectedRoute>
           } />
 
-          {/* âââ 28. Comisiones por Ejecutivo âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 28. Comisiones por Ejecutivo Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/ventas/comisiones" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'gerente_comercial', 'direccion']}>
               <Comisiones />
@@ -344,21 +344,21 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ 27. Presupuesto Mensual âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 27. Presupuesto Mensual Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/inteligencia/presupuesto" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'direccion', 'gerente_comercial', 'gerente_ops']}>
               <PresupuestoMensual />
             </ProtectedRoute>
           } />
 
-          {/* âââ 29. Análisis 80/20 (Pareto) âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 29. Análisis 80/20 (Pareto) Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/inteligencia/pareto" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'direccion', 'gerente_comercial', 'gerente_ops']}>
               <Analisis8020 />
             </ProtectedRoute>
           } />
 
-          {/* âââ 23. CXC âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 23. CXC Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/cxc/cartera" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'cxc', 'direccion']}>
               <Cartera />
@@ -372,70 +372,70 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ Actividades âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Actividades Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/actividades" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs']}>
               <Actividades />
             </ProtectedRoute>
           } />
 
-          {/* âââ Documentos âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Documentos Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/documentos" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops', 'cxc']}>
               <Documentos />
             </ProtectedRoute>
           } />
 
-          {/* âââ Cerebro Tarifario âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Cerebro Tarifario Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/pricing/cerebro-tarifario" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'pricing', 'gerente_comercial', 'direccion']}>
               <CerebroTarifario />
             </ProtectedRoute>
           } />
 
-          {/* âââ Correos Automáticos âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Correos Automáticos Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/comunicaciones/correos" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <CorreosAutomaticos />
             </ProtectedRoute>
           } />
 
-          {/* âââ Notificaciones âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Notificaciones Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/comunicaciones/notificaciones" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops', 'supervisor_cs', 'direccion']}>
               <Notificaciones />
             </ProtectedRoute>
           } />
 
-          {/* âââ Panel Integraciones âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Panel Integraciones Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/admin/integraciones" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
               <PanelIntegraciones />
             </ProtectedRoute>
           } />
 
-          {/* âââ Programación Dedicados âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Programación Dedicados Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/operaciones/programacion-dedicados" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops', 'direccion']}>
               <ProgramacionDedicados />
             </ProtectedRoute>
           } />
 
-          {/* âââ 24. Configuración — SOLO superadmin y admin âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ 24. Configuración — SOLO superadmin y admin Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/admin/configuracion" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
               <Configuracion />
             </ProtectedRoute>
           } />
 
-          {/* âââ Dashboard 14 modulos âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Dashboard 14 modulos Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <HomeDashboard />
             </ProtectedRoute>
           } />
 
-          {/* âââ Default âââ */}
+          {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Default Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
