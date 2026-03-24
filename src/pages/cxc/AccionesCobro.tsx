@@ -36,7 +36,7 @@ function diasDesde(fecha: string | null): number {
 }
 
 function prioridadCobro(diasVencido: number, saldo: number): { label: string; color: string; bg: string; orden: number } {
-  if (diasVencido > 90 || saldo > 500_000) return { label: 'CRÃTICO', color: tokens.colors.red, bg: tokens.colors.redBg, orden: 1 };
+  if (diasVencido > 90 || saldo > 500_000) return { label: 'CRÁTICO', color: tokens.colors.red, bg: tokens.colors.redBg, orden: 1 };
   if (diasVencido > 60 || saldo > 200_000) return { label: 'ALTO', color: tokens.colors.orange2, bg: 'rgba(249, 115, 22, 0.1)', orden: 2 };
   if (diasVencido > 30 || saldo > 50_000) return { label: 'MEDIO', color: tokens.colors.yellow, bg: tokens.colors.yellowBg, orden: 3 };
   return { label: 'BAJO', color: tokens.colors.green, bg: tokens.colors.greenBg, orden: 4 };
@@ -92,7 +92,7 @@ export default function AccionesCobro() {
 
   const filtrados = useMemo(() => {
     if (vistaActiva === 'criticos') return cuentasConPrioridad.filter((c) => c.prioridad.orden <= 2);
-    if (vistaActiva === 'pendientes') return cuentasConPrioridad.filter((c) => c.estatus_cobro === 'Pendiente' || c.estatus_cobro === 'En gestiÃ³n');
+    if (vistaActiva === 'pendientes') return cuentasConPrioridad.filter((c) => c.estatus_cobro === 'Pendiente' || c.estatus_cobro === 'En gestión');
     return cuentasConPrioridad;
   }, [cuentasConPrioridad, vistaActiva]);
 
@@ -136,7 +136,7 @@ export default function AccionesCobro() {
     },
     {
       key: 'diasVencido',
-      label: 'DÃ­as Vencido',
+      label: 'Días Vencido',
       width: '10%',
       render: (row: (typeof cuentasConPrioridad)[0]) => {
         const color = row.diasVencido > 90 ? tokens.colors.red : row.diasVencido > 60 ? tokens.colors.orange2 : row.diasVencido > 30 ? tokens.colors.yellow : tokens.colors.green;
@@ -150,7 +150,7 @@ export default function AccionesCobro() {
       render: (row: (typeof cuentasConPrioridad)[0]) => {
         const statusColors: Record<string, string> = {
           'Pendiente': tokens.colors.yellow,
-          'En gestiÃ³n': tokens.colors.blue,
+          'En gestión': tokens.colors.blue,
           'Promesa de pago': tokens.colors.green,
           'Escalado': tokens.colors.red,
         };
@@ -171,7 +171,7 @@ export default function AccionesCobro() {
     },
     {
       key: 'diasSinContacto',
-      label: 'Ãltimo Contacto',
+      label: 'Áltimo Contacto',
       width: '12%',
       render: (row: (typeof cuentasConPrioridad)[0]) => {
         const alerta = row.diasSinContacto > 7;
@@ -190,12 +190,12 @@ export default function AccionesCobro() {
 
   const vistas: { key: VistaActiva; label: string }[] = [
     { key: 'pendientes', label: 'Pendientes' },
-    { key: 'criticos', label: 'CrÃ­ticos' },
+    { key: 'criticos', label: 'Críticos' },
     { key: 'todos', label: 'Todos' },
   ];
 
   return (
-    <ModuleLayout titulo="CXC â Acciones de Cobro">
+    <ModuleLayout titulo="CXC — Acciones de Cobro">
       {/* KPI Cards */}
       <div style={{
         display: 'grid',
@@ -204,9 +204,9 @@ export default function AccionesCobro() {
         marginBottom: tokens.spacing.md,
       }}>
         <KPICard titulo="Total Vencido" valor={formatCurrency(totalVencido)} color="red" />
-        <KPICard titulo="Cuentas CrÃ­ticas" valor={String(criticos)} color="red" />
+        <KPICard titulo="Cuentas Críticas" valor={String(criticos)} color="red" />
         <KPICard titulo="Sin Contacto +7d" valor={String(sinContacto7d)} color="yellow" />
-        <KPICard titulo="Prom. DÃ­as Vencido" valor={`${promDiasVencido}d`} color={promDiasVencido > 60 ? 'red' : promDiasVencido > 30 ? 'yellow' : 'green'} />
+        <KPICard titulo="Prom. Días Vencido" valor={`${promDiasVencido}d`} color={promDiasVencido > 60 ? 'red' : promDiasVencido > 30 ? 'yellow' : 'green'} />
       </div>
 
       {/* Resumen de prioridades */}
@@ -223,7 +223,7 @@ export default function AccionesCobro() {
           </h3>
           <div style={{ display: 'flex', gap: tokens.spacing.lg }}>
             {[
-              { label: 'CRÃTICO', color: tokens.colors.red, bg: tokens.colors.redBg, count: cuentasConPrioridad.filter((c) => c.prioridad.orden === 1).length, monto: cuentasConPrioridad.filter((c) => c.prioridad.orden === 1).reduce((s, c) => s + c.saldo_vencido, 0) },
+              { label: 'CRÁTICO', color: tokens.colors.red, bg: tokens.colors.redBg, count: cuentasConPrioridad.filter((c) => c.prioridad.orden === 1).length, monto: cuentasConPrioridad.filter((c) => c.prioridad.orden === 1).reduce((s, c) => s + c.saldo_vencido, 0) },
               { label: 'ALTO', color: tokens.colors.orange2, bg: 'rgba(249, 115, 22, 0.1)', count: cuentasConPrioridad.filter((c) => c.prioridad.orden === 2).length, monto: cuentasConPrioridad.filter((c) => c.prioridad.orden === 2).reduce((s, c) => s + c.saldo_vencido, 0) },
               { label: 'MEDIO', color: tokens.colors.yellow, bg: tokens.colors.yellowBg, count: cuentasConPrioridad.filter((c) => c.prioridad.orden === 3).length, monto: cuentasConPrioridad.filter((c) => c.prioridad.orden === 3).reduce((s, c) => s + c.saldo_vencido, 0) },
               { label: 'BAJO', color: tokens.colors.green, bg: tokens.colors.greenBg, count: cuentasConPrioridad.filter((c) => c.prioridad.orden === 4).length, monto: cuentasConPrioridad.filter((c) => c.prioridad.orden === 4).reduce((s, c) => s + c.saldo_vencido, 0) },
