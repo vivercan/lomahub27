@@ -67,7 +67,7 @@ export default function FunnelVentas() {
             id: l.id,
             empresa: l.empresa || 'Sin nombre',
             estado: l.estado || 'Nuevo',
-            potencial_usd: l.potencial_usd || 0,
+            potencial_usd: (l.proyectado_usd || l.valor_estimado || 0) || 0,
             responsable: l.responsable || 'Sin asignar',
             segmento: l.segmento || 'General',
             created_at: l.fecha_creacion || '',
@@ -88,7 +88,7 @@ export default function FunnelVentas() {
     return activos.map((etapa) => {
       const leadsEtapa = leads.filter((l) => l.estado === etapa);
       const count = leadsEtapa.length;
-      const potencial = leadsEtapa.reduce((s, l) => s + l.potencial_usd, 0);
+      const potencial = leadsEtapa.reduce((s, l) => s + (l.proyectado_usd || l.valor_estimado || 0), 0);
       return { etapa, count, potencial };
     });
   }, [leads]);
@@ -96,12 +96,12 @@ export default function FunnelVentas() {
   const perdidos = useMemo(() => leads.filter((l) => l.estado === 'Cerrado Perdido'), [leads]);
 
   const totalLeads = leads.length;
-  const totalPotencial = useMemo(() => leads.reduce((s, l) => s + l.potencial_usd, 0), [leads]);
+  const totalPotencial = useMemo(() => leads.reduce((s, l) => s + (l.proyectado_usd || l.valor_estimado || 0), 0), [leads]);
   const ganados = useMemo(() => leads.filter((l) => l.estado === 'Cerrado Ganado'), [leads]);
   const tasaConversion = totalLeads > 0 ? ((ganados.length / totalLeads) * 100).toFixed(1) : '0';
   const potencialActivo = useMemo(() =>
     leads.filter((l) => l.estado !== 'Cerrado Perdido' && l.estado !== 'Cerrado Ganado')
-      .reduce((s, l) => s + l.potencial_usd, 0),
+      .reduce((s, l) => s + (l.proyectado_usd || l.valor_estimado || 0), 0),
     [leads]
   );
 
@@ -113,7 +113,7 @@ export default function FunnelVentas() {
       const key = l.responsable;
       const existing = map.get(key) || { total: 0, potencial: 0, ganados: 0, perdidos: 0, activos: 0 };
       existing.total++;
-      existing.potencial += l.potencial_usd;
+      existing.potencial += (l.proyectado_usd || l.valor_estimado || 0);
       if (l.estado === 'Cerrado Ganado') existing.ganados++;
       else if (l.estado === 'Cerrado Perdido') existing.perdidos++;
       else existing.activos++;
@@ -370,7 +370,7 @@ export default function FunnelVentas() {
                       fontWeight: 700,
                       color: tokens.colors.red,
                     }}>
-                      {formatCurrency(perdidos.reduce((s, l) => s + l.potencial_usd, 0))}
+                      {formatCurrency(perdidos.reduce((s, l) => s + (l.proyectado_usd || l.valor_estimado || 0), 0))}
                     </span>
                   </div>
                 )}
