@@ -1,5 +1,5 @@
-// AnÃ¡lisis 80/20 (Pareto) â Identifica quÃ© 20% de clientes/unidades/rutas genera el 80% del ingreso
-// Cruza viajes con clientes, tractos y rutas para calcular concentraciÃ³n de ingresos
+// Análisis 80/20 (Pareto) — Identifica qué 20% de clientes/unidades/rutas genera el 80% del ingreso
+// Cruza viajes con clientes, tractos y rutas para calcular concentración de ingresos
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -140,7 +140,7 @@ Deno.serve(async (req) => {
       const info = tractoMap.get(id)
       return {
         id,
-        label: info ? `${info.numero_economico} â ${info.marca} ${info.modelo}` : id,
+        label: info ? `${info.numero_economico} — ${info.marca} ${info.modelo}` : id,
         sublabel: info?.empresa || '',
         ingreso: d.ingreso,
         costo: d.costo,
