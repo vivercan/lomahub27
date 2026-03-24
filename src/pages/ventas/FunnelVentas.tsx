@@ -170,7 +170,7 @@ export default function FunnelVentas() {
     },
     {
       key: 'conversion',
-      label: 'ConversiÃ³n',
+      label: 'Conversión',
       width: '22%',
       render: (row: (typeof vendedores)[0]) => {
         const color = row.conversion >= 30 ? tokens.colors.green : row.conversion >= 15 ? tokens.colors.yellow : tokens.colors.red;
@@ -205,7 +205,7 @@ export default function FunnelVentas() {
   ];
 
   return (
-    <ModuleLayout titulo="Comercial â Funnel de Ventas">
+    <ModuleLayout titulo="Comercial — Funnel de Ventas">
       {/* KPIs */}
       <div style={{
         display: 'grid',
@@ -216,7 +216,7 @@ export default function FunnelVentas() {
         <KPICard titulo="Total Leads" valor={String(totalLeads)} color="blue" />
         <KPICard titulo="Pipeline Activo" valor={formatCurrency(potencialActivo)} color="yellow" />
         <KPICard titulo="Potencial Total" valor={formatCurrency(totalPotencial)} color="primary" />
-        <KPICard titulo="Tasa ConversiÃ³n" valor={`${tasaConversion}%`} color={Number(tasaConversion) >= 20 ? 'green' : Number(tasaConversion) >= 10 ? 'yellow' : 'red'} />
+        <KPICard titulo="Tasa Conversión" valor={`${tasaConversion}%`} color={Number(tasaConversion) >= 20 ? 'green' : Number(tasaConversion) >= 10 ? 'yellow' : 'red'} />
       </div>
 
       {/* Vista toggle */}
@@ -256,7 +256,7 @@ export default function FunnelVentas() {
               color: tokens.colors.textPrimary,
               margin: `0 0 ${tokens.spacing.lg} 0`,
             }}>
-              Embudo de ConversiÃ³n
+              Embudo de Conversión
             </h3>
 
             {loading ? (
