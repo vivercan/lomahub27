@@ -135,7 +135,7 @@ export default function ControlCajas(): ReactElement {
   };
 
   const cajasColumns = [
-    { key: 'economico', label: 'NÂ° Económico' },
+    { key: 'economico', label: 'N° Económico' },
     { key: 'empresa', label: 'Empresa' },
     { key: 'segmento', label: 'Segmento' },
     {
@@ -232,7 +232,7 @@ export default function ControlCajas(): ReactElement {
       <Card>
         <div style={{ marginBottom: tokens.spacing.md, paddingBottom: tokens.spacing.md, borderBottom: `1px solid ${tokens.colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>
-            Cajas GPS â {cajasFiltradas.length} unidades
+            Cajas GPS — {cajasFiltradas.length} unidades
           </h3>
           <span style={{ color: tokens.colors.textMuted, fontSize: '13px' }}>
             Fuente: GPS Master (tipo_unidad = caja)
