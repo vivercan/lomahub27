@@ -57,7 +57,7 @@ export default function FunnelVentas() {
         const { data, error } = await supabase
           .from('leads')
           .select('*')
-          .order('created_at', { ascending: false });
+          .order('fecha_creacion', { ascending: false });
 
         if (error) {
           console.error('Error fetching leads:', error);
@@ -70,7 +70,7 @@ export default function FunnelVentas() {
             potencial_usd: l.potencial_usd || 0,
             responsable: l.responsable || 'Sin asignar',
             segmento: l.segmento || 'General',
-            created_at: l.created_at || '',
+            created_at: l.fecha_creacion || '',
           })));
         }
       } catch (err) {
