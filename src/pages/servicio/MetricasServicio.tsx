@@ -58,9 +58,9 @@ const SLA_TARGETS: Record<string, Record<string, number>> = {
 }
 
 const CANALES = [
-  { key: 'whatsapp', label: 'WhatsApp', icon: <MessageCircle size={18} />, color: tokens.colors.green },
+  { key: 'whatsapp', label: 'WhatsApp', icon: <MessageCircle size={18} />, color: '#2D6A4F' },
   { key: 'email', label: 'Correo', icon: <Mail size={18} />, color: tokens.colors.primary },
-  { key: 'telefono', label: 'Teléfono', icon: <Phone size={18} />, color: tokens.colors.blue },
+  { key: 'telefono', label: 'Teléfono', icon: <Phone size={18} />, color: '#1E3A5F' },
 ]
 
 const PERIODOS = [
@@ -219,7 +219,7 @@ export default function MetricasServicio(): ReactElement {
         const target = SLA_TARGETS[row.prioridad]?.[row.canal] || 480
         const ok = mins <= target
         return (
-          <span style={{ color: ok ? tokens.colors.green : tokens.colors.red, fontFamily: tokens.fonts.body, fontSize: '12px', fontWeight: 600 }}>
+          <span style={{ color: ok ? '#2D6A4F' : '#991B1B', fontFamily: tokens.fonts.body, fontSize: '12px', fontWeight: 600 }}>
             {formatMinutes(mins)} {ok ? '✓' : '✗'}
           </span>
         )
@@ -289,7 +289,7 @@ export default function MetricasServicio(): ReactElement {
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, fontSize: '14px', fontWeight: 700 }}>{ch.canal}</span>
-                    <span style={{ color: ch.pct >= 85 ? tokens.colors.green : ch.pct >= 70 ? tokens.colors.yellow : tokens.colors.red,
+                    <span style={{ color: ch.pct >= 85 ? '#2D6A4F' : ch.pct >= 70 ? '#92400E' : '#991B1B',
                       fontFamily: tokens.fonts.heading, fontSize: '20px', fontWeight: 700 }}>
                       {ch.pct}%
                     </span>
@@ -298,11 +298,11 @@ export default function MetricasServicio(): ReactElement {
                     <span style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body, fontSize: '11px' }}>
                       {ch.total} tickets
                     </span>
-                    <span style={{ color: tokens.colors.green, fontFamily: tokens.fonts.body, fontSize: '11px' }}>
+                    <span style={{ color: '#2D6A4F', fontFamily: tokens.fonts.body, fontSize: '11px' }}>
                       ✓ {ch.dentro_sla} en SLA
                     </span>
                     {ch.fuera_sla > 0 && (
-                      <span style={{ color: tokens.colors.red, fontFamily: tokens.fonts.body, fontSize: '11px' }}>
+                      <span style={{ color: '#991B1B', fontFamily: tokens.fonts.body, fontSize: '11px' }}>
                         ✗ {ch.fuera_sla} fuera
                       </span>
                     )}
@@ -313,7 +313,7 @@ export default function MetricasServicio(): ReactElement {
                   {/* Progress bar */}
                   <div style={{ height: '4px', borderRadius: '2px', background: tokens.colors.bgCard, marginTop: '6px' }}>
                     <div style={{ height: '100%', borderRadius: '2px', width: `${ch.pct}%`,
-                      background: ch.pct >= 85 ? tokens.colors.green : ch.pct >= 70 ? tokens.colors.yellow : tokens.colors.red,
+                      background: ch.pct >= 85 ? '#2D6A4F' : ch.pct >= 70 ? '#92400E' : '#991B1B',
                       transition: 'width 0.3s' }} />
                   </div>
                 </div>
@@ -345,7 +345,7 @@ export default function MetricasServicio(): ReactElement {
                   {/* Volume bar (light) */}
                   <rect x={x} y={200 - barH} width="40" height={barH} rx="4" fill={`${ch.color}30`} />
                   {/* SLA % bar (solid) */}
-                  <rect x={x + 50} y={200 - slaH} width="40" height={slaH} rx="4" fill={ch.pct >= 85 ? tokens.colors.green : ch.pct >= 70 ? tokens.colors.yellow : tokens.colors.red} opacity="0.8" />
+                  <rect x={x + 50} y={200 - slaH} width="40" height={slaH} rx="4" fill={ch.pct >= 85 ? '#2D6A4F' : ch.pct >= 70 ? '#92400E' : '#991B1B'} opacity="0.8" />
                   {/* Labels */}
                   <text x={x + 20} y={215} fill={tokens.colors.textMuted} fontSize="10" textAnchor="middle">{ch.total}</text>
                   <text x={x + 70} y={215} fill={tokens.colors.textMuted} fontSize="10" textAnchor="middle">{ch.pct}%</text>
@@ -356,7 +356,7 @@ export default function MetricasServicio(): ReactElement {
             {/* Legend */}
             <rect x="40" y="5" width="10" height="10" rx="2" fill={`${tokens.colors.primary}30`} />
             <text x="55" y="13" fill={tokens.colors.textMuted} fontSize="9">Volumen</text>
-            <rect x="110" y="5" width="10" height="10" rx="2" fill={tokens.colors.green} opacity="0.8" />
+            <rect x="110" y="5" width="10" height="10" rx="2" fill={'#2D6A4F'} opacity="0.8" />
             <text x="125" y="13" fill={tokens.colors.textMuted} fontSize="9">% SLA</text>
           </svg>
         </Card>
@@ -372,7 +372,7 @@ export default function MetricasServicio(): ReactElement {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.sm }}>
           {Object.entries(SLA_TARGETS).map(([prio, channels]) => {
-            const prioColor = prio === 'urgente' ? tokens.colors.red : prio === 'alta' ? tokens.colors.orange : prio === 'media' ? tokens.colors.yellow : tokens.colors.gray
+            const prioColor = prio === 'urgente' ? '#991B1B' : prio === 'alta' ? '#92400E' : prio === 'media' ? '#92400E' : tokens.colors.gray
             return (
               <div key={prio} style={{ padding: '12px', borderRadius: tokens.radius.md, background: tokens.colors.bgHover }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
