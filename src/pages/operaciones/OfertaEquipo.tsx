@@ -27,9 +27,9 @@ export default function OfertaEquipo() {
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const { data, error } = await supabase.from('clientes').select('id, nombre, telefono').order('nombre', { ascending: true });
+        const { data, error } = await supabase.from('clientes').select('id, razon_social').order('razon_social', { ascending: true });
         if (error) { console.error('Error:', error); setClientes([]); }
-        else if (data) { setClientes(data.map((c) => ({ id: c.id, cliente: c.nombre || 'Sin nombre', ultima_carga: '—', ruta_habitual: '—', telefono: c.telefono || '—' }))); }
+        else if (data) { setClientes(data.map((c) => ({ id: c.id, cliente: c.razon_social || 'Sin nombre', ultima_carga: '—', ruta_habitual: '—', telefono: '—' }))); }
       } catch (err) { console.error('Error:', err); setClientes([]); } finally { setLoading(false); }
     };
     fetchClientes();
