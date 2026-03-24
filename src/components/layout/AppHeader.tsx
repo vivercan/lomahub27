@@ -80,9 +80,9 @@ export default function AppHeader({ onLogout, userName, userRole }: AppHeaderPro
         <div style={{ width: '1px', height: '40px', background: 'rgba(255,255,255,0.08)' }} />
         {/* FX Rate */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#10B981', boxShadow: '0 0 6px rgba(16,185,129,0.4)' }} />
+          <div style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#8B8B9A', boxShadow: '0 0 4px rgba(139,139,154,0.2)' }} />
           <span style={{ fontWeight: 600, fontSize: '11px', color: 'rgba(255,255,255,0.5)' }}>USD/MXN</span>
-          <span style={{ fontWeight: 800, fontSize: '13px', color: '#10B981' }}>${fxRate}</span>
+          <span style={{ fontWeight: 800, fontSize: '13px', color: '#E8E8ED' }}>${fxRate}</span>
         </div>
 
         <div style={{ flex: 1 }} />
