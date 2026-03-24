@@ -40,8 +40,7 @@ export default function Cartera() {
       try {
         const { data, error } = await supabase
           .from('clientes')
-          .select('*')
-          .order('saldo_total', { ascending: false });
+          .select('*');
 
         if (error) {
           console.error('Error fetching cartera:', error);
