@@ -84,10 +84,10 @@ export default function AgingReport() {
 
   const buckets: AgingBucket[] = useMemo(() => {
     const ranges = [
-      { label: '0-30 dÃ­as', min: 0, max: 30, color: tokens.colors.green, bgColor: tokens.colors.greenBg },
-      { label: '31-60 dÃ­as', min: 31, max: 60, color: tokens.colors.yellow, bgColor: tokens.colors.yellowBg },
-      { label: '61-90 dÃ­as', min: 61, max: 90, color: tokens.colors.orange2, bgColor: 'rgba(249, 115, 22, 0.1)' },
-      { label: '90+ dÃ­as', min: 91, max: 9999, color: tokens.colors.red, bgColor: tokens.colors.redBg },
+      { label: '0-30 días', min: 0, max: 30, color: tokens.colors.green, bgColor: tokens.colors.greenBg },
+      { label: '31-60 días', min: 31, max: 60, color: tokens.colors.yellow, bgColor: tokens.colors.yellowBg },
+      { label: '61-90 días', min: 61, max: 90, color: tokens.colors.orange2, bgColor: 'rgba(249, 115, 22, 0.1)' },
+      { label: '90+ días', min: 91, max: 9999, color: tokens.colors.red, bgColor: tokens.colors.redBg },
     ];
 
     return ranges.map((r) => {
@@ -155,11 +155,11 @@ export default function AgingReport() {
         </span>
       ),
     },
-    { key: 'dias_credito', label: 'CrÃ©dito', width: '10%' },
+    { key: 'dias_credito', label: 'Crédito', width: '10%' },
     { key: 'dias_prom_pago', label: 'DSO', width: '8%' },
     {
       key: 'rango',
-      label: 'AntigÃ¼edad',
+      label: 'Antigüedad',
       width: '15%',
       render: (row: ClienteCXC) => {
         const dias = Math.max(0, row.dias_prom_pago - row.dias_credito);
@@ -173,7 +173,7 @@ export default function AgingReport() {
             background: bucket?.bgColor || tokens.colors.bgHover,
             color: bucket?.color || tokens.colors.textMuted,
           }}>
-            {dias}d â {bucket?.label || 'N/A'}
+            {dias}d — {bucket?.label || 'N/A'}
           </span>
         );
       },
@@ -245,7 +245,7 @@ export default function AgingReport() {
   ];
 
   return (
-    <ModuleLayout titulo="CXC â Aging Report">
+    <ModuleLayout titulo="CXC — Aging Report">
       {/* KPI Cards */}
       <div style={{
         display: 'grid',
@@ -259,7 +259,7 @@ export default function AgingReport() {
         <KPICard titulo="% Vencido" valor={`${pctVencido}%`} color={pctVencido > 50 ? 'red' : pctVencido > 25 ? 'yellow' : 'green'} />
       </div>
 
-      {/* Aging Buckets â barras horizontales */}
+      {/* Aging Buckets — barras horizontales */}
       <Card>
         <div style={{ padding: tokens.spacing.md }}>
           <h3 style={{
@@ -269,7 +269,7 @@ export default function AgingReport() {
             color: tokens.colors.textPrimary,
             margin: `0 0 ${tokens.spacing.md} 0`,
           }}>
-            DistribuciÃ³n por AntigÃ¼edad
+            Distribución por Antigüedad
           </h3>
           <div style={{ display: 'flex', gap: tokens.spacing.lg }}>
             {buckets.map((bucket) => (
@@ -377,7 +377,7 @@ export default function AgingReport() {
             <div style={{ textAlign: 'center', padding: tokens.spacing.lg, color: tokens.colors.textSecondary }}>
               <p style={{ fontSize: '1.1rem', fontWeight: '500', margin: 0 }}>Sin datos de cartera</p>
               <p style={{ fontSize: '0.85rem', marginTop: tokens.spacing.sm }}>
-                Los datos se cargarÃ¡n cuando haya clientes con saldo en el sistema
+                Los datos se cargarán cuando haya clientes con saldo en el sistema
               </p>
             </div>
           ) : vistaActiva === 'aging' ? (
