@@ -1,4 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+          <Route path="/cxc/acciones" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'cxc', 'direccion']}>
+              <AccionesCobro />
+            </ProtectedRoute>
+          } />
 import { AuthProvider } from './hooks/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import HomeDashboard from './pages/HomeDashboard'
@@ -53,6 +58,7 @@ import EscalamientoWhatsApp from './pages/servicio/EscalamientoWhatsApp'
 // CXC
 import Cartera from './pages/cxc/Cartera'
 import AgingReport from './pages/cxc/AgingReport'
+import AccionesCobro from './pages/cxc/AccionesCobro'
 
 // Inteligencia
 import PresupuestoMensual from './pages/inteligencia/PresupuestoMensual'
