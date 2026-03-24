@@ -26,21 +26,21 @@ const navItems: NavItem[] = [
   { label: 'War Room', path: '/war-room', icon: <LayoutDashboard size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'direccion'] },
   { label: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} />, roles: ['superadmin', 'admin'] },
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Ventas Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // âââ Ventas âââ
   { label: 'Dashboard Ventas', path: '/ventas/dashboard', icon: <TrendingUp size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
   { label: 'Panel de Oportunidades', path: '/ventas/mis-leads', icon: <Target size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
   { label: 'Agregar Lead', path: '/ventas/leads/nuevo', icon: <Users size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Cotizador / Pricing Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // âââ Cotizador / Pricing âââ
   { label: 'Cotizador', path: '/cotizador/nueva', icon: <FileText size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'pricing'] },
   { label: 'Firma Digital', path: '/cotizador/firma-digital', icon: <FileSignature size={18} />, roles: ['superadmin', 'admin', 'ventas', 'gerente_comercial', 'pricing'] },
   { label: 'Cerebro Tarifario', path: '/pricing/cerebro-tarifario', icon: <Calculator size={18} />, roles: ['superadmin', 'admin', 'pricing', 'gerente_comercial', 'direccion'] },
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Clientes Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // âââ Clientes âââ
   { label: 'Alta de Cliente', path: '/clientes/alta', icon: <Users size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs', 'cxc', 'pricing'] },
   { label: 'Corporativos', path: '/clientes/corporativos', icon: <Building2 size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas'] },
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Operaciones Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // âââ Operaciones âââ
   { label: 'Despachos', path: '/operaciones/despachos', icon: <Truck size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'supervisor_cs'] },
   { label: 'Torre de Control', path: '/operaciones/torre-control', icon: <Radio size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'supervisor_cs', 'operaciones', 'gerente_ops', 'direccion'] },
   { label: 'Mapa GPS', path: '/operaciones/mapa', icon: <Map size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'supervisor_cs', 'operaciones', 'gerente_ops', 'direccion'] },
@@ -49,39 +49,39 @@ const navItems: NavItem[] = [
   { label: 'Prog. IMPEX', path: '/operaciones/programacion-impex', icon: <ArrowLeftRight size={18} />, roles: ['superadmin', 'admin', 'operaciones', 'gerente_ops', 'direccion'] },
   { label: 'Cruce Fronterizo', path: '/operaciones/cruce-fronterizo', icon: <ArrowLeftRight size={18} />, roles: ['superadmin', 'admin', 'operaciones', 'gerente_ops'] },
   { label: 'Control Temperatura', path: '/operaciones/control-temperatura', icon: <Thermometer size={18} />, roles: ['superadmin', 'admin', 'operaciones', 'gerente_ops'] },
-  { label: 'Planeación Flota', path: '/operaciones/planeacion-flota', icon: <Layers size={18} />, roles: ['superadmin', 'admin', 'operaciones', 'gerente_ops'] },
+  { label: 'Planeaci�n Flota', path: '/operaciones/planeacion-flota', icon: <Layers size={18} />, roles: ['superadmin', 'admin', 'operaciones', 'gerente_ops'] },
   { label: 'Cajas', path: '/operaciones/cajas', icon: <Package size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'operaciones'] },
   { label: 'Tractos', path: '/operaciones/tractos', icon: <Truck size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops'] },
   { label: 'Disponibilidad', path: '/operaciones/disponibilidad', icon: <Clock size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_ops', 'direccion'] },
   { label: 'Oferta Equipo', path: '/operaciones/oferta-equipo', icon: <Send size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas'] },
   { label: 'Rentabilidad', path: '/operaciones/rentabilidad', icon: <Calculator size={18} />, roles: ['superadmin', 'admin', 'operaciones', 'gerente_ops', 'direccion'] },
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Servicio Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // âââ Servicio âââ
   { label: 'Dashboard CS', path: '/servicio/dashboard', icon: <Headphones size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
   { label: 'WhatsApp', path: '/servicio/whatsapp', icon: <MessageSquare size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
-  { label: 'Métricas Servicio', path: '/servicio/metricas', icon: <Activity size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion'] },
+  { label: 'M�tricas Servicio', path: '/servicio/metricas', icon: <Activity size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion'] },
   { label: 'Tickets / Quejas', path: '/servicio/tickets', icon: <AlertTriangle size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion'] },
-  { label: 'Comunicación Proactiva', path: '/servicio/comunicacion-proactiva', icon: <Bell size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
+  { label: 'Comunicaci�n Proactiva', path: '/servicio/comunicacion-proactiva', icon: <Bell size={18} />, roles: ['superadmin', 'admin', 'cs', 'supervisor_cs'] },
   { label: 'Escalamiento WA', path: '/servicio/escalamiento-whatsapp', icon: <Zap size={18} />, roles: ['superadmin', 'admin', 'cs'] },
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Comunicaciones Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
-  { label: 'Correos Automáticos', path: '/comunicaciones/correos', icon: <Mail size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
+  // âââ Comunicaciones âââ
+  { label: 'Correos Autom�ticos', path: '/comunicaciones/correos', icon: <Mail size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial'] },
   { label: 'Notificaciones', path: '/comunicaciones/notificaciones', icon: <Bell size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops', 'supervisor_cs', 'direccion'] },
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Inteligencia Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
-  { label: 'KPI / Analítica', path: '/inteligencia', icon: <BarChart3 size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops'] },
+  // âââ Inteligencia âââ
+  { label: 'KPI / Anal�tica', path: '/inteligencia', icon: <BarChart3 size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops'] },
   { label: 'Presupuesto', path: '/inteligencia/presupuesto', icon: <DollarSign size={18} />, roles: ['superadmin', 'admin', 'direccion', 'gerente_comercial', 'gerente_ops'] },
-  { label: 'Análisis 80/20', path: '/inteligencia/pareto', icon: <Target size={18} />, roles: ['superadmin', 'admin', 'direccion', 'gerente_comercial', 'gerente_ops'] },
+  { label: 'An�lisis 80/20', path: '/inteligencia/pareto', icon: <Target size={18} />, roles: ['superadmin', 'admin', 'direccion', 'gerente_comercial', 'gerente_ops'] },
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ CXC Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // âââ CXC âââ
   { label: 'CXC / Cartera', path: '/cxc/cartera', icon: <DollarSign size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'cxc', 'direccion'] },
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Módulos Fase 2 Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  // âââ M�dulos Fase 2 âââ
   { label: 'Actividades', path: '/actividades', icon: <Zap size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs'] },
   { label: 'Documentos', path: '/documentos', icon: <FolderOpen size={18} />, roles: ['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops', 'cxc'] },
 
-  // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ Admin Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
-  { label: 'Configuración', path: '/admin/configuracion', icon: <Settings size={18} />, roles: ['superadmin', 'admin'] },
+  // âââ Admin âââ
+  { label: 'Configuraci�n', path: '/admin/configuracion', icon: <Settings size={18} />, roles: ['superadmin', 'admin'] },
   { label: 'Integraciones', path: '/admin/integraciones', icon: <Plug size={18} />, roles: ['superadmin', 'admin'] },
 ]
 
@@ -163,7 +163,7 @@ export function Sidebar() {
           style={{ color: tokens.colors.red }}
         >
           <LogOut size={16} />
-          {!collapsed && 'Cerrar Sesión'}
+          {!collapsed && 'Cerrar Sesi�n'}
         </button>
       </div>
     </aside>
