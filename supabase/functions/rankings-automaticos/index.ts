@@ -1,5 +1,5 @@
-// Rankings AutomÃ¡ticos â Top/Bottom de clientes, tractos y rutas
-// Consulta viajes en perÃ­odo, agrega por dimensiÃ³n y devuelve rankings
+// Rankings Automáticos — Top/Bottom de clientes, tractos y rutas
+// Consulta viajes en período, agrega por dimensión y devuelve rankings
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -135,7 +135,7 @@ Deno.serve(async (req) => {
           empresa: info?.empresa || '',
           valor_principal: agg.ingreso,
           valor_secundario: margen,
-          label_principal: 'FacturaciÃ³n',
+          label_principal: 'Facturación',
           label_secundario: 'Margen %',
           cambio_pct: calcCambio(agg.ingreso, prev?.ingreso || 0),
           posicion: 0,
