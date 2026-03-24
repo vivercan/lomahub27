@@ -99,6 +99,9 @@ const si = {
   integraciones: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>,
   actividades: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,
   documentos: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,
+  aging: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+  acciones: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>,
+
 }
 
 interface SubModulo {
@@ -161,6 +164,8 @@ const modules: ModuleConfig[] = [
     id: 5, name: 'Cobranza', icon: icons.cobranza, row: 1, kpi: null, kpiType: 'number', kpiLabel: 'cuentas CXC', priority: 'mid',
     submodulos: [
       { name: 'Cartera', route: '/cxc/cartera', icon: si.cartera, desc: 'Cartera de cobranza' },
+      { name: 'Aging Report', route: '/cxc/aging', icon: si.aging, desc: 'Antigüedad de cartera' },
+      { name: 'Acciones de Cobro', route: '/cxc/acciones', icon: si.acciones, desc: 'Seguimiento y gestión' },
     ]
   },
   {
