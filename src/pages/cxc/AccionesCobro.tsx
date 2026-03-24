@@ -36,7 +36,7 @@ function diasDesde(fecha: string | null): number {
 }
 
 function prioridadCobro(diasVencido: number, saldo: number): { label: string; color: string; bg: string; orden: number } {
-  if (diasVencido > 90 || saldo > 500_000) return { label: 'CRÁTICO', color: tokens.colors.red, bg: tokens.colors.redBg, orden: 1 };
+  if (diasVencido > 90 || saldo > 500_000) return { label: 'CRÍTICO', color: tokens.colors.red, bg: tokens.colors.redBg, orden: 1 };
   if (diasVencido > 60 || saldo > 200_000) return { label: 'ALTO', color: tokens.colors.orange2, bg: 'rgba(249, 115, 22, 0.1)', orden: 2 };
   if (diasVencido > 30 || saldo > 50_000) return { label: 'MEDIO', color: tokens.colors.yellow, bg: tokens.colors.yellowBg, orden: 3 };
   return { label: 'BAJO', color: tokens.colors.green, bg: tokens.colors.greenBg, orden: 4 };
@@ -171,7 +171,7 @@ export default function AccionesCobro() {
     },
     {
       key: 'diasSinContacto',
-      label: 'Áltimo Contacto',
+      label: 'Último Contacto',
       width: '12%',
       render: (row: (typeof cuentasConPrioridad)[0]) => {
         const alerta = row.diasSinContacto > 7;
@@ -223,7 +223,7 @@ export default function AccionesCobro() {
           </h3>
           <div style={{ display: 'flex', gap: tokens.spacing.lg }}>
             {[
-              { label: 'CRÁTICO', color: tokens.colors.red, bg: tokens.colors.redBg, count: cuentasConPrioridad.filter((c) => c.prioridad.orden === 1).length, monto: cuentasConPrioridad.filter((c) => c.prioridad.orden === 1).reduce((s, c) => s + c.saldo_vencido, 0) },
+              { label: 'CRÍTICO', color: tokens.colors.red, bg: tokens.colors.redBg, count: cuentasConPrioridad.filter((c) => c.prioridad.orden === 1).length, monto: cuentasConPrioridad.filter((c) => c.prioridad.orden === 1).reduce((s, c) => s + c.saldo_vencido, 0) },
               { label: 'ALTO', color: tokens.colors.orange2, bg: 'rgba(249, 115, 22, 0.1)', count: cuentasConPrioridad.filter((c) => c.prioridad.orden === 2).length, monto: cuentasConPrioridad.filter((c) => c.prioridad.orden === 2).reduce((s, c) => s + c.saldo_vencido, 0) },
               { label: 'MEDIO', color: tokens.colors.yellow, bg: tokens.colors.yellowBg, count: cuentasConPrioridad.filter((c) => c.prioridad.orden === 3).length, monto: cuentasConPrioridad.filter((c) => c.prioridad.orden === 3).reduce((s, c) => s + c.saldo_vencido, 0) },
               { label: 'BAJO', color: tokens.colors.green, bg: tokens.colors.greenBg, count: cuentasConPrioridad.filter((c) => c.prioridad.orden === 4).length, monto: cuentasConPrioridad.filter((c) => c.prioridad.orden === 4).reduce((s, c) => s + c.saldo_vencido, 0) },
