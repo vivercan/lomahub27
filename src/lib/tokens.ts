@@ -2,6 +2,8 @@
 // FUENTE DE VERDAD VISUAL — todos los módulos importan de aquí
 // Cambias algo aquí y se actualiza en todo el sistema automáticamente.
 // NUNCA hardcodear colores, fuentes o espaciados directamente en los componentes.
+// V29 PREMIUM — Actualizado 24/Mar/2026 por JJ
+// Filosofía: "No necesito presumir, valgo mucho" — autoridad, no adrenalina
 
 export const tokens = {
 
@@ -16,41 +18,41 @@ export const tokens = {
 
   // ─── COLORES ─────────────────────────────────────────
   colors: {
-    // Primarios
-    primary:      '#1E66F5',
-    primaryHover: '#1854D4',
-    primaryGlow:  'rgba(30, 102, 245, 0.3)',
+    // Primarios — azul institucional (no eléctrico)
+    primary:      '#3B6CE7',
+    primaryHover: '#2F5BC4',
+    primaryGlow:  'rgba(59, 108, 231, 0.15)',
 
-    // Fondos
-    bgMain:  '#0B1220',
-    bgCard:  '#111827',
-    bgHover: '#1F2937',
-    bgGlass: 'rgba(17, 24, 39, 0.8)',
+    // Fondos — grafito azulado premium (NO azul tech)
+    bgMain:  '#16161E',
+    bgCard:  '#1E1E2A',
+    bgHover: '#272733',
+    bgGlass: 'rgba(22, 22, 30, 0.88)',
 
-    // Bordes
-    border:      '#1F2937',
-    borderLight: 'rgba(31, 41, 55, 0.5)',
+    // Bordes — sutiles, casi invisibles
+    border:      '#2A2A36',
+    borderLight: 'rgba(255, 255, 255, 0.06)',
 
     // Texto
-    textPrimary:   '#F9FAFB',
-    textSecondary: '#9CA3AF',
-    textMuted:     '#6B7280',
+    textPrimary:   '#E8E8ED',
+    textSecondary: '#8B8B9A',
+    textMuted:     '#5C5C6B',
 
-    // Acentos
-    orange:      '#D97706',
-    orangeLight: 'rgba(245, 158, 11, 0.1)',
+    // Acentos — marca (naranja sobrio, no turbo)
+    orange:      '#C27803',
+    orangeLight: 'rgba(194, 120, 3, 0.08)',
 
-    // Semáforo (NUNCA cambiar estos — son estándar operativo)
-    green:    '#059669',
-    greenBg:  'rgba(16, 185, 129, 0.1)',
-    yellow:   '#D97706',
-    yellowBg: 'rgba(245, 158, 11, 0.1)',
-    orange2:  '#F97316',
-    red:      '#DC2626',
-    redBg:    'rgba(239, 68, 68, 0.1)',
-    gray:     '#6B7280',
-    blue:     '#2563EB',
-    blueBg:   'rgba(59, 130, 246, 0.1)',
+    // Semáforo premium — señalética medida, no escándalos
+    green:    '#0D9668',
+    greenBg:  'rgba(13, 150, 104, 0.08)',
+    yellow:   '#B8860B',
+    yellowBg: 'rgba(184, 134, 11, 0.08)',
+    orange2:  '#D4710A',
+    red:      '#C53030',
+    redBg:    'rgba(197, 48, 48, 0.08)',
+    gray:     '#6B6B7A',
+    blue:     '#3B6CE7',
+    blueBg:   'rgba(59, 108, 231, 0.08)',
   },
 
   // ─── TIPOGRAFÍA ──────────────────────────────────────
@@ -62,16 +64,19 @@ export const tokens = {
   // ─── EFECTOS ─────────────────────────────────────────
   effects: {
     glassmorphism: {
-      background: 'rgba(17, 24, 39, 0.8)',
-      backdropFilter: 'blur(12px)',
-      border: '1px solid rgba(31, 41, 55, 0.5)',
-      borderRadius: '12px',
+      background: 'rgba(22, 22, 30, 0.88)',
+      backdropFilter: 'blur(16px)',
+      border: '1px solid rgba(255, 255, 255, 0.06)',
     },
-    gradientBg:  'linear-gradient(135deg, #0B1220 0%, #0D1B2A 50%, #0B1220 100%)',
-    cardShadow:  '0 4px 24px rgba(0, 0, 0, 0.4)',
-    glowPrimary: '0 0 20px rgba(30, 102, 245, 0.3)',
-    glowGreen:   '0 0 12px rgba(16, 185, 129, 0.3)',
-    glowRed:     '0 0 12px rgba(239, 68, 68, 0.3)',
+    // Sombras premium — amplias, suaves, difusas (NO glow LED)
+    cardShadow:  '0 8px 32px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.15)',
+    cardHover:   '0 12px 40px rgba(0, 0, 0, 0.30), 0 4px 12px rgba(0, 0, 0, 0.20)',
+    // Highlight sutil superior para materialidad (hardware digital premium)
+    cardHighlight: 'inset 0 1px 0 rgba(255, 255, 255, 0.04)',
+    // Sin glows — autoridad no adrenalina
+    glowPrimary: '0 4px 16px rgba(59, 108, 231, 0.10)',
+    glowGreen:   '0 4px 12px rgba(13, 150, 104, 0.08)',
+    glowRed:     '0 4px 12px rgba(197, 48, 48, 0.08)',
   },
 
   // ─── ESPACIADOS ──────────────────────────────────────
@@ -107,4 +112,4 @@ export const tokens = {
 export type TokenColors = typeof tokens.colors
 export type TokenFonts = typeof tokens.fonts
 export type SemaforoEstado = 'verde' | 'amarillo' | 'naranja' | 'rojo' | 'gris' | 'azul'
-export type SemaforoColor = 'green' | 'yellow' | 'orange' | 'red' | 'gray' | 'blue'
+export type SemaforoColor = 'green' | 'yellow' | 'orange2' | 'red' | 'gray' | 'blue'
