@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Search, ChevronDown, Trash2, Filter, Download, Plus, MoreHorizontal,
-  Loader, ExternalLink, Edit3, Zap, Upload, ArrowUpDown, X, RotateCcw, FileText
+  Loader, ExternalLink, Edit3, Zap, Upload, ArrowUpDown, X, RotateCcw, FileText, LayoutGrid, List
 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
@@ -65,6 +65,7 @@ export default function MisLeads() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filteredEjecutivo, setFilteredEjecutivo] = useState('')
   const [showEjDropdown, setShowEjDropdown] = useState(false)
+  const [viewMode, setViewMode] = useState<'table' | 'kanban'>('table')
   const [ejecutivos, setEjecutivos] = useState<{ id: string; nombre: string }[]>([])
   const [showDeleted, setShowDeleted] = useState(false)
   const [showFunnel, setShowFunnel] = useState(false)
@@ -882,14 +883,31 @@ export default function MisLeads() {
           Funnel
         </button>
 
-        {/* Exportar */}
+        {/* View Toggle */}
+          <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', border: '1px solid ' + tokens.colors.border }}>
+            <button onClick={() => setViewMode('table')} style={{
+              ...s.toolbarBtn,
+              background: viewMode === 'table' ? tokens.colors.primary : 'transparent',
+              color: viewMode === 'table' ? '#fff' : tokens.colors.textSecondary,
+              borderRadius: 0, border: 'none', padding: '6px 10px'
+            }}><List size={14} /></button>
+            <button onClick={() => setViewMode('kanban')} style={{
+              ...s.toolbarBtn,
+              background: viewMode === 'kanban' ? tokens.colors.primary : 'transparent',
+              color: viewMode === 'kanban' ? '#fff' : tokens.colors.textSecondary,
+              borderRadius: 0, border: 'none', padding: '6px 10px'
+            }}><LayoutGrid size={14} /></button>
+          </div>
+          {/* Exportar */}
         <button style={s.toolbarBtn} onClick={handleExportCSV}>
           <Download size={14} />
           Exportar
         </button>
       </div>
 
-      {/* ── TABLE ── */}
+      {viewMode === 'table' ? (
+          <>
+          {/* ── TABLE ── */}
       <div style={s.tableWrap}>
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px' }}>
@@ -1069,6 +1087,43 @@ export default function MisLeads() {
           </table>
         )}
       </div>
+          </>
+        ) : (
+          /* ── KANBAN VIEW ── */
+          <div style={{ display: 'flex', gap: '12px', height: 'calc(100vh - 280px)', overflowX: 'auto', scrollbarWidth: 'none', padding: '4px 0' }}>
+            {PIPELINE_STAGES.map(stage => {
+              const stageLeads = filteredLeads.filter(l => l.estado === stage.id)
+              return (
+                <div key={stage.id} style={{ minWidth: '220px', flex: 1, display: 'flex', flexDirection: 'column', background: tokens.colors.bgCard, borderRadius: tokens.radius.lg, border: '1px solid ' + tokens.colors.border, overflow: 'hidden' }}>
+                  <div style={{ padding: '12px 14px', borderBottom: '1px solid ' + tokens.colors.border, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: stage.color }} />
+                      <span style={{ fontSize: '13px', fontWeight: 600, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>{stage.label}</span>
+                    </div>
+                    <span style={{ fontSize: '11px', color: tokens.colors.textMuted, background: tokens.colors.bgHover, padding: '2px 8px', borderRadius: tokens.radius.full }}>{stageLeads.length}</span>
+                  </div>
+                  <div style={{ flex: 1, overflow: 'auto', padding: '8px', display: 'flex', flexDirection: 'column', gap: '8px', scrollbarWidth: 'none' }}>
+                    {stageLeads.map(lead => (
+                      <div key={lead.id} onClick={() => navigate('/ventas/lead/' + lead.id)} style={{ padding: '12px', background: tokens.colors.bgHover, borderRadius: tokens.radius.md, cursor: 'pointer', border: '1px solid transparent', transition: 'all 0.15s ease' }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = stage.color + '44'; e.currentTarget.style.transform = 'translateY(-1px)' }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'none' }}>
+                        <div style={{ fontSize: '13px', fontWeight: 600, color: tokens.colors.textPrimary, marginBottom: '4px' }}>{lead.empresa}</div>
+                        <div style={{ fontSize: '11px', color: tokens.colors.textSecondary, marginBottom: '6px' }}>{lead.contacto_nombre || ''}</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontSize: '11px', color: tokens.colors.textMuted }}>{lead.tipo_servicio || ''}</span>
+                          <span style={{ fontSize: '12px', fontWeight: 600, color: tokens.colors.primary }}>{(lead.proyectado_usd || lead.valor_estimado || 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })}</span>
+                        </div>
+                      </div>
+                    ))}
+                    {stageLeads.length === 0 && (
+                      <div style={{ padding: '20px', textAlign: 'center', color: tokens.colors.textMuted, fontSize: '12px' }}>Sin oportunidades</div>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
 
       {/* ── FOOTER ── */}
       <div style={s.footer}>
