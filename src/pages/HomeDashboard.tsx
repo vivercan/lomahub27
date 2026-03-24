@@ -104,6 +104,12 @@ const si = {
 
 
   conversion: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="14" width="4" height="7"/><rect x="10" y="9" width="4" height="12"/><rect x="17" y="4" width="4" height="17"/></svg>,
+  tractos: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>,
+  cajas: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>,
+  trazabilidad: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+  altaCliente: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>,
+  cotizador: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+  pareto: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
 }
 
 interface SubModulo {
@@ -135,6 +141,9 @@ const modules: ModuleConfig[] = [
       { name: 'Panel de Oportunidades', route: '/ventas/mis-leads', icon: si.leads, desc: 'Pipeline de prospectos' },
       { name: 'Agregar Lead', route: '/ventas/leads/nuevo', icon: si.funnel, desc: 'Nueva oportunidad comercial' },
       { name: 'Funnel de Ventas', route: '/ventas/funnel', icon: si.conversion, desc: 'Embudo visual de conversión' },
+      { name: 'Alta de Clientes', route: '/clientes/alta', icon: si.altaCliente, desc: 'Registro de nuevos clientes' },
+      { name: 'Cotizador', route: '/cotizador/nueva', icon: si.cotizador, desc: 'Cotización cross-border' },
+      { name: 'Análisis 80/20', route: '/inteligencia/pareto', icon: si.pareto, desc: 'Análisis Pareto de clientes' },
     ]
   },
   {
@@ -144,6 +153,9 @@ const modules: ModuleConfig[] = [
       { name: 'Despachos', route: '/operaciones/despachos', icon: si.despachos, desc: 'Asignación de viajes' },
       { name: 'Mapa GPS', route: '/operaciones/mapa', icon: si.mapa, desc: 'Rastreo de unidades' },
       { name: 'IMPEX', route: '/operaciones/programacion-impex', icon: si.impex, desc: 'Calendario semanal' },
+      { name: 'Control Tractos', route: '/operaciones/tractos', icon: si.tractos, desc: 'Flota de tractocamiones' },
+      { name: 'Control Cajas', route: '/operaciones/cajas', icon: si.cajas, desc: 'Flota de cajas y remolques' },
+      { name: 'Trazabilidad', route: '/operaciones/viajes/:id', icon: si.trazabilidad, desc: 'Seguimiento de viajes' },
     ]
   },
   {
