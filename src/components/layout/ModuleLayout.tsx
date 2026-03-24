@@ -1,71 +1,83 @@
-// src/components/layout/ModuleLayout.tsx
-// Layout con AppHeader arriba, SIN sidebar lateral
-// Modificado 19/Mar/2026 — compatible con props originales (titulo, subtitulo)
-
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
-import AppHeader from './AppHeader'
-import { useAuth } from '../../hooks/useAuth'
+import { ArrowLeft, ChevronRight } from 'lucide-react'
+import { tokens } from '../../lib/tokens'
 
 interface ModuleLayoutProps {
   titulo: string
   subtitulo?: string
   acciones?: ReactNode
   children: ReactNode
+  moduloPadre?: { nombre: string; ruta: string }
 }
 
-export function ModuleLayout({ titulo, subtitulo, acciones, children }: ModuleLayoutProps) {
+export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadre }: ModuleLayoutProps) {
   const navigate = useNavigate()
-  const { user, logout } = useAuth()
-
-  const handleLogout = async () => {
-    await logout()
-  }
 
   return (
-    <div style={{ height: '100vh', overflow: 'hidden', background: '#2a2a36', display: 'flex', flexDirection: 'column' }}>
-      <AppHeader
-        onLogout={handleLogout}
-        userName={user?.email?.split('@')[0] || 'Usuario'}
-        userRole={user?.rol || 'admin'}
-      />
+    <div style={{ height: '100vh', overflow: 'hidden', background: '#2a2a36', display: 'flex',
+      flexDirection: 'column', fontFamily: tokens.fonts.body }}>
 
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: '16px',
-        padding: '12px 36px', borderBottom: '1px solid rgba(255,255,255,0.06)',
-        flexShrink: 0,
-      }}>
-        <button onClick={() => navigate('/dashboard')} style={{
-          display: 'flex', alignItems: 'center', gap: '6px',
-          padding: '6px 12px', background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px',
-          color: 'rgba(255,255,255,0.6)', cursor: 'pointer',
-          fontFamily: "'Montserrat', sans-serif", fontSize: '13px', fontWeight: 600,
-        }}>
-          <ArrowLeft size={18} />
-          <span>Dashboard</span>
-        </button>
+      {/* Breadcrumb Bar */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '12px 24px 0 24px', flexShrink: 0 }}>
 
-        <div>
-          <h1 style={{
-            fontFamily: "'Montserrat', sans-serif", fontWeight: 700,
-            fontSize: '20px', color: '#fff', margin: 0, lineHeight: 1.2,
-          }}>{titulo}</h1>
-          {subtitulo && (
-            <p style={{
-              fontFamily: "'Montserrat', sans-serif", fontWeight: 400,
-              fontSize: '13px', color: 'rgba(255,255,255,0.45)', margin: '2px 0 0 0',
-            }}>{subtitulo}</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {/* Dashboard button */}
+          <button onClick={() => navigate('/dashboard')} style={{
+            display: 'flex', alignItems: 'center', gap: '6px',
+            padding: '6px 12px', background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px',
+            color: tokens.colors.textSecondary, fontSize: '13px', fontWeight: 500,
+            cursor: 'pointer', fontFamily: tokens.fonts.body,
+            transition: 'all 0.15s ease' }}>
+            <ArrowLeft size={14} />
+            <span>Dashboard</span>
+          </button>
+
+          {/* Module parent breadcrumb (P13) */}
+          {moduloPadre && (
+            <>
+              <ChevronRight size={14} style={{ color: tokens.colors.textMuted, margin: '0 2px' }} />
+              <button onClick={() => navigate(moduloPadre.ruta)} style={{
+                display: 'flex', alignItems: 'center', gap: '4px',
+                padding: '6px 10px', background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px',
+                color: tokens.colors.textSecondary, fontSize: '13px', fontWeight: 500,
+                cursor: 'pointer', fontFamily: tokens.fonts.body,
+                transition: 'all 0.15s ease' }}>
+                {moduloPadre.nombre}
+              </button>
+            </>
           )}
+
+          <ChevronRight size={14} style={{ color: tokens.colors.textMuted, margin: '0 2px' }} />
+          <span style={{ color: tokens.colors.textPrimary, fontSize: '13px', fontWeight: 600,
+            fontFamily: tokens.fonts.heading }}>
+            {titulo}
+          </span>
         </div>
 
-        {acciones && <div style={{ marginLeft: 'auto' }}>{acciones}</div>}
+        {acciones && <div style={{ display: 'flex', gap: '8px' }}>{acciones}</div>}
       </div>
 
-      <main style={{ flex: 1, overflow: 'auto', padding: '24px 36px' }}>
+      {/* Title area */}
+      <div style={{ padding: '8px 24px 12px', flexShrink: 0 }}>
+        <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: tokens.colors.textPrimary,
+          fontFamily: tokens.fonts.heading }}>{titulo}</h1>
+        {subtitulo && (
+          <p style={{ margin: '4px 0 0', fontSize: '13px', color: tokens.colors.textSecondary }}>
+            {subtitulo}
+          </p>
+        )}
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, overflow: 'auto', padding: '0 24px 24px',
+        scrollbarWidth: 'none' }}>
+        <style>{`div::-webkit-scrollbar { width: 0; background: transparent; }`}</style>
         {children}
-      </main>
+      </div>
     </div>
   )
 }
