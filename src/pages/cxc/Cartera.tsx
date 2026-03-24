@@ -40,7 +40,7 @@ export default function Cartera() {
       try {
         const { data, error } = await supabase
           .from('clientes')
-          .select('id, nombre, saldo_total, saldo_vencido, dias_credito, dias_prom_pago, ejecutivo_cxc')
+          .select('*')
           .order('saldo_total', { ascending: false });
 
         if (error) {
@@ -49,7 +49,7 @@ export default function Cartera() {
         } else if (data) {
           const cartera: ClienteCarteraRow[] = data.map((cliente) => ({
             id: cliente.id,
-            cliente: cliente.nombre || 'Sin nombre',
+            cliente: cliente.razon_social || 'Sin nombre',
             saldo_total: cliente.saldo_total || 0,
             saldo_vencido: cliente.saldo_vencido || 0,
             dias_credito: cliente.dias_credito || 0,
