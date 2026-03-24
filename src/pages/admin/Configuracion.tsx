@@ -7,6 +7,7 @@ import { DataTable } from '../../components/ui/DataTable';
 import { Plus, X } from 'lucide-react';
 import { tokens } from '../../lib/tokens';
 import { supabase } from '../../lib/supabase';
+import CatalogosTab from './CatalogosTab';
 
 interface Usuario {
   id?: string;
@@ -352,57 +353,7 @@ export default function Configuracion() {
         </Card>
       )}
 
-      {activeTab === 'catalogos' && (
-        <Card>
-          <div style={{ padding: tokens.spacing.lg }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: tokens.spacing.lg }}>
-              <h3 style={{ margin: 0, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, fontSize: '18px' }}>
-                Catálogos del Sistema
-              </h3>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: tokens.spacing.md }}>
-              {[
-                { name: 'Empresas', count: 4, items: ['TROB', 'WExpress', 'SpeedyHaul', 'TROB USA'], color: tokens.colors.blue },
-                { name: 'Segmentos', count: 242, items: ['Automotriz', 'Electrónica', 'Farmacéutico', 'Agroindustrial'], color: tokens.colors.green },
-                { name: 'Plazas', count: 12, items: ['Laredo', 'Monterrey', 'CDMX', 'Guadalajara'], color: tokens.colors.yellow },
-                { name: 'Tractos', count: 500, items: ['Registro de tractocamiones activos'], color: tokens.colors.primary },
-                { name: 'Cajas/Remolques', count: 283, items: ['Secas', 'Refrigeradas', 'Plataformas'], color: tokens.colors.orange },
-                { name: 'Accesoriales', count: 40, items: ['Stop Off', 'Demoras', 'Inspecciones', 'Lumper'], color: tokens.colors.red },
-              ].map((cat) => (
-                <div key={cat.name} style={{
-                  background: tokens.colors.bgCard,
-                  borderRadius: '12px',
-                  padding: tokens.spacing.md,
-                  border: `1px solid ${tokens.colors.border}`,
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <span style={{ color: tokens.colors.textPrimary, fontWeight: 600, fontSize: '14px' }}>{cat.name}</span>
-                    <span style={{
-                      background: cat.color + '22',
-                      color: cat.color,
-                      padding: '2px 10px',
-                      borderRadius: '12px',
-                      fontSize: '13px',
-                      fontWeight: 700,
-                    }}>{cat.count}</span>
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                    {cat.items.map((item) => (
-                      <span key={item} style={{
-                        background: tokens.colors.bgHover,
-                        color: tokens.colors.textSecondary,
-                        padding: '2px 8px',
-                        borderRadius: '6px',
-                        fontSize: '11px',
-                      }}>{item}</span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Card>
-      )}
+      {activeTab === 'catalogos' && <CatalogosTab />}
 
       {activeTab === 'parametros' && (
         <Card>
