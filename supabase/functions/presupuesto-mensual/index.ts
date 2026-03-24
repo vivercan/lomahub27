@@ -1,4 +1,4 @@
-// Presupuesto Mensual â Compara presupuesto vs facturaciÃ³n real por cliente
+// Presupuesto Mensual — Compara presupuesto vs facturación real por cliente
 // Lee de tabla presupuestos_clientes y cruza con viajes del mes
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
