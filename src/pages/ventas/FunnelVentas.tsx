@@ -1,311 +1,398 @@
-import { useState, useEffect } from 'react'
-import { TrendingUp, ArrowRight } from 'lucide-react'
-import { ModuleLayout } from '../../components/layout/ModuleLayout'
-import { Card } from '../../components/ui/Card'
-import { KPICard } from '../../components/ui/KPICard'
-import { DataTable, type Column } from '../../components/ui/DataTable'
-import { Badge } from '../../components/ui/Badge'
-import { tokens } from '../../lib/tokens'
-import { supabase } from '../../lib/supabase'
+import { useState, useEffect, useMemo } from 'react';
+import { ModuleLayout } from '../../components/layout/ModuleLayout';
+import { Card } from '../../components/ui/Card';
+import { KPICard } from '../../components/ui/KPICard';
+import { DataTable } from '../../components/ui/DataTable';
+import { tokens } from '../../lib/tokens';
+import { supabase } from '../../lib/supabase';
 
 interface Lead {
-  id: string
-  empresa: string
-  contacto: string | null
-  estado: string
-  valor_estimado: number | null
-  ejecutivo_nombre: string | null
+  id: string;
+  empresa: string;
+  estado: string;
+  potencial_usd: number;
+  responsable: string;
+  segmento: string;
+  created_at: string;
 }
 
-interface FunnelStage {
-  id: string
-  nombre: string
-  probabilidad: number
-  color: string
-  count: number
-  valor: number
-  porcentaje: number
+type VistaActiva = 'funnel' | 'vendedor';
+
+const ETAPAS_ORDEN = [
+  'Nuevo',
+  'Contactado',
+  'Cotizado',
+  'Negociacion',
+  'Cerrado Ganado',
+  'Cerrado Perdido',
+];
+
+const etapaColores: Record<string, string> = {
+  'Nuevo': tokens.colors.blue,
+  'Contactado': '#8B5CF6',
+  'Cotizado': tokens.colors.yellow,
+  'Negociacion': tokens.colors.orange2,
+  'Cerrado Ganado': tokens.colors.green,
+  'Cerrado Perdido': tokens.colors.red,
+};
+
+function formatCurrency(amount: number): string {
+  if (amount >= 1_000_000) return `$${(amount / 1_000_000).toFixed(1)}M`;
+  if (amount >= 1_000) return `$${(amount / 1_000).toFixed(0)}K`;
+  return `$${amount.toLocaleString('es-MX')}`;
 }
 
-interface ConversionRate {
-  from: string
-  to: string
-  rate: number
+function formatCurrencyFull(amount: number): string {
+  return `$${amount.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
-
-interface TopLead {
-  id: string
-  empresa: string
-  contacto: string
-  estado: string
-  valor_estimado: number
-  ejecutivo_nombre: string
-}
-
-const STAGES = [
-  { id: 'Nuevo', nombre: 'Nuevo', probabilidad: 10, color: tokens.colors.blue },
-  { id: 'Contactado', nombre: 'Contactado', probabilidad: 25, color: tokens.colors.yellow },
-  { id: 'Cotizado', nombre: 'Cotizado', probabilidad: 50, color: tokens.colors.orange },
-  { id: 'Negociacion', nombre: 'Negociación', probabilidad: 75, color: '#8B5CF6' },
-  { id: 'Cerrado Ganado', nombre: 'Cerrado Ganado', probabilidad: 100, color: tokens.colors.green },
-  { id: 'Cerrado Perdido', nombre: 'Cerrado Perdido', probabilidad: 0, color: tokens.colors.red },
-]
 
 export default function FunnelVentas() {
-  const [leads, setLeads] = useState<Lead[]>([])
-  const [loading, setLoading] = useState(true)
-  const [funnelData, setFunnelData] = useState<FunnelStage[]>([])
-  const [conversionRates, setConversionRates] = useState<ConversionRate[]>([])
-  const [topLeads, setTopLeads] = useState<TopLead[]>([])
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [vistaActiva, setVistaActiva] = useState<VistaActiva>('funnel');
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    const fetchLeads = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('leads')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-  const fetchData = async () => {
-    try {
-      setLoading(true)
-      const { data, error } = await supabase.from('leads').select('*')
-      if (error) {
-        console.error('Error fetching leads:', error)
-        setLeads([])
-        return
+        if (error) {
+          console.error('Error fetching leads:', error);
+          setLeads([]);
+        } else if (data) {
+          setLeads(data.map((l) => ({
+            id: l.id,
+            empresa: l.empresa || 'Sin nombre',
+            estado: l.estado || 'Nuevo',
+            potencial_usd: l.potencial_usd || 0,
+            responsable: l.responsable || 'Sin asignar',
+            segmento: l.segmento || 'General',
+            created_at: l.created_at || '',
+          })));
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        setLeads([]);
+      } finally {
+        setLoading(false);
       }
-      setLeads(data || [])
-      processLeadsData(data || [])
-    } catch (err) {
-      console.error('Unexpected error:', err)
-      setLeads([])
-    } finally {
-      setLoading(false)
-    }
-  }
+    };
+    fetchLeads();
+  }, []);
 
-  const processLeadsData = (leadsData: Lead[]) => {
-    // Build funnel data
-    const funnel: Record<string, FunnelStage> = {}
-    let totalValue = 0
+  const etapas = useMemo(() => {
+    const activos = ETAPAS_ORDEN.filter((e) => e !== 'Cerrado Perdido');
+    return activos.map((etapa) => {
+      const leadsEtapa = leads.filter((l) => l.estado === etapa);
+      const count = leadsEtapa.length;
+      const potencial = leadsEtapa.reduce((s, l) => s + l.potencial_usd, 0);
+      return { etapa, count, potencial };
+    });
+  }, [leads]);
 
-    STAGES.forEach((stage) => {
-      const stageLeads = leadsData.filter((l) => l.estado === stage.id)
-      const stageValue = stageLeads.reduce((sum, l) => sum + (l.valor_estimado || 0), 0)
-      totalValue += stageValue
-      funnel[stage.id] = {
-        id: stage.id,
-        nombre: stage.nombre,
-        probabilidad: stage.probabilidad,
-        color: stage.color,
-        count: stageLeads.length,
-        valor: stageValue,
-        porcentaje: 0,
-      }
-    })
+  const perdidos = useMemo(() => leads.filter((l) => l.estado === 'Cerrado Perdido'), [leads]);
 
-    // Calculate percentages
-    Object.values(funnel).forEach((stage) => {
-      stage.porcentaje = totalValue > 0 ? Math.round((stage.valor / totalValue) * 100) : 0
-    })
+  const totalLeads = leads.length;
+  const totalPotencial = useMemo(() => leads.reduce((s, l) => s + l.potencial_usd, 0), [leads]);
+  const ganados = useMemo(() => leads.filter((l) => l.estado === 'Cerrado Ganado'), [leads]);
+  const tasaConversion = totalLeads > 0 ? ((ganados.length / totalLeads) * 100).toFixed(1) : '0';
+  const potencialActivo = useMemo(() =>
+    leads.filter((l) => l.estado !== 'Cerrado Perdido' && l.estado !== 'Cerrado Ganado')
+      .reduce((s, l) => s + l.potencial_usd, 0),
+    [leads]
+  );
 
-    const funnelArray = STAGES.map((s) => funnel[s.id])
-    setFunnelData(funnelArray)
+  const maxCount = useMemo(() => Math.max(...etapas.map((e) => e.count), 1), [etapas]);
 
-    // Calculate conversion rates
-    const rates: ConversionRate[] = []
-    for (let i = 0; i < funnelArray.length - 1; i++) {
-      const current = funnelArray[i]
-      const next = funnelArray[i + 1]
-      const rate = current.count > 0 ? Math.round((next.count / current.count) * 100) : 0
-      rates.push({
-        from: current.nombre,
-        to: next.nombre,
-        rate: rate,
-      })
-    }
-    setConversionRates(rates)
+  const vendedores = useMemo(() => {
+    const map = new Map<string, { total: number; potencial: number; ganados: number; perdidos: number; activos: number }>();
+    leads.forEach((l) => {
+      const key = l.responsable;
+      const existing = map.get(key) || { total: 0, potencial: 0, ganados: 0, perdidos: 0, activos: 0 };
+      existing.total++;
+      existing.potencial += l.potencial_usd;
+      if (l.estado === 'Cerrado Ganado') existing.ganados++;
+      else if (l.estado === 'Cerrado Perdido') existing.perdidos++;
+      else existing.activos++;
+      map.set(key, existing);
+    });
+    return Array.from(map.entries()).map(([nombre, data]) => ({
+      nombre,
+      ...data,
+      conversion: data.total > 0 ? ((data.ganados / data.total) * 100) : 0,
+    })).sort((a, b) => b.potencial - a.potencial);
+  }, [leads]);
 
-    // Top 10 leads by valor_estimado
-    const sorted = [...leadsData]
-      .sort((a, b) => (b.valor_estimado || 0) - (a.valor_estimado || 0))
-      .slice(0, 10)
-      .map((l) => ({
-        id: l.id,
-        empresa: l.empresa,
-        contacto: l.contacto || '-',
-        estado: l.estado,
-        valor_estimado: l.valor_estimado || 0,
-        ejecutivo_nombre: l.ejecutivo_nombre || '-',
-      }))
-    setTopLeads(sorted)
-  }
-
-  const totalLeads = leads.length
-  const totalPipeline = funnelData.reduce((sum, s) => sum + s.valor, 0)
-  const ganados = funnelData.find((s) => s.id === 'Cerrado Ganado') || { count: 0 }
-  const winRate = totalLeads > 0 ? Math.round((ganados.count / totalLeads) * 100) : 0
-  const avgTicket = totalLeads > 0 ? Math.round(totalPipeline / totalLeads) : 0
-
-  const fmtUSD = (v: number) => `$${v.toLocaleString('en-US', { maximumFractionDigits: 0 })}`
-
-  const getStageColor = (estado: string): 'blue' | 'yellow' | 'orange' | 'green' | 'red' | 'primary' => {
-    const stage = STAGES.find((s) => s.id === estado)
-    switch (stage?.color) {
-      case tokens.colors.blue:
-        return 'blue'
-      case tokens.colors.yellow:
-        return 'yellow'
-      case tokens.colors.orange:
-        return 'orange'
-      case tokens.colors.green:
-        return 'green'
-      case tokens.colors.red:
-        return 'red'
-      default:
-        return 'primary'
-    }
-  }
-
-  const topLeadsColumns: Column<TopLead>[] = [
-    { key: 'empresa', label: 'Empresa', width: '25%' },
-    { key: 'contacto', label: 'Contacto', width: '20%' },
+  const vendedorColumns = [
+    { key: 'nombre', label: 'Vendedor', width: '20%' },
     {
-      key: 'estado',
-      label: 'Estado',
-      width: '15%',
-      render: (row) => <Badge color={getStageColor(row.estado)}>{row.estado}</Badge>,
+      key: 'total',
+      label: 'Leads',
+      width: '10%',
+      render: (row: (typeof vendedores)[0]) => (
+        <span style={{ fontWeight: 700, color: tokens.colors.textPrimary }}>{row.total}</span>
+      ),
     },
     {
-      key: 'valor_estimado',
-      label: 'Valor',
-      width: '20%',
-      align: 'right',
-      render: (row) => <span style={{ color: tokens.colors.green, fontWeight: 'bold' }}>{fmtUSD(row.valor_estimado)}</span>,
+      key: 'potencial',
+      label: 'Potencial USD',
+      width: '18%',
+      render: (row: (typeof vendedores)[0]) => (
+        <span style={{ fontWeight: 600, color: tokens.colors.blue }}>{formatCurrencyFull(row.potencial)}</span>
+      ),
     },
-    { key: 'ejecutivo_nombre', label: 'Ejecutivo', width: '20%' },
-  ]
+    {
+      key: 'activos',
+      label: 'Activos',
+      width: '10%',
+      render: (row: (typeof vendedores)[0]) => (
+        <span style={{ fontWeight: 600, color: tokens.colors.yellow }}>{row.activos}</span>
+      ),
+    },
+    {
+      key: 'ganados',
+      label: 'Ganados',
+      width: '10%',
+      render: (row: (typeof vendedores)[0]) => (
+        <span style={{ fontWeight: 600, color: tokens.colors.green }}>{row.ganados}</span>
+      ),
+    },
+    {
+      key: 'perdidos',
+      label: 'Perdidos',
+      width: '10%',
+      render: (row: (typeof vendedores)[0]) => (
+        <span style={{ fontWeight: 600, color: tokens.colors.red }}>{row.perdidos}</span>
+      ),
+    },
+    {
+      key: 'conversion',
+      label: 'ConversiÃ³n',
+      width: '22%',
+      render: (row: (typeof vendedores)[0]) => {
+        const color = row.conversion >= 30 ? tokens.colors.green : row.conversion >= 15 ? tokens.colors.yellow : tokens.colors.red;
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{
+              flex: 1,
+              height: '8px',
+              background: `${color}20`,
+              borderRadius: tokens.radius.full,
+              overflow: 'hidden',
+            }}>
+              <div style={{
+                width: `${Math.min(row.conversion, 100)}%`,
+                height: '100%',
+                background: color,
+                borderRadius: tokens.radius.full,
+              }} />
+            </div>
+            <span style={{ fontWeight: 700, color, fontSize: '0.85rem', minWidth: '42px', textAlign: 'right' }}>
+              {row.conversion.toFixed(1)}%
+            </span>
+          </div>
+        );
+      },
+    },
+  ];
+
+  const vistas: { key: VistaActiva; label: string }[] = [
+    { key: 'funnel', label: 'Embudo Visual' },
+    { key: 'vendedor', label: 'Por Vendedor' },
+  ];
 
   return (
-    <ModuleLayout titulo="Embudo de Ventas" subtitulo="Análisis completo del pipeline de leads">
-      <div className="flex flex-col gap-6 h-full" style={{ fontFamily: tokens.fonts.heading }}>
-        {/* KPI Cards */}
-        <div className="grid grid-cols-4 gap-4">
-          <KPICard titulo="Total Leads" valor={totalLeads} color="primary" icono={<TrendingUp size={20} />} />
-          <KPICard titulo="Valor Pipeline" valor={fmtUSD(totalPipeline)} color="blue" />
-          <KPICard titulo="Tasa Conversión" valor={`${winRate}%`} color="green" />
-          <KPICard titulo="Ticket Promedio" valor={fmtUSD(avgTicket)} color="orange" />
-        </div>
+    <ModuleLayout titulo="Comercial â Funnel de Ventas">
+      {/* KPIs */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: tokens.spacing.md,
+        marginBottom: tokens.spacing.md,
+      }}>
+        <KPICard titulo="Total Leads" valor={String(totalLeads)} color="blue" />
+        <KPICard titulo="Pipeline Activo" valor={formatCurrency(potencialActivo)} color="yellow" />
+        <KPICard titulo="Potencial Total" valor={formatCurrency(totalPotencial)} color="primary" />
+        <KPICard titulo="Tasa ConversiÃ³n" valor={`${tasaConversion}%`} color={Number(tasaConversion) >= 20 ? 'green' : Number(tasaConversion) >= 10 ? 'yellow' : 'red'} />
+      </div>
 
-        {/* Main Funnel & Conversion Rates */}
-        <div className="grid grid-cols-3 gap-6">
-          {/* Visual Funnel */}
-          <div className="col-span-2">
-            <Card>
-              <div className="p-6">
-                <h3 className="text-sm font-bold mb-6" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>
-                  Embudo Visual
-                </h3>
-                <div className="space-y-3">
-                  {funnelData.map((stage, idx) => {
-                    const maxWidth = 100
-                    const widthPercent = idx === 0 ? maxWidth : (maxWidth * (stage.count / (funnelData[0]?.count || 1)))
-                    return (
-                      <div key={stage.id} className="flex flex-col gap-2">
-                        <div
-                          className="rounded-lg p-4 border-l-4 transition-all hover:shadow-lg"
-                          style={{
-                            width: `${widthPercent}%`,
-                            background: stage.color + '15',
-                            borderLeftColor: stage.color,
-                            borderColor: tokens.colors.border,
-                          }}
-                        >
-                          <div className="flex justify-between items-center">
-                            <div>
-                              <p className="text-xs font-bold" style={{ color: tokens.colors.textMuted }}>
-                                {stage.nombre}
-                              </p>
-                              <p className="text-lg font-bold" style={{ color: stage.color }}>
-                                {stage.count} leads
-                              </p>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-xs" style={{ color: tokens.colors.textMuted }}>
-                                {stage.porcentaje}%
-                              </p>
-                              <p className="text-sm font-bold" style={{ color: tokens.colors.green }}>
-                                {fmtUSD(stage.valor)}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
+      {/* Vista toggle */}
+      <div style={{
+        display: 'flex',
+        gap: tokens.spacing.sm,
+        marginBottom: tokens.spacing.md,
+      }}>
+        {vistas.map((v) => (
+          <button
+            key={v.key}
+            onClick={() => setVistaActiva(v.key)}
+            style={{
+              padding: `${tokens.spacing.xs} ${tokens.spacing.md}`,
+              borderRadius: tokens.radius.full,
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              fontFamily: tokens.fonts.body,
+              background: vistaActiva === v.key ? tokens.colors.primary : tokens.colors.bgCard,
+              color: vistaActiva === v.key ? '#fff' : tokens.colors.textSecondary,
+            }}
+          >
+            {v.label}
+          </button>
+        ))}
+      </div>
+
+      {vistaActiva === 'funnel' ? (
+        <Card>
+          <div style={{ padding: tokens.spacing.lg }}>
+            <h3 style={{
+              fontFamily: tokens.fonts.heading,
+              fontSize: '1rem',
+              fontWeight: 600,
+              color: tokens.colors.textPrimary,
+              margin: `0 0 ${tokens.spacing.lg} 0`,
+            }}>
+              Embudo de ConversiÃ³n
+            </h3>
+
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textSecondary }}>
+                Cargando datos...
               </div>
-            </Card>
-          </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.md }}>
+                {etapas.map((item, idx) => {
+                  const barWidth = Math.max((item.count / maxCount) * 100, 8);
+                  const color = etapaColores[item.etapa] || tokens.colors.primary;
+                  const prevCount = idx > 0 ? etapas[idx - 1].count : item.count;
+                  const dropoff = idx > 0 && prevCount > 0
+                    ? ((1 - item.count / prevCount) * 100).toFixed(0)
+                    : null;
 
-          {/* Conversion Rates */}
-          <div>
-            <Card>
-              <div className="p-6">
-                <h3 className="text-sm font-bold mb-6" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>
-                  Tasas de Conversión
-                </h3>
-                <div className="space-y-4">
-                  {conversionRates.map((rate, idx) => (
-                    <div key={idx} className="flex flex-col gap-2">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex-1">
-                          <p className="text-xs" style={{ color: tokens.colors.textMuted }}>
-                            {rate.from}
-                          </p>
-                          <p className="text-xs" style={{ color: tokens.colors.textMuted }}>
-                            hacia
-                          </p>
-                          <p className="text-xs" style={{ color: tokens.colors.textMuted }}>
-                            {rate.to}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-xl font-bold" style={{ color: rate.rate >= 50 ? tokens.colors.green : rate.rate >= 25 ? tokens.colors.yellow : tokens.colors.red }}>
-                            {rate.rate}%
-                          </p>
+                  return (
+                    <div key={item.etapa} style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing.md }}>
+                      {/* Etapa label */}
+                      <div style={{
+                        width: '140px',
+                        flexShrink: 0,
+                        textAlign: 'right',
+                        fontFamily: tokens.fonts.body,
+                        fontSize: '0.85rem',
+                        fontWeight: 600,
+                        color: tokens.colors.textPrimary,
+                      }}>
+                        {item.etapa}
+                      </div>
+
+                      {/* Bar */}
+                      <div style={{ flex: 1, position: 'relative' }}>
+                        <div style={{
+                          width: `${barWidth}%`,
+                          height: '40px',
+                          background: `linear-gradient(90deg, ${color}, ${color}CC)`,
+                          borderRadius: tokens.radius.md,
+                          display: 'flex',
+                          alignItems: 'center',
+                          paddingLeft: tokens.spacing.md,
+                          transition: 'width 0.4s ease',
+                          position: 'relative',
+                        }}>
+                          <span style={{
+                            color: '#fff',
+                            fontWeight: 800,
+                            fontSize: '1rem',
+                            fontFamily: tokens.fonts.body,
+                          }}>
+                            {item.count}
+                          </span>
                         </div>
                       </div>
-                      <div
-                        className="h-1 rounded-full"
-                        style={{
-                          background: tokens.colors.border,
-                          width: '100%',
-                        }}
-                      >
-                        <div
-                          className="h-1 rounded-full"
-                          style={{
-                            background: rate.rate >= 50 ? tokens.colors.green : rate.rate >= 25 ? tokens.colors.yellow : tokens.colors.red,
-                            width: `${rate.rate}%`,
-                          }}
-                        />
+
+                      {/* Potencial + dropoff */}
+                      <div style={{
+                        width: '160px',
+                        flexShrink: 0,
+                        textAlign: 'right',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-end',
+                        gap: '2px',
+                      }}>
+                        <span style={{
+                          fontWeight: 700,
+                          fontSize: '0.9rem',
+                          color: tokens.colors.textPrimary,
+                          fontFamily: tokens.fonts.body,
+                        }}>
+                          {formatCurrency(item.potencial)}
+                        </span>
+                        {dropoff && Number(dropoff) > 0 && (
+                          <span style={{
+                            fontSize: '0.72rem',
+                            color: tokens.colors.red,
+                            fontWeight: 500,
+                          }}>
+                            -{dropoff}% drop
+                          </span>
+                        )}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
+                  );
+                })}
 
-        {/* Top Leads Table */}
-        <Card>
-          <div className="p-6">
-            <h3 className="text-sm font-bold mb-4" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>
-              Top 10 Leads por Valor Estimado
-            </h3>
-            <DataTable columns={topLeadsColumns} data={topLeads} loading={loading} />
+                {/* Perdidos (separate) */}
+                {perdidos.length > 0 && (
+                  <div style={{
+                    marginTop: tokens.spacing.sm,
+                    padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+                    background: tokens.colors.redBg,
+                    borderRadius: tokens.radius.md,
+                    border: `1px solid ${tokens.colors.red}20`,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                    <span style={{
+                      fontFamily: tokens.fonts.body,
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      color: tokens.colors.red,
+                    }}>
+                      Cerrado Perdido: {perdidos.length} leads
+                    </span>
+                    <span style={{
+                      fontFamily: tokens.fonts.body,
+                      fontSize: '0.85rem',
+                      fontWeight: 700,
+                      color: tokens.colors.red,
+                    }}>
+                      {formatCurrency(perdidos.reduce((s, l) => s + l.potencial_usd, 0))}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </Card>
-      </div>
+      ) : (
+        <Card>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: tokens.spacing.lg, color: tokens.colors.textSecondary }}>
+              Cargando datos...
+            </div>
+          ) : vendedores.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: tokens.spacing.lg, color: tokens.colors.textSecondary }}>
+              <p style={{ fontSize: '1.1rem', fontWeight: '500', margin: 0 }}>Sin datos de vendedores</p>
+            </div>
+          ) : (
+            <DataTable columns={vendedorColumns} data={vendedores} />
+          )}
+        </Card>
+      )}
     </ModuleLayout>
-  )
+  );
 }
