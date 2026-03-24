@@ -64,6 +64,7 @@ export default function MisLeads() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [filteredEjecutivo, setFilteredEjecutivo] = useState('')
+  const [showEjDropdown, setShowEjDropdown] = useState(false)
   const [ejecutivos, setEjecutivos] = useState<{ id: string; nombre: string }[]>([])
   const [showDeleted, setShowDeleted] = useState(false)
   const [showFunnel, setShowFunnel] = useState(false)
