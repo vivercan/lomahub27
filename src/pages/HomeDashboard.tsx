@@ -217,6 +217,7 @@ export default function HomeDashboard() {
   const [hover, setHover] = useState<number | null>(null)
   const [subHover, setSubHover] = useState<string | null>(null)
   const [counts, setCounts] = useState<Record<string, number>>({})
+  const [dashReady, setDashReady] = useState(false)
   const [selectedModule, setSelectedModule] = useState<ModuleConfig | null>(null)
 
   useEffect(() => {
@@ -228,6 +229,7 @@ export default function HomeDashboard() {
         results[table] = count || 0
       }
       setCounts(results)
+      setDashReady(true)
     }
     load()
   }, [])
@@ -303,7 +305,7 @@ export default function HomeDashboard() {
               </span>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(selectedModule.submodulos.length, 4)}, 1fr)`, gap: '14px' }}>
+            <div style={{ opacity: dashReady ? 1 : 0, transition: 'opacity 0.3s ease', display: 'grid', gridTemplateColumns: `repeat(${Math.min(selectedModule.submodulos.length, 4)}, 1fr)`, gap: '14px' }}>
               {selectedModule.submodulos.map((sub) => (
                 <button
                   key={sub.route}
