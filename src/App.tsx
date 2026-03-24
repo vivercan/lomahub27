@@ -52,6 +52,7 @@ import EscalamientoWhatsApp from './pages/servicio/EscalamientoWhatsApp'
 
 // CXC
 import Cartera from './pages/cxc/Cartera'
+import AgingReport from './pages/cxc/AgingReport'
 
 // Inteligencia
 import PresupuestoMensual from './pages/inteligencia/PresupuestoMensual'
@@ -355,6 +356,13 @@ function App() {
           <Route path="/cxc/cartera" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'cxc', 'direccion']}>
               <Cartera />
+            </ProtectedRoute>
+          } />
+
+          {/* CXC Aging Report */}
+          <Route path="/cxc/aging" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'cxc', 'direccion']}>
+              <AgingReport />
             </ProtectedRoute>
           } />
 
