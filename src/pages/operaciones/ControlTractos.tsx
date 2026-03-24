@@ -258,7 +258,7 @@ export default function ControlTractos() {
       <Card>
         <div style={{ marginBottom: tokens.spacing.md, paddingBottom: tokens.spacing.md, borderBottom: `1px solid ${tokens.colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>
-            Tractos GPS â {tractosFiltrados.length} unidades
+            Tractos GPS — {tractosFiltrados.length} unidades
           </h3>
           <span style={{ color: tokens.colors.textMuted, fontSize: '13px' }}>
             Fuente: GPS Master (tipo_unidad = tracto)
