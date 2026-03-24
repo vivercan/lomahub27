@@ -226,7 +226,7 @@ export default function NuevoLead(): ReactElement {
         {/* ─── COL 1: EMPRESA ─── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div style={sectionBox(tokens.colors.green)}>
-            <div style={sectionHead(tokens.colors.green)}>
+            <div style={sectionHead(tokens.colors.textSecondary)}>
               <Building2 size={12} /> Empresa
             </div>
             <div style={fw}>
@@ -308,7 +308,7 @@ export default function NuevoLead(): ReactElement {
         {/* ─── COL 2: SERVICIO + VIAJE + PRÓXIMOS PASOS ─── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div style={sectionBox()}>
-            <div style={sectionHead(tokens.colors.primary)}>
+            <div style={sectionHead(tokens.colors.textSecondary)}>
               <Truck size={12} /> Tipo de Servicio
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
@@ -321,7 +321,7 @@ export default function NuevoLead(): ReactElement {
           </div>
 
           <div style={sectionBox()}>
-            <div style={sectionHead(tokens.colors.green)}>
+            <div style={sectionHead(tokens.colors.textSecondary)}>
               <MapPin size={12} /> Tipo de Viaje
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '8px' }}>
@@ -342,7 +342,7 @@ export default function NuevoLead(): ReactElement {
           </div>
 
           <div style={{ ...sectionBox(), flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <div style={sectionHead(tokens.colors.orange)}>
+            <div style={sectionHead(tokens.colors.textSecondary)}>
               <FileText size={12} /> Próximos Pasos
             </div>
             <textarea
@@ -357,7 +357,7 @@ export default function NuevoLead(): ReactElement {
         {/* ─── COL 3: FINANZAS + HITOS ─── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div style={sectionBox(tokens.colors.orange)}>
-            <div style={sectionHead(tokens.colors.orange)}>
+            <div style={sectionHead(tokens.colors.textSecondary)}>
               <DollarSign size={12} /> Finanzas
             </div>
             <div style={fw}>
@@ -387,7 +387,7 @@ export default function NuevoLead(): ReactElement {
           </div>
 
           <div style={sectionBox()}>
-            <div style={sectionHead(tokens.colors.blue)}>
+            <div style={sectionHead(tokens.colors.textSecondary)}>
               <CheckCircle size={12} /> Hitos del Cliente
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
