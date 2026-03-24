@@ -127,7 +127,7 @@ export default function CerebroTarifario() {
       key: 'rango', label: 'Rango KM', width: '180px',
       render: (r) => (
         <span style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body, fontSize: '13px', fontWeight: 600 }}>
-          {r.rango_km_min.toLocaleString()} â {r.rango_km_max >= 99000 ? 'â' : r.rango_km_max.toLocaleString()} km
+          {r.rango_km_min.toLocaleString()} — {r.rango_km_max >= 99000 ? 'â' : r.rango_km_max.toLocaleString()} km
         </span>
       )
     },
@@ -144,10 +144,10 @@ export default function CerebroTarifario() {
       render: (r) => <Badge color={equipoBadge[r.tipo_equipo] || 'gray'}>{r.tipo_equipo}</Badge>
     },
     {
-      key: 'descripcion', label: 'DescripciÃ³n',
+      key: 'descripcion', label: 'Descripción',
       render: (r) => (
         <span style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body, fontSize: '12px' }}>
-          {r.descripcion || 'â'}
+          {r.descripcion || '—'}
         </span>
       )
     },
@@ -159,7 +159,7 @@ export default function CerebroTarifario() {
       key: 'rango', label: 'Rango Millas', width: '180px',
       render: (r) => (
         <span style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body, fontSize: '13px', fontWeight: 600 }}>
-          {r.rango_millas_min.toLocaleString()} â {r.rango_millas_max >= 99000 ? 'â' : r.rango_millas_max.toLocaleString()} mi
+          {r.rango_millas_min.toLocaleString()} — {r.rango_millas_max >= 99000 ? 'â' : r.rango_millas_max.toLocaleString()} mi
         </span>
       )
     },
@@ -176,10 +176,10 @@ export default function CerebroTarifario() {
       render: (r) => <Badge color={equipoBadge[r.tipo_equipo] || 'gray'}>{r.tipo_equipo}</Badge>
     },
     {
-      key: 'descripcion', label: 'DescripciÃ³n',
+      key: 'descripcion', label: 'Descripción',
       render: (r) => (
         <span style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body, fontSize: '12px' }}>
-          {r.descripcion || 'â'}
+          {r.descripcion || '—'}
         </span>
       )
     },
@@ -234,7 +234,7 @@ export default function CerebroTarifario() {
   /* ââ Columns Accesoriales ââ */
   const colsAcc: Column<Accesorial>[] = [
     {
-      key: 'codigo', label: 'CÃ³digo', width: '150px',
+      key: 'codigo', label: 'Código', width: '150px',
       render: (r) => (
         <span style={{ color: tokens.colors.primary, fontFamily: tokens.fonts.body, fontSize: '13px', fontWeight: 700 }}>
           {r.codigo}
@@ -286,10 +286,10 @@ export default function CerebroTarifario() {
   const filteredAcc = accesoriales.filter(a => !q || a.codigo.toLowerCase().includes(q) || a.nombre.toLowerCase().includes(q))
 
   const tableMap = {
-    mx: { columns: colsMX, data: filteredMX, empty: 'Sin tarifas MX â ejecutar migraciÃ³n SQL' },
-    usa: { columns: colsUSA, data: filteredUSA, empty: 'Sin tarifas USA â ejecutar migraciÃ³n SQL' },
-    cruces: { columns: colsCruces, data: filteredCruces, empty: 'Sin cruces fronterizos â ejecutar migraciÃ³n SQL' },
-    accesoriales: { columns: colsAcc, data: filteredAcc, empty: 'Sin accesoriales â ejecutar migraciÃ³n SQL' },
+    mx: { columns: colsMX, data: filteredMX, empty: 'Sin tarifas MX — ejecutar migración SQL' },
+    usa: { columns: colsUSA, data: filteredUSA, empty: 'Sin tarifas USA — ejecutar migración SQL' },
+    cruces: { columns: colsCruces, data: filteredCruces, empty: 'Sin cruces fronterizos — ejecutar migración SQL' },
+    accesoriales: { columns: colsAcc, data: filteredAcc, empty: 'Sin accesoriales — ejecutar migración SQL' },
   }
 
   const current = tableMap[tab]
@@ -297,7 +297,7 @@ export default function CerebroTarifario() {
   return (
     <ModuleLayout
       titulo="Cerebro Tarifario"
-      subtitulo="Motor de pricing â tarifas MX/USA, cruces fronterizos y accesoriales"
+      subtitulo="Motor de pricing — tarifas MX/USA, cruces fronterizos y accesoriales"
       acciones={
         <div style={{ display: 'flex', gap: tokens.spacing.sm }}>
           <Button size="sm" variant="secondary" onClick={fetchAll}><RefreshCw size={16} /> Actualizar</Button>
