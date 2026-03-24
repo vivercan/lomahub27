@@ -37,19 +37,19 @@ export const tokens = {
     textMuted:     '#6B7280',
 
     // Acentos
-    orange:      '#F59E0B',
+    orange:      '#D97706',
     orangeLight: 'rgba(245, 158, 11, 0.1)',
 
     // Semáforo (NUNCA cambiar estos — son estándar operativo)
-    green:    '#10B981',
+    green:    '#059669',
     greenBg:  'rgba(16, 185, 129, 0.1)',
-    yellow:   '#F59E0B',
+    yellow:   '#D97706',
     yellowBg: 'rgba(245, 158, 11, 0.1)',
     orange2:  '#F97316',
-    red:      '#EF4444',
+    red:      '#DC2626',
     redBg:    'rgba(239, 68, 68, 0.1)',
     gray:     '#6B7280',
-    blue:     '#3B82F6',
+    blue:     '#2563EB',
     blueBg:   'rgba(59, 130, 246, 0.1)',
   },
 
