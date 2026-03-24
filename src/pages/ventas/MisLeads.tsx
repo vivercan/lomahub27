@@ -73,11 +73,24 @@ export default function MisLeads() {
   const [actionsOpen, setActionsOpen] = useState<string | null>(null)
   const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set())
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const ejDropdownRef = useRef<HTMLDivElement>(null)
 
   // New state for quotation analysis
   const [analyzingLead, setAnalyzingLead] = useState<Lead | null>(null)
   const [analyzing, setAnalyzing] = useState(false)
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ejDropdownRef.current && !ejDropdownRef.current.contains(e.target as Node)) {
+        setShowEjDropdown(false)
+      }
+    }
+    if (showEjDropdown) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showEjDropdown])
 
   useEffect(() => {
     fetchLeads()
@@ -818,10 +831,10 @@ export default function MisLeads() {
             <ChevronDown size={14} style={{ color: tokens.colors.textMuted }} />
           </button>
           {showEjDropdown && (
-            <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50, background: tokens.colors.bgCard, border: '1px solid ' + tokens.colors.border, borderRadius: '8px', marginTop: '4px', maxHeight: '240px', overflowY: 'auto', padding: '4px 0' }}>
+            <div ref={ejDropdownRef} onClick={e => e.stopPropagation()} style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50, background: tokens.colors.bgCard, border: '1px solid ' + tokens.colors.border, borderRadius: '8px', marginTop: '4px', maxHeight: '240px', overflowY: 'auto', padding: '4px 0' }}>
               <button
                 style={{ width: '100%', padding: '8px 12px', background: 'transparent', border: 'none', color: tokens.colors.textSecondary, fontSize: '12px', textAlign: 'left', cursor: 'pointer' }}
-                onClick={() => { setFilteredEjecutivo([]); setShowEjDropdown(false) }}
+                onClick={() => { setFilteredEjecutivo([]); setFilteredEjecutivo([]) }}
               >Todos los vendedores</button>
               {ejecutivos.map(ej => (
                 <label key={ej.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', cursor: 'pointer', color: tokens.colors.textPrimary, fontSize: '13px' }}
