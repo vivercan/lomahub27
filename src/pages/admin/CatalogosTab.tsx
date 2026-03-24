@@ -1,3 +1,4 @@
+import { tokens } from '../../lib/tokens'
 import { useState, useEffect, useCallback } from 'react';
 import type { FC } from 'react';
 import { supabase } from '../../lib/supabase';
@@ -57,7 +58,7 @@ const CATALOGS: CatalogConfig[] = [
     title: 'Empresas',
     icon: Building2,
     description: 'TROB, WExpress, SpeedyHaul, TROB USA',
-    color: '#3B82F6',
+    color: '#3B6CE7',
     columns: [
       { key: 'nombre', label: 'Nombre', type: 'text', required: true, editable: true },
       { key: 'codigo', label: 'Código', type: 'text', required: true, editable: true },
@@ -85,7 +86,7 @@ const CATALOGS: CatalogConfig[] = [
     title: 'Plazas',
     icon: MapPin,
     description: 'Plazas de operación por estado',
-    color: '#10B981',
+    color: '#0D9668',
     columns: [
       { key: 'nombre', label: 'Nombre', type: 'text', required: true, editable: true },
       { key: 'estado', label: 'Estado', type: 'text', editable: true },
@@ -99,7 +100,7 @@ const CATALOGS: CatalogConfig[] = [
     title: 'Tractocamiones',
     icon: Truck,
     description: 'Flota de tractocamiones registrados',
-    color: '#F59E0B',
+    color: '#B8860B',
     columns: [
       { key: 'numero_economico', label: '# Económico', type: 'text', required: true, editable: true },
       { key: 'empresa', label: 'Empresa', type: 'text', required: true, editable: true },
@@ -116,7 +117,7 @@ const CATALOGS: CatalogConfig[] = [
     title: 'Cajas / Remolques',
     icon: Container,
     description: 'Cajas secas y refrigeradas',
-    color: '#EF4444',
+    color: '#C53030',
     columns: [
       { key: 'numero_economico', label: '# Económico', type: 'text', required: true, editable: true },
       { key: 'empresa', label: 'Empresa', type: 'text', required: true, editable: true },
@@ -151,18 +152,18 @@ const CATALOGS: CatalogConfig[] = [
 const styles = {
   heading: { fontFamily: 'Montserrat, sans-serif', fontWeight: 700 as const },
   body: { fontFamily: '"Exo 2", sans-serif' },
-  bgMain: '#0B1220',
-  bgCard: '#111827',
-  bgHover: '#1F2937',
-  border: '#1F2937',
-  textPrimary: '#F9FAFB',
-  textSecondary: '#9CA3AF',
-  textMuted: '#6B7280',
-  primary: '#1E66F5',
-  primaryHover: '#1854D4',
-  green: '#10B981',
-  red: '#EF4444',
-  yellow: '#F59E0B',
+  bgMain: '#16161E',
+  bgCard: '#1E1E2A',
+  bgHover: '#272733',
+  border: '#272733',
+  textPrimary: '#E8E8ED',
+  textSecondary: '#8B8B9A',
+  textMuted: '#5C5C6B',
+  primary: '#3B6CE7',
+  primaryHover: '#2F5BC4',
+  green: '#0D9668',
+  red: '#C53030',
+  yellow: '#B8860B',
 };
 
 /* ─── CatalogosTab Component ─────────────────────────────── */
