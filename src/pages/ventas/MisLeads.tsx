@@ -68,8 +68,7 @@ export default function MisLeads() {
   const [viewMode, setViewMode] = useState<'table' | 'kanban'>('table')
   const [ejecutivos, setEjecutivos] = useState<{ id: string; nombre: string }[]>([])
   const [showDeleted, setShowDeleted] = useState(false)
-  const [showFunnel, setShowFunnel] = useState(false)
-  const [sortField, setSortField] = useState<string>('fecha_creacion')
+    const [sortField, setSortField] = useState<string>('fecha_creacion')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
   const [actionsOpen, setActionsOpen] = useState<string | null>(null)
   const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set())
@@ -339,13 +338,6 @@ export default function MisLeads() {
     if (aVal > bVal) return sortDir === 'asc' ? 1 : -1
     return 0
   })
-
-  // Funnel stats
-  const funnelData = PIPELINE_STAGES.map(s => ({
-    ...s,
-    count: leads.filter(l => !l.eliminado && l.estado === s.id).length,
-    value: leads.filter(l => !l.eliminado && l.estado === s.id).reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0),
-  }))
   const totalActive = leads.filter(l => !l.eliminado).length
   const totalValue = leads.filter(l => !l.eliminado).reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0)
 
@@ -578,45 +570,7 @@ export default function MisLeads() {
       color: tokens.colors.textSecondary,
       fontSize: '12px',
       fontFamily: tokens.fonts.body,
-      cursor: 'pointer',
-      textAlign: 'left' as const,
-      transition: 'background 0.15s',
-    },
-    funnelOverlay: {
-      position: 'fixed' as const,
-      inset: 0,
-      background: 'rgba(0,0,0,0.6)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 100,
-    },
-    funnelCard: {
-      background: tokens.colors.bgCard,
-      border: `1px solid ${tokens.colors.border}`,
-      borderRadius: tokens.radius.lg,
-      padding: '24px',
-      width: '500px',
-      maxWidth: '90vw',
-      boxShadow: tokens.effects.cardShadow,
-    },
-    funnelTitle: {
-      fontFamily: tokens.fonts.heading,
-      fontSize: '16px',
-      fontWeight: 700,
-      color: tokens.colors.textPrimary,
-      marginBottom: '16px',
-      letterSpacing: '0.04em',
-      textTransform: 'uppercase' as const,
-    },
-    funnelRow: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '10px 0',
-      borderBottom: `1px solid ${tokens.colors.border}`,
-    },
-    footer: {
+      cursor: 'pointer',    footer: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -876,8 +830,8 @@ export default function MisLeads() {
 
         {/* Funnel */}
         <button
-          style={showFunnel ? s.toolbarBtnActive : s.toolbarBtn}
-          onClick={() => setShowFunnel(!showFunnel)}
+          style={s.toolbarBtn}
+          onClick={() => navigate('/ventas/funnel')}
         >
           <Filter size={14} />
           Funnel
@@ -1134,60 +1088,6 @@ export default function MisLeads() {
           </div>
 
       {/* ── FUNNEL MODAL ── */}
-      {showFunnel && (
-        <div
-          style={s.funnelOverlay}
-          onClick={() => setShowFunnel(false)}
-        >
-          <div style={s.funnelCard} onClick={e => e.stopPropagation()}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <span style={s.funnelTitle}>Funnel de Ventas</span>
-              <button
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: tokens.colors.textMuted }}
-                onClick={() => setShowFunnel(false)}
-              >
-                <X size={18} />
-              </button>
-            </div>
-            {funnelData.map((st, i) => {
-              const pct = totalActive > 0 ? Math.round((st.count / totalActive) * 100) : 0
-              return (
-                <div key={st.id} style={s.funnelRow}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1 }}>
-                    <span style={s.dot(st.color)} />
-                    <span style={{ color: tokens.colors.textPrimary, fontSize: '13px', fontFamily: tokens.fonts.body, fontWeight: 500 }}>
-                      {st.label}
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div style={{ width: '120px', height: '6px', borderRadius: '3px', background: tokens.colors.bgHover, overflow: 'hidden' }}>
-                      <div style={{ width: `${pct}%`, height: '100%', borderRadius: '3px', background: st.color, transition: 'width 0.3s' }} />
-                    </div>
-                    <span style={{ color: tokens.colors.textSecondary, fontSize: '12px', fontFamily: tokens.fonts.body, minWidth: '30px', textAlign: 'right' as const }}>
-                      {st.count}
-                    </span>
-                    <span style={{ color: tokens.colors.green, fontSize: '12px', fontWeight: 600, fontFamily: tokens.fonts.body, minWidth: '80px', textAlign: 'right' as const }}>
-                      {formatCurrency(st.value)}
-                    </span>
-                  </div>
-                </div>
-              )
-            })}
-            <div style={{ ...s.funnelRow, borderBottom: 'none', marginTop: '8px' }}>
-              <span style={{ color: tokens.colors.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: tokens.fonts.body }}>TOTAL</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ width: '120px' }} />
-                <span style={{ color: tokens.colors.textPrimary, fontSize: '12px', fontWeight: 700, fontFamily: tokens.fonts.body, minWidth: '30px', textAlign: 'right' as const }}>
-                  {totalActive}
-                </span>
-                <span style={{ color: tokens.colors.green, fontSize: '12px', fontWeight: 700, fontFamily: tokens.fonts.body, minWidth: '80px', textAlign: 'right' as const }}>
-                  {formatCurrency(totalValue)}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ── QUOTATION ANALYSIS MODAL ── */}
       {(analyzingLead && (analyzing || analysisResult)) && (
