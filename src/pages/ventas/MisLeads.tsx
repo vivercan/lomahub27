@@ -570,7 +570,9 @@ export default function MisLeads() {
       color: tokens.colors.textSecondary,
       fontSize: '12px',
       fontFamily: tokens.fonts.body,
-      cursor: 'pointer',    footer: {
+      cursor: 'pointer',
+    },
+    footer: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
