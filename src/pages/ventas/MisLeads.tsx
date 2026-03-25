@@ -63,7 +63,7 @@ export default function MisLeads() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const [filteredEjecutivo, setFilteredEjecutivo] = useState('')
+  const [filteredEjecutivo, setFilteredEjecutivo] = useState<string[]>([])
   const [showEjDropdown, setShowEjDropdown] = useState(false)
   const [viewMode, setViewMode] = useState<'table' | 'kanban'>('table')
   const [ejecutivos, setEjecutivos] = useState<{ id: string; nombre: string }[]>([])
@@ -320,8 +320,8 @@ export default function MisLeads() {
       l.ciudad?.toLowerCase().includes(term)
     )
   }
-  if (filteredEjecutivo) {
-    filteredLeads = filteredLeads.filter(l => l.ejecutivo_id === filteredEjecutivo)
+  if (filteredEjecutivo.length > 0) {
+    filteredLeads = filteredLeads.filter(l => filteredEjecutivo.includes(l.ejecutivo_id))
   }
 
   // Sort
@@ -791,7 +791,7 @@ export default function MisLeads() {
             <div ref={ejDropdownRef} onClick={e => e.stopPropagation()} style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50, background: tokens.colors.bgCard, border: '1px solid ' + tokens.colors.border, borderRadius: '8px', marginTop: '4px', maxHeight: '240px', overflowY: 'auto', padding: '4px 0' }}>
               <button
                 style={{ width: '100%', padding: '8px 12px', background: 'transparent', border: 'none', color: tokens.colors.textSecondary, fontSize: '12px', textAlign: 'left', cursor: 'pointer' }}
-                onClick={() => { setFilteredEjecutivo([]); setFilteredEjecutivo([]) }}
+                onClick={() => { setFilteredEjecutivo([]) }}
               >Todos los vendedores</button>
               {ejecutivos.map(ej => (
                 <label key={ej.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', cursor: 'pointer', color: tokens.colors.textPrimary, fontSize: '13px' }}
@@ -960,7 +960,6 @@ export default function MisLeads() {
                       </div>
                     </td>
                     <td style={s.tdMuted}>{formatDate(lead.fecha_creacion)}</td>
-              <td style={s.td}>{lead.updated_at ? formatDate(lead.updated_at) : '—'}</td>
               <td style={s.td}>{lead.updated_at ? formatDate(lead.updated_at) : '—'}</td>
                     <td style={{ ...s.td, textAlign: 'center' as const, width: '80px', position: 'relative' as const }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
