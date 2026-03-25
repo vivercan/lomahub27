@@ -1127,13 +1127,11 @@ export default function MisLeads() {
 
       {/* ── FOOTER ── */}
       <div style={s.footer}>
-        <span style={s.footerText}>
-          Mostrando {filteredLeads.length} de {leads.filter(l => showDeleted ? l.eliminado : !l.eliminado).length} oportunidades
-        </span>
-        <span style={s.footerText}>
-          Pipeline total: <span style={{ color: tokens.colors.green, fontWeight: 600 }}>{formatCurrency(totalValue)}</span>
-        </span>
-      </div>
+            <span style={s.footerText}>{filteredLeads.length} oportunidades</span>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: tokens.colors.primary, fontFamily: tokens.fonts.heading }}>
+              Pipeline: {filteredLeads.reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })} MXN
+            </span>
+          </div>
 
       {/* ── FUNNEL MODAL ── */}
       {showFunnel && (
