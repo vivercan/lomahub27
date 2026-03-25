@@ -55,7 +55,7 @@ export default function DashboardVentas() {
   const [kpis, setKpis] = useState([
     { titulo: 'Pipeline Total', valor: '$0', color: 'primary' as const },
     { titulo: 'Leads Nuevos Semana', valor: '0', color: 'green' as const },
-    { titulo: 'ConversiÃ³n', valor: '0%', color: 'blue' as const },
+    { titulo: 'Conversión', valor: '0%', color: 'blue' as const },
     { titulo: 'Cotizaciones Sin Resp.', valor: '0', color: 'orange' as const },
   ])
   const [funnelData, setFunnelData] = useState<FunnelStage[]>([])
@@ -75,7 +75,7 @@ export default function DashboardVentas() {
           return
         }
 
-        // 2. Pipeline Total â sum monto_estimado excluding Cerrado Perdido
+        // 2. Pipeline Total — sum monto_estimado excluding Cerrado Perdido
         const activeLeads = allLeads.filter(
           (l) => l.estado !== 'Cerrado Perdido'
         )
@@ -90,7 +90,7 @@ export default function DashboardVentas() {
           (l) => l.created_at >= weekStart
         ).length
 
-        // 4. Tasa de conversiÃ³n
+        // 4. Tasa de conversión
         const cerradosGanados = allLeads.filter(
           (l) => l.estado === 'Cerrado Ganado'
         ).length
@@ -117,7 +117,7 @@ export default function DashboardVentas() {
             color: 'green' as const,
           },
           {
-            titulo: 'ConversiÃ³n',
+            titulo: 'Conversión',
             valor: `${conversionRate}%`,
             color: 'blue' as const,
           },
@@ -128,7 +128,7 @@ export default function DashboardVentas() {
           },
         ])
 
-        // 6. Funnel de Ventas â agrupado por estado
+        // 6. Funnel de Ventas — agrupado por estado
         const stageMap = new Map<string, { count: number; monto: number }>()
         allLeads.forEach((lead) => {
           const existing = stageMap.get(lead.estado) || {
@@ -157,7 +157,7 @@ export default function DashboardVentas() {
         })
         setFunnelData(funnel)
 
-        // 7. Top Vendedores â agrupado por ejecutivo_id
+        // 7. Top Vendedores — agrupado por ejecutivo_id
         const vendedorMap = new Map<
           string,
           { leads: number; monto: number; cerrados: number }
@@ -259,7 +259,7 @@ export default function DashboardVentas() {
   return (
     <ModuleLayout
       titulo="Dashboard Comercial"
-      subtitulo="Gerente Comercial â Semana en curso"
+      subtitulo="Gerente Comercial — Semana en curso"
     >
       <div className="space-y-6">
         <div className="grid grid-cols-4 gap-4">
@@ -311,7 +311,7 @@ export default function DashboardVentas() {
                 Sin datos
               </p>
               <p style={{ fontSize: '14px', marginTop: '8px' }}>
-                Los datos se cargarÃ¡n cuando estÃ©n disponibles en el sistema
+                Los datos se cargarán cuando estén disponibles en el sistema
               </p>
             </div>
           ) : (
@@ -357,7 +357,7 @@ export default function DashboardVentas() {
                 Sin datos
               </p>
               <p style={{ fontSize: '14px', marginTop: '8px' }}>
-                Los datos se cargarÃ¡n cuando estÃ©n disponibles en el sistema
+                Los datos se cargarán cuando estén disponibles en el sistema
               </p>
             </div>
           ) : (
