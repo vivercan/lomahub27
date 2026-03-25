@@ -68,19 +68,19 @@ export default function DashboardVentas() {
         // 1. Fetch ALL leads (excluding Cerrado Perdido for pipeline)
         const { data: allLeads } = await supabase
           .from('leads')
-          .select('id, estado, monto_estimado, ejecutivo_id, created_at')
+          .select('id, estado, valor_estimado, ejecutivo_nombre, created_at')
 
         if (!allLeads || allLeads.length === 0) {
           setLoading(false)
           return
         }
 
-        // 2. Pipeline Total — sum monto_estimado excluding Cerrado Perdido
+        // 2. Pipeline Total — sum valor_estimado excluding Cerrado Perdido
         const activeLeads = allLeads.filter(
           (l) => l.estado !== 'Cerrado Perdido'
         )
         const pipelineTotal = activeLeads.reduce(
-          (sum, l) => sum + (l.monto_estimado || 0),
+          (sum, l) => sum + (l.valor_estimado || 0),
           0
         )
 
@@ -136,7 +136,7 @@ export default function DashboardVentas() {
             monto: 0,
           }
           existing.count++
-          existing.monto += lead.monto_estimado || 0
+          existing.monto += lead.valor_estimado || 0
           stageMap.set(lead.estado, existing)
         })
 
@@ -157,43 +157,34 @@ export default function DashboardVentas() {
         })
         setFunnelData(funnel)
 
-        // 7. Top Vendedores — agrupado por ejecutivo_id
+        // 7. Top Vendedores — agrupado por ejecutivo_nombre
         const vendedorMap = new Map<
           string,
           { leads: number; monto: number; cerrados: number }
         >()
         allLeads.forEach((lead) => {
-          const eid = lead.ejecutivo_id || 'sin-asignar'
+          const eid = lead.ejecutivo_nombre || 'sin-asignar'
           const existing = vendedorMap.get(eid) || {
             leads: 0,
             monto: 0,
             cerrados: 0,
           }
           existing.leads++
-          existing.monto += lead.monto_estimado || 0
+          existing.monto += lead.valor_estimado || 0
           if (lead.estado === 'Cerrado Ganado') existing.cerrados++
           vendedorMap.set(eid, existing)
         })
 
         // Fetch ejecutivo names
-        const ejecutivoIds = Array.from(vendedorMap.keys()).filter(
           (id) => id !== 'sin-asignar'
         )
-        let nombreMap = new Map<string, string>()
-        if (ejecutivoIds.length > 0) {
           const { data: usuarios } = await supabase
-            .from('usuarios_autorizados')
-            .select('id, nombre')
-            .in('id', ejecutivoIds)
-          if (usuarios) {
-            usuarios.forEach((u) => nombreMap.set(u.id, u.nombre))
           }
         }
 
         const topVendedores: Vendedor[] = Array.from(vendedorMap.entries())
           .map(([id, data]) => ({
             puesto: 0,
-            nombre: nombreMap.get(id) || (id === 'sin-asignar' ? 'Sin asignar' : id.slice(0, 8)),
             leads: data.leads,
             monto: formatCurrency(data.monto),
             cerrados: data.cerrados,
