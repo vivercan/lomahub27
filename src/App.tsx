@@ -29,6 +29,7 @@ import FirmaDigital from './pages/cotizador/FirmaDigital'
 
 // Clientes
 import AltaCliente from './pages/clientes/AltaCliente'
+import PortalDocumentos from './pages/clientes/PortalDocumentos'
 import FichaCliente from './pages/clientes/FichaCliente'
 import RadiografiaFinanciera from './pages/clientes/RadiografiaFinanciera'
 import CorporativosClientes from './pages/clientes/CorporativosClientes'
@@ -169,6 +170,7 @@ function App() {
           <Route path="/clientes/alta" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs', 'cxc', 'pricing']}>
               <AltaCliente />
+            <Route path="/portal/documentos" element={<PortalDocumentos />} />
             </ProtectedRoute>
           } />
 
