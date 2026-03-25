@@ -68,7 +68,7 @@ export default function FunnelVentas() {
             empresa: l.empresa || 'Sin nombre',
             estado: l.estado || 'Nuevo',
             potencial_usd: (l.proyectado_usd || l.valor_estimado || 0) || 0,
-            responsable: l.responsable || 'Sin asignar',
+            responsable: l.ejecutivo_nombre || 'Sin asignar',
             segmento: l.segmento || 'General',
             created_at: l.fecha_creacion || '',
           })));
@@ -88,7 +88,7 @@ export default function FunnelVentas() {
     return activos.map((etapa) => {
       const leadsEtapa = leads.filter((l) => l.estado === etapa);
       const count = leadsEtapa.length;
-      const potencial = leadsEtapa.reduce((s, l) => s + (l.proyectado_usd || l.valor_estimado || 0), 0);
+      const potencial = leadsEtapa.reduce((s, l) => s + l.potencial_usd, 0);
       return { etapa, count, potencial };
     });
   }, [leads]);
@@ -96,12 +96,12 @@ export default function FunnelVentas() {
   const perdidos = useMemo(() => leads.filter((l) => l.estado === 'Cerrado Perdido'), [leads]);
 
   const totalLeads = leads.length;
-  const totalPotencial = useMemo(() => leads.reduce((s, l) => s + (l.proyectado_usd || l.valor_estimado || 0), 0), [leads]);
+  const totalPotencial = useMemo(() => leads.reduce((s, l) => s + l.potencial_usd, 0), [leads]);
   const ganados = useMemo(() => leads.filter((l) => l.estado === 'Cerrado Ganado'), [leads]);
   const tasaConversion = totalLeads > 0 ? ((ganados.length / totalLeads) * 100).toFixed(1) : '0';
   const potencialActivo = useMemo(() =>
     leads.filter((l) => l.estado !== 'Cerrado Perdido' && l.estado !== 'Cerrado Ganado')
-      .reduce((s, l) => s + (l.proyectado_usd || l.valor_estimado || 0), 0),
+      .reduce((s, l) => s + l.potencial_usd, 0),
     [leads]
   );
 
@@ -113,7 +113,7 @@ export default function FunnelVentas() {
       const key = l.responsable;
       const existing = map.get(key) || { total: 0, potencial: 0, ganados: 0, perdidos: 0, activos: 0 };
       existing.total++;
-      existing.potencial += (l.proyectado_usd || l.valor_estimado || 0);
+      existing.potencial += l.potencial_usd;
       if (l.estado === 'Cerrado Ganado') existing.ganados++;
       else if (l.estado === 'Cerrado Perdido') existing.perdidos++;
       else existing.activos++;
@@ -170,7 +170,7 @@ export default function FunnelVentas() {
     },
     {
       key: 'conversion',
-      label: 'Conversión',
+      label: 'ConversiÃ³n',
       width: '22%',
       render: (row: (typeof vendedores)[0]) => {
         const color = row.conversion >= 30 ? tokens.colors.green : row.conversion >= 15 ? tokens.colors.yellow : tokens.colors.red;
@@ -205,7 +205,7 @@ export default function FunnelVentas() {
   ];
 
   return (
-    <ModuleLayout titulo="Comercial — Funnel de Ventas">
+    <ModuleLayout titulo="Comercial â Funnel de Ventas">
       {/* KPIs */}
       <div style={{
         display: 'grid',
@@ -216,7 +216,7 @@ export default function FunnelVentas() {
         <KPICard titulo="Total Leads" valor={String(totalLeads)} color="blue" />
         <KPICard titulo="Pipeline Activo" valor={formatCurrency(potencialActivo)} color="yellow" />
         <KPICard titulo="Potencial Total" valor={formatCurrency(totalPotencial)} color="primary" />
-        <KPICard titulo="Tasa Conversión" valor={`${tasaConversion}%`} color={Number(tasaConversion) >= 20 ? 'green' : Number(tasaConversion) >= 10 ? 'yellow' : 'red'} />
+        <KPICard titulo="Tasa ConversiÃ³n" valor={`${tasaConversion}%`} color={Number(tasaConversion) >= 20 ? 'green' : Number(tasaConversion) >= 10 ? 'yellow' : 'red'} />
       </div>
 
       {/* Vista toggle */}
@@ -256,7 +256,7 @@ export default function FunnelVentas() {
               color: tokens.colors.textPrimary,
               margin: `0 0 ${tokens.spacing.lg} 0`,
             }}>
-              Embudo de Conversión
+              Embudo de ConversiÃ³n
             </h3>
 
             {loading ? (
@@ -370,7 +370,7 @@ export default function FunnelVentas() {
                       fontWeight: 700,
                       color: tokens.colors.red,
                     }}>
-                      {formatCurrency(perdidos.reduce((s, l) => s + (l.proyectado_usd || l.valor_estimado || 0), 0))}
+                      {formatCurrency(perdidos.reduce((s, l) => s + l.potencial_usd, 0))}
                     </span>
                   </div>
                 )}
