@@ -8,56 +8,81 @@ const corsHeaders = {
 async function gatherBusinessData(supabase: any) {
   const today = new Date().toISOString().split('T')[0]
 
-  // Run all queries in parallel for speed
+  // REAL table names and columns verified 26/Mar/2026:
+  // leads: id, empresa, contacto, estado, valor_estimado, ejecutivo_nombre, fecha_creacion, updated_at, deleted_at
+  // viajes: id, cliente_id, origen, destino, tipo, estado, created_at, updated_at (NO estatus, NO cliente_nombre)
+  // clientes: id, razon_social, tipo, segmento, empresa, activo, deleted_at
+  // cxc_cartera: id, cliente_id, saldo_total, saldo_vencido, dias_promedio_pago (NOT cxc_cuentas)
+  // gps_tracking: id, economico, empresa, estatus, velocidad, ubicacion (NOT gps_unidades)
+  // tractos: id, numero_economico, empresa, estado_operativo, activo (NO deleted_at)
+  // cajas: id, numero_economico, empresa, tipo, estado, activo (NO deleted_at)
+  // formatos_venta: id, cliente_id, empresa, tipo_servicio, tarifa, activo, created_at
+  // segmentos: replaces dedicados_segmentos
+
   const [
     leadsRes, viajesRes, clientesTotalRes, clientesActivosRes,
     cxcRes, formatosHoyRes, formatosTotalRes,
-    dedicadosRes, gpsRes, tractosRes, cajasRes
+    segmentosRes, gpsRes, tractosRes, cajasRes
   ] = await Promise.all([
-    supabase.from('leads').select('id, estado, empresa, valor_estimado, created_at, updated_at').is('deleted_at', null).order('updated_at', { ascending: false }).limit(50),
-    supabase.from('viajes').select('id, tipo, estatus, origen, destino, cliente_nombre, tracto_numero, created_at').is('deleted_at', null).order('created_at', { ascending: false }).limit(20),
+    supabase.from('leads').select('id, estado, empresa, valor_estimado, ejecutivo_nombre, updated_at').is('deleted_at', null).order('updated_at', { ascending: false }).limit(100),
+    supabase.from('viajes').select('id, tipo, estado, origen, destino, created_at').order('created_at', { ascending: false }).limit(20),
     supabase.from('clientes').select('id', { count: 'exact', head: true }).is('deleted_at', null),
-    supabase.from('clientes').select('id', { count: 'exact', head: true }).is('deleted_at', null).eq('tipo', 'activo'),
-    supabase.from('cxc_cuentas').select('id, cliente_nombre, saldo_total, dias_vencido, estatus').is('deleted_at', null).order('saldo_total', { ascending: false }).limit(20),
-    supabase.from('formatos_venta').select('id, tipo_servicio, estatus', { count: 'exact', head: true }).gte('created_at', today + 'T00:00:00'),
+    supabase.from('clientes').select('id', { count: 'exact', head: true }).eq('tipo', 'activo').is('deleted_at', null),
+    supabase.from('cxc_cartera').select('id, cliente_id, saldo_total, saldo_vencido, dias_promedio_pago').order('saldo_vencido', { ascending: false }).limit(20),
+    supabase.from('formatos_venta').select('id', { count: 'exact', head: true }).gte('created_at', today + 'T00:00:00'),
     supabase.from('formatos_venta').select('id', { count: 'exact', head: true }),
-    supabase.from('dedicados_segmentos').select('id, segmento, cliente, ruta', { count: 'exact', head: true }).is('deleted_at', null),
-    supabase.from('gps_unidades').select('id, unidad, estatus', { count: 'exact', head: true }),
-    supabase.from('tractos').select('id, numero, estatus', { count: 'exact', head: true }).is('deleted_at', null),
-    supabase.from('cajas').select('id, numero, tipo', { count: 'exact', head: true }).is('deleted_at', null),
+    supabase.from('segmentos').select('id', { count: 'exact', head: true }),
+    supabase.from('gps_tracking').select('id', { count: 'exact', head: true }),
+    supabase.from('tractos').select('id', { count: 'exact', head: true }).eq('activo', true),
+    supabase.from('cajas').select('id', { count: 'exact', head: true }).eq('activo', true),
   ])
 
-  // Pipeline summary
+  // Pipeline summary by estado
   const leads = leadsRes.data || []
   const pipelineByState: Record<string, { count: number; value: number }> = {}
+  let totalPipelineValue = 0
+  const leadsHoy: any[] = []
   leads.forEach((l: any) => {
     const st = l.estado || 'Sin estado'
     if (!pipelineByState[st]) pipelineByState[st] = { count: 0, value: 0 }
     pipelineByState[st].count++
-    pipelineByState[st].value += Number(l.valor_estimado) || 0
+    const val = Number(l.valor_estimado) || 0
+    pipelineByState[st].value += val
+    totalPipelineValue += val
+    if (l.updated_at >= today + 'T00:00:00') {
+      leadsHoy.push({ empresa: l.empresa, estado: l.estado, valor: l.valor_estimado })
+    }
+  })
+
+  // Viajes by estado
+  const viajes = viajesRes.data || []
+  const viajesByEstado: Record<string, number> = {}
+  viajes.forEach((v: any) => {
+    const st = v.estado || 'sin_estado'
+    viajesByEstado[st] = (viajesByEstado[st] || 0) + 1
   })
 
   // CXC summary
-  const cxcCuentas = cxcRes.data || []
-  const totalVencido = cxcCuentas.reduce((s: number, c: any) => s + (Number(c.saldo_total) || 0), 0)
-  const cuentasCriticas = cxcCuentas.filter((c: any) => (c.dias_vencido || 0) > 60).length
+  const cxcData = cxcRes.data || []
+  const totalSaldoVencido = cxcData.reduce((s: number, c: any) => s + (Number(c.saldo_vencido) || 0), 0)
+  const totalSaldo = cxcData.reduce((s: number, c: any) => s + (Number(c.saldo_total) || 0), 0)
 
   return {
     fecha: today,
     leads: {
       total: leads.length,
-      pipeline: pipelineByState,
-      recientes: leads.slice(0, 5).map((l: any) => ({
-        empresa: l.empresa, estado: l.estado,
-        valor: l.valor_estimado, updated: l.updated_at
+      valor_total_pipeline: totalPipelineValue,
+      por_estado: pipelineByState,
+      actualizados_hoy: leadsHoy.length,
+      top_recientes: leads.slice(0, 5).map((l: any) => ({
+        empresa: l.empresa, estado: l.estado, valor: l.valor_estimado, ejecutivo: l.ejecutivo_nombre
       }))
     },
     viajes: {
-      activos: (viajesRes.data || []).length,
-      recientes: (viajesRes.data || []).slice(0, 5).map((v: any) => ({
-        tipo: v.tipo, estatus: v.estatus,
-        ruta: v.origen + ' -> ' + v.destino,
-        cliente: v.cliente_nombre
+      total: viajes.length,
+      por_estado: viajesByEstado,
+      recientes: viajes.slice(0, 5).map((v: any) => ({
+        tipo: v.tipo, estado: v.estado, ruta: (v.origen || '') + ' -> ' + (v.destino || '')
       }))
     },
     clientes: {
@@ -65,20 +90,24 @@ async function gatherBusinessData(supabase: any) {
       activos: clientesActivosRes.count || 0
     },
     cobranza: {
-      cuentas: cxcCuentas.length,
-      totalVencido,
-      cuentasCriticas,
-      top5: cxcCuentas.slice(0, 5).map((c: any) => ({
-        cliente: c.cliente_nombre, saldo: c.saldo_total, dias: c.dias_vencido
+      cuentas: cxcData.length,
+      saldo_total: totalSaldo,
+      saldo_vencido: totalSaldoVencido,
+      top_vencidos: cxcData.slice(0, 5).map((c: any) => ({
+        saldo_total: c.saldo_total, saldo_vencido: c.saldo_vencido, dias_prom: c.dias_promedio_pago
       }))
     },
-    operaciones: {
-      formatosHoy: formatosHoyRes.count || 0,
-      formatosTotal: formatosTotalRes.count || 0,
-      dedicados: dedicadosRes.count || 0,
-      gpsUnidades: gpsRes.count || 0,
-      tractos: tractosRes.count || 0,
-      cajas: cajasRes.count || 0
+    formatos_venta: {
+      total: formatosTotalRes.count || 0,
+      hoy: formatosHoyRes.count || 0
+    },
+    flota: {
+      tractos_activos: tractosRes.count || 0,
+      cajas_activas: cajasRes.count || 0,
+      unidades_gps: gpsRes.count || 0
+    },
+    dedicados: {
+      segmentos: segmentosRes.count || 0
     }
   }
 }
@@ -88,27 +117,46 @@ async function generateBriefing(tipo: string, businessData: any) {
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY not configured')
 
   const isMorning = tipo === 'morning'
-  const systemPrompt = `Eres el AI Chief of Staff de TROB/LomaHUB27, empresa de transporte de carga en Mexico.
-Genera un briefing ejecutivo ${isMorning ? 'matutino (7AM)' : 'de cierre de dia (6PM)'} en formato JSON.
-El briefing debe ser conciso, accionable, y en espanol.
-IMPORTANTE: Responde UNICAMENTE con JSON valido, sin markdown, sin code blocks.`
 
-  const userPrompt = `Datos del negocio al ${businessData.fecha}:
-${JSON.stringify(businessData, null, 2)}
+  const systemPrompt = `Eres el AI Chief of Staff de JJ (Juan Viveros), director de TROB, empresa de transporte de carga en Mexico.
+Tu trabajo: analizar datos del negocio y generar un briefing ejecutivo ${isMorning ? 'matutino (7AM)' : 'de cierre de dia (6PM)'}.
 
-Genera un JSON con esta estructura exacta:
+CONTEXTO CLAVE:
+- TROB opera tractocamiones y cajas para transporte IMPO/EXPO/NAC/DEDICADO
+- Empresas del grupo: TROB, WExpress, SpeedyHaul, TROB USA
+- Pipeline de leads: Nuevo > Contactado > Cotizado > Negociacion > Cerrado Ganado/Perdido
+- Los formatos de venta vienen de ANODOS (TMS externo sincronizado cada 10min)
+- CXC = cuentas por cobrar
+
+REGLAS DE INTERPRETACION:
+- Los TOTALES (leads en pipeline, clientes, flota, GPS) son metricas PERMANENTES del negocio
+- "actualizados_hoy" y "formatos_hoy" son metricas de ACTIVIDAD DIARIA
+- Si hay 0 actividad diaria pero totales sanos, NO es crisis â es dia sin movimiento registrado
+- Siempre reporta PRIMERO los totales del negocio, DESPUES la actividad del dia
+- Tono: ejecutivo directo, en espanol, accionable
+- Prioriza por impacto en revenue
+
+RESPONDE EXCLUSIVAMENTE en JSON valido (sin markdown, sin code blocks):
 {
-  "resumen_ejecutivo": "2-3 parrafos con lo mas importante del dia",
+  "resumen_ejecutivo": "2-3 parrafos: estado general del negocio + actividad del dia + prioridades",
   "metricas": [
-    {"label": "nombre", "valor": "numero o texto", "tendencia": "up|down|stable", "nota": "contexto breve"}
+    {"label": "Pipeline Total", "valor": "$X MXN", "tendencia": "stable", "nota": "X leads activos"},
+    {"label": "Viajes Activos", "valor": "X", "tendencia": "stable", "nota": "contexto"},
+    {"label": "Flota GPS", "valor": "X unidades", "tendencia": "stable", "nota": "en rastreo"},
+    {"label": "CXC Vencida", "valor": "$X", "tendencia": "up|down|stable", "nota": "X cuentas"},
+    {"label": "Formatos Hoy", "valor": "X", "tendencia": "stable", "nota": "de X total"},
+    {"label": "Clientes", "valor": "X", "tendencia": "stable", "nota": "X activos"}
   ],
   "pendientes": [
-    {"titulo": "accion", "prioridad": "alta|media|baja", "detalle": "contexto", "responsable": "area"}
+    {"titulo": "accion concreta", "prioridad": "alta|media|baja", "detalle": "contexto", "responsable": "area"}
   ],
   "timeline": [
     {"hora": "HH:MM", "evento": "descripcion"}
-  ]${!isMorning ? ',\n  "cierre_dia": "reflexion y logros del dia"' : ''}
+  ]${!isMorning ? ',\n  "cierre_dia": "reflexion del dia, logros y pendientes para manana"' : ''}
 }`
+
+  const userPrompt = `Datos del negocio al ${businessData.fecha}:
+${JSON.stringify(businessData, null, 2)}`
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -132,9 +180,9 @@ Genera un JSON con esta estructura exacta:
 
   const result = await response.json()
   const text = result.content?.[0]?.text || '{}'
-
   try {
-    return JSON.parse(text)
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    return JSON.parse(jsonMatch ? jsonMatch[0] : text)
   } catch {
     return { resumen_ejecutivo: text, metricas: [], pendientes: [], timeline: [] }
   }
@@ -150,7 +198,6 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const supabase = createClient(supabaseUrl, serviceKey)
 
-    // Parse request
     let tipo = 'morning'
     let usuarioEmail = 'juan.viveros@trob.com.mx'
     try {
@@ -159,7 +206,7 @@ Deno.serve(async (req) => {
       usuarioEmail = body.usuario_email || usuarioEmail
     } catch { /* default values */ }
 
-    // Gather data
+    // Gather real business data
     const businessData = await gatherBusinessData(supabase)
 
     // Generate briefing with AI
@@ -198,26 +245,14 @@ Deno.serve(async (req) => {
     const briefingUrl = `https://v2.jjcrm27.com/briefing/${saved.id}?token=${accessToken}`
 
     return new Response(
-      JSON.stringify({
-        success: true,
-        briefing_id: saved.id,
-        url: briefingUrl,
-        tipo,
-        fecha: businessData.fecha
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      }
+      JSON.stringify({ success: true, briefing_id: saved.id, url: briefingUrl, tipo, fecha: businessData.fecha }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     )
   } catch (error) {
     console.error('Briefing error:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      }
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     )
   }
 })
