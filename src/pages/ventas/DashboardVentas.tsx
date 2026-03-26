@@ -175,16 +175,11 @@ export default function DashboardVentas() {
           vendedorMap.set(eid, existing)
         })
 
-        // Fetch ejecutivo names
-          (id) => id !== 'sin-asignar'
-        )
-          const { data: usuarios } = await supabase
-          }
-        }
 
         const topVendedores: Vendedor[] = Array.from(vendedorMap.entries())
           .map(([id, data]) => ({
             puesto: 0,
+            nombre: id === 'sin-asignar' ? 'Sin asignar' : id,
             leads: data.leads,
             monto: formatCurrency(data.monto),
             cerrados: data.cerrados,
