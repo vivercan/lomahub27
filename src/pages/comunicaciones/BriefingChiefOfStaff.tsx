@@ -56,7 +56,7 @@ const t = tokens
 
 function formatFechaLarga(fecha: string): string {
   const d = new Date(fecha + 'T12:00:00')
-  const dias = ['Domingo', 'Lunes', 'Martes', 'MiÃ©rcoles', 'Jueves', 'Viernes', 'SÃ¡bado']
+  const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
   const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
   return `${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]} ${d.getFullYear()}`
 }
@@ -302,7 +302,7 @@ export default function BriefingChiefOfStaff() {
     }}>
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '32px 24px' }}>
 
-        {/* âââ HEADER âââ */}
+        {/* ——— HEADER ——— */}
         <div style={{
           display: 'flex', alignItems: 'center', gap: '16px',
           marginBottom: '32px',
@@ -322,7 +322,7 @@ export default function BriefingChiefOfStaff() {
               margin: 0, fontSize: '22px', fontWeight: 700,
               fontFamily: t.fonts.heading, color: t.colors.textPrimary,
             }}>
-              {isMorning ? 'Briefing Matutino' : 'Cierre del DÃ­a'}
+              {isMorning ? 'Briefing Matutino' : 'Cierre del Día'}
             </h1>
             <div style={{
               display: 'flex', alignItems: 'center', gap: '8px',
@@ -343,7 +343,7 @@ export default function BriefingChiefOfStaff() {
           </div>
         </div>
 
-        {/* âââ MÃTRICAS âââ */}
+        {/* ——— MÉTRICAS ——— */}
         <div style={{
           display: 'flex', gap: '12px', marginBottom: '28px',
           flexWrap: 'wrap',
@@ -356,7 +356,7 @@ export default function BriefingChiefOfStaff() {
           <MetricCard label="Correos Out" value={metricas.correos_salientes || 0} icon={<MailOpen size={18} style={{ color: t.colors.blue }} />} />
         </div>
 
-        {/* âââ RESUMEN EJECUTIVO âââ */}
+        {/* ——— RESUMEN EJECUTIVO ——— */}
         <div style={{
           background: t.colors.bgCard,
           border: `1px solid ${t.colors.border}`,
@@ -380,7 +380,7 @@ export default function BriefingChiefOfStaff() {
           </div>
         </div>
 
-        {/* âââ PENDIENTES âââ */}
+        {/* ——— PENDIENTES ——— */}
         {pendientesOrdenados.length > 0 && (
           <div style={{ marginBottom: '28px' }}>
             <h2 style={{
@@ -399,7 +399,7 @@ export default function BriefingChiefOfStaff() {
           </div>
         )}
 
-        {/* âââ TIMELINE âââ */}
+        {/* ——— TIMELINE ——— */}
         {timeline.length > 0 && (
           <div style={{ marginBottom: '28px' }}>
             <button
@@ -456,7 +456,7 @@ export default function BriefingChiefOfStaff() {
           </div>
         )}
 
-        {/* âââ CIERRE DEL DÃA (solo evening) âââ */}
+        {/* ——— CIERRE DEL DÍA (solo evening) ——— */}
         {!isMorning && briefing.cierre_dia && (
           <div style={{
             background: t.colors.bgCard,
@@ -471,7 +471,7 @@ export default function BriefingChiefOfStaff() {
               display: 'flex', alignItems: 'center', gap: '8px',
             }}>
               <Moon size={18} style={{ color: t.colors.primary }} />
-              Cierre del DÃ­a
+              Cierre del Día
             </h2>
 
             {briefing.cierre_dia.logros && briefing.cierre_dia.logros.length > 0 && (
@@ -480,7 +480,7 @@ export default function BriefingChiefOfStaff() {
                   fontSize: '13px', fontWeight: 700, color: t.colors.green,
                   marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px',
                 }}>
-                  Lo que se logrÃ³ hoy
+                  Lo que se logró hoy
                 </div>
                 {briefing.cierre_dia.logros.map((l, i) => (
                   <div key={i} style={{
@@ -500,7 +500,7 @@ export default function BriefingChiefOfStaff() {
                   fontSize: '13px', fontWeight: 700, color: t.colors.orange,
                   marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px',
                 }}>
-                  Pendiente para maÃ±ana
+                  Pendiente para mañana
                 </div>
                 {briefing.cierre_dia.pendientes_manana.map((p, i) => (
                   <div key={i} style={{
@@ -516,7 +516,7 @@ export default function BriefingChiefOfStaff() {
           </div>
         )}
 
-        {/* âââ FOOTER âââ */}
+        {/* ——— FOOTER ——— */}
         <div style={{
           textAlign: 'center', padding: '16px',
           color: t.colors.textMuted, fontSize: '11px',
