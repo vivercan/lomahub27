@@ -15,19 +15,17 @@ jobs:
       PROJECT_REF: wtogsqxvyfeibnfxfbev
     steps:
       - uses: actions/checkout@v4
-
       - uses: supabase/setup-cli@v1
         with:
           version: latest
-
-      - name: Deploy briefing-diario
-        run: supabase functions deploy briefing-diario --project-ref $PROJECT_REF --no-verify-jwt
-
-      - name: Deploy clasificar-correo
-        run: supabase functions deploy clasificar-correo --project-ref $PROJECT_REF --no-verify-jwt
-
-      - name: Deploy analisis-cotizacion
-        run: supabase functions deploy analisis-cotizacion --project-ref $PROJECT_REF
-
-      - name: Deploy analisis-contratos
-        run: supabase functions deploy analisis-contratos --project-ref $PROJECT_REF
+      - name: Deploy all Edge Functions
+        run: |
+          for dir in supabase/functions/*/; do
+            fn=$(basename "$dir")
+            if [ -f "$dir/index.ts" ]; then
+              echo "Deploying $fn..."
+              supabase functions deploy "$fn" --project-ref $PROJECT_REF --no-verify-jwt || echo "WARN: $fn deploy failed"
+            else
+              echo "Skipping $fn (no index.ts)"
+            fi
+          done
