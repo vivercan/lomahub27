@@ -150,8 +150,8 @@ const CATALOGS: CatalogConfig[] = [
 /* ─── Styles (tokens-aligned, Montserrat headings) ───────── */
 
 const styles = {
-  heading: { fontFamily: 'Montserrat, sans-serif', fontWeight: 700 as const },
-  body: { fontFamily: '"Exo 2", sans-serif' },
+  heading: { fontFamily: tokens.fonts.heading, fontWeight: 700 as const },
+  body: { fontFamily: tokens.fonts.body },
   bgMain: '#16161E',
   bgCard: '#1E1E2A',
   bgHover: '#272733',
