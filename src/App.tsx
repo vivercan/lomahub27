@@ -72,6 +72,8 @@ import Documentos from './pages/documentos/Documentos'
 import CerebroTarifario from './pages/pricing/CerebroTarifario'
 import CorreosAutomaticos from './pages/comunicaciones/CorreosAutomaticos'
 import Notificaciones from './pages/comunicaciones/Notificaciones'
+import BriefingChiefOfStaff from './pages/comunicaciones/BriefingChiefOfStaff'
+import ChiefOfStaffHome from './pages/comunicaciones/ChiefOfStaffHome'
 import PanelIntegraciones from './pages/admin/PanelIntegraciones'
 import ProgramacionDedicados from './pages/operaciones/ProgramacionDedicados'
 
@@ -414,6 +416,16 @@ function App() {
               <Notificaciones />
             </ProtectedRoute>
           } />
+
+          {/* ——— AI Chief of Staff ——— */}
+          <Route path="/comunicaciones/chief-of-staff" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'direccion']}>
+              <ChiefOfStaffHome />
+            </ProtectedRoute>
+          } />
+
+          {/* ——— Briefing individual (protegido) ——— */}
+          <Route path="/briefing/:id" element={<BriefingChiefOfStaff />} />
 
           {/* âââ Panel Integraciones âââ */}
           <Route path="/admin/integraciones" element={
