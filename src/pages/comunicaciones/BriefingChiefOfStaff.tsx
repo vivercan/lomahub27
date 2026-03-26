@@ -521,7 +521,7 @@ export default function BriefingChiefOfStaff() {
           textAlign: 'center', padding: '16px',
           color: t.colors.textMuted, fontSize: '11px',
         }}>
-          Generado por AI Chief of Staff Â· LomaHUB27 Â· {new Date(briefing.created_at).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
+          Generado por AI Chief of Staff · LomaHUB27 · {new Date(briefing.created_at).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
         </div>
       </div>
     </div>
