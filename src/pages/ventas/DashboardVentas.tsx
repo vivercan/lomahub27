@@ -68,7 +68,7 @@ export default function DashboardVentas() {
         // 1. Fetch ALL leads (excluding Cerrado Perdido for pipeline)
         const { data: allLeads } = await supabase
           .from('leads')
-          .select('id, estado, valor_estimado, ejecutivo_nombre, created_at')
+          .select('id, estado, valor_estimado, ejecutivo_nombre, fecha_creacion')
 
         if (!allLeads || allLeads.length === 0) {
           setLoading(false)
@@ -87,7 +87,7 @@ export default function DashboardVentas() {
         // 3. Leads nuevos esta semana
         const weekStart = getWeekStart()
         const leadsThisWeek = allLeads.filter(
-          (l) => l.created_at >= weekStart
+          (l) => l.fecha_creacion >= weekStart
         ).length
 
         // 4. Tasa de conversión
