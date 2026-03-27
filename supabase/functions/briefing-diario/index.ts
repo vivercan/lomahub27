@@ -139,21 +139,46 @@ REGLAS DE INTERPRETACION:
 RESPONDE EXCLUSIVAMENTE en JSON valido (sin markdown, sin code blocks):
 {
   "resumen_ejecutivo": "2-3 parrafos: estado general del negocio + actividad del dia + prioridades",
-  "metricas": [
-    {"label": "Pipeline Total", "valor": "$X MXN", "tendencia": "stable", "nota": "X leads activos"},
-    {"label": "Viajes Activos", "valor": "X", "tendencia": "stable", "nota": "contexto"},
-    {"label": "Flota GPS", "valor": "X unidades", "tendencia": "stable", "nota": "en rastreo"},
-    {"label": "CXC Vencida", "valor": "$X", "tendencia": "up|down|stable", "nota": "X cuentas"},
-    {"label": "Formatos Hoy", "valor": "X", "tendencia": "stable", "nota": "de X total"},
-    {"label": "Clientes", "valor": "X", "tendencia": "stable", "nota": "X activos"}
+  "alertas_sistema": [
+    {"tipo": "integracion|datos|rendimiento", "mensaje": "descripcion del problema detectado"}
   ],
+  "metricas": {
+    "cotizaciones_pedidas": 0,
+    "cotizaciones_enviadas": 0,
+    "leads_nuevos": 0,
+    "respuestas_recibidas": 0,
+    "correos_entrantes": 0,
+    "correos_salientes": 0,
+    "utilizacion_flota_pct": 0,
+    "whatsapp_mensajes": 0
+  },
   "pendientes": [
-    {"titulo": "accion concreta", "prioridad": "alta|media|baja", "detalle": "contexto", "responsable": "area"}
+    {
+      "titulo": "accion concreta",
+      "prioridad": "alta|media|baja",
+      "descripcion": "contexto detallado del problema",
+      "accion_sugerida": "que hacer exactamente",
+      "tipo_accion": "email|llamada|reunion|revisar|escalar",
+      "datos_accion": {},
+      "status": "nuevo|recurrente|resuelto",
+      "responsable": "JJ -> Nombre Persona",
+      "impacto_estimado": "impacto en dinero o negocio"
+    }
   ],
   "timeline": [
-    {"hora": "HH:MM", "evento": "descripcion"}
-  ]${!isMorning ? ',\n  "cierre_dia": "reflexion del dia, logros y pendientes para manana"' : ''}
-}`
+    {"hora": "HH:MM", "evento": "descripcion", "detalle": "contexto adicional"}
+  ]${!isMorning ? \`,
+  "cierre_dia": {
+    "logros": ["logro 1 del dia", "logro 2"],
+    "pendientes_manana": ["pendiente critico para manana"],
+    "pendientes_resueltos": ["pendiente que se resolvio hoy"],
+    "metricas_comparadas": {
+      "cotizaciones": {"manana": 0, "ahora": 0, "cambio": "+0"},
+      "correos": {"manana": 0, "ahora": 0, "cambio": "+0"},
+      "leads": {"manana": 0, "ahora": 0, "cambio": "+0"}
+    }
+  }\` : ''}
+}\`
 
   const userPrompt = `Datos del negocio al ${businessData.fecha}:
 ${JSON.stringify(businessData, null, 2)}`
@@ -230,7 +255,7 @@ Deno.serve(async (req) => {
         fecha: businessData.fecha,
         raw_data: businessData,
         resumen_ejecutivo: briefing.resumen_ejecutivo || '',
-        metricas: briefing.metricas || [],
+        metricas: briefing.metricas || {},
         pendientes: briefing.pendientes || [],
         timeline: briefing.timeline || [],
         cierre_dia: briefing.cierre_dia || null,
