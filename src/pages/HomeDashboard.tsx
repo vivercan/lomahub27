@@ -142,6 +142,9 @@ export default function HomeDashboard() {
         { count: dedicados },
         { count: cxc },
         { count: gps },
+        { count: formatosActivos },
+        { count: viajesRiesgo },
+        { count: notifUnread },
       ] = await Promise.all([
         supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null),
         supabase.from('viajes').select('*', { count: 'exact', head: true }).eq('activo', true),
@@ -149,7 +152,12 @@ export default function HomeDashboard() {
         supabase.from('dedicados_segmentos').select('*', { count: 'exact', head: true }),
         supabase.from('cxc_cuentas').select('*', { count: 'exact', head: true }),
         supabase.from('gps_unidades').select('*', { count: 'exact', head: true }),
+        supabase.from('formatos_venta').select('*', { count: 'exact', head: true }).eq('activo', true),
+        supabase.from('viajes').select('*', { count: 'exact', head: true }).in('estado', ['en_riesgo', 'retrasado']),
+        supabase.from('notificaciones').select('*', { count: 'exact', head: true }).eq('leida', false).is('deleted_at', null),
       ])
+
+      const totalAlertas = (viajesRiesgo ?? 0) + (notifUnread ?? 0)
 
       setKpis({
         leadsActivos: leads ?? 0,
@@ -158,8 +166,8 @@ export default function HomeDashboard() {
         segmentosDedicados: dedicados ?? 0,
         cuentasCxc: cxc ?? 0,
         unidadesGps: gps ?? 0,
-        alertasHoy: 0,
-        facturadoHoy: '$0',
+        alertasHoy: totalAlertas,
+        facturadoHoy: (formatosActivos ?? 0).toLocaleString(),
         leadsPipeline: leads ?? 0,
       })
     } catch (err) {
@@ -186,10 +194,11 @@ export default function HomeDashboard() {
       statusDot: 'green',
       statusText: 'Pipeline activo',
       submods: [
-        { label: 'Panel de Oportunidades', route: '/ventas/leads' },
+        { label: 'Panel de Oportunidades', route: '/ventas/mis-leads' },
         { label: 'Nuevo Lead', route: '/ventas/leads/nuevo' },
         { label: 'Dashboard Ventas', route: '/ventas/dashboard' },
-        { label: 'Programa Semanal', route: '/ventas/programa' },
+        { label: 'Funnel de Ventas', route: '/ventas/funnel' },
+        { label: 'Programa Semanal', route: '/ventas/programa-semanal' },
         { label: 'Comisiones', route: '/ventas/comisiones' },
       ],
     },
@@ -203,12 +212,13 @@ export default function HomeDashboard() {
       statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray',
       statusText: kpis.viajesActivos > 0 ? 'En operación' : 'Sin viajes',
       submods: [
-        { label: 'War Room', route: '/warroom' },
-        { label: 'Torre de Control', route: '/operaciones/torre' },
+        { label: 'War Room', route: '/war-room' },
+        { label: 'Torre de Control', route: '/operaciones/torre-control' },
         { label: 'Mapa GPS', route: '/operaciones/mapa' },
         { label: 'Despachos', route: '/operaciones/despachos' },
         { label: 'Control Tractos', route: '/operaciones/tractos' },
         { label: 'Control Cajas', route: '/operaciones/cajas' },
+        { label: 'Cruce Fronterizo', route: '/operaciones/cruce-fronterizo' },
       ],
     },
     {
@@ -251,6 +261,8 @@ export default function HomeDashboard() {
       statusText: kpis.cuentasCxc > 15 ? 'Revisión' : 'Al corriente',
       submods: [
         { label: 'Cartera', route: '/cxc/cartera' },
+        { label: 'Aging Report', route: '/cxc/aging' },
+        { label: 'Acciones de Cobro', route: '/cxc/acciones' },
       ],
     },
     // Fila 2: 4 módulos
@@ -259,12 +271,14 @@ export default function HomeDashboard() {
       label: 'Comunicaciones',
       icon: <MessageSquare size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
       priority: 'MID',
-      kpiValue: '—',
+      kpiValue: '3',
       kpiLabel: 'canales',
-      statusDot: 'gray',
-      statusText: 'En desarrollo',
+      statusDot: 'green',
+      statusText: 'Activo',
       submods: [
-        { label: 'WhatsApp', route: '/servicio/whatsapp' },
+        { label: 'Correos', route: '/comunicaciones/correos' },
+        { label: 'Notificaciones', route: '/comunicaciones/notificaciones' },
+        { label: 'AI Chief of Staff', route: '/comunicaciones/chief-of-staff' },
       ],
     },
     {
@@ -284,23 +298,28 @@ export default function HomeDashboard() {
       id: 'actividades',
       label: 'Actividades',
       icon: <CalendarCheck size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
-      priority: 'FASE2',
+      priority: 'LOW',
       kpiValue: '—',
-      kpiLabel: 'próximamente',
+      kpiLabel: 'tareas',
       statusDot: 'gray',
-      statusText: 'Fase 2',
-      submods: [],
+      statusText: 'Disponible',
+      submods: [
+        { label: 'Actividades', route: '/actividades' },
+      ],
     },
     {
       id: 'documentos',
       label: 'Documentos',
       icon: <FileText size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
-      priority: 'FASE2',
+      priority: 'LOW',
       kpiValue: '—',
-      kpiLabel: 'próximamente',
+      kpiLabel: 'portal',
       statusDot: 'gray',
-      statusText: 'Fase 2',
-      submods: [],
+      statusText: 'Disponible',
+      submods: [
+        { label: 'Portal Documentos', route: '/portal/documentos' },
+        { label: 'Documentos', route: '/documentos' },
+      ],
     },
   ]
 
@@ -396,7 +415,7 @@ export default function HomeDashboard() {
           { label: 'Viajes Activos', value: kpis.viajesActivos, color: '#0D9668' },
           { label: 'Unidades GPS', value: kpis.unidadesGps, color: '#3B6CE7' },
           { label: 'Alertas Hoy', value: kpis.alertasHoy, color: kpis.alertasHoy > 0 ? '#C53030' : '#6B6B7A' },
-          { label: 'Facturado Hoy', value: kpis.facturadoHoy, color: '#B8860B' },
+          { label: 'Formatos Activos', value: kpis.facturadoHoy, color: '#B8860B' },
           { label: 'Leads Pipeline', value: kpis.leadsPipeline, color: '#C27803' },
         ].map((metric) => (
           <div key={metric.label} style={{ textAlign: 'center' }}>
