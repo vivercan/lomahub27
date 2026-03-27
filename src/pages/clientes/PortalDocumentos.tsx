@@ -1,178 +1,774 @@
-import type { ReactElement } from 'react'
-import { useState, useCallback } from 'react'
-import { Upload, FileText, CheckCircle, AlertCircle, X, Shield, Building2 } from 'lucide-react'
-import { tokens } from '../../lib/tokens'
-import { supabase } from '../../lib/supabase'
-import { useSearchParams } from 'react-router-dom'
+'use client'
 
-interface DocFile {
-  name: string
-  file: File
-  status: 'pending' | 'uploading' | 'done' | 'error'
-  error?: string
+import React, { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { supabase } from '../../lib/supabase'
+import { tokens } from '../../lib/tokens'
+
+interface DocumentoCliente {
+  id: string
+  cliente_id: string
+  tipo_documento: 'CSF' | 'INE' | 'Acta' | 'Poder' | 'Comprobante' | 'Caratula'
+  nombre_archivo: string
+  storage_path: string
+  status: 'pendiente' | 'subido' | 'en_revision' | 'aprobado' | 'rechazado'
+  razon_rechazo?: string
+  revisado_por?: string
+  created_at: string
+  updated_at: string
 }
 
-const REQUIRED_DOCS = [
-  { id: 'csi', label: 'Constancia de Situacion Fiscal', desc: 'PDF emitido por el SAT' },
-  { id: 'ine', label: 'INE del representante legal', desc: 'Ambos lados en un solo PDF' },
-  { id: 'acta', label: 'Acta constitutiva', desc: 'Copia certificada o escaneada' },
-  { id: 'poder', label: 'Poder notarial', desc: 'Si aplica (personas morales)' },
-  { id: 'comprobante', label: 'Comprobante de domicilio', desc: 'No mayor a 3 meses' },
-  { id: 'caratula', label: 'Caratula bancaria', desc: 'Para depositos y transferencias' },
+interface DocumentActivity {
+  tipo: 'subido' | 'revisado' | 'aprobado' | 'rechazado'
+  fecha: string
+  revisado_por?: string
+}
+
+const DOCUMENT_TYPES = [
+  { tipo: 'CSF', label: 'Constancia de Situación Fiscal', required: true },
+  { tipo: 'INE', label: 'Identificación (INE)', required: true },
+  { tipo: 'Acta', label: 'Acta Constitutiva', required: true },
+  { tipo: 'Poder', label: 'Poder Notarial', required: true },
+  { tipo: 'Comprobante', label: 'Comprobante de Domicilio', required: true },
+  { tipo: 'Caratula', label: 'Carátula Bancaria', required: true },
 ]
 
-export default function PortalDocumentos(): ReactElement {
-  const [searchParams] = useSearchParams()
+const STATUS_CONFIG = {
+  pendiente: {
+    label: 'Pendiente',
+    color: tokens.textSecondary,
+    bgColor: '#2A2A36',
+    icon: '⏳',
+  },
+  subido: {
+    label: 'Subido',
+    color: tokens.primary,
+    bgColor: 'rgba(59, 108, 231, 0.1)',
+    icon: '📤',
+  },
+  en_revision: {
+    label: 'En Revisión',
+    color: tokens.yellow,
+    bgColor: 'rgba(184, 134, 11, 0.1)',
+    icon: '👁️',
+  },
+  aprobado: {
+    label: 'Aprobado',
+    color: tokens.green,
+    bgColor: 'rgba(13, 150, 104, 0.1)',
+    icon: '✓',
+  },
+  rechazado: {
+    label: 'Rechazado',
+    color: tokens.red,
+    bgColor: 'rgba(197, 48, 48, 0.1)',
+    icon: '✕',
+  },
+}
+
+export default function PortalDocumentosStatus() {
+  const searchParams = useSearchParams()
   const clienteId = searchParams.get('id') || ''
-  const empresa = searchParams.get('empresa') || 'Cliente'
+  const nombreEmpresa = searchParams.get('empresa') || 'Tu Empresa'
 
-  const [files, setFiles] = useState<Record<string, DocFile>>({})
-  const [uploading, setUploading] = useState(false)
-  const [allDone, setAllDone] = useState(false)
+  const [documentos, setDocumentos] = useState<DocumentoCliente[]>([])
+  const [loading, setLoading] = useState(true)
+  const [uploadingDocType, setUploadingDocType] = useState<string | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
+  const [expandedDoc, setExpandedDoc] = useState<string | null>(null)
+  const [activities, setActivities] = useState<Record<string, DocumentActivity[]>>({})
 
-  const handleFileSelect = useCallback((docId: string, file: File) => {
-    setFiles(prev => ({ ...prev, [docId]: { name: file.name, file, status: 'pending' } }))
-  }, [])
+  // Fetch initial documents
+  useEffect(() => {
+    fetchDocumentos()
+  }, [clienteId])
 
-  const removeFile = useCallback((docId: string) => {
-    setFiles(prev => {
-      const next = { ...prev }
-      delete next[docId]
-      return next
-    })
-  }, [])
+  // Real-time subscription to documentos_cliente table
+  useEffect(() => {
+    if (!clienteId) return
 
-  const handleUploadAll = async () => {
-    if (Object.keys(files).length === 0) return
-    setUploading(true)
+    const subscription = supabase
+      .channel(`documentos_cliente_${clienteId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'documentos_cliente',
+          filter: `cliente_id=eq.${clienteId}`,
+        },
+        (payload) => {
+          if (payload.eventType === 'INSERT') {
+            setDocumentos((prev) => [...prev, payload.new as DocumentoCliente])
+          } else if (payload.eventType === 'UPDATE') {
+            setDocumentos((prev) =>
+              prev.map((doc) =>
+                doc.id === payload.new.id ? (payload.new as DocumentoCliente) : doc
+              )
+            )
+          } else if (payload.eventType === 'DELETE') {
+            setDocumentos((prev) => prev.filter((doc) => doc.id !== payload.old.id))
+          }
+        }
+      )
+      .subscribe()
 
-    for (const [docId, doc] of Object.entries(files)) {
-      if (doc.status === 'done') continue
-      setFiles(prev => ({ ...prev, [docId]: { ...prev[docId], status: 'uploading' } }))
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [clienteId])
 
-      const path = `clientes/${clienteId || 'sin-id'}/${docId}_${Date.now()}_${doc.name}`
-      const { error } = await supabase.storage.from('documentos').upload(path, doc.file)
+  const fetchDocumentos = async () => {
+    try {
+      setLoading(true)
+      const { data, error: fetchError } = await supabase
+        .from('documentos_cliente')
+        .select('*')
+        .eq('cliente_id', clienteId)
+        .order('created_at', { ascending: false })
 
-      if (error) {
-        setFiles(prev => ({ ...prev, [docId]: { ...prev[docId], status: 'error', error: error.message } }))
-      } else {
-        setFiles(prev => ({ ...prev, [docId]: { ...prev[docId], status: 'done' } }))
+      if (fetchError) throw fetchError
+
+      setDocumentos(data || [])
+      buildActivities(data || [])
+    } catch (err) {
+      console.error('Error fetching documentos:', err)
+      setError('No se pudieron cargar los documentos')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const buildActivities = (docs: DocumentoCliente[]) => {
+    const actMap: Record<string, DocumentActivity[]> = {}
+
+    docs.forEach((doc) => {
+      const acts: DocumentActivity[] = []
+
+      if (doc.created_at) {
+        acts.push({
+          tipo: 'subido',
+          fecha: new Date(doc.created_at).toLocaleString('es-MX'),
+        })
       }
+
+      if (doc.status === 'en_revision' && doc.updated_at) {
+        acts.push({
+          tipo: 'revisado',
+          fecha: new Date(doc.updated_at).toLocaleString('es-MX'),
+          revisado_por: doc.revisado_por,
+        })
+      }
+
+      if ((doc.status === 'aprobado' || doc.status === 'rechazado') && doc.updated_at) {
+        acts.push({
+          tipo: doc.status,
+          fecha: new Date(doc.updated_at).toLocaleString('es-MX'),
+          revisado_por: doc.revisado_por,
+        })
+      }
+
+      actMap[doc.id] = acts
+    })
+
+    setActivities(actMap)
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.currentTarget.files
+    if (files && files[0]) {
+      const file = files[0]
+      if (file.size > 10 * 1024 * 1024) {
+        setError('El archivo no debe exceder 10MB')
+        return
+      }
+      setSelectedFile(file)
+      setError(null)
+    }
+  }
+
+  const handleUpload = async (docType: string) => {
+    if (!selectedFile || !clienteId) {
+      setError('Selecciona un archivo')
+      return
     }
 
-    setUploading(false)
-    const allCompleted = Object.values(files).every(f => f.status === 'done')
-    if (allCompleted) setAllDone(true)
+    try {
+      setUploadingDocType(docType)
+      setError(null)
+
+      // Upload to storage
+      const fileName = `${clienteId}/${docType}/${Date.now()}_${selectedFile.name}`
+      const { error: uploadError } = await supabase.storage
+        .from('documentos_onboarding')
+        .upload(fileName, selectedFile)
+
+      if (uploadError) throw uploadError
+
+      // Create or update database record
+      const existingDoc = documentos.find(
+        (doc) => doc.cliente_id === clienteId && doc.tipo_documento === docType
+      )
+
+      if (existingDoc) {
+        const { error: updateError } = await supabase
+          .from('documentos_cliente')
+          .update({
+            nombre_archivo: selectedFile.name,
+            storage_path: fileName,
+            status: 'subido',
+            updated_at: new Date().toISOString(),
+            razon_rechazo: null,
+          })
+          .eq('id', existingDoc.id)
+
+        if (updateError) throw updateError
+      } else {
+        const { error: insertError } = await supabase
+          .from('documentos_cliente')
+          .insert({
+            cliente_id: clienteId,
+            tipo_documento: docType,
+            nombre_archivo: selectedFile.name,
+            storage_path: fileName,
+            status: 'subido',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
+
+        if (insertError) throw insertError
+      }
+
+      setSuccess(`${docType} subido correctamente`)
+      setSelectedFile(null)
+      setTimeout(() => setSuccess(null), 3000)
+    } catch (err) {
+      console.error('Upload error:', err)
+      setError('Error al subir el archivo')
+    } finally {
+      setUploadingDocType(null)
+    }
   }
 
-  const completedCount = Object.values(files).filter(f => f.status === 'done').length
-  const totalAttached = Object.keys(files).length
-
-  // ── Styles ──
-  const ps = {
-    input: { width: '100%', padding: '9px 12px', fontSize: '13px', background: tokens.colors.bgMain, border: '1px solid ' + tokens.colors.border, borderRadius: tokens.radius.md, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body, outline: 'none', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.2)' } as React.CSSProperties,
+  const handleReupload = (docType: string) => {
+    setUploadingDocType(docType)
+    setSelectedFile(null)
   }
+
+  const getCompletionPercentage = (): number => {
+    if (documentos.length === 0) return 0
+    const approvedCount = documentos.filter((doc) => doc.status === 'aprobado').length
+    return Math.round((approvedCount / DOCUMENT_TYPES.length) * 100)
+  }
+
+  const getDocumentoStatus = (docType: string): DocumentoCliente | undefined => {
+    return documentos.find((doc) => doc.tipo_documento === docType)
+  }
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: tokens.bgMain,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: 'Montserrat, sans-serif',
+          color: tokens.textPrimary,
+        }}
+      >
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
+          <div>Cargando documentos...</div>
+        </div>
+      </div>
+    )
+  }
+
+  const completionPercentage = getCompletionPercentage()
 
   return (
-    <div style={{ minHeight: '100vh', background: tokens.colors.bgMain, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', fontFamily: tokens.fonts.body }}>
-      <div style={{ width: '100%', maxWidth: '640px' }}>
+    <div
+      style={{
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: tokens.bgMain,
+        color: tokens.textPrimary,
+        fontFamily: 'Montserrat, sans-serif',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+      lang="es"
+    >
+      {/* Header */}
+      <div
+        style={{
+          backgroundColor: tokens.bgCard,
+          borderBottom: `1px solid ${tokens.border}`,
+          padding: '2rem',
+          minHeight: 'fit-content',
+        }}
+      >
+        <h1 style={{ margin: '0 0 0.5rem 0', fontSize: '2rem', fontWeight: 600 }}>
+          Portal de Documentos
+        </h1>
+        <p style={{ margin: 0, color: tokens.textSecondary, fontSize: '0.95rem' }}>
+          Onboarding para {nombreEmpresa}
+        </p>
+      </div>
 
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '12px' }}>
-            <Building2 size={24} style={{ color: tokens.colors.primary }} />
-            <span style={{ fontSize: '22px', fontWeight: 800, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, letterSpacing: '-0.5px' }}>LomaHUB27</span>
+      {/* Main Content */}
+      <div
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '2rem',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '2rem',
+        }}
+      >
+        {/* Progress Section */}
+        <div
+          style={{
+            backgroundColor: tokens.bgCard,
+            border: `1px solid ${tokens.border}`,
+            borderRadius: '8px',
+            padding: '1.5rem',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1rem',
+            }}
+          >
+            <h2 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 600 }}>
+              Progreso de Onboarding
+            </h2>
+            <span style={{ color: tokens.textSecondary, fontSize: '0.9rem' }}>
+              {documentos.filter((d) => d.status === 'aprobado').length}/{DOCUMENT_TYPES.length}{' '}
+              aprobados
+            </span>
           </div>
-          <h1 style={{ margin: '0 0 6px', fontSize: '18px', fontWeight: 700, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>
-            Portal de Documentos
-          </h1>
-          <p style={{ margin: 0, fontSize: '14px', color: tokens.colors.textSecondary }}>
-            {empresa} — Suba su documentacion para completar el alta comercial
-          </p>
+
+          {/* Progress Bar */}
+          <div
+            style={{
+              width: '100%',
+              height: '12px',
+              backgroundColor: tokens.border,
+              borderRadius: '6px',
+              overflow: 'hidden',
+              marginBottom: '1rem',
+            }}
+          >
+            <div
+              style={{
+                height: '100%',
+                width: `${completionPercentage}%`,
+                backgroundColor: tokens.green,
+                transition: 'width 0.3s ease',
+              }}
+            />
+          </div>
+
+          <div style={{ textAlign: 'center', color: tokens.textSecondary, fontSize: '0.9rem' }}>
+            {completionPercentage}% completado
+          </div>
         </div>
 
-        {/* Success State */}
-        {allDone ? (
-          <div style={{ background: tokens.colors.bgCard, borderRadius: tokens.radius.lg, border: '1px solid ' + tokens.colors.border, padding: '40px', textAlign: 'center', boxShadow: tokens.effects.cardShadow }}>
-            <CheckCircle size={48} style={{ color: tokens.colors.green, marginBottom: '16px' }} />
-            <h2 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 700, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>Documentos recibidos</h2>
-            <p style={{ margin: 0, fontSize: '14px', color: tokens.colors.textSecondary }}>
-              Gracias. Su documentacion esta siendo revisada por nuestro equipo comercial.
-              Le notificaremos cuando su cuenta sea activada.
-            </p>
-          </div>
-        ) : (
-          <div style={{ background: tokens.colors.bgCard, borderRadius: tokens.radius.lg, border: '1px solid ' + tokens.colors.border, boxShadow: tokens.effects.cardShadow, overflow: 'hidden' }}>
-
-            {/* Progress */}
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid ' + tokens.colors.border, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Shield size={16} style={{ color: tokens.colors.primary }} />
-                <span style={{ fontSize: '13px', fontWeight: 700, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>Documentacion requerida</span>
-              </div>
-              <span style={{ fontSize: '12px', color: tokens.colors.textMuted }}>{completedCount} de {REQUIRED_DOCS.length} subidos</span>
-            </div>
-
-            {/* Doc List */}
-            <div style={{ padding: '8px 0' }}>
-              {REQUIRED_DOCS.map(doc => {
-                const attached = files[doc.id]
-                const isDone = attached?.status === 'done'
-                const isError = attached?.status === 'error'
-                const isUploading = attached?.status === 'uploading'
-
-                return (
-                  <div key={doc.id} style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid ' + tokens.colors.border }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: '13px', fontWeight: 600, color: isDone ? tokens.colors.green : tokens.colors.textPrimary, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        {isDone ? <CheckCircle size={14} /> : <FileText size={14} style={{ color: tokens.colors.textMuted }} />}
-                        {doc.label}
-                      </div>
-                      <div style={{ fontSize: '11px', color: tokens.colors.textMuted, marginTop: '2px', marginLeft: '22px' }}>
-                        {isError ? <span style={{ color: tokens.colors.red }}>{attached.error}</span> : isUploading ? 'Subiendo...' : attached ? attached.name : doc.desc}
-                      </div>
-                    </div>
-                    <div>
-                      {isDone ? (
-                        <span style={{ fontSize: '11px', color: tokens.colors.green, fontWeight: 600 }}>Listo</span>
-                      ) : attached ? (
-                        <button onClick={() => removeFile(doc.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: tokens.colors.textMuted, padding: '4px' }}>
-                          <X size={14} />
-                        </button>
-                      ) : (
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', fontSize: '12px', fontWeight: 600, color: tokens.colors.primary, background: tokens.colors.primary + '15', borderRadius: tokens.radius.md, cursor: 'pointer' }}>
-                          <Upload size={12} /> Seleccionar
-                          <input type="file" accept=".pdf,.jpg,.jpeg,.png" style={{ display: 'none' }} onChange={e => { if (e.target.files?.[0]) handleFileSelect(doc.id, e.target.files[0]) }} />
-                        </label>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-
-            {/* Upload Button */}
-            <div style={{ padding: '16px 20px', borderTop: '1px solid ' + tokens.colors.border }}>
-              <button onClick={handleUploadAll} disabled={totalAttached === 0 || uploading} style={{
-                width: '100%', padding: '12px', fontSize: '14px', fontWeight: 700,
-                color: '#fff', background: totalAttached === 0 || uploading ? tokens.colors.bgHover : tokens.colors.primary,
-                border: 'none', borderRadius: tokens.radius.md, cursor: totalAttached === 0 ? 'default' : 'pointer',
-                fontFamily: tokens.fonts.heading, boxShadow: tokens.effects.glowPrimary,
-                opacity: totalAttached === 0 ? 0.5 : 1, transition: 'all 0.15s',
-              }}>
-                {uploading ? 'Subiendo documentos...' : `Enviar ${totalAttached} documento${totalAttached !== 1 ? 's' : ''}`}
-              </button>
-            </div>
+        {/* Alerts */}
+        {error && (
+          <div
+            style={{
+              backgroundColor: 'rgba(197, 48, 48, 0.1)',
+              border: `1px solid ${tokens.red}`,
+              borderRadius: '8px',
+              padding: '1rem',
+              color: tokens.red,
+              fontSize: '0.95rem',
+            }}
+          >
+            {error}
           </div>
         )}
 
-        {/* Footer */}
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <p style={{ fontSize: '11px', color: tokens.colors.textMuted }}>
-            TROB Logistics &middot; Transporte de carga nacional e internacional
+        {success && (
+          <div
+            style={{
+              backgroundColor: 'rgba(13, 150, 104, 0.1)',
+              border: `1px solid ${tokens.green}`,
+              borderRadius: '8px',
+              padding: '1rem',
+              color: tokens.green,
+              fontSize: '0.95rem',
+            }}
+          >
+            ✓ {success}
+          </div>
+        )}
+
+        {/* Documents List */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {DOCUMENT_TYPES.map((docDef) => {
+            const docStatus = getDocumentoStatus(docDef.tipo)
+            const status = docStatus?.status || 'pendiente'
+            const config = STATUS_CONFIG[status]
+            const isExpanded = expandedDoc === docDef.tipo
+            const docActivities = docStatus ? activities[docStatus.id] || [] : []
+
+            return (
+              <div
+                key={docDef.tipo}
+                style={{
+                  backgroundColor: tokens.bgCard,
+                  border: `1px solid ${tokens.border}`,
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {/* Document Header */}
+                <div
+                  onClick={() =>
+                    setExpandedDoc(isExpanded ? null : docDef.tipo)
+                  }
+                  style={{
+                    padding: '1.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    backgroundColor: tokens.bgCard,
+                    borderBottom: isExpanded ? `1px solid ${tokens.border}` : 'none',
+                  }}
+                >
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ margin: '0 0 0.25rem 0', fontSize: '1rem', fontWeight: 600 }}>
+                      {docDef.label}
+                    </h3>
+                    <p style={{ margin: 0, color: tokens.textSecondary, fontSize: '0.85rem' }}>
+                      {docDef.required && <span>* Documento requerido</span>}
+                    </p>
+                  </div>
+
+                  {/* Status Badge */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      marginLeft: '1rem',
+                    }}
+                  >
+                    <div
+                      style={{
+                        backgroundColor: config.bgColor,
+                        color: config.color,
+                        padding: '0.5rem 1rem',
+                        borderRadius: '6px',
+                        fontSize: '0.85rem',
+                        fontWeight: 500,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                      }}
+                    >
+                      <span>{config.icon}</span>
+                      {config.label}
+                    </div>
+                    <span style={{ color: tokens.textSecondary, fontSize: '1.2rem' }}>
+                      {isExpanded ? '▼' : '▶'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Document Details (Expanded) */}
+                {isExpanded && (
+                  <div
+                    style={{
+                      padding: '1.5rem',
+                      borderTop: `1px solid ${tokens.border}`,
+                      backgroundColor: `rgba(59, 108, 231, 0.02)`,
+                    }}
+                  >
+                    {/* File Upload Section */}
+                    {(status === 'pendiente' || status === 'subido' || status === 'rechazado') && (
+                      <div style={{ marginBottom: '1.5rem' }}>
+                        <label
+                          style={{
+                            display: 'block',
+                            marginBottom: '0.75rem',
+                            fontWeight: 500,
+                            color: tokens.textPrimary,
+                          }}
+                        >
+                          Selecciona un archivo
+                        </label>
+
+                        {uploadingDocType !== docDef.tipo && (
+                          <div
+                            style={{
+                              display: 'flex',
+                              gap: '0.75rem',
+                              marginBottom: '0.75rem',
+                            }}
+                          >
+                            <input
+                              type="file"
+                              id={`file-${docDef.tipo}`}
+                              onChange={handleFileSelect}
+                              style={{ display: 'none' }}
+                              accept=".pdf,.jpg,.jpeg,.png,.webp"
+                            />
+                            <label
+                              htmlFor={`file-${docDef.tipo}`}
+                              style={{
+                                flex: 1,
+                                padding: '0.75rem 1rem',
+                                backgroundColor: tokens.border,
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                                fontWeight: 500,
+                                transition: 'all 0.2s ease',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = tokens.primary
+                                e.currentTarget.style.color = 'white'
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = tokens.border
+                                e.currentTarget.style.color = tokens.textPrimary
+                              }}
+                            >
+                              📁 Seleccionar archivo
+                            </label>
+
+                            <button
+                              onClick={() => handleUpload(docDef.tipo)}
+                              disabled={!selectedFile || uploadingDocType !== null}
+                              style={{
+                                padding: '0.75rem 1.5rem',
+                                backgroundColor:
+                                  selectedFile && uploadingDocType === null
+                                    ? tokens.green
+                                    : tokens.border,
+                                color:
+                                  selectedFile && uploadingDocType === null
+                                    ? 'white'
+                                    : tokens.textSecondary,
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor:
+                                  selectedFile && uploadingDocType === null
+                                    ? 'pointer'
+                                    : 'not-allowed',
+                                fontWeight: 500,
+                                fontFamily: 'Montserrat, sans-serif',
+                                transition: 'all 0.2s ease',
+                              }}
+                              onMouseEnter={(e) => {
+                                if (selectedFile && uploadingDocType === null) {
+                                  e.currentTarget.style.opacity = '0.9'
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.opacity = '1'
+                              }}
+                            >
+                              {uploadingDocType === docDef.tipo ? '⏳ Subiendo...' : '✓ Subir'}
+                            </button>
+                          </div>
+                        )}
+
+                        {uploadingDocType === docDef.tipo && (
+                          <div
+                            style={{
+                              padding: '1rem',
+                              backgroundColor: tokens.border,
+                              borderRadius: '6px',
+                              textAlign: 'center',
+                              color: tokens.textSecondary,
+                            }}
+                          >
+                            Subiendo archivo...
+                          </div>
+                        )}
+
+                        {selectedFile && uploadingDocType !== docDef.tipo && (
+                          <p style={{ margin: '0.5rem 0 0 0', color: tokens.textSecondary, fontSize: '0.85rem' }}>
+                            Archivo seleccionado: {selectedFile.name}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Rejection Reason */}
+                    {status === 'rechazado' && docStatus?.razon_rechazo && (
+                      <div
+                        style={{
+                          backgroundColor: 'rgba(197, 48, 48, 0.1)',
+                          border: `1px solid ${tokens.red}`,
+                          borderRadius: '6px',
+                          padding: '1rem',
+                          marginBottom: '1rem',
+                        }}
+                      >
+                        <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.red }}>
+                          ⚠️ Motivo del rechazo
+                        </p>
+                        <p style={{ margin: 0, color: tokens.textPrimary, fontSize: '0.95rem' }}>
+                          {docStatus.razon_rechazo}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Current File Info */}
+                    {docStatus && (
+                      <div
+                        style={{
+                          backgroundColor: tokens.border,
+                          borderRadius: '6px',
+                          padding: '1rem',
+                          marginBottom: '1rem',
+                        }}
+                      >
+                        <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.textPrimary }}>
+                          📄 Archivo actual
+                        </p>
+                        <p style={{ margin: 0, color: tokens.textSecondary, fontSize: '0.9rem' }}>
+                          {docStatus.nombre_archivo}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Timeline */}
+                    {docActivities.length > 0 && (
+                      <div style={{ marginTop: '1.5rem' }}>
+                        <p style={{ margin: '0 0 1rem 0', fontWeight: 500, color: tokens.textPrimary }}>
+                          ⏱️ Historial
+                        </p>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '0.75rem',
+                          }}
+                        >
+                          {docActivities.map((activity, idx) => {
+                            const actConfig = {
+                              subido: { icon: '📤', label: 'Archivo subido' },
+                              revisado: { icon: '👁️', label: 'En revisión' },
+                              aprobado: { icon: '✓', label: 'Aprobado' },
+                              rechazado: { icon: '✕', label: 'Rechazado' },
+                            }
+                            const actCfg = actConfig[activity.tipo]
+
+                            return (
+                              <div key={idx} style={{ fontSize: '0.85rem' }}>
+                                <p style={{ margin: 0, color: tokens.textPrimary }}>
+                                  {actCfg.icon} {actCfg.label}
+                                </p>
+                                <p style={{ margin: '0.25rem 0 0 0', color: tokens.textSecondary, fontSize: '0.8rem' }}>
+                                  {activity.fecha}
+                                  {activity.revisado_por && ` • Revisado por: ${activity.revisado_por}`}
+                                </p>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Help Footer */}
+        <div
+          style={{
+            backgroundColor: tokens.bgCard,
+            border: `1px solid ${tokens.border}`,
+            borderRadius: '8px',
+            padding: '1.5rem',
+            color: tokens.textSecondary,
+            fontSize: '0.9rem',
+            marginTop: '2rem',
+          }}
+        >
+          <p style={{ margin: '0 0 0.75rem 0', fontWeight: 500 }}>
+            💡 ¿Necesitas ayuda?
           </p>
+          <ul
+            style={{
+              margin: 0,
+              paddingLeft: '1.25rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.5rem',
+            }}
+          >
+            <li>Todos los documentos son requeridos para completar el onboarding</li>
+            <li>Los archivos aceptados son: PDF, JPG, PNG, WebP (máximo 10MB)</li>
+            <li>Si tu documento es rechazado, revisa el motivo y vuelve a subirlo</li>
+            <li>El proceso de revisión puede tomar hasta 48 horas</li>
+          </ul>
         </div>
       </div>
     </div>
   )
 }
+
+/*
+SQL Migration for documentos_cliente table:
+
+CREATE TABLE documentos_cliente (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  cliente_id UUID NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
+  tipo_documento TEXT NOT NULL CHECK (tipo_documento IN ('CSF', 'INE', 'Acta', 'Poder', 'Comprobante', 'Caratula')),
+  nombre_archivo TEXT NOT NULL,
+  storage_path TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pendiente' CHECK (status IN ('pendiente', 'subido', 'en_revision', 'aprobado', 'rechazado')),
+  razon_rechazo TEXT,
+  revisado_por TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  UNIQUE(cliente_id, tipo_documento)
+);
+
+CREATE INDEX idx_documentos_cliente_id ON documentos_cliente(cliente_id);
+CREATE INDEX idx_documentos_status ON documentos_cliente(status);
+CREATE INDEX idx_documentos_created_at ON documentos_cliente(created_at);
+
+-- Enable RLS
+ALTER TABLE documentos_cliente ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policy: Clientes can view and modify their own documents
+CREATE POLICY "Clients can view own documents" ON documentos_cliente
+  FOR SELECT USING (cliente_id = auth.uid());
+
+CREATE POLICY "Clients can upload documents" ON documentos_cliente
+  FOR INSERT WITH CHECK (cliente_id = auth.uid());
+
+CREATE POLICY "Clients can update own documents" ON documentos_cliente
+  FOR UPDATE USING (cliente_id = auth.uid());
+
+-- Admin policy: Admins can view, update status
+CREATE POLICY "Admins can manage documents" ON documentos_cliente
+  FOR ALL USING (
+    EXISTS (
+      SELECT 1 FROM usuarios WHERE id = auth.uid() AND rol = 'admin'
+    )
+  );
+*/
