@@ -34,7 +34,6 @@ const modules: ModuleGroup[] = [
       { label: 'Dashboard Ventas', path: '/ventas/dashboard', icon: <TrendingUp size={16} />, roles: ['superadmin', 'admin', 'cs', 'ventas'] },
       { label: 'Panel de Oportunidades', path: '/ventas/mis-leads', icon: <Target size={16} />, roles: ['superadmin', 'admin', 'cs', 'ventas'] },
       { label: 'Agregar Lead', path: '/ventas/leads/nuevo', icon: <Users size={16} />, roles: ['superadmin', 'admin', 'cs', 'ventas'] },
-      { label: 'Funnel', path: '/ventas/funnel', icon: <BarChart3 size={16} />, roles: ['superadmin', 'admin', 'ventas'] },
       { label: 'Cotizador', path: '/cotizador/nueva', icon: <FileText size={16} />, roles: ['superadmin', 'admin', 'cs', 'ventas'] },
       { label: 'Alta de Cliente', path: '/clientes/alta', icon: <Users size={16} />, roles: ['superadmin', 'admin', 'cs', 'ventas'] },
     ]
