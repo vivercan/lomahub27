@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import AppHeader from '../components/layout/AppHeader'
+import { Sidebar } from '../components/layout/Sidebar'
 import { useAuthContext } from '../hooks/AuthContext'
 
 // ============================================================================
@@ -137,6 +138,7 @@ export default function HomeDashboard() {
   const { user, logout } = useAuthContext()
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
   const [expandedModule, setExpandedModule] = useState<string | null>(null)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   // Format user name from email
   const formatName = (email?: string) => {
@@ -651,16 +653,29 @@ export default function HomeDashboard() {
   return (
     <div
       style={{
-        width: '100vw',
         height: '100vh',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'row',
         backgroundColor: DASH.bg,
         fontFamily: DASH.fontFamily,
         color: '#E8E8ED',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
       }}
     >
+      {/* Sidebar */}
+      <Sidebar
+        collapsed={sidebarCollapsed}
+        onToggle={() => setSidebarCollapsed(prev => !prev)}
+      />
+
+      {/* Main content */}
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        minWidth: 0,
+      }}>
       {/* Zona 1 — AppHeader */}
       <AppHeader
         onLogout={handleLogout}
@@ -781,6 +796,7 @@ export default function HomeDashboard() {
         </div>
       </div>
 
+      </div>
       {/* Click outside to close expanded module */}
       {expandedModule && (
         <div
