@@ -52,6 +52,7 @@ export default function AppHeader({
   // --- Fetch USD/MXN exchange rate ---
   useEffect(() => {
     const fetchRate = async () => {
+      // 1. Try Supabase configuracion table
       try {
         const { data, error } = await supabase
           .from('configuracion')
@@ -60,13 +61,19 @@ export default function AppHeader({
           .maybeSingle()
         if (!error && data?.valor) {
           setTipoCambio(parseFloat(data.valor))
-        } else {
-          // Fallback: try Banxico-like static value
-          setTipoCambio(null)
+          return
         }
-      } catch {
-        setTipoCambio(null)
-      }
+      } catch { /* fallthrough */ }
+      // 2. Fallback: free exchangerate API
+      try {
+        const res = await fetch('https://open.er-api.com/v6/latest/USD')
+        const json = await res.json()
+        if (json?.rates?.MXN) {
+          setTipoCambio(json.rates.MXN)
+          return
+        }
+      } catch { /* fallthrough */ }
+      setTipoCambio(null)
     }
     fetchRate()
   }, [])
