@@ -1,7 +1,5 @@
-'use client'
-
 import React, { useState, useEffect, useCallback } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 
@@ -67,7 +65,7 @@ const STATUS_CONFIG = {
 }
 
 export default function PortalDocumentosStatus() {
-  const searchParams = useSearchParams()
+  const [searchParams] = useSearchParams()
   const clienteId = searchParams.get('id') || ''
   const nombreEmpresa = searchParams.get('empresa') || 'Tu Empresa'
 
