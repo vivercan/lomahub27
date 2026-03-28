@@ -1,9 +1,9 @@
 // src/pages/HomeDashboard.tsx
-// Dashboard V28 â 9 MÃ³dulos con submÃ³dulos expandibles
-// Estilo visual: V27f BLINDADO (pÃ¡gina 34 Notion)
+// Dashboard V28 — 9 Módulos con submódulos expandibles
+// Estilo visual: V27f BLINDADO (página 34 Notion)
 // Background: #2a2a36 | Font: Montserrat | Cards: gradient 180deg, 1:1, 20px radius
-// Grid: Fila 1 (5 mÃ³dulos), Fila 2 (4 mÃ³dulos), gap 10px
-// NO TOCAR sin autorizaciÃ³n de JJ
+// Grid: Fila 1 (5 módulos), Fila 2 (4 módulos), gap 10px
+// NO TOCAR sin autorización de JJ
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -44,7 +44,7 @@ interface SubModule {
 }
 
 // ============================================================================
-// DASHBOARD VISUAL CONSTANTS (V27f BLINDADO â pÃ¡gina 34)
+// DASHBOARD VISUAL CONSTANTS (V27f BLINDADO — página 34)
 // ============================================================================
 
 const DASH = {
@@ -153,7 +153,7 @@ export default function HomeDashboard() {
     navigate('/login')
   }
 
-  // KPI state â datos reales de Supabase
+  // KPI state — datos reales de Supabase
   const [kpis, setKpis] = useState({
     leadsActivos: 0,
     viajesActivos: 0,
@@ -241,9 +241,9 @@ export default function HomeDashboard() {
     return () => clearInterval(interval)
   }, [fetchKpis])
 
-  // âââ MODULE DEFINITIONS (V28 â 9 mÃ³dulos) âââââââââââ
+  // âââ MODULE DEFINITIONS (V28 — 9 módulos) âââââââââââ
   const modules: ModuleConfig[] = [
-    // Fila 1: 5 mÃ³dulos
+    // Fila 1: 5 módulos
     {
       id: 'comercial',
       label: 'Comercial',
@@ -280,7 +280,7 @@ export default function HomeDashboard() {
       kpiValue: kpis.viajesActivos,
       kpiLabel: 'viajes activos',
       statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray',
-      statusText: kpis.viajesActivos > 0 ? 'En operaciÃ³n' : 'Sin viajes',
+      statusText: kpis.viajesActivos > 0 ? 'En operación' : 'Sin viajes',
       submods: [
         { label: 'War Room', route: '/war-room' },
         { label: 'Torre de Control', route: '/operaciones/torre-control' },
@@ -307,7 +307,7 @@ export default function HomeDashboard() {
       statusText: 'Operando',
       submods: [
         { label: 'Dashboard CS', route: '/servicio/dashboard' },
-        { label: 'MÃ©tricas SLA', route: '/servicio/metricas' },
+        { label: 'Métricas SLA', route: '/servicio/metricas' },
         { label: 'WhatsApp', route: '/servicio/whatsapp' },
       ],
     },
@@ -343,14 +343,14 @@ export default function HomeDashboard() {
       kpiValue: kpis.cuentasCxc,
       kpiLabel: 'cuentas CxC',
       statusDot: kpis.cuentasCxc > 15 ? 'yellow' : 'green',
-      statusText: kpis.cuentasCxc > 15 ? 'RevisiÃ³n' : 'Al corriente',
+      statusText: kpis.cuentasCxc > 15 ? 'Revisión' : 'Al corriente',
       submods: [
         { label: 'Cartera', route: '/cxc/cartera' },
         { label: 'Aging Report', route: '/cxc/aging' },
         { label: 'Acciones de Cobro', route: '/cxc/acciones' },
       ],
     },
-    // Fila 2: 4 mÃ³dulos
+    // Fila 2: 4 módulos
     {
       id: 'comunicaciones',
       label: 'Comunicaciones',
@@ -373,7 +373,7 @@ export default function HomeDashboard() {
     },
     {
       id: 'configuracion',
-      label: 'ConfiguraciÃ³n',
+      label: 'Configuración',
       icon: (
         <Settings size={DASH.iconSize} strokeWidth={DASH.iconStroke} />
       ),
@@ -661,7 +661,7 @@ export default function HomeDashboard() {
         flexDirection: 'column',
       }}
     >
-      {/* Zona 1 â AppHeader */}
+      {/* Zona 1 — AppHeader */}
       <AppHeader
         onLogout={handleLogout}
         userName={formatName(user?.email)}
@@ -669,7 +669,7 @@ export default function HomeDashboard() {
         userEmail={user?.email}
       />
 
-      {/* LÃ­nea divisoria naranja */}
+      {/* Línea divisoria naranja */}
       <div
         style={{
           height: '2px',
@@ -678,7 +678,7 @@ export default function HomeDashboard() {
         }}
       />
 
-      {/* Zona 2 â Franja de MÃ©tricas */}
+      {/* Zona 2 — Franja de Métricas */}
       <div
         style={{
           marginTop: DASH.metricsMarginTop,
@@ -745,7 +745,7 @@ export default function HomeDashboard() {
         ))}
       </div>
 
-      {/* Zona 3 â Grid de MÃ³dulos */}
+      {/* Zona 3 — Grid de Módulos */}
       <div
         style={{
           flex: 1,
@@ -756,7 +756,7 @@ export default function HomeDashboard() {
           overflow: 'hidden',
         }}
       >
-        {/* Fila 1: 5 mÃ³dulos */}
+        {/* Fila 1: 5 módulos */}
         <div
           style={{
             display: 'grid',
@@ -768,7 +768,7 @@ export default function HomeDashboard() {
           {fila1.map(renderCard)}
         </div>
 
-        {/* Fila 2: 4 mÃ³dulos */}
+        {/* Fila 2: 4 módulos */}
         <div
           style={{
             display: 'grid',
