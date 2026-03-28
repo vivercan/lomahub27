@@ -187,19 +187,19 @@ export default function HomeDashboard() {
         supabase
           .from('viajes')
           .select('*', { count: 'exact', head: true })
-          .eq('activo', true),
+          .in('estado', ['asignado', 'en_transito', 'en_curso', 'programado']),
         supabase
           .from('clientes')
           .select('*', { count: 'exact', head: true })
           .is('deleted_at', null),
         supabase
-          .from('dedicados_segmentos')
+          .from('segmentos')
           .select('*', { count: 'exact', head: true }),
         supabase
-          .from('cxc_cuentas')
+          .from('cxc_cartera')
           .select('*', { count: 'exact', head: true }),
         supabase
-          .from('gps_unidades')
+          .from('gps_tracking')
           .select('*', { count: 'exact', head: true }),
         supabase
           .from('formatos_venta')
