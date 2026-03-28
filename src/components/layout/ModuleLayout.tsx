@@ -45,6 +45,7 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
         onLogout={handleLogout}
         userName={formatName(user?.email)}
         userRole={user?.rol || 'admin'}
+        userEmail={user?.email}
       />
 
       {/* Breadcrumb Bar */}
