@@ -193,8 +193,9 @@ export default function HomeDashboard() {
           .select('*', { count: 'exact', head: true })
           .is('deleted_at', null),
         supabase
-          .from('segmentos')
-          .select('*', { count: 'exact', head: true }),
+          .from('formatos_venta')
+          .select('*', { count: 'exact', head: true })
+          .eq('tipo_servicio', 'DEDICADO'),
         supabase
           .from('cxc_cartera')
           .select('*', { count: 'exact', head: true }),
