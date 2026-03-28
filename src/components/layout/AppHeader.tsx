@@ -432,10 +432,6 @@ export default function AppHeader({
         </div>
       </div>
 
-on>
-        </div>
-      </div>
-
       {/* Subtle top accent line */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#E8611A] to-transparent opacity-30" />
 
