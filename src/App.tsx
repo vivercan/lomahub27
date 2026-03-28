@@ -66,7 +66,7 @@ import FunnelVentas from './pages/ventas/FunnelVentas'
 import TicketsQuejas from './pages/servicio/TicketsQuejas'
 import ProgramacionIMPEX from './pages/operaciones/ProgramacionIMPEX'
 
-// MÃ³dulos V28 nuevos
+// Módulos V28 nuevos
 import Actividades from './pages/actividades/Actividades'
 import Documentos from './pages/documentos/Documentos'
 import CerebroTarifario from './pages/pricing/CerebroTarifario'
@@ -128,7 +128,7 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ ProspecciÃ³n Externa âââ */}
+          {/* âââ Prospección Externa âââ */}
           <Route path="/ventas/prospeccion" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial']}>
               <ProspeccionExterna />
@@ -175,21 +175,21 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ 30. RadiografÃ­a Financiera âââ */}
+          {/* âââ 30. Radiografía Financiera âââ */}
           <Route path="/clientes/:id/radiografia" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'cxc', 'direccion']}>
               <RadiografiaFinanciera />
             </ProtectedRoute>
           } />
 
-          {/* âââ 09. Ficha 360Â° âââ */}
+          {/* âââ 09. Ficha 360° âââ */}
           <Route path="/clientes/:id" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs', 'cxc', 'direccion', 'operaciones', 'gerente_ops']}>
               <FichaCliente />
             </ProtectedRoute>
           } />
 
-          {/* âââ 10. Dashboard CS â cs sÃ­, ventas NO âââ */}
+          {/* âââ 10. Dashboard CS â cs sí, ventas NO âââ */}
           <Route path="/servicio/dashboard" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs']}>
               <DashboardCS />
@@ -217,7 +217,7 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ 14. Monitor Dedicados â operaciones accede aquÃ­ âââ */}
+          {/* âââ 14. Monitor Dedicados â operaciones accede aquí âââ */}
           <Route path="/operaciones/dedicados" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops']}>
               <Dedicados />
@@ -273,7 +273,7 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ PlaneaciÃ³n Flota âââ */}
+          {/* âââ Planeación Flota âââ */}
           <Route path="/operaciones/planeacion-flota" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops']}>
               <PlaneacionFlota />
@@ -293,14 +293,14 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ 20. WhatsApp â cs sÃ­, ventas NO âââ */}
+          {/* âââ 20. WhatsApp â cs sí, ventas NO âââ */}
           <Route path="/servicio/whatsapp" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs']}>
               <WhatsAppBandeja />
             </ProtectedRoute>
           } />
 
-          {/* âââ 21. MÃ©tricas Servicio â cs sÃ­, ventas NO âââ */}
+          {/* âââ 21. Métricas Servicio â cs sí, ventas NO âââ */}
           <Route path="/servicio/metricas" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs', 'direccion']}>
               <MetricasServicio />
@@ -313,7 +313,7 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ ComunicaciÃ³n Proactiva âââ */}
+          {/* âââ Comunicación Proactiva âââ */}
           <Route path="/servicio/comunicacion-proactiva" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs']}>
               <ComunicacionProactiva />
@@ -354,7 +354,7 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ 29. AnÃ¡lisis 80/20 (Pareto) âââ */}
+          {/* âââ 29. Análisis 80/20 (Pareto) âââ */}
           <Route path="/inteligencia/pareto" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'direccion', 'gerente_comercial', 'gerente_ops']}>
               <Analisis8020 />
@@ -403,7 +403,7 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ Correos AutomÃ¡ticos âââ */}
+          {/* âââ Correos Automáticos âââ */}
           <Route path="/comunicaciones/correos" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <CorreosAutomaticos />
@@ -434,14 +434,14 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* âââ ProgramaciÃ³n Dedicados âââ */}
+          {/* âââ Programación Dedicados âââ */}
           <Route path="/operaciones/programacion-dedicados" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops', 'direccion']}>
               <ProgramacionDedicados />
             </ProtectedRoute>
           } />
 
-          {/* âââ 24. ConfiguraciÃ³n â SOLO superadmin y admin âââ */}
+          {/* âââ 24. Configuración â SOLO superadmin y admin âââ */}
           <Route path="/admin/configuracion" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
               <Configuracion />
