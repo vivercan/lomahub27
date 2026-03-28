@@ -264,7 +264,6 @@ export default function HomeDashboard() {
         { label: 'Panel de Oportunidades', route: '/ventas/mis-leads' },
         { label: 'Nuevo Lead', route: '/ventas/leads/nuevo' },
         { label: 'Dashboard Ventas', route: '/ventas/dashboard' },
-        { label: 'Funnel de Ventas', route: '/ventas/funnel' },
         { label: 'Programa Semanal', route: '/ventas/programa-semanal' },
         { label: 'Comisiones', route: '/ventas/comisiones' },
       ],
