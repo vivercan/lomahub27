@@ -11,7 +11,7 @@
 // ║  • Cards: gradient 180deg, border-radius 20px, sombras 3 capas           ║
 // ║  • SIN sidebar — navegación directa al hacer click en tarjeta             ║
 // ║                                                                            ║
-// ║  ÚLTIMA ACTUALIZACIÓN: 28/Mar/2026 — Fix cuadradas + arcade              ║
+// ║  ÚLTIMA ACTUALIZACIÓN: 29/Mar/2026 — Fix rutas Clientes+Indicadores, Flota falsy              ║
 // ╚══════════════════════════════════════════════════════════════════════════════╝
 
 import React, { useState, useEffect, useCallback } from 'react'
@@ -289,7 +289,7 @@ export default function HomeDashboard() {
       id: 'clientes',
       label: 'Clientes',
       icon: <Users size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
-      route: '/clientes',
+      route: '/clientes/corporativos',
       priority: 'HIGH',
       kpiValue: kpis.clientes.toLocaleString(),
       kpiLabel: 'clientes',
@@ -335,7 +335,7 @@ export default function HomeDashboard() {
       icon: <Truck size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
       route: '/operaciones/disponibilidad',
       priority: 'MID',
-      kpiValue: (kpis.tractosTotal + kpis.cajasTotal) || '\u2014',
+      kpiValue: (kpis.tractosTotal + kpis.cajasTotal) > 0 ? (kpis.tractosTotal + kpis.cajasTotal) : '—',
       kpiLabel: 'unidades',
       statusDot: 'green',
       statusText: 'Inventario',
@@ -367,7 +367,7 @@ export default function HomeDashboard() {
       id: 'indicadores',
       label: 'Indicadores',
       icon: <BarChart3 size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
-      route: '/inteligencia/analisis-8020',
+      route: '/inteligencia/pareto',
       priority: 'MID',
       kpiValue: '80/20',
       kpiLabel: 'análisis',
