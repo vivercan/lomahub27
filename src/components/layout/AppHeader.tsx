@@ -204,7 +204,7 @@ export default function AppHeader({
       style={{
         position: 'relative',
         height: 56,
-        background: 'linear-gradient(180deg, #1a1a24 0%, #14141c 100%)',
+        background: 'linear-gradient(180deg, #0B1220 0%, #080e1a 100%)',
         borderBottom: '1px solid rgba(255,255,255,0.08)',
         fontFamily: 'Montserrat, sans-serif',
         flexShrink: 0,
@@ -221,30 +221,16 @@ export default function AppHeader({
           zIndex: 10,
         }}
       >
-        {/* LEFT — Logo + Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 8,
-              background: 'linear-gradient(135deg, #E8611A, #C44A0E)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(232,97,26,0.3)',
-            }}
-          >
-            <span style={{ color: '#fff', fontWeight: 700, fontSize: 12 }}>LH</span>
-          </div>
-          <div>
-            <h1 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#F9FAFB' }}>
-              LomaHUB27
-            </h1>
-            <p style={{ margin: 0, fontSize: 10, color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase' as const, letterSpacing: 0.5 }}>
-              {userRole}
-            </p>
-          </div>
+        {/* LEFT — Logo Institucional LomaHUB27 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <h1 style={{ margin: 0, fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontStyle: 'italic', fontSize: 22, letterSpacing: '-0.5px', lineHeight: 1 }}>
+            <span style={{ color: '#F9FAFB' }}>Loma</span>
+            <span style={{ color: '#F9FAFB' }}>HUB</span>
+            <span style={{ color: '#E8611A' }}>27</span>
+          </h1>
+          <span style={{ fontSize: 9, fontWeight: 600, color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase' as const, letterSpacing: 0.8, marginLeft: 4 }}>
+            {userRole}
+          </span>
         </div>
 
         {/* CENTER — Fecha, Semana, Tipo Cambio */}
@@ -277,7 +263,7 @@ export default function AppHeader({
               style={{
                 fontSize: 13,
                 fontWeight: 700,
-                color: '#10B981',
+                color: '#D4A857',
               }}
             >
               {tipoCambio ? `$${tipoCambio.toFixed(2)}` : '—'}
@@ -335,7 +321,7 @@ export default function AppHeader({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    border: '2px solid #1a1a24',
+                    border: '2px solid #0B1220',
                   }}
                 >
                   {unreadCount > 9 ? '9+' : unreadCount}
