@@ -1,53 +1,66 @@
-// src/pages/HomeDashboard.tsx
-// Dashboard V28 — 9 Módulos con submódulos expandibles
-// Estilo visual: V27f BLINDADO (página 34 Notion)
-// Background: #2a2a36 | Font: Montserrat | Cards: gradient 180deg, 1:1, 20px radius
-// Grid: Fila 1 (5 módulos), Fila 2 (4 módulos), gap 10px
-// NO TOCAR sin autorización de JJ
+// ╔══════════════════════════════════════════════════════════════════════════════╗
+// ║  🛡️  BLINDAJE DASHBOARD V27f — ARCHIVO PROTEGIDO                          ║
+// ║                                                                            ║
+// ║  REGLA: Este archivo NO se puede modificar sin autorización EXPLÍCITA      ║
+// ║  de JJ (Juan Viveros). Cualquier sesión de IA, desarrollador o proceso     ║
+// ║  automatizado que intente cambiar este archivo DEBE:                        ║
+// ║                                                                            ║
+// ║  1. Leer página 34 de Notion (ID: 32a9d35958f1812c9276f833d0018b1e)       ║
+// ║  2. Verificar sección 10 — "Blindaje" con las reglas exactas              ║
+// ║  3. Obtener confirmación ESCRITA de JJ antes de cualquier cambio          ║
+// ║  4. Si no hay confirmación → NO TOCAR                                     ║
+// ║                                                                            ║
+// ║  ESTILO: V27f BLINDADO                                                     ║
+// ║  • 14 tarjetas en grid 7×2 (alargadas, NO cuadradas)                     ║
+// ║  • Background: #2a2a36 | Font: Montserrat (NUNCA Orbitron)                ║
+// ║  • Cards: gradient 180deg, border-radius 20px, sombras 3 capas           ║
+// ║  • SIN sidebar — navegación directa al hacer click en tarjeta             ║
+// ║  • SIN submódulos expandibles — cada tarjeta = 1 ruta                     ║
+// ║                                                                            ║
+// ║  ÚLTIMA RESTAURACIÓN: 28/Mar/2026 — Sesión 45                            ║
+// ║  MOTIVO: JJ rechazó V28 (9 módulos cuadrados con sidebar)                 ║
+// ╚══════════════════════════════════════════════════════════════════════════════╝
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
+  Swords,
   Briefcase,
-  Truck,
+  Users,
   HeadphonesIcon,
+  Radio,
+  MapPin,
+  Truck,
   Container,
   DollarSign,
+  BarChart3,
+  TrendingUp,
   MessageSquare,
+  FileBarChart,
   Settings,
-  CalendarCheck,
-  FileText,
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import AppHeader from '../components/layout/AppHeader'
-import { Sidebar } from '../components/layout/Sidebar'
 import { useAuthContext } from '../hooks/AuthContext'
 
 // ============================================================================
 // TYPES
 // ============================================================================
-
-interface ModuleConfig {
+interface CardConfig {
   id: string
   label: string
   icon: React.ReactNode
-  priority: 'HIGH' | 'MID' | 'LOW' | 'FASE2'
+  route: string
+  priority: 'HIGH' | 'MID' | 'LOW'
   kpiValue: number | string
   kpiLabel: string
-  statusDot?: 'green' | 'yellow' | 'red' | 'gray'
-  statusText?: string
-  submods: SubModule[]
-}
-
-interface SubModule {
-  label: string
-  route: string
+  statusDot: 'green' | 'yellow' | 'red' | 'gray'
+  statusText: string
 }
 
 // ============================================================================
-// DASHBOARD VISUAL CONSTANTS (V27f BLINDADO — página 34)
+// DASHBOARD VISUAL CONSTANTS (V27f BLINDADO — página 34 Notion)
 // ============================================================================
-
 const DASH = {
   bg: '#2a2a36',
   fontFamily: "'Montserrat', sans-serif",
@@ -60,7 +73,7 @@ const DASH = {
 
   // Card styles
   cardRadius: '20px',
-  cardPadding: '20px 14px 18px',
+  cardPadding: '18px 12px 14px',
   cardGap: '10px',
   gridPadding: '4px 20px',
 
@@ -71,40 +84,41 @@ const DASH = {
   borderRight: 'rgba(0,0,0,0.32)',
 
   // Shadows 3 capas
-  cardShadow: '0 10px 24px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.28)',
+  cardShadow:
+    '0 10px 24px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.28)',
   cardShadowInset:
     'inset 0 1px 0 rgba(200,210,225,0.06), inset 0 -1px 0 rgba(0,0,0,0.14)',
   cardHoverShadow:
     '0 14px 32px rgba(0,0,0,0.35), 0 4px 10px rgba(0,0,0,0.30)',
 
   // KPI
-  kpiFontSize: '30px',
+  kpiFontSize: '26px',
   kpiFontWeight: 800,
   kpiColorHigh: 'rgba(255,255,255,0.72)',
   kpiColorMid: 'rgba(255,255,255,0.58)',
   kpiColorHover: 'rgba(255,255,255,0.92)',
 
   // Title
-  titleFontSize: '14px',
+  titleFontSize: '13px',
   titleFontWeight: 600,
   titleLetterSpacing: '0.3px',
 
   // Subtitle
-  subFontSize: '11.5px',
+  subFontSize: '10.5px',
   subFontWeight: 500,
   subColor: 'rgba(255,255,255,0.28)',
   subColorHover: 'rgba(255,255,255,0.48)',
 
   // Icons
-  iconSize: 55,
-  iconSizeBoosted: 58,
+  iconSize: 42,
+  iconSizeBoosted: 46,
   iconStroke: 2.1,
   iconStrokeBoosted: 2.2,
 
   // Metrics bar
-  metricsMarginTop: '14px',
-  metricsMarginBottom: '10px',
-  metricsPadding: '14px 28px',
+  metricsMarginTop: '10px',
+  metricsMarginBottom: '8px',
+  metricsPadding: '12px 28px',
   metricsBg: 'rgba(255,255,255,0.025)',
   metricsBorder: '1px solid rgba(255,255,255,0.05)',
 
@@ -121,7 +135,6 @@ const DASH = {
 // ============================================================================
 // STATUS DOT COLORS
 // ============================================================================
-
 const DOT_COLORS: Record<string, string> = {
   green: '#0D9668',
   yellow: '#B8860B',
@@ -132,13 +145,10 @@ const DOT_COLORS: Record<string, string> = {
 // ============================================================================
 // COMPONENT
 // ============================================================================
-
 export default function HomeDashboard() {
   const navigate = useNavigate()
   const { user, logout } = useAuthContext()
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
-  const [expandedModule, setExpandedModule] = useState<string | null>(null)
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   // Format user name from email
   const formatName = (email?: string) => {
@@ -166,9 +176,11 @@ export default function HomeDashboard() {
     alertasHoy: 0,
     facturadoHoy: '$0',
     leadsPipeline: 0,
+    tractosTotal: 0,
+    cajasTotal: 0,
   })
 
-  // âââ FETCH KPIs REALES âââââââââââââââââââââââââââââââ
+  // ——— FETCH KPIs REALES ———————————————————————————
   const fetchKpis = useCallback(async () => {
     try {
       const [
@@ -181,6 +193,8 @@ export default function HomeDashboard() {
         { count: formatosActivos },
         { count: viajesRiesgo },
         { count: notifUnread },
+        { count: tractos },
+        { count: cajas },
       ] = await Promise.all([
         supabase
           .from('leads')
@@ -217,6 +231,14 @@ export default function HomeDashboard() {
           .select('*', { count: 'exact', head: true })
           .eq('leida', false)
           .is('deleted_at', null),
+        supabase
+          .from('tractos')
+          .select('*', { count: 'exact', head: true })
+          .is('deleted_at', null),
+        supabase
+          .from('cajas')
+          .select('*', { count: 'exact', head: true })
+          .is('deleted_at', null),
       ])
 
       const totalAlertas = (viajesRiesgo ?? 0) + (notifUnread ?? 0)
@@ -231,6 +253,8 @@ export default function HomeDashboard() {
         alertasHoy: totalAlertas,
         facturadoHoy: (formatosActivos ?? 0).toLocaleString(),
         leadsPipeline: leads ?? 0,
+        tractosTotal: tractos ?? 0,
+        cajasTotal: cajas ?? 0,
       })
     } catch (err) {
       console.error('Error fetching KPIs:', err)
@@ -239,442 +263,322 @@ export default function HomeDashboard() {
 
   useEffect(() => {
     fetchKpis()
-    const interval = setInterval(fetchKpis, 60000) // refresh cada 60s
+    const interval = setInterval(fetchKpis, 60000)
     return () => clearInterval(interval)
   }, [fetchKpis])
 
-  // âââ MODULE DEFINITIONS (V28 — 9 módulos) âââââââââââ
-  const modules: ModuleConfig[] = [
-    // Fila 1: 5 módulos
+  // ——— 14 CARD DEFINITIONS (V27f — grid 7×2) ——————————
+  const cards: CardConfig[] = [
+    // ═══ FILA 1: War Room, Ventas, Clientes, Servicio, Torre Control, Mapa GPS, Flota ═══
     {
-      id: 'comercial',
-      label: 'Comercial',
-      icon: (
-        <Briefcase
-          size={DASH.iconSizeBoosted}
-          strokeWidth={DASH.iconStrokeBoosted}
-        />
-      ),
+      id: 'war-room',
+      label: 'War Room',
+      icon: <Swords size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      route: '/war-room',
+      priority: 'HIGH',
+      kpiValue: kpis.alertasHoy,
+      kpiLabel: 'alertas',
+      statusDot: kpis.alertasHoy > 0 ? 'red' : 'green',
+      statusText: kpis.alertasHoy > 0 ? 'Alertas activas' : 'Sin alertas',
+    },
+    {
+      id: 'ventas',
+      label: 'Ventas',
+      icon: <Briefcase size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      route: '/ventas/mis-leads',
       priority: 'HIGH',
       kpiValue: kpis.leadsActivos,
       kpiLabel: 'leads activos',
       statusDot: 'green',
       statusText: 'Pipeline activo',
-      submods: [
-        { label: 'Panel de Oportunidades', route: '/ventas/mis-leads' },
-        { label: 'Nuevo Lead', route: '/ventas/leads/nuevo' },
-        { label: 'Dashboard Ventas', route: '/ventas/dashboard' },
-        { label: 'Programa Semanal', route: '/ventas/programa-semanal' },
-        { label: 'Comisiones', route: '/ventas/comisiones' },
-      ],
     },
     {
-      id: 'operaciones',
-      label: 'Operaciones',
-      icon: (
-        <Truck
-          size={DASH.iconSizeBoosted}
-          strokeWidth={DASH.iconStrokeBoosted}
-        />
-      ),
+      id: 'clientes',
+      label: 'Clientes',
+      icon: <Users size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      route: '/clientes',
       priority: 'HIGH',
-      kpiValue: kpis.viajesActivos,
-      kpiLabel: 'viajes activos',
-      statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray',
-      statusText: kpis.viajesActivos > 0 ? 'En operación' : 'Sin viajes',
-      submods: [
-        { label: 'War Room', route: '/war-room' },
-        { label: 'Torre de Control', route: '/operaciones/torre-control' },
-        { label: 'Mapa GPS', route: '/operaciones/mapa' },
-        { label: 'Despachos', route: '/operaciones/despachos' },
-        { label: 'Control Tractos', route: '/operaciones/tractos' },
-        { label: 'Control Cajas', route: '/operaciones/cajas' },
-        { label: 'Cruce Fronterizo', route: '/operaciones/cruce-fronterizo' },
-      ],
+      kpiValue: kpis.clientes.toLocaleString(),
+      kpiLabel: 'clientes',
+      statusDot: 'green',
+      statusText: 'Base activa',
     },
     {
       id: 'servicio',
       label: 'Servicio',
-      icon: (
-        <HeadphonesIcon
-          size={DASH.iconSize}
-          strokeWidth={DASH.iconStroke}
-        />
-      ),
+      icon: <HeadphonesIcon size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
+      route: '/servicio/dashboard',
       priority: 'HIGH',
       kpiValue: kpis.clientes.toLocaleString(),
       kpiLabel: 'clientes',
       statusDot: 'green',
       statusText: 'Operando',
-      submods: [
-        { label: 'Dashboard CS', route: '/servicio/dashboard' },
-        { label: 'Métricas SLA', route: '/servicio/metricas' },
-        { label: 'WhatsApp', route: '/servicio/whatsapp' },
-      ],
     },
+    {
+      id: 'torre-control',
+      label: 'Torre Control',
+      icon: <Radio size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      route: '/operaciones/torre-control',
+      priority: 'HIGH',
+      kpiValue: kpis.viajesActivos,
+      kpiLabel: 'viajes activos',
+      statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray',
+      statusText: kpis.viajesActivos > 0 ? 'En operación' : 'Sin viajes',
+    },
+    {
+      id: 'mapa-gps',
+      label: 'Mapa GPS',
+      icon: <MapPin size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      route: '/operaciones/mapa',
+      priority: 'HIGH',
+      kpiValue: kpis.unidadesGps,
+      kpiLabel: 'posiciones',
+      statusDot: kpis.unidadesGps > 0 ? 'green' : 'gray',
+      statusText: kpis.unidadesGps > 0 ? 'Tracking activo' : 'Sin datos',
+    },
+    {
+      id: 'flota',
+      label: 'Flota',
+      icon: <Truck size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
+      route: '/operaciones/disponibilidad',
+      priority: 'MID',
+      kpiValue: kpis.tractosTotal + kpis.cajasTotal,
+      kpiLabel: 'unidades',
+      statusDot: 'green',
+      statusText: 'Inventario',
+    },
+    // ═══ FILA 2: Dedicados, Cobranza, Indicadores, Rentabilidad, Comunicaciones, Reportes, Config ═══
     {
       id: 'dedicados',
       label: 'Dedicados',
-      icon: (
-        <Container
-          size={DASH.iconSizeBoosted}
-          strokeWidth={DASH.iconStrokeBoosted}
-        />
-      ),
+      icon: <Container size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      route: '/operaciones/dedicados',
       priority: 'MID',
       kpiValue: kpis.segmentosDedicados,
       kpiLabel: 'segmentos',
       statusDot: 'green',
       statusText: 'Activo',
-      submods: [
-        { label: 'Dedicados', route: '/operaciones/dedicados' },
-        { label: 'Disponibilidad', route: '/operaciones/disponibilidad' },
-      ],
     },
     {
       id: 'cobranza',
       label: 'Cobranza',
-      icon: (
-        <DollarSign
-          size={DASH.iconSizeBoosted}
-          strokeWidth={DASH.iconStrokeBoosted}
-        />
-      ),
+      icon: <DollarSign size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      route: '/cxc/cartera',
       priority: 'MID',
       kpiValue: kpis.cuentasCxc,
       kpiLabel: 'cuentas CxC',
       statusDot: kpis.cuentasCxc > 15 ? 'yellow' : 'green',
       statusText: kpis.cuentasCxc > 15 ? 'Revisión' : 'Al corriente',
-      submods: [
-        { label: 'Cartera', route: '/cxc/cartera' },
-        { label: 'Aging Report', route: '/cxc/aging' },
-        { label: 'Acciones de Cobro', route: '/cxc/acciones' },
-      ],
     },
-    // Fila 2: 4 módulos
+    {
+      id: 'indicadores',
+      label: 'Indicadores',
+      icon: <BarChart3 size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
+      route: '/inteligencia/analisis-8020',
+      priority: 'MID',
+      kpiValue: '80/20',
+      kpiLabel: 'análisis',
+      statusDot: 'green',
+      statusText: 'Disponible',
+    },
+    {
+      id: 'rentabilidad',
+      label: 'Rentabilidad',
+      icon: <TrendingUp size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
+      route: '/operaciones/rentabilidad',
+      priority: 'MID',
+      kpiValue: kpis.facturadoHoy,
+      kpiLabel: 'formatos activos',
+      statusDot: 'green',
+      statusText: 'Calculando',
+    },
     {
       id: 'comunicaciones',
       label: 'Comunicaciones',
-      icon: (
-        <MessageSquare
-          size={DASH.iconSizeBoosted}
-          strokeWidth={DASH.iconStrokeBoosted}
-        />
-      ),
+      icon: <MessageSquare size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      route: '/servicio/whatsapp',
       priority: 'MID',
       kpiValue: '3',
       kpiLabel: 'canales',
       statusDot: 'green',
       statusText: 'Activo',
-      submods: [
-        { label: 'Correos', route: '/comunicaciones/correos' },
-        { label: 'Notificaciones', route: '/comunicaciones/notificaciones' },
-        { label: 'AI Chief of Staff', route: '/comunicaciones/chief-of-staff' },
-      ],
     },
     {
-      id: 'configuracion',
-      label: 'Configuración',
-      icon: (
-        <Settings size={DASH.iconSize} strokeWidth={DASH.iconStroke} />
-      ),
+      id: 'reportes',
+      label: 'Reportes',
+      icon: <FileBarChart size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
+      route: '/servicio/metricas',
+      priority: 'LOW',
+      kpiValue: '\u2014',
+      kpiLabel: 'métricas',
+      statusDot: 'gray',
+      statusText: 'Disponible',
+    },
+    {
+      id: 'config',
+      label: 'Config',
+      icon: <Settings size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
+      route: '/admin/configuracion',
       priority: 'LOW',
       kpiValue: '\u2699\uFE0F',
       kpiLabel: 'admin',
       statusDot: 'gray',
       statusText: 'Sistema',
-      submods: [
-        { label: 'Config General', route: '/admin/configuracion' },
-      ],
-    },
-    {
-      id: 'actividades',
-      label: 'Actividades',
-      icon: (
-        <CalendarCheck
-          size={DASH.iconSize}
-          strokeWidth={DASH.iconStroke}
-        />
-      ),
-      priority: 'LOW',
-      kpiValue: '\u2014',
-      kpiLabel: 'tareas',
-      statusDot: 'gray',
-      statusText: 'Disponible',
-      submods: [
-        { label: 'Actividades', route: '/actividades' },
-      ],
-    },
-    {
-      id: 'documentos',
-      label: 'Documentos',
-      icon: (
-        <FileText size={DASH.iconSize} strokeWidth={DASH.iconStroke} />
-      ),
-      priority: 'LOW',
-      kpiValue: '\u2014',
-      kpiLabel: 'portal',
-      statusDot: 'gray',
-      statusText: 'Disponible',
-      submods: [
-        { label: 'Portal Documentos', route: '/portal/documentos' },
-        { label: 'Documentos', route: '/documentos' },
-      ],
     },
   ]
 
-  const fila1 = modules.slice(0, 5)
-  const fila2 = modules.slice(5)
+  const fila1 = cards.slice(0, 7)
+  const fila2 = cards.slice(7)
 
-  // âââ HANDLERS ââââââââââââââââââââââââââââââââââââââââ
-  const handleCardClick = (mod: ModuleConfig) => {
-    if (mod.priority === 'FASE2') return
-    if (mod.submods.length === 1) {
-      navigate(mod.submods[0].route)
-      return
-    }
-    setExpandedModule(expandedModule === mod.id ? null : mod.id)
-  }
-
-  const handleSubmodClick = (route: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-    navigate(route)
-  }
-
-  // âââ CARD STYLE BUILDER ââââââââââââââââââââââââââââââ
+  // ——— CARD STYLE BUILDER ——————————————————————————
   const getCardStyle = (
-    mod: ModuleConfig,
+    card: CardConfig,
     isHovered: boolean
   ): React.CSSProperties => {
-    const isHigh = mod.priority === 'HIGH'
-    const isFase2 = mod.priority === 'FASE2'
-
+    const isHigh = card.priority === 'HIGH'
     return {
-      aspectRatio: '1 / 1',
       borderRadius: DASH.cardRadius,
       padding: DASH.cardPadding,
       background:
-        mod.id === 'comercial' ? DASH.cardGradientWar : DASH.cardGradient,
-      cursor: isFase2 ? 'default' : 'pointer',
-      opacity: isFase2 ? 0.5 : 1,
+        card.id === 'war-room' ? DASH.cardGradientWar : DASH.cardGradient,
+      cursor: 'pointer',
       position: 'relative',
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: '6px',
+      gap: '4px',
       transition: 'all 0.16s ease',
-      transform:
-        isHovered && !isFase2 ? 'translateY(-2px)' : 'translateY(0)',
+      transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+
       // Borders biselados
       borderTop: `1px solid ${isHigh ? DASH.borderTopHigh : DASH.borderTop}`,
       borderLeft: `1px solid ${isHigh ? DASH.borderTopHigh : DASH.borderTop}`,
       borderBottom: `1px solid ${DASH.borderBottom}`,
       borderRight: `1px solid ${DASH.borderRight}`,
+
       // Shadows
-      boxShadow:
-        isHovered && !isFase2
-          ? `${DASH.cardHoverShadow}, ${DASH.cardShadowInset}`
-          : `${DASH.cardShadow}, ${DASH.cardShadowInset}`,
+      boxShadow: isHovered
+        ? `${DASH.cardHoverShadow}, ${DASH.cardShadowInset}`
+        : `${DASH.cardShadow}, ${DASH.cardShadowInset}`,
     }
   }
 
-  // âââ RENDER CARD (shared between fila1 and fila2) ââââ
-  const renderCard = (mod: ModuleConfig) => (
+  // ——— RENDER CARD ——————————————————————————————————
+  const renderCard = (card: CardConfig) => (
     <div
-      key={mod.id}
-      style={{
-        position: 'relative',
-        zIndex: expandedModule === mod.id ? 45 : 'auto',
-      }}
+      key={card.id}
+      onClick={() => navigate(card.route)}
+      onMouseEnter={() => setHoveredCard(card.id)}
+      onMouseLeave={() => setHoveredCard(null)}
+      style={getCardStyle(card, hoveredCard === card.id)}
     >
+      {/* Top accent line */}
       <div
-        onClick={() => handleCardClick(mod)}
-        onMouseEnter={() => setHoveredCard(mod.id)}
-        onMouseLeave={() => setHoveredCard(null)}
-        style={getCardStyle(mod, hoveredCard === mod.id)}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '2px',
+          background:
+            card.priority === 'HIGH'
+              ? DASH.accentGradientHigh
+              : DASH.accentGradient,
+          borderRadius: `${DASH.cardRadius} ${DASH.cardRadius} 0 0`,
+        }}
+      />
+
+      {/* Icon */}
+      <div
+        style={{
+          height: '46px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'rgba(200,210,225,0.7)',
+          transition: 'filter 0.16s ease',
+          filter:
+            hoveredCard === card.id ? 'brightness(1.18)' : 'brightness(1)',
+        }}
       >
-        {/* Top accent line */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '2px',
-            background:
-              mod.priority === 'HIGH'
-                ? DASH.accentGradientHigh
-                : DASH.accentGradient,
-            borderRadius: `${DASH.cardRadius} ${DASH.cardRadius} 0 0`,
-          }}
-        />
-
-        {/* Icon */}
-        <div
-          style={{
-            height: '55px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'rgba(200,210,225,0.7)',
-            transition: 'filter 0.16s ease',
-            filter:
-              hoveredCard === mod.id
-                ? 'brightness(1.18)'
-                : 'brightness(1)',
-          }}
-        >
-          {mod.icon}
-        </div>
-
-        {/* KPI Number */}
-        <div
-          style={{
-            fontSize: DASH.kpiFontSize,
-            fontWeight: DASH.kpiFontWeight,
-            color:
-              hoveredCard === mod.id
-                ? DASH.kpiColorHover
-                : mod.priority === 'HIGH'
-                  ? DASH.kpiColorHigh
-                  : DASH.kpiColorMid,
-            lineHeight: 1.1,
-            transition: 'color 0.16s ease',
-          }}
-        >
-          {mod.kpiValue}
-        </div>
-
-        {/* Title */}
-        <div
-          style={{
-            fontSize: DASH.titleFontSize,
-            fontWeight: DASH.titleFontWeight,
-            letterSpacing: DASH.titleLetterSpacing,
-            color: 'rgba(255,255,255,0.78)',
-            textAlign: 'center',
-          }}
-        >
-          {mod.label}
-        </div>
-
-        {/* Subtitle + Status Dot */}
-        <div
-          style={{
-            fontSize: DASH.subFontSize,
-            fontWeight: DASH.subFontWeight,
-            color:
-              hoveredCard === mod.id
-                ? DASH.subColorHover
-                : DASH.subColor,
-            letterSpacing: '0.3px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-            transition: 'color 0.16s ease',
-          }}
-        >
-          {mod.statusDot && (
-            <span
-              style={{
-                width: DASH.dotSize,
-                height: DASH.dotSize,
-                borderRadius: '50%',
-                backgroundColor:
-                  DOT_COLORS[mod.statusDot] || DOT_COLORS.gray,
-                boxShadow: `0 0 4px ${DOT_COLORS[mod.statusDot] || DOT_COLORS.gray}40`,
-                display: 'inline-block',
-              }}
-            />
-          )}
-          {mod.statusText}
-        </div>
+        {card.icon}
       </div>
 
-      {/* Expanded submods overlay */}
-      {expandedModule === mod.id && mod.submods.length > 1 && (
-        <div
+      {/* KPI Number */}
+      <div
+        style={{
+          fontSize: DASH.kpiFontSize,
+          fontWeight: DASH.kpiFontWeight,
+          color:
+            hoveredCard === card.id
+              ? DASH.kpiColorHover
+              : card.priority === 'HIGH'
+                ? DASH.kpiColorHigh
+                : DASH.kpiColorMid,
+          lineHeight: 1.1,
+          transition: 'color 0.16s ease',
+        }}
+      >
+        {card.kpiValue}
+      </div>
+
+      {/* Title */}
+      <div
+        style={{
+          fontSize: DASH.titleFontSize,
+          fontWeight: DASH.titleFontWeight,
+          letterSpacing: DASH.titleLetterSpacing,
+          color: 'rgba(255,255,255,0.78)',
+          textAlign: 'center',
+        }}
+      >
+        {card.label}
+      </div>
+
+      {/* Subtitle + Status Dot */}
+      <div
+        style={{
+          fontSize: DASH.subFontSize,
+          fontWeight: DASH.subFontWeight,
+          color:
+            hoveredCard === card.id ? DASH.subColorHover : DASH.subColor,
+          letterSpacing: '0.3px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '5px',
+          transition: 'color 0.16s ease',
+        }}
+      >
+        <span
           style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            zIndex: 50,
-            marginTop: '4px',
-            background: 'rgba(30,30,42,0.97)',
-            backdropFilter: 'blur(16px)',
-            border: '1px solid rgba(155,168,195,0.15)',
-            borderRadius: '12px',
-            padding: '8px',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.45)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '2px',
+            width: DASH.dotSize,
+            height: DASH.dotSize,
+            borderRadius: '50%',
+            backgroundColor: DOT_COLORS[card.statusDot] || DOT_COLORS.gray,
+            boxShadow: `0 0 4px ${DOT_COLORS[card.statusDot] || DOT_COLORS.gray}40`,
+            display: 'inline-block',
           }}
-        >
-          {mod.submods.map((sub) => (
-            <button
-              key={sub.route}
-              onClick={(e) => handleSubmodClick(sub.route, e)}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'rgba(255,255,255,0.72)',
-                fontFamily: DASH.fontFamily,
-                fontSize: '12.5px',
-                fontWeight: 500,
-                padding: '8px 12px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.12s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(59,108,231,0.12)'
-                e.currentTarget.style.color = 'rgba(255,255,255,0.92)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent'
-                e.currentTarget.style.color = 'rgba(255,255,255,0.72)'
-              }}
-            >
-              {sub.label}
-            </button>
-          ))}
-        </div>
-      )}
+        />
+        {card.statusText}
+      </div>
     </div>
   )
 
-  // âââ RENDER ââââââââââââââââââââââââââââââââââââââââââ
+  // ——— RENDER ————————————————————————————————————————
   return (
     <div
       style={{
         height: '100vh',
         overflow: 'hidden',
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         backgroundColor: DASH.bg,
         fontFamily: DASH.fontFamily,
         color: '#E8E8ED',
       }}
     >
-      {/* Sidebar */}
-      <Sidebar
-        collapsed={sidebarCollapsed}
-        onToggle={() => setSidebarCollapsed(prev => !prev)}
-      />
-
-      {/* Main content */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        minWidth: 0,
-      }}>
       {/* Zona 1 — AppHeader */}
       <AppHeader
         onLogout={handleLogout}
@@ -707,31 +611,15 @@ export default function HomeDashboard() {
         }}
       >
         {[
-          {
-            label: 'Viajes Activos',
-            value: kpis.viajesActivos,
-            color: '#0D9668',
-          },
-          {
-            label: 'Unidades GPS',
-            value: kpis.unidadesGps,
-            color: '#3B6CE7',
-          },
+          { label: 'Viajes Activos', value: kpis.viajesActivos, color: '#0D9668' },
+          { label: 'Unidades GPS', value: kpis.unidadesGps, color: '#3B6CE7' },
           {
             label: 'Alertas Hoy',
             value: kpis.alertasHoy,
             color: kpis.alertasHoy > 0 ? '#C53030' : '#6B6B7A',
           },
-          {
-            label: 'Formatos Activos',
-            value: kpis.facturadoHoy,
-            color: '#B8860B',
-          },
-          {
-            label: 'Leads Pipeline',
-            value: kpis.leadsPipeline,
-            color: '#C27803',
-          },
+          { label: 'Formatos Activos', value: kpis.facturadoHoy, color: '#B8860B' },
+          { label: 'Leads Pipeline', value: kpis.leadsPipeline, color: '#C27803' },
         ].map((metric) => (
           <div key={metric.label} style={{ textAlign: 'center' }}>
             <div
@@ -759,7 +647,7 @@ export default function HomeDashboard() {
         ))}
       </div>
 
-      {/* Zona 3 — Grid de Módulos */}
+      {/* Zona 3 — Grid de 14 Tarjetas (7×2) */}
       <div
         style={{
           flex: 1,
@@ -770,11 +658,11 @@ export default function HomeDashboard() {
           overflow: 'hidden',
         }}
       >
-        {/* Fila 1: 5 módulos */}
+        {/* Fila 1: 7 tarjetas */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(5, 1fr)',
+            gridTemplateColumns: 'repeat(7, 1fr)',
             gap: DASH.cardGap,
             flex: 1,
           }}
@@ -782,11 +670,11 @@ export default function HomeDashboard() {
           {fila1.map(renderCard)}
         </div>
 
-        {/* Fila 2: 4 módulos */}
+        {/* Fila 2: 7 tarjetas */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
+            gridTemplateColumns: 'repeat(7, 1fr)',
             gap: DASH.cardGap,
             flex: 1,
           }}
@@ -794,20 +682,6 @@ export default function HomeDashboard() {
           {fila2.map(renderCard)}
         </div>
       </div>
-
-      </div>
-      {/* Click outside to close expanded module */}
-      {expandedModule && (
-        <div
-          onClick={() => setExpandedModule(null)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 40,
-            background: 'transparent',
-          }}
-        />
-      )}
     </div>
   )
 }
