@@ -1,0 +1,38 @@
+name: Dashboard Guard
+
+on:
+  pull_request:
+    paths:
+      - 'src/pages/HomeDashboard.tsx'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/pages/HomeDashboard.tsx'
+
+jobs:
+  check-dashboard-approval:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check commit message for DASHBOARD-APPROVED tag
+        run: |
+          echo "Checking if HomeDashboard.tsx modification is approved..."
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          if [[ "$COMMIT_MSG" != *"[DASHBOARD-APPROVED]"* ]]; then
+            echo "::error::HomeDashboard.tsx was modified without [DASHBOARD-APPROVED] tag in commit message."
+            echo "::error::This file is BLINDADO (V27f). To modify it, include [DASHBOARD-APPROVED] in your commit message."
+            echo "::error::See Notion page 34 (ID: 32a9d35958f1812c9276f833d0018b1e) for dashboard standards."
+            exit 1
+          fi
+          echo "Dashboard modification approved via commit tag."
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify BLESSED backup exists
+        run: |
+          if [ ! -f "src/pages/HomeDashboard.BLESSED.tsx" ]; then
+            echo "::error::HomeDashboard.BLESSED.tsx backup is missing! Dashboard blindaje compromised."
+            exit 1
+          fi
+          echo "BLESSED backup verified."
