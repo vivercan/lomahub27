@@ -2,23 +2,16 @@
 // ║  🛡️  BLINDAJE DASHBOARD V27f — ARCHIVO PROTEGIDO                          ║
 // ║                                                                            ║
 // ║  REGLA: Este archivo NO se puede modificar sin autorización EXPLÍCITA      ║
-// ║  de JJ (Juan Viveros). Cualquier sesión de IA, desarrollador o proceso     ║
-// ║  automatizado que intente cambiar este archivo DEBE:                        ║
+// ║  de JJ (Juan Viveros). Consultar página 34 Notion antes de cualquier      ║
+// ║  cambio. Requiere tag [DASHBOARD-APPROVED] en commit message.             ║
 // ║                                                                            ║
-// ║  1. Leer página 34 de Notion (ID: 32a9d35958f1812c9276f833d0018b1e)       ║
-// ║  2. Verificar sección 10 — "Blindaje" con las reglas exactas              ║
-// ║  3. Obtener confirmación ESCRITA de JJ antes de cualquier cambio          ║
-// ║  4. Si no hay confirmación → NO TOCAR                                     ║
-// ║                                                                            ║
-// ║  ESTILO: V27f BLINDADO                                                     ║
-// ║  • 14 tarjetas en grid 7×2 (alargadas, NO cuadradas)                     ║
+// ║  ESTILO: V27f BLINDADO — página 34 Notion                                ║
+// ║  • 14 tarjetas CUADRADAS (aspect-ratio 1:1) en grid 7×2                  ║
 // ║  • Background: #2a2a36 | Font: Montserrat (NUNCA Orbitron)                ║
 // ║  • Cards: gradient 180deg, border-radius 20px, sombras 3 capas           ║
 // ║  • SIN sidebar — navegación directa al hacer click en tarjeta             ║
-// ║  • SIN submódulos expandibles — cada tarjeta = 1 ruta                     ║
 // ║                                                                            ║
-// ║  ÚLTIMA RESTAURACIÓN: 28/Mar/2026 — Sesión 45                            ║
-// ║  MOTIVO: JJ rechazó V28 (9 módulos cuadrados con sidebar)                 ║
+// ║  ÚLTIMA ACTUALIZACIÓN: 28/Mar/2026 — Fix cuadradas + arcade              ║
 // ╚══════════════════════════════════════════════════════════════════════════════╝
 
 import React, { useState, useEffect, useCallback } from 'react'
@@ -59,7 +52,7 @@ interface CardConfig {
 }
 
 // ============================================================================
-// DASHBOARD VISUAL CONSTANTS (V27f BLINDADO — página 34 Notion)
+// DASHBOARD VISUAL CONSTANTS — EXACTO de página 34 Notion
 // ============================================================================
 const DASH = {
   bg: '#2a2a36',
@@ -71,19 +64,19 @@ const DASH = {
   cardGradientWar:
     'linear-gradient(180deg, rgba(56,50,56,1) 0%, rgba(42,38,48,1) 50%, rgba(31,30,40,1) 100%)',
 
-  // Card styles
+  // Card styles — página 34 sección 4
   cardRadius: '20px',
-  cardPadding: '18px 12px 14px',
+  cardPadding: '20px 14px 18px',
   cardGap: '10px',
   gridPadding: '4px 20px',
 
-  // Borders biselados
+  // Borders biselados — página 34 sección 4
   borderTop: 'rgba(155,168,195,0.18)',
   borderTopHigh: 'rgba(155,168,195,0.28)',
   borderBottom: 'rgba(0,0,0,0.42)',
   borderRight: 'rgba(0,0,0,0.32)',
 
-  // Shadows 3 capas
+  // Shadows 3 capas — página 34 sección 4
   cardShadow:
     '0 10px 24px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.28)',
   cardShadowInset:
@@ -91,38 +84,39 @@ const DASH = {
   cardHoverShadow:
     '0 14px 32px rgba(0,0,0,0.35), 0 4px 10px rgba(0,0,0,0.30)',
 
-  // KPI
-  kpiFontSize: '26px',
+  // KPI — página 34 sección 6: 30px, 800
+  kpiFontSize: '30px',
   kpiFontWeight: 800,
   kpiColorHigh: 'rgba(255,255,255,0.72)',
   kpiColorMid: 'rgba(255,255,255,0.58)',
   kpiColorHover: 'rgba(255,255,255,0.92)',
 
-  // Title
-  titleFontSize: '13px',
+  // Title — página 34 sección 3: 14px, 600
+  titleFontSize: '14px',
   titleFontWeight: 600,
   titleLetterSpacing: '0.3px',
 
-  // Subtitle
-  subFontSize: '10.5px',
+  // Subtitle — página 34 sección 7: 11.5px, 500
+  subFontSize: '11.5px',
   subFontWeight: 500,
   subColor: 'rgba(255,255,255,0.28)',
   subColorHover: 'rgba(255,255,255,0.48)',
 
-  // Icons
-  iconSize: 42,
-  iconSizeBoosted: 46,
+  // Icons — página 34 sección 5: 55px standard, 58-60px boosted
+  iconSize: 55,
+  iconSizeBoosted: 58,
   iconStroke: 2.1,
-  iconStrokeBoosted: 2.2,
+  iconStrokeBoosted: 2.3,
+  iconContainerHeight: '55px',
 
-  // Metrics bar
-  metricsMarginTop: '10px',
-  metricsMarginBottom: '8px',
-  metricsPadding: '12px 28px',
+  // Metrics bar — página 34 sección 2
+  metricsMarginTop: '14px',
+  metricsMarginBottom: '10px',
+  metricsPadding: '14px 28px',
   metricsBg: 'rgba(255,255,255,0.025)',
   metricsBorder: '1px solid rgba(255,255,255,0.05)',
 
-  // Status dots
+  // Status dots — página 34 sección 7
   dotSize: '3px',
 
   // Accent line
@@ -133,7 +127,7 @@ const DASH = {
 } as const
 
 // ============================================================================
-// STATUS DOT COLORS
+// STATUS DOT COLORS — tonos premium, NO neon
 // ============================================================================
 const DOT_COLORS: Record<string, string> = {
   green: '#0D9668',
@@ -150,7 +144,6 @@ export default function HomeDashboard() {
   const { user, logout } = useAuthContext()
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
 
-  // Format user name from email
   const formatName = (email?: string) => {
     if (!email) return 'Usuario'
     const name = email.split('@')[0]
@@ -174,7 +167,7 @@ export default function HomeDashboard() {
     cuentasCxc: 0,
     unidadesGps: 0,
     alertasHoy: 0,
-    facturadoHoy: '$0',
+    formatosActivos: 0,
     leadsPipeline: 0,
     tractosTotal: 0,
     cajasTotal: 0,
@@ -251,7 +244,7 @@ export default function HomeDashboard() {
         cuentasCxc: cxc ?? 0,
         unidadesGps: gps ?? 0,
         alertasHoy: totalAlertas,
-        facturadoHoy: (formatosActivos ?? 0).toLocaleString(),
+        formatosActivos: formatosActivos ?? 0,
         leadsPipeline: leads ?? 0,
         tractosTotal: tractos ?? 0,
         cajasTotal: cajas ?? 0,
@@ -267,9 +260,9 @@ export default function HomeDashboard() {
     return () => clearInterval(interval)
   }, [fetchKpis])
 
-  // ——— 14 CARD DEFINITIONS (V27f — grid 7×2) ——————————
+  // ——— 14 CARD DEFINITIONS (V27f — grid 7×2, cuadradas) ——————————
   const cards: CardConfig[] = [
-    // ═══ FILA 1: War Room, Ventas, Clientes, Servicio, Torre Control, Mapa GPS, Flota ═══
+    // ═══ FILA 1 ═══
     {
       id: 'war-room',
       label: 'War Room',
@@ -288,7 +281,7 @@ export default function HomeDashboard() {
       route: '/ventas/mis-leads',
       priority: 'HIGH',
       kpiValue: kpis.leadsActivos,
-      kpiLabel: 'leads activos',
+      kpiLabel: 'leads',
       statusDot: 'green',
       statusText: 'Pipeline activo',
     },
@@ -321,7 +314,7 @@ export default function HomeDashboard() {
       route: '/operaciones/torre-control',
       priority: 'HIGH',
       kpiValue: kpis.viajesActivos,
-      kpiLabel: 'viajes activos',
+      kpiLabel: 'viajes',
       statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray',
       statusText: kpis.viajesActivos > 0 ? 'En operación' : 'Sin viajes',
     },
@@ -342,12 +335,12 @@ export default function HomeDashboard() {
       icon: <Truck size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
       route: '/operaciones/disponibilidad',
       priority: 'MID',
-      kpiValue: kpis.tractosTotal + kpis.cajasTotal,
+      kpiValue: (kpis.tractosTotal + kpis.cajasTotal) || '\u2014',
       kpiLabel: 'unidades',
       statusDot: 'green',
       statusText: 'Inventario',
     },
-    // ═══ FILA 2: Dedicados, Cobranza, Indicadores, Rentabilidad, Comunicaciones, Reportes, Config ═══
+    // ═══ FILA 2 ═══
     {
       id: 'dedicados',
       label: 'Dedicados',
@@ -373,7 +366,7 @@ export default function HomeDashboard() {
     {
       id: 'indicadores',
       label: 'Indicadores',
-      icon: <BarChart3 size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
+      icon: <BarChart3 size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
       route: '/inteligencia/analisis-8020',
       priority: 'MID',
       kpiValue: '80/20',
@@ -384,11 +377,11 @@ export default function HomeDashboard() {
     {
       id: 'rentabilidad',
       label: 'Rentabilidad',
-      icon: <TrendingUp size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
+      icon: <TrendingUp size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
       route: '/operaciones/rentabilidad',
       priority: 'MID',
-      kpiValue: kpis.facturadoHoy,
-      kpiLabel: 'formatos activos',
+      kpiValue: kpis.formatosActivos.toLocaleString(),
+      kpiLabel: 'formatos',
       statusDot: 'green',
       statusText: 'Calculando',
     },
@@ -406,7 +399,7 @@ export default function HomeDashboard() {
     {
       id: 'reportes',
       label: 'Reportes',
-      icon: <FileBarChart size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
+      icon: <FileBarChart size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
       route: '/servicio/metricas',
       priority: 'LOW',
       kpiValue: '\u2014',
@@ -437,6 +430,7 @@ export default function HomeDashboard() {
   ): React.CSSProperties => {
     const isHigh = card.priority === 'HIGH'
     return {
+      aspectRatio: '1 / 1',
       borderRadius: DASH.cardRadius,
       padding: DASH.cardPadding,
       background:
@@ -448,7 +442,7 @@ export default function HomeDashboard() {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: '4px',
+      gap: '6px',
       transition: 'all 0.16s ease',
       transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
 
@@ -458,7 +452,7 @@ export default function HomeDashboard() {
       borderBottom: `1px solid ${DASH.borderBottom}`,
       borderRight: `1px solid ${DASH.borderRight}`,
 
-      // Shadows
+      // Shadows 3 capas
       boxShadow: isHovered
         ? `${DASH.cardHoverShadow}, ${DASH.cardShadowInset}`
         : `${DASH.cardShadow}, ${DASH.cardShadowInset}`,
@@ -493,7 +487,7 @@ export default function HomeDashboard() {
       {/* Icon */}
       <div
         style={{
-          height: '46px',
+          height: DASH.iconContainerHeight,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -596,7 +590,7 @@ export default function HomeDashboard() {
         }}
       />
 
-      {/* Zona 2 — Franja de Métricas */}
+      {/* Zona 2 — Franja de Métricas — página 34 sección 2 */}
       <div
         style={{
           marginTop: DASH.metricsMarginTop,
@@ -611,22 +605,18 @@ export default function HomeDashboard() {
         }}
       >
         {[
-          { label: 'Viajes Activos', value: kpis.viajesActivos, color: '#0D9668' },
-          { label: 'Unidades GPS', value: kpis.unidadesGps, color: '#3B6CE7' },
-          {
-            label: 'Alertas Hoy',
-            value: kpis.alertasHoy,
-            color: kpis.alertasHoy > 0 ? '#C53030' : '#6B6B7A',
-          },
-          { label: 'Formatos Activos', value: kpis.facturadoHoy, color: '#B8860B' },
-          { label: 'Leads Pipeline', value: kpis.leadsPipeline, color: '#C27803' },
+          { label: 'Viajes Activos', value: kpis.viajesActivos },
+          { label: 'Unidades GPS', value: kpis.unidadesGps },
+          { label: 'Alertas Hoy', value: kpis.alertasHoy },
+          { label: 'Formatos Activos', value: kpis.formatosActivos.toLocaleString() },
+          { label: 'Leads Pipeline', value: kpis.leadsPipeline },
         ].map((metric) => (
           <div key={metric.label} style={{ textAlign: 'center' }}>
             <div
               style={{
-                fontSize: '20px',
+                fontSize: '22px',
                 fontWeight: 700,
-                color: metric.color,
+                color: 'rgba(255,255,255,0.82)',
                 lineHeight: 1.2,
               }}
             >
@@ -637,8 +627,9 @@ export default function HomeDashboard() {
                 fontSize: '10.5px',
                 fontWeight: 500,
                 color: 'rgba(255,255,255,0.38)',
-                letterSpacing: '0.3px',
-                marginTop: '2px',
+                letterSpacing: '0.4px',
+                marginTop: '3px',
+                textTransform: 'uppercase',
               }}
             >
               {metric.label}
@@ -647,7 +638,7 @@ export default function HomeDashboard() {
         ))}
       </div>
 
-      {/* Zona 3 — Grid de 14 Tarjetas (7×2) */}
+      {/* Zona 3 — Grid de 14 Tarjetas CUADRADAS (7×2) */}
       <div
         style={{
           flex: 1,
