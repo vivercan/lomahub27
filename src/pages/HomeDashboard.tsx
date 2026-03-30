@@ -11,7 +11,7 @@
 // ║  • Cards: gradient 180deg, border-radius 20px, sombras 3 capas           ║
 // ║  • SIN sidebar — navegación directa al hacer click en tarjeta             ║
 // ║                                                                            ║
-// ║  ÚLTIMA ACTUALIZACIÓN: 29/Mar/2026 — Fix rutas Clientes+Indicadores, Flota falsy              ║
+// ║  ÚLTIMA ACTUALIZACIÓN: 29/Mar/2026 — Fix rutas, Flota activo filter, header logo              ║
 // ╚══════════════════════════════════════════════════════════════════════════════╝
 
 import React, { useState, useEffect, useCallback } from 'react'
@@ -227,11 +227,11 @@ export default function HomeDashboard() {
         supabase
           .from('tractos')
           .select('*', { count: 'exact', head: true })
-          .is('deleted_at', null),
+          .eq('activo', true),
         supabase
           .from('cajas')
           .select('*', { count: 'exact', head: true })
-          .is('deleted_at', null),
+          .eq('activo', true),
       ])
 
       const totalAlertas = (viajesRiesgo ?? 0) + (notifUnread ?? 0)
