@@ -5,7 +5,7 @@ import {
   Truck, Radio, Map, Package, Clock, Send, ArrowLeftRight, Thermometer,
   Layers, Calculator, Calendar, Headphones, MessageSquare, Activity,
   AlertTriangle, Bell, Zap, Mail, BarChart3, DollarSign, Settings,
-  Plug, FolderOpen, ChevronDown, ChevronRight, PanelLeftClose, PanelLeft
+  Plug, FolderOpen, ChevronDown, ChevronRight, PanelLeftClose, PanelLeft, Search
 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 import { useAuthContext } from '../../hooks/AuthContext'
