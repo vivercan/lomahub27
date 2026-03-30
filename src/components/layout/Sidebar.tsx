@@ -36,6 +36,9 @@ const modules: ModuleGroup[] = [
       { label: 'Agregar Lead', path: '/ventas/leads/nuevo', icon: <Users size={16} />, roles: ['superadmin', 'admin', 'cs', 'ventas'] },
       { label: 'Cotizador', path: '/cotizador/nueva', icon: <FileText size={16} />, roles: ['superadmin', 'admin', 'cs', 'ventas'] },
       { label: 'Alta de Cliente', path: '/clientes/alta', icon: <Users size={16} />, roles: ['superadmin', 'admin', 'cs', 'ventas'] },
+      { label: 'Funnel de Ventas', path: '/ventas/funnel', icon: <TrendingUp size={16} />, roles: ['superadmin', 'admin', 'ventas'] },
+      { label: 'Comisiones', path: '/ventas/comisiones', icon: <Calculator size={16} />, roles: ['superadmin', 'admin', 'ventas'] },
+      { label: 'Prospeccion', path: '/ventas/prospeccion', icon: <Search size={16} />, roles: ['superadmin', 'admin', 'ventas'] },
     ]
   },
   {
@@ -102,7 +105,6 @@ const modules: ModuleGroup[] = [
       { label: 'KPI / Analitica', path: '/inteligencia', icon: <BarChart3 size={16} />, roles: ['superadmin', 'admin', 'ventas'] },
       { label: 'Presupuesto', path: '/inteligencia/presupuesto', icon: <DollarSign size={16} />, roles: ['superadmin', 'admin'] },
       { label: 'Pareto 80/20', path: '/inteligencia/pareto', icon: <Target size={16} />, roles: ['superadmin', 'admin'] },
-      { label: 'Comisiones', path: '/ventas/comisiones', icon: <Calculator size={16} />, roles: ['superadmin', 'admin', 'ventas'] },
     ]
   },
   {
