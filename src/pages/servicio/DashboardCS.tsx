@@ -117,11 +117,11 @@ export default function DashboardCS(): ReactElement {
           .select('*', { count: 'exact', head: true })
           .is('deleted_at', null)
           .in('tipo', ['activo', 'corporativo', 'estrategico']),
-        // Viajes activos
+        // Viajes en transito + programados
         supabase
           .from('viajes')
           .select('*', { count: 'exact', head: true })
-          .eq('activo', true),
+          .in('estado', ['en_transito', 'programado']),
         // Viajes en riesgo
         supabase
           .from('viajes')
