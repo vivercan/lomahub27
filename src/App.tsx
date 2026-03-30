@@ -169,7 +169,7 @@ function App() {
           } />
 
           {/* âââ Portal Documentos (Clientes) âââ */}
-          <Route path="/portal/documentos" element={
+          <Route path="/clientes/:id/documentos" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs', 'cxc', 'pricing']}>
               <PortalDocumentos />
             </ProtectedRoute>
