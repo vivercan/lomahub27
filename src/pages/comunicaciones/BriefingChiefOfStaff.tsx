@@ -1,680 +1,932 @@
-import { useEffect, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
-import { supabase } from '../../lib/supabase'
-import { tokens } from '../../lib/tokens'
+import React, { useState, useEffect } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { createClient } from '@supabase/supabase-js';
 import {
-  Brain, Sun, Moon, Clock, Mail, MailOpen,
-  Users, FileText, ChevronDown, ChevronUp,
-  Copy, CheckCircle2, AlertTriangle,
-  AlertCircle, TrendingUp,
-  Calendar, Truck, MessageCircle, Shield,
-  Database, Zap, ArrowUp, ArrowDown, Minus
-} from 'lucide-react'
+  Brain,
+  ChevronDown,
+  ChevronUp,
+  Copy,
+  Mail,
+  Share2,
+  Clock,
+  AlertCircle,
+  CheckCircle2,
+  AlertTriangle,
+  Loader2,
+} from 'lucide-react';
 
-// ─── INTERFACES V2 ──────────────────────────────────────
+const SUPABASE_URL = 'https://wtogsqxvyfeibnfxfbev.supabase.co';
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0b2dzcXh2eWZlaWJuZnhmYmV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI3OTQ3MTgsImV4cCI6MjA1ODM3MDcxOH0.E6bVjGPTsFq0oeRDU8HF7IyaxhQhvrIdfBDlIEDV4UA';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+interface Metrics {
+  cotizaciones_pedidas?: number;
+  cotizaciones_enviadas?: number;
+  leads_nuevos?: number;
+  leads_activos?: number;
+  oportunidades_activas?: number;
+  respuestas_recibidas?: number;
+  correos_entrantes?: number;
+  correos_salientes?: number;
+  viajes_en_transito?: number;
+  unidades_activas?: number;
+  unidades_totales?: number;
+  utilizacion_flota_pct?: number;
+  cartera_vencida?: number;
+  incidencias_abiertas?: number;
+  whatsapp_mensajes?: number;
+}
+
+interface DatosAccion {
+  to?: string;
+  subject?: string;
+  body_draft?: string;
+}
 
 interface Pendiente {
-  prioridad: string
-  titulo: string
-  descripcion: string
-  accion_sugerida: string
-  tipo_accion: string
-  datos_accion: Record<string, unknown>
-  status?: 'nuevo' | 'recurrente' | 'resuelto'
-  responsable?: string
-  impacto_estimado?: string
+  prioridad: 'alta' | 'media' | 'baja';
+  status: 'nuevo' | 'recurrente' | 'resuelto';
+  titulo: string;
+  descripcion?: string;
+  accion_sugerida?: string;
+  responsable?: string;
+  tipo_accion?: 'email_draft' | 'llamada' | 'seguimiento' | 'revision' | 'escalamiento' | 'otro';
+  datos_accion?: DatosAccion;
+  impacto_estimado?: string;
 }
 
-interface TimelineEvento {
-  hora: string
-  evento: string
-  detalle: string
-}
-
-interface AlertaSistema {
-  tipo: 'integracion' | 'datos' | 'rendimiento'
-  mensaje: string
-}
-
-interface Metricas {
-  cotizaciones_pedidas?: number
-  cotizaciones_enviadas?: number
-  leads_nuevos?: number
-  respuestas_recibidas?: number
-  correos_entrantes?: number
-  correos_salientes?: number
-  utilizacion_flota_pct?: number
-  whatsapp_mensajes?: number
-  [key: string]: number | undefined
-}
-
-interface MetricaComparada {
-  manana: number
-  ahora: number
-  cambio: string
+interface TimelineEntry {
+  hora: string;
+  evento: string;
+  detalle?: string;
 }
 
 interface CierreDia {
-  logros: string[]
-  pendientes_manana: string[]
-  pendientes_resueltos?: string[]
-  metricas_comparadas?: Record<string, MetricaComparada>
+  logros?: string[];
+  pendientes_manana?: string[];
+  metricas_comparadas?: Record<string, { am: number; pm: number }>;
 }
 
 interface Briefing {
-  id: string
-  tipo: string
-  fecha: string
-  resumen_ejecutivo: string
-  metricas: Metricas
-  pendientes: Pendiente[]
-  timeline: TimelineEvento[]
-  cierre_dia: CierreDia | null
-  alertas_sistema?: AlertaSistema[]
-  created_at: string
+  id: string;
+  created_at: string;
+  tipo: 'morning' | 'evening';
+  fecha: string;
+  resumen_ejecutivo: string;
+  metricas: Metrics;
+  pendientes: Pendiente[];
+  timeline: TimelineEntry[];
+  cierre_dia: CierreDia;
+  access_token: string;
+  usuario_id: string;
 }
 
-const t = tokens
+const formatSpanishDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const days = ['Domingo', 'Lunes', 'Martes', 'MiÃ©rcoles', 'Jueves', 'Viernes', 'SÃ¡bado'];
+  const months = [
+    'Enero',
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciembre',
+  ];
+  const day = days[date.getDay()];
+  const dateNum = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+  return `${day}, ${dateNum} de ${month} ${year}`;
+};
 
-// ─── HELPERS ────────────────────────────────────────────
+const formatCurrency = (value: number | undefined): string => {
+  if (value === undefined || value === null) return '$0';
+  return new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+};
 
-function formatFechaLarga(fecha: string): string {
-  const d = new Date(fecha + 'T12:00:00')
-  const dias = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado']
-  const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-  return `${dias[d.getDay()]} ${d.getDate()} de ${meses[d.getMonth()]}, ${d.getFullYear()}`
-}
+const getPriorityColor = (prioridad: string): string => {
+  switch (prioridad) {
+    case 'alta':
+      return '#ef4444';
+    case 'media':
+      return '#f59e0b';
+    case 'baja':
+      return '#10b981';
+    default:
+      return '#9ba8c3';
+  }
+};
 
-function prioridadOrder(p: string): number {
-  if (p === 'alta') return 0
-  if (p === 'media') return 1
-  return 2
-}
+const getPriorityBadgeEmoji = (prioridad: string): string => {
+  switch (prioridad) {
+    case 'alta':
+      return 'ð´';
+    case 'media':
+      return 'ð¡';
+    case 'baja':
+      return 'ð¢';
+    default:
+      return 'âª';
+  }
+};
 
-function prioridadColor(p: string): string {
-  if (p === 'alta') return t.colors.red
-  if (p === 'media') return t.colors.yellow
-  return t.colors.green
-}
+const getStatusBadgeColor = (status: string): string => {
+  switch (status) {
+    case 'nuevo':
+      return 'rgba(59, 130, 246, 0.15)';
+    case 'recurrente':
+      return 'rgba(249, 115, 22, 0.15)';
+    case 'resuelto':
+      return 'rgba(34, 197, 94, 0.15)';
+    default:
+      return 'rgba(107, 114, 128, 0.15)';
+  }
+};
 
-function prioridadBg(p: string): string {
-  if (p === 'alta') return t.colors.redBg
-  if (p === 'media') return t.colors.yellowBg
-  return t.colors.greenBg
-}
+const getStatusBadgeTextColor = (status: string): string => {
+  switch (status) {
+    case 'nuevo':
+      return '#3b82f6';
+    case 'recurrente':
+      return '#f97316';
+    case 'resuelto':
+      return '#22c55e';
+    default:
+      return '#6b7280';
+  }
+};
 
-function statusBadge(s?: string): { color: string; bg: string; label: string } {
-  if (s === 'recurrente') return { color: t.colors.orange, bg: t.colors.orangeLight, label: 'Recurrente' }
-  if (s === 'resuelto') return { color: t.colors.green, bg: t.colors.greenBg, label: 'Resuelto' }
-  return { color: t.colors.blue, bg: t.colors.blueBg, label: 'Nuevo' }
-}
+const getMetricColor = (value: number | undefined, threshold: number = 0): string => {
+  if (value === undefined || value === null) return '#ef4444';
+  return value > threshold ? '#10b981' : '#ef4444';
+};
 
-function alertaIcon(tipo: string) {
-  if (tipo === 'integracion') return <Zap size={14} />
-  if (tipo === 'datos') return <Database size={14} />
-  return <Shield size={14} />
-}
-
-// ─── COMPONENT ──────────────────────────────────────────
-
-export default function BriefingChiefOfStaff() {
-  const { id } = useParams<{ id: string }>()
-  const [searchParams] = useSearchParams()
-  const accessToken = searchParams.get('token')
-
-  const [briefing, setBriefing] = useState<Briefing | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [expandTimeline, setExpandTimeline] = useState(false)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!id) return
-    const fetchBriefing = async () => {
-      setLoading(true)
-      let query = supabase.from('briefings').select('*').eq('id', id)
-      if (accessToken) {
-        query = query.eq('access_token', accessToken)
-      }
-      const { data, error: err } = await query.single()
-      if (err || !data) {
-        setError('Briefing no encontrado o sin acceso')
-      } else {
-        setBriefing(data as Briefing)
-      }
-      setLoading(false)
+const MetricCard: React.FC<{ label: string; value: number | undefined; format?: 'currency' | 'percentage' | 'number' }> = ({
+  label,
+  value,
+  format = 'number',
+}) => {
+  let displayValue = 'â';
+  if (value !== undefined && value !== null) {
+    if (format === 'currency') {
+      displayValue = formatCurrency(value);
+    } else if (format === 'percentage') {
+      displayValue = `${value}%`;
+    } else {
+      displayValue = value.toString();
     }
-    fetchBriefing()
-  }, [id, accessToken])
-
-  const copyToClipboard = (text: string, itemId: string) => {
-    navigator.clipboard.writeText(text)
-    setCopiedId(itemId)
-    setTimeout(() => setCopiedId(null), 2000)
   }
 
-  if (loading) {
-    return (
-      <div style={{ minHeight: '100vh', background: t.colors.bgMain, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ color: t.colors.textSecondary, fontFamily: t.fonts.body, fontSize: '15px' }}>
-          Cargando briefing...
-        </div>
-      </div>
-    )
-  }
-
-  if (error || !briefing) {
-    return (
-      <div style={{ minHeight: '100vh', background: t.colors.bgMain, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ color: t.colors.red, fontFamily: t.fonts.body, fontSize: '15px' }}>
-          {error || 'Error al cargar'}
-        </div>
-      </div>
-    )
-  }
-
-  const isMorning = briefing.tipo === 'morning'
-  const m = briefing.metricas || {}
-  const pendientes = [...(briefing.pendientes || [])].sort((a, b) => prioridadOrder(a.prioridad) - prioridadOrder(b.prioridad))
-  const alertas = briefing.alertas_sistema || []
-  const cierre = briefing.cierre_dia
-
-  // ─── RENDER ─────────────────────────────────────────
+  const color = getMetricColor(value);
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: t.colors.bgMain,
-      fontFamily: t.fonts.body,
-      color: t.colors.textPrimary,
-      paddingBottom: '40px',
-    }}>
-      {/* ── CONTAINER ── */}
-      <div style={{
-        maxWidth: '900px',
-        margin: '0 auto',
-        padding: '16px 12px',
-      }}>
+    <div
+      style={{
+        background: 'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 50%, rgba(33,33,43,1) 100%)',
+        borderRadius: '16px',
+        border: `1px solid ${value === undefined || value === 0 ? 'rgba(239, 68, 68, 0.3)' : 'rgba(155,168,195,0.18)'}`,
+        boxShadow: '0 6px 16px rgba(0,0,0,0.22), 0 2px 4px rgba(0,0,0,0.18)',
+        padding: '16px 20px',
+        flex: '1 1 0',
+        minWidth: '0',
+      }}
+    >
+      <div style={{ fontSize: '24px', fontWeight: 800, color: color, marginBottom: '6px' }}>
+        {displayValue}
+      </div>
+      <div style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.56)', lineHeight: '1.3' }}>{label}</div>
+    </div>
+  );
+};
 
-        {/* ── HEADER ── */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '16px 0',
-          borderBottom: `1px solid ${t.colors.border}`,
+const LoadingState: React.FC = () => (
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      backgroundColor: '#2a2a36',
+      fontFamily: 'Montserrat, sans-serif',
+    }}
+  >
+    <div style={{ textAlign: 'center' }}>
+      <Loader2
+        size={48}
+        style={{
+          color: 'rgba(255, 255, 255, 0.6)',
           marginBottom: '16px',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{
-              width: '36px', height: '36px', borderRadius: t.radius.md,
-              background: isMorning ? t.colors.yellowBg : t.colors.blueBg,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              {isMorning ? <Sun size={18} color={t.colors.yellow} /> : <Moon size={18} color={t.colors.blue} />}
-            </div>
-            <div>
-              <div style={{
-                fontFamily: t.fonts.heading, fontWeight: 700, fontSize: '16px',
-                color: t.colors.textPrimary, letterSpacing: '-0.3px',
-              }}>
-                {isMorning ? 'Briefing Matutino' : 'Cierre del Dia'}
-              </div>
-              <div style={{ fontSize: '12px', color: t.colors.textSecondary, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Calendar size={11} /> {formatFechaLarga(briefing.fecha)}
-              </div>
+          animation: 'spin 1s linear infinite',
+        }}
+      />
+      <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '14px' }}>Cargando briefing...</div>
+    </div>
+    <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+  </div>
+);
+
+const ErrorState: React.FC<{ message: string }> = ({ message }) => (
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      backgroundColor: '#2a2a36',
+      fontFamily: 'Montserrat, sans-serif',
+      padding: '24px',
+    }}
+  >
+    <div
+      style={{
+        background: 'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 50%, rgba(33,33,43,1) 100%)',
+        borderRadius: '20px',
+        border: '1px solid rgba(239, 68, 68, 0.3)',
+        padding: '48px 32px',
+        textAlign: 'center',
+        maxWidth: '500px',
+      }}
+    >
+      <AlertCircle size={48} style={{ color: '#ef4444', marginBottom: '16px', margin: '0 auto 16px' }} />
+      <div style={{ fontSize: '18px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)', marginBottom: '12px' }}>
+        No se pudo cargar el briefing
+      </div>
+      <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.6)' }}>{message}</div>
+    </div>
+  </div>
+);
+
+const PendienteCard: React.FC<{ pendiente: Pendiente; index: number }> = ({ pendiente, index }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const copyEmailDraft = () => {
+    if (pendiente.datos_accion?.body_draft) {
+      navigator.clipboard.writeText(pendiente.datos_accion.body_draft);
+    }
+  };
+
+  const openMailto = () => {
+    if (pendiente.datos_accion?.to && pendiente.datos_accion?.subject) {
+      const body = pendiente.datos_accion?.body_draft || '';
+      window.location.href = `mailto:${pendiente.datos_accion.to}?subject=${encodeURIComponent(pendiente.datos_accion.subject)}&body=${encodeURIComponent(body)}`;
+    }
+  };
+
+  return (
+    <div
+      key={index}
+      style={{
+        background: 'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 50%, rgba(33,33,43,1) 100%)',
+        borderRadius: '20px',
+        border: `1px solid rgba(155,168,195,0.18)`,
+        boxShadow: '0 10px 24px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.28)',
+        overflow: 'hidden',
+        marginBottom: '16px',
+      }}
+    >
+      <div
+        onClick={() => setIsExpanded(!isExpanded)}
+        style={{
+          padding: '24px',
+          cursor: 'pointer',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          gap: '16px',
+        }}
+      >
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '12px' }}>
+            <span style={{ fontSize: '20px' }}>{getPriorityBadgeEmoji(pendiente.prioridad)}</span>
+            <div
+              style={{
+                background: getStatusBadgeColor(pendiente.status),
+                color: getStatusBadgeTextColor(pendiente.status),
+                padding: '4px 12px',
+                borderRadius: '12px',
+                fontSize: '12px',
+                fontWeight: 600,
+                textTransform: 'capitalize',
+              }}
+            >
+              {pendiente.status}
             </div>
           </div>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '6px',
-            padding: '4px 10px', borderRadius: t.radius.full,
-            background: t.colors.bgCard, border: `1px solid ${t.colors.border}`,
-            fontSize: '11px', color: t.colors.textMuted,
-          }}>
-            <Brain size={12} /> AI Chief of Staff
+          <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)', marginBottom: '8px' }}>
+            {pendiente.titulo}
+          </div>
+          {pendiente.responsable && (
+            <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.56)' }}>Responsable: {pendiente.responsable}</div>
+          )}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {isExpanded ? (
+            <ChevronUp size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+          ) : (
+            <ChevronDown size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+          )}
+        </div>
+      </div>
+
+      {isExpanded && (
+        <div
+          style={{
+            padding: '24px',
+            borderTop: '1px solid rgba(155,168,195,0.1)',
+            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          {pendiente.descripcion && (
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '8px', textTransform: 'uppercase' }}>
+                DescripciÃ³n
+              </div>
+              <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.6' }}>
+                {pendiente.descripcion}
+              </div>
+            </div>
+          )}
+
+          {pendiente.accion_sugerida && (
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '8px', textTransform: 'uppercase' }}>
+                AcciÃ³n Sugerida
+              </div>
+              <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.6' }}>
+                {pendiente.accion_sugerida}
+              </div>
+            </div>
+          )}
+
+          {pendiente.impacto_estimado && (
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '8px', textTransform: 'uppercase' }}>
+                Impacto Estimado
+              </div>
+              <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.6' }}>
+                {pendiente.impacto_estimado}
+              </div>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            {pendiente.tipo_accion === 'email_draft' && pendiente.datos_accion?.body_draft && (
+              <button
+                onClick={copyEmailDraft}
+                style={{
+                  background: 'rgba(59, 130, 246, 0.2)',
+                  color: '#3b82f6',
+                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  padding: '10px 16px',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  fontFamily: 'Montserrat, sans-serif',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s',
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = 'rgba(59, 130, 246, 0.3)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = 'rgba(59, 130, 246, 0.2)';
+                }}
+              >
+                <Copy size={16} />
+                Copiar Borrador
+              </button>
+            )}
+
+            {pendiente.datos_accion?.to && (
+              <button
+                onClick={openMailto}
+                style={{
+                  background: 'rgba(34, 197, 94, 0.2)',
+                  color: '#22c55e',
+                  border: '1px solid rgba(34, 197, 94, 0.3)',
+                  padding: '10px 16px',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  fontFamily: 'Montserrat, sans-serif',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s',
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = 'rgba(34, 197, 94, 0.3)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = 'rgba(34, 197, 94, 0.2)';
+                }}
+              >
+                <Mail size={16} />
+                Responder
+              </button>
+            )}
+
+            <button
+              style={{
+                background: 'rgba(249, 115, 22, 0.2)',
+                color: '#f97316',
+                border: '1px solid rgba(249, 115, 22, 0.3)',
+                padding: '10px 16px',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: 600,
+                fontFamily: 'Montserrat, sans-serif',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                transition: 'all 0.2s',
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = 'rgba(249, 115, 22, 0.3)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = 'rgba(249, 115, 22, 0.2)';
+              }}
+            >
+              <Share2 size={16} />
+              Delegar
+            </button>
           </div>
         </div>
+      )}
+    </div>
+  );
+};
 
-        {/* ── ALERTAS DEL SISTEMA ── */}
-        {alertas.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '16px' }}>
-            {alertas.map((a, i) => (
-              <div key={i} style={{
-                display: 'flex', alignItems: 'center', gap: '8px',
-                padding: '8px 12px', borderRadius: t.radius.md,
-                background: a.tipo === 'integracion' ? t.colors.redBg : a.tipo === 'datos' ? t.colors.yellowBg : t.colors.orangeLight,
-                border: `1px solid ${a.tipo === 'integracion' ? t.colors.red : a.tipo === 'datos' ? t.colors.yellow : t.colors.orange}22`,
-                fontSize: '12px', color: a.tipo === 'integracion' ? t.colors.red : a.tipo === 'datos' ? t.colors.yellow : t.colors.orange,
-              }}>
-                {alertaIcon(a.tipo)}
-                <span style={{ fontWeight: 600, textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.5px' }}>
-                  {a.tipo}
-                </span>
-                <span style={{ color: t.colors.textSecondary, fontSize: '12px' }}>{a.mensaje}</span>
+const TimelineSection: React.FC<{ timeline: TimelineEntry[] }> = ({ timeline }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  if (!timeline || timeline.length === 0) return null;
+
+  return (
+    <div
+      style={{
+        background: 'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 50%, rgba(33,33,43,1) 100%)',
+        borderRadius: '20px',
+        border: '1px solid rgba(155,168,195,0.18)',
+        boxShadow: '0 10px 24px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.28)',
+        overflow: 'hidden',
+        marginBottom: '24px',
+      }}
+    >
+      <div
+        onClick={() => setIsExpanded(!isExpanded)}
+        style={{
+          padding: '24px',
+          cursor: 'pointer',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Clock size={20} style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
+          <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)' }}>Cronograma del DÃ­a</div>
+        </div>
+        {isExpanded ? (
+          <ChevronUp size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+        ) : (
+          <ChevronDown size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+        )}
+      </div>
+
+      {isExpanded && (
+        <div
+          style={{
+            padding: '24px',
+            borderTop: '1px solid rgba(155,168,195,0.1)',
+            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          <div style={{ position: 'relative', paddingLeft: '40px' }}>
+            {timeline.map((entry, index) => (
+              <div key={index} style={{ marginBottom: index === timeline.length - 1 ? 0 : '24px', position: 'relative' }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '-24px',
+                    top: '6px',
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(34, 197, 94, 0.8))',
+                    border: '2px solid #2a2a36',
+                  }}
+                />
+                {index !== timeline.length - 1 && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: '-18px',
+                      top: '24px',
+                      width: '2px',
+                      height: 'calc(100% + 12px)',
+                      background: 'rgba(155,168,195,0.2)',
+                    }}
+                  />
+                )}
+                <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '4px' }}>
+                  {entry.hora}
+                </div>
+                <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)', marginBottom: '4px' }}>
+                  {entry.evento}
+                </div>
+                {entry.detalle && (
+                  <div style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.6)', lineHeight: '1.5' }}>
+                    {entry.detalle}
+                  </div>
+                )}
               </div>
             ))}
           </div>
-        )}
-
-        {/* ── METRICAS GRID ── */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-          gap: '8px',
-          marginBottom: '16px',
-        }}>
-          {[
-            { label: 'Cotizaciones', value: m.cotizaciones_enviadas ?? 0, sub: `${m.cotizaciones_pedidas ?? 0} pedidas`, icon: <FileText size={14} />, color: t.colors.blue },
-            { label: 'Leads Nuevos', value: m.leads_nuevos ?? 0, icon: <Users size={14} />, color: t.colors.green },
-            { label: 'Correos In', value: m.correos_entrantes ?? 0, icon: <Mail size={14} />, color: t.colors.primary },
-            { label: 'Correos Out', value: m.correos_salientes ?? 0, icon: <MailOpen size={14} />, color: t.colors.orange },
-            { label: 'Flota', value: m.utilizacion_flota_pct != null ? `${m.utilizacion_flota_pct}%` : '-', icon: <Truck size={14} />, color: t.colors.yellow, isFlota: true },
-            { label: 'WhatsApp', value: m.whatsapp_mensajes ?? 0, icon: <MessageCircle size={14} />, color: t.colors.green },
-          ].map((metric, i) => (
-            <div key={i} style={{
-              background: t.colors.bgCard,
-              border: `1px solid ${t.colors.border}`,
-              borderRadius: t.radius.md,
-              padding: '10px 12px',
-              boxShadow: t.effects.cardHighlight,
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                <span style={{ color: metric.color, opacity: 0.8 }}>{metric.icon}</span>
-                <span style={{ fontSize: '10px', color: t.colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>
-                  {metric.label}
-                </span>
-              </div>
-              <div style={{ fontSize: '22px', fontWeight: 700, fontFamily: t.fonts.heading, color: t.colors.textPrimary }}>
-                {metric.value}
-              </div>
-              {metric.sub && (
-                <div style={{ fontSize: '10px', color: t.colors.textMuted, marginTop: '2px' }}>{metric.sub}</div>
-              )}
-              {/* Gauge bar for flota */}
-              {'isFlota' in metric && metric.isFlota && m.utilizacion_flota_pct != null && (
-                <div style={{ marginTop: '6px', height: '3px', borderRadius: '2px', background: t.colors.bgHover }}>
-                  <div style={{
-                    height: '100%', borderRadius: '2px',
-                    width: `${Math.min(m.utilizacion_flota_pct, 100)}%`,
-                    background: m.utilizacion_flota_pct > 85 ? t.colors.green : m.utilizacion_flota_pct > 60 ? t.colors.yellow : t.colors.red,
-                  }} />
-                </div>
-              )}
-            </div>
-          ))}
         </div>
+      )}
+    </div>
+  );
+};
 
-        {/* ── RESUMEN EJECUTIVO ── */}
-        <div style={{
-          background: t.colors.bgCard,
-          border: `1px solid ${t.colors.border}`,
-          borderRadius: t.radius.md,
-          padding: '14px 16px',
-          marginBottom: '16px',
-          boxShadow: t.effects.cardHighlight,
-        }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px',
-            fontSize: '11px', fontWeight: 700, color: t.colors.textSecondary,
-            textTransform: 'uppercase', letterSpacing: '0.8px',
-          }}>
-            <Brain size={13} /> Resumen Ejecutivo
-          </div>
-          <div style={{
-            fontSize: '13px', lineHeight: '1.6', color: t.colors.textPrimary,
-            whiteSpace: 'pre-wrap',
-          }}>
-            {briefing.resumen_ejecutivo}
-          </div>
-        </div>
+const CierreDiaSection: React.FC<{ cierreDia: CierreDia }> = ({ cierreDia }) => {
+  const [expandedLogros, setExpandedLogros] = useState(true);
+  const [expandedPendientes, setExpandedPendientes] = useState(true);
 
-        {/* ── PENDIENTES ── */}
-        {pendientes.length > 0 && (
-          <div style={{
-            background: t.colors.bgCard,
-            border: `1px solid ${t.colors.border}`,
-            borderRadius: t.radius.md,
-            padding: '14px 16px',
-            marginBottom: '16px',
-            boxShadow: t.effects.cardHighlight,
-          }}>
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              marginBottom: '10px',
-            }}>
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: '6px',
-                fontSize: '11px', fontWeight: 700, color: t.colors.textSecondary,
-                textTransform: 'uppercase', letterSpacing: '0.8px',
-              }}>
-                <AlertTriangle size={13} /> Pendientes ({pendientes.length})
-              </div>
-              <div style={{ display: 'flex', gap: '4px' }}>
-                {['alta', 'media', 'baja'].map(p => {
-                  const count = pendientes.filter(x => x.prioridad === p).length
-                  if (!count) return null
-                  return (
-                    <span key={p} style={{
-                      fontSize: '9px', fontWeight: 700, padding: '2px 6px',
-                      borderRadius: t.radius.full, color: prioridadColor(p),
-                      background: prioridadBg(p), textTransform: 'uppercase',
-                    }}>
-                      {count} {p}
-                    </span>
-                  )
-                })}
-              </div>
+  const hasLogros = cierreDia?.logros && cierreDia.logros.length > 0;
+  const hasPendientes = cierreDia?.pendientes_manana && cierreDia.pendientes_manana.length > 0;
+
+  if (!hasLogros && !hasPendientes) return null;
+
+  return (
+    <div>
+      {hasLogros && (
+        <div
+          style={{
+            background: 'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 50%, rgba(33,33,43,1) 100%)',
+            borderRadius: '20px',
+            border: '1px solid rgba(34, 197, 94, 0.2)',
+            boxShadow: '0 10px 24px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.28)',
+            overflow: 'hidden',
+            marginBottom: '24px',
+          }}
+        >
+          <div
+            onClick={() => setExpandedLogros(!expandedLogros)}
+            style={{
+              padding: '24px',
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <CheckCircle2 size={20} style={{ color: '#22c55e' }} />
+              <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)' }}>Lo que se logrÃ³ hoy</div>
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {pendientes.map((p, i) => {
-                const sb = statusBadge(p.status)
-                const isResolved = p.status === 'resuelto'
-                return (
-                  <div key={i} style={{
-                    padding: '10px 12px',
-                    borderRadius: t.radius.sm,
-                    background: t.colors.bgMain,
-                    border: `1px solid ${t.colors.border}`,
-                    opacity: isResolved ? 0.6 : 1,
-                  }}>
-                    {/* Top row: priority + status + title */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                      <span style={{
-                        width: '6px', height: '6px', borderRadius: '50%',
-                        background: prioridadColor(p.prioridad), flexShrink: 0,
-                      }} />
-                      <span style={{
-                        fontSize: '9px', fontWeight: 700, padding: '1px 6px',
-                        borderRadius: t.radius.full, color: sb.color,
-                        background: sb.bg, textTransform: 'uppercase', letterSpacing: '0.3px',
-                      }}>
-                        {sb.label}
-                      </span>
-                      <span style={{
-                        fontSize: '13px', fontWeight: 600, color: t.colors.textPrimary,
-                        textDecoration: isResolved ? 'line-through' : 'none',
-                        flex: 1,
-                      }}>
-                        {p.titulo}
-                      </span>
-                      <button
-                        onClick={() => copyToClipboard(`${p.titulo}: ${p.descripcion}. Accion: ${p.accion_sugerida}`, `p-${i}`)}
-                        style={{
-                          background: 'none', border: 'none', cursor: 'pointer',
-                          color: copiedId === `p-${i}` ? t.colors.green : t.colors.textMuted,
-                          padding: '2px', flexShrink: 0,
-                        }}
-                      >
-                        {copiedId === `p-${i}` ? <CheckCircle2 size={13} /> : <Copy size={13} />}
-                      </button>
-                    </div>
-
-                    {/* Description */}
-                    <div style={{ fontSize: '12px', color: t.colors.textSecondary, marginTop: '4px', lineHeight: '1.5' }}>
-                      {p.descripcion}
-                    </div>
-
-                    {/* Impacto estimado */}
-                    {p.impacto_estimado && (
-                      <div style={{ fontSize: '11px', color: t.colors.textMuted, marginTop: '3px', fontStyle: 'italic' }}>
-                        Impacto: {p.impacto_estimado}
-                      </div>
-                    )}
-
-                    {/* Bottom row: responsable + accion */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', flexWrap: 'wrap' }}>
-                      {p.responsable && (
-                        <span style={{
-                          fontSize: '10px', color: t.colors.primary, fontWeight: 600,
-                          display: 'flex', alignItems: 'center', gap: '3px',
-                        }}>
-                          <Users size={10} /> {p.responsable}
-                        </span>
-                      )}
-                      {p.accion_sugerida && !isResolved && (
-                        <span style={{
-                          fontSize: '10px', color: t.colors.textMuted,
-                          padding: '2px 6px', borderRadius: t.radius.sm,
-                          background: t.colors.bgHover,
-                        }}>
-                          {p.accion_sugerida}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+            {expandedLogros ? (
+              <ChevronUp size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+            ) : (
+              <ChevronDown size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+            )}
           </div>
-        )}
 
-        {/* ── TIMELINE ── */}
-        {(briefing.timeline || []).length > 0 && (
-          <div style={{
-            background: t.colors.bgCard,
-            border: `1px solid ${t.colors.border}`,
-            borderRadius: t.radius.md,
-            padding: '14px 16px',
-            marginBottom: '16px',
-            boxShadow: t.effects.cardHighlight,
-          }}>
-            <button
-              onClick={() => setExpandTimeline(!expandTimeline)}
+          {expandedLogros && (
+            <div
               style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                width: '100%', background: 'none', border: 'none', cursor: 'pointer',
-                padding: 0, color: t.colors.textSecondary,
+                padding: '24px',
+                borderTop: '1px solid rgba(155,168,195,0.1)',
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
               }}
             >
-              <span style={{
-                display: 'flex', alignItems: 'center', gap: '6px',
-                fontSize: '11px', fontWeight: 700,
-                textTransform: 'uppercase', letterSpacing: '0.8px',
-              }}>
-                <Clock size={13} /> Timeline ({briefing.timeline.length} eventos)
-              </span>
-              {expandTimeline ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-            </button>
-
-            {expandTimeline && (
-              <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {briefing.timeline.map((ev, i) => (
-                  <div key={i} style={{
-                    display: 'flex', gap: '10px', padding: '6px 0',
-                    borderBottom: i < briefing.timeline.length - 1 ? `1px solid ${t.colors.border}` : 'none',
-                  }}>
-                    <span style={{
-                      fontSize: '11px', fontWeight: 700, color: t.colors.primary,
-                      minWidth: '50px', flexShrink: 0,
-                    }}>
-                      {ev.hora}
-                    </span>
-                    <div>
-                      <div style={{ fontSize: '12px', fontWeight: 600, color: t.colors.textPrimary }}>
-                        {ev.evento}
-                      </div>
-                      <div style={{ fontSize: '11px', color: t.colors.textMuted, marginTop: '1px' }}>
-                        {ev.detalle}
-                      </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {cierreDia.logros?.map((logro, index) => (
+                  <div key={index} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <span style={{ fontSize: '18px', marginTop: '2px', flexShrink: 0 }}>â</span>
+                    <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.6' }}>
+                      {logro}
                     </div>
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {hasPendientes && (
+        <div
+          style={{
+            background: 'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 50%, rgba(33,33,43,1) 100%)',
+            borderRadius: '20px',
+            border: '1px solid rgba(249, 115, 22, 0.2)',
+            boxShadow: '0 10px 24px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.28)',
+            overflow: 'hidden',
+            marginBottom: '24px',
+          }}
+        >
+          <div
+            onClick={() => setExpandedPendientes(!expandedPendientes)}
+            style={{
+              padding: '24px',
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <AlertTriangle size={20} style={{ color: '#f97316' }} />
+              <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)' }}>Pendiente para maÃ±ana</div>
+            </div>
+            {expandedPendientes ? (
+              <ChevronUp size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+            ) : (
+              <ChevronDown size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
             )}
+          </div>
+
+          {expandedPendientes && (
+            <div
+              style={{
+                padding: '24px',
+                borderTop: '1px solid rgba(155,168,195,0.1)',
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
+              }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {cierreDia.pendientes_manana?.map((pendiente, index) => (
+                  <div key={index} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <span style={{ fontSize: '18px', marginTop: '2px', flexShrink: 0 }}>â</span>
+                    <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.6' }}>
+                      {pendiente}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const BriefingChiefOfStaff: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
+
+  const [briefing, setBriefing] = useState<Briefing | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBriefing = async () => {
+      if (!id || !token) {
+        setError('ParÃ¡metros invÃ¡lidos. Se requiere ID y token.');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data, error: fetchError } = await supabase
+          .from('briefings')
+          .select('*')
+          .eq('id', id)
+          .eq('access_token', token)
+          .single();
+
+        if (fetchError) {
+          setError('Briefing no encontrado o token invÃ¡lido.');
+          setLoading(false);
+          return;
+        }
+
+        if (!data) {
+          setError('Briefing no encontrado.');
+          setLoading(false);
+          return;
+        }
+
+        setBriefing(data as Briefing);
+        setLoading(false);
+      } catch (err) {
+        setError('Error al cargar el briefing. Intenta mÃ¡s tarde.');
+        setLoading(false);
+      }
+    };
+
+    fetchBriefing();
+  }, [id, token]);
+
+  if (loading) {
+    return <LoadingState />;
+  }
+
+  if (error || !briefing) {
+    return <ErrorState message={error || 'Briefing no disponible'} />;
+  }
+
+  const sortedPendientes = [...(briefing.pendientes || [])].sort((a, b) => {
+    const priorityOrder = { alta: 0, media: 1, baja: 2 };
+    return (priorityOrder[a.prioridad] ?? 3) - (priorityOrder[b.prioridad] ?? 3);
+  });
+
+  const briefingType = briefing.tipo === 'morning' ? 'Briefing Matutino' : 'Cierre del DÃ­a';
+
+  return (
+    <div
+      style={{
+        backgroundColor: '#2a2a36',
+        minHeight: '100vh',
+        fontFamily: 'Montserrat, sans-serif',
+        color: 'rgba(255, 255, 255, 0.9)',
+        padding: '16px',
+      }}
+    >
+      <style>
+        {`
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          body {
+            background-color: #2a2a36;
+          }
+        `}
+      </style>
+
+      <div style={{ maxWidth: '100%', margin: '0 auto', padding: '0 8px' }}>
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
+            <div
+              style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(34, 197, 94, 0.3))',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Brain size={28} style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+            </div>
+            <div>
+              <div style={{ fontSize: '28px', fontWeight: 800, color: 'rgba(255, 255, 255, 0.95)' }}>
+                AI Chief of Staff
+              </div>
+              <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.56)', marginTop: '4px' }}>
+                {formatSpanishDate(briefing.fecha)}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '24px' }}>
+            <div
+              style={{
+                background:
+                  briefing.tipo === 'morning'
+                    ? 'rgba(59, 130, 246, 0.15)'
+                    : 'rgba(249, 115, 22, 0.15)',
+                color:
+                  briefing.tipo === 'morning'
+                    ? '#3b82f6'
+                    : '#f97316',
+                padding: '8px 16px',
+                borderRadius: '12px',
+                fontSize: '12px',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+              }}
+            >
+              {briefingType}
+            </div>
+          </div>
+
+          <div
+            style={{
+              height: '3px',
+              background: 'linear-gradient(90deg, rgba(59, 130, 246, 0.8), rgba(34, 197, 94, 0.4))',
+              borderRadius: '2px',
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            MÃ©tricas Clave
+          </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+              gap: '12px',
+            }}
+          >
+            <MetricCard label="Cotizaciones Pedidas" value={briefing.metricas?.cotizaciones_pedidas} />
+            <MetricCard label="Cotizaciones Enviadas" value={briefing.metricas?.cotizaciones_enviadas} />
+            <MetricCard label="Leads Nuevos" value={briefing.metricas?.leads_nuevos} />
+            <MetricCard label="Leads Activos" value={briefing.metricas?.leads_activos} />
+            <MetricCard label="Viajes en TrÃ¡nsito" value={briefing.metricas?.viajes_en_transito} />
+            <MetricCard label="UtilizaciÃ³n Flota" value={briefing.metricas?.utilizacion_flota_pct} format="percentage" />
+            <MetricCard label="Cartera Vencida" value={briefing.metricas?.cartera_vencida} format="currency" />
+            <MetricCard label="Incidencias Abiertas" value={briefing.metricas?.incidencias_abiertas} />
+            <MetricCard label="Mensajes WhatsApp" value={briefing.metricas?.whatsapp_mensajes} />
+          </div>
+        </div>
+
+        {briefing.resumen_ejecutivo && (
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Resumen Ejecutivo
+            </div>
+            <div
+              style={{
+                background: 'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 50%, rgba(33,33,43,1) 100%)',
+                borderRadius: '20px',
+                border: '1px solid rgba(155,168,195,0.18)',
+                borderLeftWidth: '4px',
+                borderLeftColor: 'rgba(59, 130, 246, 0.6)',
+                boxShadow: '0 10px 24px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.28)',
+                padding: '32px',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '14px',
+                  lineHeight: '1.8',
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {briefing.resumen_ejecutivo}
+              </div>
+            </div>
           </div>
         )}
 
-        {/* ── CIERRE DEL DIA (solo evening) ── */}
-        {!isMorning && cierre && (
-          <>
-            {/* Pendientes Resueltos */}
-            {cierre.pendientes_resueltos && cierre.pendientes_resueltos.length > 0 && (
-              <div style={{
-                background: t.colors.bgCard,
-                border: `1px solid ${t.colors.border}`,
-                borderRadius: t.radius.md,
-                padding: '14px 16px',
-                marginBottom: '16px',
-                boxShadow: t.effects.cardHighlight,
-              }}>
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px',
-                  fontSize: '11px', fontWeight: 700, color: t.colors.green,
-                  textTransform: 'uppercase', letterSpacing: '0.8px',
-                }}>
-                  <CheckCircle2 size={13} /> Resueltos Hoy ({cierre.pendientes_resueltos.length})
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  {cierre.pendientes_resueltos.map((item, i) => (
-                    <div key={i} style={{
-                      display: 'flex', alignItems: 'center', gap: '6px',
-                      fontSize: '12px', color: t.colors.textSecondary,
-                    }}>
-                      <CheckCircle2 size={12} color={t.colors.green} />
-                      <span style={{ textDecoration: 'line-through', opacity: 0.8 }}>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Metricas Comparadas (manana vs ahora) */}
-            {cierre.metricas_comparadas && Object.keys(cierre.metricas_comparadas).length > 0 && (
-              <div style={{
-                background: t.colors.bgCard,
-                border: `1px solid ${t.colors.border}`,
-                borderRadius: t.radius.md,
-                padding: '14px 16px',
-                marginBottom: '16px',
-                boxShadow: t.effects.cardHighlight,
-              }}>
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px',
-                  fontSize: '11px', fontWeight: 700, color: t.colors.textSecondary,
-                  textTransform: 'uppercase', letterSpacing: '0.8px',
-                }}>
-                  <TrendingUp size={13} /> Comparativo del Dia
-                </div>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                  gap: '8px',
-                }}>
-                  {Object.entries(cierre.metricas_comparadas).map(([campo, val]) => {
-                    const mc = val as MetricaComparada
-                    const isUp = mc.ahora > mc.manana
-                    const isDown = mc.ahora < mc.manana
-                    return (
-                      <div key={campo} style={{
-                        padding: '8px 10px', borderRadius: t.radius.sm,
-                        background: t.colors.bgMain, border: `1px solid ${t.colors.border}`,
-                      }}>
-                        <div style={{ fontSize: '10px', color: t.colors.textMuted, textTransform: 'uppercase', marginBottom: '4px', fontWeight: 600, letterSpacing: '0.3px' }}>
-                          {campo.replace(/_/g, ' ')}
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <div>
-                            <span style={{ fontSize: '10px', color: t.colors.textMuted }}>AM </span>
-                            <span style={{ fontSize: '13px', fontWeight: 600, color: t.colors.textSecondary }}>{mc.manana}</span>
-                          </div>
-                          <div style={{ color: isUp ? t.colors.green : isDown ? t.colors.red : t.colors.textMuted }}>
-                            {isUp ? <ArrowUp size={14} /> : isDown ? <ArrowDown size={14} /> : <Minus size={14} />}
-                          </div>
-                          <div>
-                            <span style={{ fontSize: '10px', color: t.colors.textMuted }}>PM </span>
-                            <span style={{ fontSize: '13px', fontWeight: 700, color: t.colors.textPrimary }}>{mc.ahora}</span>
-                          </div>
-                        </div>
-                        {mc.cambio && (
-                          <div style={{
-                            fontSize: '10px', marginTop: '3px', fontWeight: 600,
-                            color: isUp ? t.colors.green : isDown ? t.colors.red : t.colors.textMuted,
-                          }}>
-                            {mc.cambio}
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Logros */}
-            {cierre.logros && cierre.logros.length > 0 && (
-              <div style={{
-                background: t.colors.bgCard,
-                border: `1px solid ${t.colors.border}`,
-                borderRadius: t.radius.md,
-                padding: '14px 16px',
-                marginBottom: '16px',
-                boxShadow: t.effects.cardHighlight,
-              }}>
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px',
-                  fontSize: '11px', fontWeight: 700, color: t.colors.textSecondary,
-                  textTransform: 'uppercase', letterSpacing: '0.8px',
-                }}>
-                  <CheckCircle2 size={13} /> Logros del Dia
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  {cierre.logros.map((l, i) => (
-                    <div key={i} style={{ fontSize: '12px', color: t.colors.textPrimary, display: 'flex', gap: '6px', lineHeight: '1.5' }}>
-                      <span style={{ color: t.colors.green, flexShrink: 0, marginTop: '2px' }}>
-                        <CheckCircle2 size={12} />
-                      </span>
-                      {l}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Pendientes para manana */}
-            {cierre.pendientes_manana && cierre.pendientes_manana.length > 0 && (
-              <div style={{
-                background: t.colors.bgCard,
-                border: `1px solid ${t.colors.border}`,
-                borderRadius: t.radius.md,
-                padding: '14px 16px',
-                marginBottom: '16px',
-                boxShadow: t.effects.cardHighlight,
-              }}>
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px',
-                  fontSize: '11px', fontWeight: 700, color: t.colors.textSecondary,
-                  textTransform: 'uppercase', letterSpacing: '0.8px',
-                }}>
-                  <AlertCircle size={13} /> Pendientes para Manana
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  {cierre.pendientes_manana.map((p, i) => (
-                    <div key={i} style={{ fontSize: '12px', color: t.colors.textPrimary, display: 'flex', gap: '6px', lineHeight: '1.5' }}>
-                      <span style={{ color: t.colors.yellow, flexShrink: 0, marginTop: '2px' }}>
-                        <AlertCircle size={12} />
-                      </span>
-                      {p}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
+        {sortedPendientes && sortedPendientes.length > 0 && (
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Pendientes Accionables
+            </div>
+            <div>
+              {sortedPendientes.map((pendiente, index) => (
+                <PendienteCard key={index} pendiente={pendiente} index={index} />
+              ))}
+            </div>
+          </div>
         )}
 
-        {/* ── FOOTER ── */}
-        <div style={{
-          textAlign: 'center',
-          padding: '12px 0',
-          fontSize: '10px',
-          color: t.colors.textMuted,
-          borderTop: `1px solid ${t.colors.border}`,
-          marginTop: '8px',
-        }}>
-          LomaHUB27 · AI Chief of Staff · Generado {new Date(briefing.created_at).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
+        {briefing.timeline && briefing.timeline.length > 0 && (
+          <div style={{ marginBottom: '24px' }}>
+            <TimelineSection timeline={briefing.timeline} />
+          </div>
+        )}
+
+        {briefing.tipo === 'evening' && briefing.cierre_dia && (
+          <div style={{ marginBottom: '24px' }}>
+            <CierreDiaSection cierreDia={briefing.cierre_dia} />
+          </div>
+        )}
+
+        <div style={{ paddingBottom: '40px', textAlign: 'center' }}>
+          <div
+            style={{
+              fontSize: '12px',
+              color: 'rgba(255, 255, 255, 0.4)',
+            }}
+          >
+            AI Chief of Staff â¢ LomaHUB27 â¢ TROB
+          </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
+
+export default BriefingChiefOfStaff;
