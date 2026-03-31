@@ -205,7 +205,7 @@ export default function AppHeader({
         position: 'relative',
         height: 64,
         background: '#FFFFFF',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06)',
         zIndex: 50,
         fontFamily: 'Montserrat, sans-serif',
         flexShrink: 0,
@@ -249,7 +249,7 @@ export default function AppHeader({
               padding: '3px 0',
             }}
           >
-            <span style={{ fontSize: 14, fontWeight: 700, color: '#1E293B', fontFamily: "'Montserrat', sans-serif" }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: '#2563EB', fontFamily: "'Montserrat', sans-serif" }}>
               W{weekNum}
             </span>
           </div>
@@ -295,7 +295,7 @@ export default function AppHeader({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'opacity 0.2s ease',
+              transition: 'all 0.25s ease',
               opacity: 0.7,
             }}
             onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; }}
