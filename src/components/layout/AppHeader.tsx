@@ -243,10 +243,10 @@ export default function AppHeader({
           {/* Semana */}
           <div
             style={{
-              background: 'rgba(59,108,231,0.15)',
-              border: '1px solid rgba(59,108,231,0.3)',
-              borderRadius: 6,
-              padding: '3px 10px',
+              background: 'transparent',
+              border: 'none',
+              borderRadius: 0,
+              padding: '3px 0',
             }}
           >
             <span style={{ fontSize: 14, fontWeight: 700, color: '#1E293B', fontFamily: "'Montserrat', sans-serif" }}>
