@@ -205,7 +205,8 @@ export default function AppHeader({
         position: 'relative',
         height: 64,
         background: '#FFFFFF',
-        borderBottom: '1px solid rgba(0,0,0,0.10)',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)',
+        zIndex: 50,
         fontFamily: 'Montserrat, sans-serif',
         flexShrink: 0,
       }}
@@ -234,7 +235,7 @@ export default function AppHeader({
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           {/* Fecha */}
           <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: '#1E293B', textTransform: 'capitalize' as const }}>
+            <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1E293B', fontFamily: "'Montserrat', sans-serif", textTransform: 'capitalize' as const }}>
               {fechaStr}
             </p>
           </div>
@@ -255,12 +256,13 @@ export default function AppHeader({
 
           {/* USD / MXN */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 11, color: 'rgba(0,0,0,0.55)' }}>USD/MXN</span>
+            <span style={{ fontSize: 13, color: '#1E293B', fontFamily: "'Montserrat', sans-serif" }}>USD/MXN</span>
             <span
               style={{
-                fontSize: 13,
+                fontSize: 15,
                 fontWeight: 700,
-                color: '#B8860B',
+                color: '#1E293B',
+                fontFamily: "'Montserrat', sans-serif",
               }}
             >
               {tipoCambio ? `$${tipoCambio.toFixed(2)}` : '—'}
@@ -299,7 +301,7 @@ export default function AppHeader({
             onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; }}
             onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.7'; }}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A7AB5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
               <line x1="12" y1="2" x2="12" y2="12" />
             </svg>
