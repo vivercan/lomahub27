@@ -55,7 +55,7 @@ interface CardConfig {
 // DASHBOARD VISUAL CONSTANTS — EXACTO de página 34 Notion
 // ============================================================================
 const DASH = {
-  bg: '#2a2a36',
+  bg: '#FFFFFF',
   fontFamily: "'Montserrat', sans-serif",
 
   // Card gradients
@@ -113,15 +113,15 @@ const DASH = {
   metricsMarginTop: '14px',
   metricsMarginBottom: '10px',
   metricsPadding: '14px 28px',
-  metricsBg: 'rgba(255,255,255,0.025)',
-  metricsBorder: '1px solid rgba(255,255,255,0.05)',
+  metricsBg: 'rgba(0,0,0,0.03)',
+  metricsBorder: '1px solid rgba(0,0,0,0.06)',
 
   // Status dots — página 34 sección 7
   dotSize: '3px',
 
   // Accent line
   accentGradient:
-    'linear-gradient(90deg, rgba(194,120,3,0.3) 0%, rgba(59,108,231,0.2) 50%, transparent 100%)',
+    'linear-gradient(90deg, rgba(194,120,3,0.25) 0%, rgba(59,108,231,0.15) 50%, transparent 100%)',
   accentGradientHigh:
     'linear-gradient(90deg, rgba(194,120,3,0.5) 0%, rgba(59,108,231,0.35) 50%, transparent 100%)',
 } as const
@@ -570,7 +570,7 @@ export default function HomeDashboard() {
         flexDirection: 'column',
         backgroundColor: DASH.bg,
         fontFamily: DASH.fontFamily,
-        color: '#E8E8ED',
+        color: '#1E293B',
       }}
     >
       {/* Zona 1 — AppHeader */}
@@ -616,7 +616,7 @@ export default function HomeDashboard() {
               style={{
                 fontSize: '22px',
                 fontWeight: 700,
-                color: 'rgba(255,255,255,0.82)',
+                color: 'rgba(0,0,0,0.72)',
                 lineHeight: 1.2,
               }}
             >
@@ -626,7 +626,7 @@ export default function HomeDashboard() {
               style={{
                 fontSize: '10.5px',
                 fontWeight: 500,
-                color: 'rgba(255,255,255,0.38)',
+                color: 'rgba(0,0,0,0.45)',
                 letterSpacing: '0.4px',
                 marginTop: '3px',
                 textTransform: 'uppercase',
