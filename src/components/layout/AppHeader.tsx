@@ -232,7 +232,7 @@ export default function AppHeader({
         </div>
 
         {/* CENTER — Fecha, Semana, Tipo Cambio */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 36, marginRight: 'auto', marginLeft: 40 }}>
           {/* Fecha */}
           <div style={{ textAlign: 'center' }}>
             <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1E293B', fontFamily: "'Montserrat', sans-serif", textTransform: 'capitalize' as const }}>
