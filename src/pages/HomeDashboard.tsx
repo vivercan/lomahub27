@@ -581,14 +581,6 @@ export default function HomeDashboard() {
         userEmail={user?.email}
       />
 
-      {/* Línea divisoria naranja */}
-      <div
-        style={{
-          height: '2px',
-          background:
-            'linear-gradient(90deg, #C27803 0%, rgba(194,120,3,0.3) 60%, transparent 100%)',
-        }}
-      />
 
       {/* Zona 2 — Franja de Métricas — página 34 sección 2 */}
       <div
