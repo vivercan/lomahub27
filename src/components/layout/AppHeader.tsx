@@ -204,8 +204,8 @@ export default function AppHeader({
       style={{
         position: 'relative',
         height: 56,
-        background: 'linear-gradient(180deg, #0B1220 0%, #080e1a 100%)',
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        background: '#FFFFFF',
+        borderBottom: '1px solid rgba(0,0,0,0.10)',
         fontFamily: 'Montserrat, sans-serif',
         flexShrink: 0,
       }}
@@ -224,11 +224,11 @@ export default function AppHeader({
         {/* LEFT — Logo Institucional LomaHUB27 */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <h1 style={{ margin: 0, fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontStyle: 'italic', fontSize: 22, letterSpacing: '-0.5px', lineHeight: 1 }}>
-            <span style={{ color: '#F9FAFB' }}>Loma</span>
-            <span style={{ color: '#F9FAFB' }}>HUB</span>
-            <span style={{ color: '#E8611A' }}>27</span>
+            <span style={{ color: '#2563EB' }}>Loma</span>
+            <span style={{ color: '#2563EB' }}>HUB</span>
+            <span style={{ color: '#E87A1A' }}>27</span>
           </h1>
-          <span style={{ fontSize: 9, fontWeight: 600, color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase' as const, letterSpacing: 0.8, marginLeft: 4 }}>
+          <span style={{ fontSize: 9, fontWeight: 600, color: 'rgba(0,0,0,0.45)', textTransform: 'uppercase' as const, letterSpacing: 0.8, marginLeft: 4 }}>
             {userRole}
           </span>
         </div>
@@ -237,7 +237,7 @@ export default function AppHeader({
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           {/* Fecha */}
           <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: '#F9FAFB', textTransform: 'capitalize' as const }}>
+            <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: '#1E293B', textTransform: 'capitalize' as const }}>
               {fechaStr}
             </p>
           </div>
@@ -258,12 +258,12 @@ export default function AppHeader({
 
           {/* USD / MXN */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>USD/MXN</span>
+            <span style={{ fontSize: 11, color: 'rgba(0,0,0,0.55)' }}>USD/MXN</span>
             <span
               style={{
                 fontSize: 13,
                 fontWeight: 700,
-                color: '#D4A857',
+                color: '#B8860B',
               }}
             >
               {tipoCambio ? `$${tipoCambio.toFixed(2)}` : '—'}
@@ -274,225 +274,10 @@ export default function AppHeader({
         {/* RIGHT — User + Bell + Logout */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           {/* User name */}
-          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>
+          <span style={{ fontSize: 12, color: 'rgba(0,0,0,0.6)', fontWeight: 500 }}>
             {userName}
           </span>
 
-          {/* Notification Bell */}
-          <div style={{ position: 'relative' }}>
-            <button
-              ref={bellButtonRef}
-              onClick={() => setShowNotifPanel(!showNotifPanel)}
-              style={{
-                position: 'relative',
-                width: 34,
-                height: 34,
-                borderRadius: 8,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: unreadCount > 0
-                  ? 'linear-gradient(135deg, #3B6CE7, #2A4DB8)'
-                  : 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                cursor: 'pointer',
-                color: '#fff',
-                transition: 'all 0.15s ease',
-              }}
-            >
-              {/* Bell SVG */}
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-              </svg>
-              {unreadCount > 0 && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: -4,
-                    right: -4,
-                    background: '#EF4444',
-                    color: '#fff',
-                    fontSize: 9,
-                    fontWeight: 700,
-                    borderRadius: '50%',
-                    width: 16,
-                    height: 16,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: '2px solid #0B1220',
-                  }}
-                >
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
-              )}
-            </button>
-
-            {/* Notification Panel */}
-            {showNotifPanel && (
-              <div
-                ref={notifPanelRef}
-                style={{
-                  position: 'absolute',
-                  top: 42,
-                  right: 0,
-                  width: 360,
-                  maxHeight: 420,
-                  background: '#1E1E2A',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: 12,
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-                  overflow: 'hidden',
-                  zIndex: 50,
-                  fontFamily: 'Montserrat, sans-serif',
-                }}
-              >
-                {/* Panel Header */}
-                <div
-                  style={{
-                    padding: '12px 16px',
-                    borderBottom: '1px solid rgba(255,255,255,0.08)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#F9FAFB' }}>
-                    Notificaciones
-                  </span>
-                  {unreadCount > 0 && (
-                    <span
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 600,
-                        color: '#3B82F6',
-                        background: 'rgba(59,130,246,0.15)',
-                        padding: '2px 8px',
-                        borderRadius: 10,
-                      }}
-                    >
-                      {unreadCount} nuevas
-                    </span>
-                  )}
-                </div>
-
-                {/* Panel Body */}
-                <div style={{ overflowY: 'auto', maxHeight: 360 }}>
-                  {loading ? (
-                    <div style={{ padding: 24, textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 12 }}>
-                      Cargando...
-                    </div>
-                  ) : recent.length === 0 ? (
-                    <div style={{ padding: 32, textAlign: 'center' }}>
-                      <p style={{ margin: 0, color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>
-                        Sin notificaciones
-                      </p>
-                    </div>
-                  ) : (
-                    recent.map((n) => (
-                      <button
-                        key={n.id}
-                        onClick={() => handleNotifClick(n)}
-                        style={{
-                          width: '100%',
-                          display: 'flex',
-                          alignItems: 'flex-start',
-                          gap: 10,
-                          padding: '10px 16px',
-                          background: n.leida ? 'transparent' : 'rgba(59,130,246,0.06)',
-                          border: 'none',
-                          borderBottom: '1px solid rgba(255,255,255,0.04)',
-                          cursor: 'pointer',
-                          textAlign: 'left' as const,
-                          transition: 'background 0.1s ease',
-                        }}
-                      >
-                        {/* Type indicator dot */}
-                        <div
-                          style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: '50%',
-                            background: typeColor(n.tipo),
-                            marginTop: 5,
-                            flexShrink: 0,
-                          }}
-                        />
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <p
-                            style={{
-                              margin: 0,
-                              fontSize: 12,
-                              fontWeight: n.leida ? 400 : 600,
-                              color: n.leida ? 'rgba(255,255,255,0.6)' : '#F9FAFB',
-                              whiteSpace: 'nowrap',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                            }}
-                          >
-                            {n.titulo}
-                          </p>
-                          <p
-                            style={{
-                              margin: '2px 0 0',
-                              fontSize: 11,
-                              color: 'rgba(255,255,255,0.4)',
-                              whiteSpace: 'nowrap',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                            }}
-                          >
-                            {n.mensaje}
-                          </p>
-                          <p style={{ margin: '3px 0 0', fontSize: 10, color: 'rgba(255,255,255,0.25)' }}>
-                            {timeAgo(n.created_at)}
-                          </p>
-                        </div>
-                        {!n.leida && (
-                          <div
-                            style={{
-                              width: 6,
-                              height: 6,
-                              borderRadius: '50%',
-                              background: '#3B82F6',
-                              marginTop: 6,
-                              flexShrink: 0,
-                            }}
-                          />
-                        )}
-                      </button>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Logout */}
-          <button
-            onClick={onLogout}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 34,
-              height: 34,
-              borderRadius: 8,
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              cursor: 'pointer',
-              color: 'rgba(255,255,255,0.5)',
-              transition: 'all 0.15s ease',
-            }}
-            title="Cerrar sesion"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-          </button>
         </div>
       </div>
     </header>
