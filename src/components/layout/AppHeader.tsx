@@ -203,7 +203,7 @@ export default function AppHeader({
     <header
       style={{
         position: 'relative',
-        height: 56,
+        height: 64,
         background: '#FFFFFF',
         borderBottom: '1px solid rgba(0,0,0,0.10)',
         fontFamily: 'Montserrat, sans-serif',
@@ -228,9 +228,6 @@ export default function AppHeader({
             <span style={{ color: '#2563EB' }}>HUB</span>
             <span style={{ color: '#E87A1A' }}>27</span>
           </h1>
-          <span style={{ fontSize: 9, fontWeight: 600, color: 'rgba(0,0,0,0.45)', textTransform: 'uppercase' as const, letterSpacing: 0.8, marginLeft: 4 }}>
-            {userRole}
-          </span>
         </div>
 
         {/* CENTER — Fecha, Semana, Tipo Cambio */}
@@ -273,32 +270,36 @@ export default function AppHeader({
 
         {/* RIGHT — User + Bell + Logout */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {/* User name */}
-          <span style={{ fontSize: 12, color: 'rgba(0,0,0,0.6)', fontWeight: 500 }}>
-            {userName}
-          </span>
+          {/* User info — name + role stacked */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.3 }}>
+            <span style={{ fontSize: 13, color: '#1E293B', fontWeight: 600, fontFamily: "'Montserrat', sans-serif" }}>
+              {userName}
+            </span>
+            <span style={{ fontSize: 13, color: '#1E293B', fontWeight: 400, fontFamily: "'Montserrat', sans-serif" }}>
+              {userRole}
+            </span>
+          </div>
 
-          {/* Logout — Red Power Button */}
+          {/* Logout — Power icon blue metallic */}
           <button
             onClick={onLogout}
             title="Cerrar sesión"
             style={{
               width: 36,
               height: 36,
-              borderRadius: '50%',
-              background: '#DC2626',
+              background: 'transparent',
               border: 'none',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 2px 8px rgba(220,38,38,0.35)',
+              transition: 'opacity 0.2s ease',
+              opacity: 0.7,
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = '#B91C1C'; e.currentTarget.style.transform = 'scale(1.08)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = '#DC2626'; e.currentTarget.style.transform = 'scale(1)'; }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.7'; }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A7AB5" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
               <line x1="12" y1="2" x2="12" y2="12" />
             </svg>
