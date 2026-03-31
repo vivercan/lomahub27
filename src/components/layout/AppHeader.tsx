@@ -278,6 +278,32 @@ export default function AppHeader({
             {userName}
           </span>
 
+          {/* Logout — Red Power Button */}
+          <button
+            onClick={onLogout}
+            title="Cerrar sesión"
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              background: '#DC2626',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 8px rgba(220,38,38,0.35)',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#B91C1C'; e.currentTarget.style.transform = 'scale(1.08)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#DC2626'; e.currentTarget.style.transform = 'scale(1)'; }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+              <line x1="12" y1="2" x2="12" y2="12" />
+            </svg>
+          </button>
+
         </div>
       </div>
     </header>
