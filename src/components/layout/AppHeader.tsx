@@ -249,7 +249,7 @@ export default function AppHeader({
               padding: '3px 10px',
             }}
           >
-            <span style={{ fontSize: 12, fontWeight: 700, color: '#3B82F6' }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: '#1E293B', fontFamily: "'Montserrat', sans-serif" }}>
               W{weekNum}
             </span>
           </div>
