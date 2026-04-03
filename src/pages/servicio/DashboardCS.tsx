@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 
-/* ───────────────────────────────────────────────────────────────
-   SERVICIO A CLIENTES ─ Landing Page (estilo Dashboard V27f)
+/* ═══════════════════════════════════════════════════════════════
+   SERVICIO A CLIENTES — Landing Page (estilo Dashboard V27f)
    4 cards: Tickets, Clientes Activos, Importación, Exportación
-   ─────────────────────────────────────────────────────────────── */
+   ═══════════════════════════════════════════════════════════════ */
 
 const D = {
   bg: '#F7F8FA',
@@ -30,7 +30,7 @@ const D = {
 
 const DOT: Record<string, string> = { green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1' }
 
-/* ── Geometric SVGs ── */
+/* ── Geometric SVGs ── */
 const geoBase: React.CSSProperties = {
   position: 'absolute', top: 0, right: 0, width: '100%', height: '100%',
   pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px',
@@ -80,19 +80,74 @@ const GeoExpo = () => (
   </div>
 )
 
-/* ── Card Config ── */
+/* ── Colorful Module SVGs (Propuesta 12 — Logística Colorida) ── */
+const colorSvg: React.CSSProperties = {
+  position: 'absolute', bottom: '-8px', left: '-8px',
+  width: '50%', height: '55%', opacity: 0.22,
+}
+
+const ColorTickets = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 54 54" style={colorSvg} xmlns="http://www.w3.org/2000/svg">
+      <circle cx="27" cy="16" r="8" stroke="#8B5CF6" strokeWidth="1.5" fill="none" opacity=".4"/>
+      <path d="M23 14L26 18L32 12" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity=".5"/>
+      <rect x="14" y="30" width="26" height="14" rx="3" fill="#3B82F6" opacity=".15"/>
+      <rect x="18" y="34" width="18" height="2.5" rx="1" fill="#F59E0B" opacity=".25"/>
+      <rect x="18" y="39" width="12" height="2.5" rx="1" fill="#EC4899" opacity=".25"/>
+    </svg>
+  </div>
+)
+
+const ColorClientes = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 54 54" style={colorSvg} xmlns="http://www.w3.org/2000/svg">
+      <circle cx="18" cy="16" r="7" fill="#8B5CF6" opacity=".2"/>
+      <circle cx="36" cy="16" r="7" fill="#3B82F6" opacity=".2"/>
+      <path d="M8 40C8 32 16 28 27 28C38 28 46 32 46 40" fill="#10B981" opacity=".12"/>
+      <path d="M20 22L27 18L34 22" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" opacity=".4"/>
+    </svg>
+  </div>
+)
+
+const ColorImpo = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 54 54" style={colorSvg} xmlns="http://www.w3.org/2000/svg">
+      <rect x="8" y="18" width="22" height="16" rx="2" fill="#3B82F6" opacity=".15"/>
+      <rect x="12" y="22" width="14" height="8" rx="1" fill="#8B5CF6" opacity=".12"/>
+      <path d="M36 18L36 34" stroke="#10B981" strokeWidth="2" strokeLinecap="round" opacity=".35"/>
+      <polygon points="36,14 40,20 32,20" fill="#10B981" opacity=".3"/>
+      <circle cx="42" cy="40" r="6" fill="#F59E0B" opacity=".15"/>
+      <path d="M40 40L42 42L45 38" stroke="#F59E0B" strokeWidth="1.5" strokeLinecap="round" opacity=".4"/>
+    </svg>
+  </div>
+)
+
+const ColorExpo = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 54 54" style={colorSvg} xmlns="http://www.w3.org/2000/svg">
+      <rect x="8" y="18" width="22" height="16" rx="2" fill="#F59E0B" opacity=".15"/>
+      <rect x="12" y="22" width="14" height="8" rx="1" fill="#F97316" opacity=".12"/>
+      <path d="M36 34L36 18" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" opacity=".35"/>
+      <polygon points="36,38 40,32 32,32" fill="#3B82F6" opacity=".3"/>
+      <circle cx="42" cy="10" r="6" fill="#10B981" opacity=".15"/>
+      <path d="M39 10L42 7L45 10" stroke="#10B981" strokeWidth="1.5" strokeLinecap="round" opacity=".4"/>
+    </svg>
+  </div>
+)
+
+/* ── Card Config ── */
 interface LandingCard {
-  id: string; label: string; route: string; kpiLabel: string; geo: React.ReactNode; accent: string
+  id: string; label: string; route: string; kpiLabel: string; geo: React.ReactNode; geo2?: React.ReactNode; accent: string
 }
 
 const CARDS: LandingCard[] = [
-  { id: 'tickets', label: 'Tickets', route: '/servicio/tickets', kpiLabel: 'Activos', geo: <GeoTickets />, accent: '#3B82F6' },
-  { id: 'clientes', label: 'Clientes Activos', route: '/clientes/ficha', kpiLabel: 'Clientes', geo: <GeoClientes />, accent: '#10B981' },
-  { id: 'impo', label: 'Importación', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO', geo: <GeoImpo />, accent: '#8B5CF6' },
-  { id: 'expo', label: 'Exportación', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO', geo: <GeoExpo />, accent: '#F59E0B' },
+  { id: 'tickets', label: 'Tickets', route: '/servicio/tickets', kpiLabel: 'Activos', geo: <GeoTickets />, geo2: <ColorTickets />, accent: '#3B82F6' },
+  { id: 'clientes', label: 'Clientes Activos', route: '/clientes/ficha', kpiLabel: 'Clientes', geo: <GeoClientes />, geo2: <ColorClientes />, accent: '#10B981' },
+  { id: 'impo', label: 'Importación', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO', geo: <GeoImpo />, geo2: <ColorImpo />, accent: '#8B5CF6' },
+  { id: 'expo', label: 'Exportación', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO', geo: <GeoExpo />, geo2: <ColorExpo />, accent: '#F59E0B' },
 ]
 
-/* ── Component ── */
+/* ── Component ── */
 export default function DashboardCS() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
@@ -146,6 +201,11 @@ export default function DashboardCS() {
                 <div style={{ ...geoBase, transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none' }}>
                   {card.geo}
                 </div>
+                {card.geo2 && (
+                  <div style={{ ...geoBase, transform: isH ? 'translate(-3px,3px) scale(1.03)' : 'none' }}>
+                    {card.geo2}
+                  </div>
+                )}
                 <div style={{ position: 'absolute', top: 14, right: 14, width: D.dotSize, height: D.dotSize, borderRadius: '50%', backgroundColor: kpis[card.id] > 0 ? DOT.green : DOT.gray, boxShadow: `0 0 4px ${kpis[card.id] > 0 ? DOT.green : DOT.gray}59` }} />
                 <div style={{ fontFamily: D.font, fontSize: D.titleSize, fontWeight: D.titleWeight, color: D.titleColor, lineHeight: 1.2, position: 'relative', zIndex: 1 }}>
                   {card.label}
