@@ -87,8 +87,8 @@ export default function Configuracion() {
     card: {
       background: tokens.colors.bgCard,
       borderRadius: '20px',
-      border: tokens.glassmorphism.border,
-      boxShadow: tokens.colors.cardShadow,
+      border: tokens.effects.glassmorphism.border,
+      boxShadow: tokens.effects.cardShadow,
       cursor: 'pointer',
       transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       overflow: 'hidden',
@@ -96,7 +96,7 @@ export default function Configuracion() {
       flexDirection: 'column' as const,
     } as React.CSSProperties,
     cardHover: {
-      boxShadow: tokens.colors.cardHover,
+      boxShadow: tokens.effects.cardHover,
       transform: 'translateY(-4px)',
     },
     topBar: (gradient: string) => ({
