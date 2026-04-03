@@ -38,21 +38,21 @@ const DASH = {
   fontFamily: "'Montserrat', sans-serif",
   fontBody: "'Inter', sans-serif",
   cardBg: '#FFFFFF',
-  cardBorder: '1px solid #E8EBF0',
+  cardBorder: '1px solid #CBD5E1',
   cardRadius: '14px',
   cardPadding: '22px',
-  cardShadow: '0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.03), 0 4px 16px rgba(0,0,0,0.02)',
-  cardHoverShadow: '0 2px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.04)',
+  cardShadow: '0 2px 4px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03)',
+  cardHoverShadow: '0 4px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.12), 0 16px 48px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)',
   gridGap: '16px',
   gridPadding: '16px 28px',
-  titleSize: '20px',
+  titleSize: '18px',
   titleWeight: 800,
-  titleColor: '#64748B',
+  titleColor: '#1E3A8A',
   kpiSize: '32px',
   kpiWeight: 600,
   kpiColor: '#64748B',
-  subSize: '9px',
-  subWeight: 400,
+  subSize: '12px',
+  subWeight: 500,
   subColor: '#94A3B8',
   dotSize: '6px',
   metricsPadding: '12px 28px',
@@ -83,56 +83,58 @@ const geoStyle: React.CSSProperties = {
 // Oportunidades — ascending chevrons
 const GeoOportunidades = () => (
   <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.40 }}>
       <polygon points="100,20 140,60 120,60 120,100 80,100 80,60 60,60" fill="none" stroke="#F97316" strokeWidth="1.5" transform="translate(20,0)" />
       <polygon points="100,35 130,65 115,65 115,95 85,95 85,65 70,65" fill="none" stroke="#F97316" strokeWidth="1" transform="translate(40,20)" />
       <polygon points="100,50 125,75 113,75 113,100 87,100 87,75 75,75" fill="none" stroke="#F97316" strokeWidth="0.8" transform="translate(60,10)" />
     </svg>
   
-    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.18 }}>
-      <polyline points="30,60 45,40 60,60" fill="none" stroke="#0EA5E9" strokeWidth="1.5" />
-      <polyline points="45,50 60,30 75,50" fill="none" stroke="#0EA5E9" strokeWidth="1.2" />
-      <polyline points="55,65 70,45 85,65" fill="none" stroke="#0EA5E9" strokeWidth="0.8" />
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.28 }}>
+      <circle cx="50" cy="50" r="30" fill="none" stroke="#0EA5E9" strokeWidth="1.4" />
+      <circle cx="50" cy="50" r="20" fill="none" stroke="#0EA5E9" strokeWidth="1" />
+      <circle cx="50" cy="50" r="10" fill="none" stroke="#0EA5E9" strokeWidth="0.8" />
     </svg></div>
 )
 
 // Comercial — overlapping hexagons
 const GeoComercial = () => (
   <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.40 }}>
       <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#EF4444" strokeWidth="1.5" transform="translate(60,15) scale(0.7)" />
       <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#EF4444" strokeWidth="1.2" transform="translate(90,35) scale(0.6)" />
       <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#EF4444" strokeWidth="1" transform="translate(40,50) scale(0.5)" />
       <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#EF4444" strokeWidth="0.8" transform="translate(110,10) scale(0.45)" />
     </svg>
   
-    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.18 }}>
-      <polygon points="35,20 50,12 65,20 65,36 50,44 35,36" fill="none" stroke="#0EA5E9" strokeWidth="1.3" />
-      <polygon points="55,35 67,28 79,35 79,48 67,55 55,48" fill="none" stroke="#0EA5E9" strokeWidth="0.9" />
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.28 }}>
+      <line x1="15" y1="70" x2="55" y2="15" stroke="#0EA5E9" strokeWidth="1.4" />
+      <line x1="30" y1="75" x2="70" y2="20" stroke="#0EA5E9" strokeWidth="1.1" />
+      <line x1="45" y1="80" x2="85" y2="25" stroke="#0EA5E9" strokeWidth="0.8" />
+      <line x1="60" y1="85" x2="95" y2="35" stroke="#0EA5E9" strokeWidth="0.6" />
     </svg></div>
 )
 
 // Servicio a Clientes — concentric arcs
 const GeoServicio = () => (
   <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-15px', width: '65%', height: '75%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-15px', width: '65%', height: '75%', opacity: 0.40 }}>
       <circle cx="130" cy="90" r="60" fill="none" stroke="#FB923C" strokeWidth="1.5" />
       <circle cx="130" cy="90" r="45" fill="none" stroke="#FB923C" strokeWidth="1.2" />
       <circle cx="130" cy="90" r="30" fill="none" stroke="#FB923C" strokeWidth="1" />
       <circle cx="130" cy="90" r="15" fill="none" stroke="#FB923C" strokeWidth="0.8" />
     </svg>
   
-    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.18 }}>
-      <path d="M25,55 A30,30 0 0,1 75,55" fill="none" stroke="#0EA5E9" strokeWidth="1.3" />
-      <path d="M35,55 A20,20 0 0,1 65,55" fill="none" stroke="#0EA5E9" strokeWidth="1" />
-      <path d="M42,55 A13,13 0 0,1 58,55" fill="none" stroke="#0EA5E9" strokeWidth="0.8" />
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.28 }}>
+      <polygon points="35,20 50,45 20,45" fill="none" stroke="#0EA5E9" strokeWidth="1.4" />
+      <polygon points="55,40 68,62 42,62" fill="none" stroke="#0EA5E9" strokeWidth="1" />
+      <polygon points="25,50 35,68 15,68" fill="none" stroke="#0EA5E9" strokeWidth="0.8" />
     </svg></div>
 )
 
 // Despacho Inteligente — isometric cubes
 const GeoDespacho = () => (
   <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.40 }}>
       <g transform="translate(80,30)">
         <polygon points="30,0 60,17 30,34 0,17" fill="none" stroke="#DC2626" strokeWidth="1.2" />
         <polygon points="0,17 30,34 30,64 0,47" fill="none" stroke="#DC2626" strokeWidth="1.2" />
@@ -150,19 +152,18 @@ const GeoDespacho = () => (
       </g>
     </svg>
   
-    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.18 }}>
-      <g transform="translate(30,15)">
-        <polygon points="25,0 50,14 25,28 0,14" fill="none" stroke="#0EA5E9" strokeWidth="1.3" />
-        <polygon points="0,14 25,28 25,53 0,39" fill="none" stroke="#0EA5E9" strokeWidth="1" />
-        <polygon points="50,14 25,28 25,53 50,39" fill="none" stroke="#0EA5E9" strokeWidth="1" />
-      </g>
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.28 }}>
+      <rect x="10" y="25" width="50" height="8" rx="2" fill="none" stroke="#0EA5E9" strokeWidth="1.3" />
+      <rect x="18" y="40" width="40" height="8" rx="2" fill="none" stroke="#0EA5E9" strokeWidth="1" />
+      <rect x="26" y="55" width="30" height="8" rx="2" fill="none" stroke="#0EA5E9" strokeWidth="0.8" />
+      <rect x="34" y="70" width="20" height="8" rx="2" fill="none" stroke="#0EA5E9" strokeWidth="0.6" />
     </svg></div>
 )
 
 // Comunicaciones — radiating waves
 const GeoComunicaciones = () => (
   <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.40 }}>
       <path d="M140,100 Q140,60 170,40" fill="none" stroke="#F97316" strokeWidth="1.5" />
       <path d="M130,100 Q130,55 165,30" fill="none" stroke="#F97316" strokeWidth="1.2" />
       <path d="M120,100 Q120,50 160,20" fill="none" stroke="#F97316" strokeWidth="1" />
@@ -170,50 +171,55 @@ const GeoComunicaciones = () => (
       <circle cx="145" cy="105" r="4" fill="none" stroke="#F97316" strokeWidth="1.2" />
     </svg>
   
-    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.18 }}>
-      <circle cx="30" cy="50" r="8" fill="none" stroke="#0EA5E9" strokeWidth="1.3" />
-      <path d="M42,38 A20,20 0 0,1 42,62" fill="none" stroke="#0EA5E9" strokeWidth="1" />
-      <path d="M50,30 A28,28 0 0,1 50,70" fill="none" stroke="#0EA5E9" strokeWidth="0.8" />
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.28 }}>
+      <line x1="40" y1="20" x2="40" y2="80" stroke="#0EA5E9" strokeWidth="1" />
+      <line x1="10" y1="50" x2="70" y2="50" stroke="#0EA5E9" strokeWidth="1" />
+      <circle cx="40" cy="50" r="20" fill="none" stroke="#0EA5E9" strokeWidth="1.3" />
+      <circle cx="40" cy="50" r="10" fill="none" stroke="#0EA5E9" strokeWidth="0.8" />
     </svg></div>
 )
 
 // Cotizaciones — diamond cluster
 const GeoCotizaciones = () => (
   <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '65%', height: '80%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '65%', height: '80%', opacity: 0.40 }}>
       <rect x="90" y="30" width="40" height="40" rx="2" fill="none" stroke="#EF4444" strokeWidth="1.5" transform="rotate(45,110,50)" />
       <rect x="110" y="50" width="30" height="30" rx="2" fill="none" stroke="#EF4444" strokeWidth="1.2" transform="rotate(45,125,65)" />
       <rect x="75" y="55" width="25" height="25" rx="2" fill="none" stroke="#EF4444" strokeWidth="1" transform="rotate(45,87.5,67.5)" />
       <rect x="105" y="75" width="20" height="20" rx="2" fill="none" stroke="#EF4444" strokeWidth="0.8" transform="rotate(45,115,85)" />
     </svg>
   
-    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.18 }}>
-      <rect x="35" y="25" width="28" height="28" rx="2" fill="none" stroke="#0EA5E9" strokeWidth="1.3" transform="rotate(45,49,39)" />
-      <rect x="48" y="38" width="20" height="20" rx="2" fill="none" stroke="#0EA5E9" strokeWidth="0.9" transform="rotate(45,58,48)" />
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.28 }}>
+      <polyline points="10,60 25,30 40,55 55,25 70,50 85,20" fill="none" stroke="#0EA5E9" strokeWidth="1.4" />
+      <polyline points="10,75 25,50 40,70 55,40 70,65 85,35" fill="none" stroke="#0EA5E9" strokeWidth="0.8" />
     </svg></div>
 )
 
 // Plantillas — layered offset rectangles
 const GeoPlantillas = () => (
   <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.40 }}>
       <rect x="70" y="20" width="60" height="80" rx="4" fill="none" stroke="#FB923C" strokeWidth="1.5" />
       <rect x="82" y="30" width="60" height="80" rx="4" fill="none" stroke="#FB923C" strokeWidth="1.2" />
       <rect x="94" y="40" width="60" height="80" rx="4" fill="none" stroke="#FB923C" strokeWidth="1" />
     </svg>
   
-    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.18 }}>
-      <rect x="20" y="15" width="35" height="48" rx="3" fill="none" stroke="#0EA5E9" strokeWidth="1.3" />
-      <rect x="28" y="22" width="35" height="48" rx="3" fill="none" stroke="#0EA5E9" strokeWidth="0.9" />
-      <line x1="26" y1="30" x2="48" y2="30" stroke="#0EA5E9" strokeWidth="0.7" />
-      <line x1="26" y1="38" x2="45" y2="38" stroke="#0EA5E9" strokeWidth="0.7" />
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.28 }}>
+      <circle cx="25" cy="30" r="4" fill="none" stroke="#0EA5E9" strokeWidth="1.3" />
+      <circle cx="45" cy="30" r="4" fill="none" stroke="#0EA5E9" strokeWidth="1.3" />
+      <circle cx="65" cy="30" r="4" fill="none" stroke="#0EA5E9" strokeWidth="1.3" />
+      <circle cx="35" cy="48" r="4" fill="none" stroke="#0EA5E9" strokeWidth="1" />
+      <circle cx="55" cy="48" r="4" fill="none" stroke="#0EA5E9" strokeWidth="1" />
+      <circle cx="25" cy="66" r="4" fill="none" stroke="#0EA5E9" strokeWidth="0.8" />
+      <circle cx="45" cy="66" r="4" fill="none" stroke="#0EA5E9" strokeWidth="0.8" />
+      <circle cx="65" cy="66" r="4" fill="none" stroke="#0EA5E9" strokeWidth="0.8" />
     </svg></div>
 )
 
 // Config — interlocking gears (engrane)
 const GeoConfig = () => (
   <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '60%', height: '70%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '60%', height: '70%', opacity: 0.40 }}>
       <g transform="translate(90,45)">
         <circle cx="0" cy="0" r="22" fill="none" stroke="#DC2626" strokeWidth="1.5" />
         <circle cx="0" cy="0" r="10" fill="none" stroke="#DC2626" strokeWidth="1.2" />
@@ -238,12 +244,13 @@ const GeoConfig = () => (
       </g>
     </svg>
   
-    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.18 }}>
-      <circle cx="40" cy="40" r="12" fill="none" stroke="#0EA5E9" strokeWidth="1.3" />
-      <line x1="40" y1="22" x2="40" y2="15" stroke="#0EA5E9" strokeWidth="1.5" />
-      <line x1="40" y1="58" x2="40" y2="65" stroke="#0EA5E9" strokeWidth="1.5" />
-      <line x1="22" y1="40" x2="15" y2="40" stroke="#0EA5E9" strokeWidth="1.5" />
-      <line x1="58" y1="40" x2="65" y2="40" stroke="#0EA5E9" strokeWidth="1.5" />
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-8px', top: '28%', width: '40%', height: '45%', opacity: 0.28 }}>
+      <line x1="15" y1="30" x2="70" y2="30" stroke="#0EA5E9" strokeWidth="1.3" />
+      <circle cx="45" cy="30" r="5" fill="none" stroke="#0EA5E9" strokeWidth="1.3" />
+      <line x1="15" y1="50" x2="70" y2="50" stroke="#0EA5E9" strokeWidth="1" />
+      <circle cx="30" cy="50" r="5" fill="none" stroke="#0EA5E9" strokeWidth="1" />
+      <line x1="15" y1="70" x2="70" y2="70" stroke="#0EA5E9" strokeWidth="0.8" />
+      <circle cx="55" cy="70" r="5" fill="none" stroke="#0EA5E9" strokeWidth="0.8" />
     </svg></div>
 )
 
@@ -432,6 +439,9 @@ export default function HomeDashboard() {
           fontWeight: DASH.titleWeight,
           color: DASH.titleColor,
           lineHeight: 1.2,
+          textAlign: 'center' as const,
+          whiteSpace: 'nowrap' as const,
+          width: '100%',
           marginBottom: 'auto',
           position: 'relative',
           zIndex: 1,
