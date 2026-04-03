@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { tokens } from '../../lib/tokens';
-import ModuleLayout from '../../components/layout/ModuleLayout';
+import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Save, Plus, Trash2, DollarSign, Truck, Ship, MapPin } from 'lucide-react';
 
 /* ───────── types ───────── */
@@ -218,7 +218,7 @@ export default function ParametrosConfig() {
   };
 
   return (
-    <ModuleLayout title="Parámetros" breadcrumb={['Inicio', 'Configuración', 'Parámetros']}>
+    <ModuleLayout titulo="Parámetros" moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}>
       <div style={S.container}>
         <div style={S.header}>
           <h1 style={S.title}>Parámetros de Cotización</h1>
