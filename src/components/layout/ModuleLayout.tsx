@@ -37,7 +37,7 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column' as const,
-      background: '#2a2a36',
+      background: tokens.colors.bgMain,
       fontFamily: tokens.fonts.body
     }}>
       {/* AppHeader */}
@@ -64,8 +64,8 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
               alignItems: 'center',
               gap: '6px',
               padding: '6px 12px',
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.06)',
+              background: 'rgba(15, 23, 42, 0.04)',
+              border: '1px solid rgba(15, 23, 42, 0.06)',
               borderRadius: '8px',
               color: tokens.colors.textSecondary,
               fontSize: '13px',
@@ -89,8 +89,8 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
                   alignItems: 'center',
                   gap: '4px',
                   padding: '6px 10px',
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.06)',
+                  background: 'rgba(15, 23, 42, 0.04)',
+                  border: '1px solid rgba(15, 23, 42, 0.06)',
                   borderRadius: '8px',
                   color: tokens.colors.textSecondary,
                   fontSize: '13px',
