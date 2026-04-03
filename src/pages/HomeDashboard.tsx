@@ -47,7 +47,7 @@ const DASH = {
   gridPadding: '16px 28px',
   titleSize: '20px',
   titleWeight: 800,
-  titleColor: '#1E293B',
+  titleColor: '#64748B',
   kpiSize: '28px',
   kpiWeight: 600,
   kpiColor: '#0F172A',
@@ -84,9 +84,9 @@ const geoStyle: React.CSSProperties = {
 const GeoOportunidades = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.10 }}>
-      <polygon points="100,20 140,60 120,60 120,100 80,100 80,60 60,60" fill="none" stroke="#1E293B" strokeWidth="1.5" transform="translate(20,0)" />
-      <polygon points="100,35 130,65 115,65 115,95 85,95 85,65 70,65" fill="none" stroke="#1E293B" strokeWidth="1" transform="translate(40,20)" />
-      <polygon points="100,50 125,75 113,75 113,100 87,100 87,75 75,75" fill="none" stroke="#1E293B" strokeWidth="0.8" transform="translate(60,10)" />
+      <polygon points="100,20 140,60 120,60 120,100 80,100 80,60 60,60" fill="none" stroke="#F97316" strokeWidth="1.5" transform="translate(20,0)" />
+      <polygon points="100,35 130,65 115,65 115,95 85,95 85,65 70,65" fill="none" stroke="#F97316" strokeWidth="1" transform="translate(40,20)" />
+      <polygon points="100,50 125,75 113,75 113,100 87,100 87,75 75,75" fill="none" stroke="#F97316" strokeWidth="0.8" transform="translate(60,10)" />
     </svg>
   </div>
 )
@@ -95,10 +95,10 @@ const GeoOportunidades = () => (
 const GeoComercial = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.10 }}>
-      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#1E293B" strokeWidth="1.5" transform="translate(60,15) scale(0.7)" />
-      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#1E293B" strokeWidth="1.2" transform="translate(90,35) scale(0.6)" />
-      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#1E293B" strokeWidth="1" transform="translate(40,50) scale(0.5)" />
-      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#1E293B" strokeWidth="0.8" transform="translate(110,10) scale(0.45)" />
+      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#EF4444" strokeWidth="1.5" transform="translate(60,15) scale(0.7)" />
+      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#EF4444" strokeWidth="1.2" transform="translate(90,35) scale(0.6)" />
+      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#EF4444" strokeWidth="1" transform="translate(40,50) scale(0.5)" />
+      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#EF4444" strokeWidth="0.8" transform="translate(110,10) scale(0.45)" />
     </svg>
   </div>
 )
@@ -107,10 +107,10 @@ const GeoComercial = () => (
 const GeoServicio = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-15px', width: '65%', height: '75%', opacity: 0.10 }}>
-      <circle cx="130" cy="90" r="60" fill="none" stroke="#1E293B" strokeWidth="1.5" />
-      <circle cx="130" cy="90" r="45" fill="none" stroke="#1E293B" strokeWidth="1.2" />
-      <circle cx="130" cy="90" r="30" fill="none" stroke="#1E293B" strokeWidth="1" />
-      <circle cx="130" cy="90" r="15" fill="none" stroke="#1E293B" strokeWidth="0.8" />
+      <circle cx="130" cy="90" r="60" fill="none" stroke="#FB923C" strokeWidth="1.5" />
+      <circle cx="130" cy="90" r="45" fill="none" stroke="#FB923C" strokeWidth="1.2" />
+      <circle cx="130" cy="90" r="30" fill="none" stroke="#FB923C" strokeWidth="1" />
+      <circle cx="130" cy="90" r="15" fill="none" stroke="#FB923C" strokeWidth="0.8" />
     </svg>
   </div>
 )
@@ -120,19 +120,19 @@ const GeoDespacho = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.10 }}>
       <g transform="translate(80,30)">
-        <polygon points="30,0 60,17 30,34 0,17" fill="none" stroke="#1E293B" strokeWidth="1.2" />
-        <polygon points="0,17 30,34 30,64 0,47" fill="none" stroke="#1E293B" strokeWidth="1.2" />
-        <polygon points="60,17 30,34 30,64 60,47" fill="none" stroke="#1E293B" strokeWidth="1.2" />
+        <polygon points="30,0 60,17 30,34 0,17" fill="none" stroke="#DC2626" strokeWidth="1.2" />
+        <polygon points="0,17 30,34 30,64 0,47" fill="none" stroke="#DC2626" strokeWidth="1.2" />
+        <polygon points="60,17 30,34 30,64 60,47" fill="none" stroke="#DC2626" strokeWidth="1.2" />
       </g>
       <g transform="translate(110,50)">
-        <polygon points="25,0 50,14 25,28 0,14" fill="none" stroke="#1E293B" strokeWidth="1" />
-        <polygon points="0,14 25,28 25,53 0,39" fill="none" stroke="#1E293B" strokeWidth="1" />
-        <polygon points="50,14 25,28 25,53 50,39" fill="none" stroke="#1E293B" strokeWidth="1" />
+        <polygon points="25,0 50,14 25,28 0,14" fill="none" stroke="#DC2626" strokeWidth="1" />
+        <polygon points="0,14 25,28 25,53 0,39" fill="none" stroke="#DC2626" strokeWidth="1" />
+        <polygon points="50,14 25,28 25,53 50,39" fill="none" stroke="#DC2626" strokeWidth="1" />
       </g>
       <g transform="translate(60,60)">
-        <polygon points="20,0 40,11 20,22 0,11" fill="none" stroke="#1E293B" strokeWidth="0.8" />
-        <polygon points="0,11 20,22 20,42 0,31" fill="none" stroke="#1E293B" strokeWidth="0.8" />
-        <polygon points="40,11 20,22 20,42 40,31" fill="none" stroke="#1E293B" strokeWidth="0.8" />
+        <polygon points="20,0 40,11 20,22 0,11" fill="none" stroke="#DC2626" strokeWidth="0.8" />
+        <polygon points="0,11 20,22 20,42 0,31" fill="none" stroke="#DC2626" strokeWidth="0.8" />
+        <polygon points="40,11 20,22 20,42 40,31" fill="none" stroke="#DC2626" strokeWidth="0.8" />
       </g>
     </svg>
   </div>
@@ -142,11 +142,11 @@ const GeoDespacho = () => (
 const GeoComunicaciones = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.10 }}>
-      <path d="M140,100 Q140,60 170,40" fill="none" stroke="#1E293B" strokeWidth="1.5" />
-      <path d="M130,100 Q130,55 165,30" fill="none" stroke="#1E293B" strokeWidth="1.2" />
-      <path d="M120,100 Q120,50 160,20" fill="none" stroke="#1E293B" strokeWidth="1" />
-      <path d="M110,100 Q110,50 155,15" fill="none" stroke="#1E293B" strokeWidth="0.8" />
-      <circle cx="145" cy="105" r="4" fill="none" stroke="#1E293B" strokeWidth="1.2" />
+      <path d="M140,100 Q140,60 170,40" fill="none" stroke="#F97316" strokeWidth="1.5" />
+      <path d="M130,100 Q130,55 165,30" fill="none" stroke="#F97316" strokeWidth="1.2" />
+      <path d="M120,100 Q120,50 160,20" fill="none" stroke="#F97316" strokeWidth="1" />
+      <path d="M110,100 Q110,50 155,15" fill="none" stroke="#F97316" strokeWidth="0.8" />
+      <circle cx="145" cy="105" r="4" fill="none" stroke="#F97316" strokeWidth="1.2" />
     </svg>
   </div>
 )
@@ -155,10 +155,10 @@ const GeoComunicaciones = () => (
 const GeoCotizaciones = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '65%', height: '80%', opacity: 0.10 }}>
-      <rect x="90" y="30" width="40" height="40" rx="2" fill="none" stroke="#1E293B" strokeWidth="1.5" transform="rotate(45,110,50)" />
-      <rect x="110" y="50" width="30" height="30" rx="2" fill="none" stroke="#1E293B" strokeWidth="1.2" transform="rotate(45,125,65)" />
-      <rect x="75" y="55" width="25" height="25" rx="2" fill="none" stroke="#1E293B" strokeWidth="1" transform="rotate(45,87.5,67.5)" />
-      <rect x="105" y="75" width="20" height="20" rx="2" fill="none" stroke="#1E293B" strokeWidth="0.8" transform="rotate(45,115,85)" />
+      <rect x="90" y="30" width="40" height="40" rx="2" fill="none" stroke="#EF4444" strokeWidth="1.5" transform="rotate(45,110,50)" />
+      <rect x="110" y="50" width="30" height="30" rx="2" fill="none" stroke="#EF4444" strokeWidth="1.2" transform="rotate(45,125,65)" />
+      <rect x="75" y="55" width="25" height="25" rx="2" fill="none" stroke="#EF4444" strokeWidth="1" transform="rotate(45,87.5,67.5)" />
+      <rect x="105" y="75" width="20" height="20" rx="2" fill="none" stroke="#EF4444" strokeWidth="0.8" transform="rotate(45,115,85)" />
     </svg>
   </div>
 )
@@ -167,9 +167,9 @@ const GeoCotizaciones = () => (
 const GeoPlantillas = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.10 }}>
-      <rect x="70" y="20" width="60" height="80" rx="4" fill="none" stroke="#1E293B" strokeWidth="1.5" />
-      <rect x="82" y="30" width="60" height="80" rx="4" fill="none" stroke="#1E293B" strokeWidth="1.2" />
-      <rect x="94" y="40" width="60" height="80" rx="4" fill="none" stroke="#1E293B" strokeWidth="1" />
+      <rect x="70" y="20" width="60" height="80" rx="4" fill="none" stroke="#FB923C" strokeWidth="1.5" />
+      <rect x="82" y="30" width="60" height="80" rx="4" fill="none" stroke="#FB923C" strokeWidth="1.2" />
+      <rect x="94" y="40" width="60" height="80" rx="4" fill="none" stroke="#FB923C" strokeWidth="1" />
     </svg>
   </div>
 )
@@ -178,8 +178,8 @@ const GeoPlantillas = () => (
 const GeoConfig = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '60%', height: '70%', opacity: 0.10 }}>
-      <polygon points="100,15 108,35 130,35 113,48 119,68 100,56 81,68 87,48 70,35 92,35" fill="none" stroke="#1E293B" strokeWidth="1.5" transform="translate(20,10)" />
-      <polygon points="100,25 106,38 122,38 109,47 114,62 100,53 86,62 91,47 78,38 94,38" fill="none" stroke="#1E293B" strokeWidth="1" transform="translate(40,30) scale(0.7)" />
+      <polygon points="100,15 108,35 130,35 113,48 119,68 100,56 81,68 87,48 70,35 92,35" fill="none" stroke="#DC2626" strokeWidth="1.5" transform="translate(20,10)" />
+      <polygon points="100,25 106,38 122,38 109,47 114,62 100,53 86,62 91,47 78,38 94,38" fill="none" stroke="#DC2626" strokeWidth="1" transform="translate(40,30) scale(0.7)" />
     </svg>
   </div>
 )
