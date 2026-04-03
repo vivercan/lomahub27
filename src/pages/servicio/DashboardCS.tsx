@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   SERVICIO A CLIENTES â Landing Page (estilo Dashboard V27f)
-   4 cards: Tickets, Clientes Activos, ImportaciÃ³n, ExportaciÃ³n
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ───────────────────────────────────────────────────────────────
+   SERVICIO A CLIENTES ─ Landing Page (estilo Dashboard V27f)
+   4 cards: Tickets, Clientes Activos, Importación, Exportación
+   ─────────────────────────────────────────────────────────────── */
 
 const D = {
   bg: '#F7F8FA',
@@ -30,7 +30,7 @@ const D = {
 
 const DOT: Record<string, string> = { green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1' }
 
-/* ââ Geometric SVGs ââ */
+/* ── Geometric SVGs ── */
 const geoBase: React.CSSProperties = {
   position: 'absolute', top: 0, right: 0, width: '100%', height: '100%',
   pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px',
@@ -80,7 +80,7 @@ const GeoExpo = () => (
   </div>
 )
 
-/* ââ Card Config ââ */
+/* ── Card Config ── */
 interface LandingCard {
   id: string; label: string; route: string; kpiLabel: string; geo: React.ReactNode; accent: string
 }
@@ -88,11 +88,11 @@ interface LandingCard {
 const CARDS: LandingCard[] = [
   { id: 'tickets', label: 'Tickets', route: '/servicio/tickets', kpiLabel: 'Activos', geo: <GeoTickets />, accent: '#3B82F6' },
   { id: 'clientes', label: 'Clientes Activos', route: '/clientes/ficha', kpiLabel: 'Clientes', geo: <GeoClientes />, accent: '#10B981' },
-  { id: 'impo', label: 'ImportaciÃ³n', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO', geo: <GeoImpo />, accent: '#8B5CF6' },
-  { id: 'expo', label: 'ExportaciÃ³n', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO', geo: <GeoExpo />, accent: '#F59E0B' },
+  { id: 'impo', label: 'Importación', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO', geo: <GeoImpo />, accent: '#8B5CF6' },
+  { id: 'expo', label: 'Exportación', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO', geo: <GeoExpo />, accent: '#F59E0B' },
 ]
 
-/* ââ Component ââ */
+/* ── Component ── */
 export default function DashboardCS() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
