@@ -152,8 +152,8 @@ const CATALOGS: CatalogConfig[] = [
 const styles = {
   heading: { fontFamily: tokens.fonts.heading, fontWeight: 700 as const },
   body: { fontFamily: tokens.fonts.body },
-  bgMain: '#F7F8FA'#F7F8FA,
-  bgCard: '#FFFFFF'#FFFFFF,
+  bgMain: '#F7F8FA',
+  bgCard: '#FFFFFF',
   bgHover: '#F1F5F9',
   border: 'rgba(15, 23, 42, 0.08)',
   textPrimary: '#0F172A',
