@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { tokens } from '../../lib/tokens';
-import ModuleLayout from '../../components/layout/ModuleLayout';
+import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Ticket, Users, Ship, Truck } from 'lucide-react';
 
 /* ───────── types ───────── */
@@ -215,7 +215,7 @@ export default function DashboardCS() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   return (
-    <ModuleLayout title="Servicio a Clientes" breadcrumb={['Inicio', 'Servicio a Clientes']}>
+    <ModuleLayout titulo="Servicio a Clientes" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
       <div style={{ minHeight: '100vh', background: tokens.colors.bgMain }}>
         <h1 style={S.pageTitle}>Servicio a Clientes</h1>
         <p style={S.pageSubtitle}>Gestión integral de servicio, tickets e incidencias</p>
