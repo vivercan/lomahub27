@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { tokens } from '../../lib/tokens';
-import ModuleLayout from '../../components/layout/ModuleLayout';
+import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Users, BookOpen, SlidersHorizontal, Plug, ShieldCheck } from 'lucide-react';
 
 /* ───────── types ───────── */
@@ -153,7 +153,7 @@ export default function Configuracion() {
   };
 
   return (
-    <ModuleLayout title="Configuración" breadcrumb={['Inicio', 'Configuración']}>
+    <ModuleLayout titulo="Configuración" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
       <div style={{ minHeight: '100vh', background: tokens.colors.bgMain }}>
         <h1 style={S.pageTitle}>Configuración</h1>
         <p style={S.pageSubtitle}>Administración del sistema, usuarios, catálogos y parámetros</p>
