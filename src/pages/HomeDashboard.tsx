@@ -88,7 +88,12 @@ const GeoOportunidades = () => (
       <polygon points="100,35 130,65 115,65 115,95 85,95 85,65 70,65" fill="none" stroke="#F97316" strokeWidth="1" transform="translate(40,20)" />
       <polygon points="100,50 125,75 113,75 113,100 87,100 87,75 75,75" fill="none" stroke="#F97316" strokeWidth="0.8" transform="translate(60,10)" />
     </svg>
-  </div>
+  
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-5px', top: '-5px', width: '40%', height: '45%', opacity: 0.18 }}>
+      <polyline points="30,60 45,40 60,60" fill="none" stroke="#2563EB" strokeWidth="1.5" />
+      <polyline points="45,50 60,30 75,50" fill="none" stroke="#2563EB" strokeWidth="1.2" />
+      <polyline points="55,65 70,45 85,65" fill="none" stroke="#2563EB" strokeWidth="0.8" />
+    </svg></div>
 )
 
 // Comercial — overlapping hexagons
@@ -100,7 +105,11 @@ const GeoComercial = () => (
       <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#EF4444" strokeWidth="1" transform="translate(40,50) scale(0.5)" />
       <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#EF4444" strokeWidth="0.8" transform="translate(110,10) scale(0.45)" />
     </svg>
-  </div>
+  
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-5px', top: '-5px', width: '40%', height: '45%', opacity: 0.18 }}>
+      <polygon points="35,20 50,12 65,20 65,36 50,44 35,36" fill="none" stroke="#2563EB" strokeWidth="1.3" />
+      <polygon points="55,35 67,28 79,35 79,48 67,55 55,48" fill="none" stroke="#2563EB" strokeWidth="0.9" />
+    </svg></div>
 )
 
 // Servicio a Clientes — concentric arcs
@@ -112,7 +121,12 @@ const GeoServicio = () => (
       <circle cx="130" cy="90" r="30" fill="none" stroke="#FB923C" strokeWidth="1" />
       <circle cx="130" cy="90" r="15" fill="none" stroke="#FB923C" strokeWidth="0.8" />
     </svg>
-  </div>
+  
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-5px', top: '-5px', width: '40%', height: '45%', opacity: 0.18 }}>
+      <path d="M25,55 A30,30 0 0,1 75,55" fill="none" stroke="#2563EB" strokeWidth="1.3" />
+      <path d="M35,55 A20,20 0 0,1 65,55" fill="none" stroke="#2563EB" strokeWidth="1" />
+      <path d="M42,55 A13,13 0 0,1 58,55" fill="none" stroke="#2563EB" strokeWidth="0.8" />
+    </svg></div>
 )
 
 // Despacho Inteligente — isometric cubes
@@ -135,7 +149,14 @@ const GeoDespacho = () => (
         <polygon points="40,11 20,22 20,42 40,31" fill="none" stroke="#DC2626" strokeWidth="0.8" />
       </g>
     </svg>
-  </div>
+  
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-5px', top: '-5px', width: '40%', height: '45%', opacity: 0.18 }}>
+      <g transform="translate(30,15)">
+        <polygon points="25,0 50,14 25,28 0,14" fill="none" stroke="#2563EB" strokeWidth="1.3" />
+        <polygon points="0,14 25,28 25,53 0,39" fill="none" stroke="#2563EB" strokeWidth="1" />
+        <polygon points="50,14 25,28 25,53 50,39" fill="none" stroke="#2563EB" strokeWidth="1" />
+      </g>
+    </svg></div>
 )
 
 // Comunicaciones — radiating waves
@@ -148,7 +169,12 @@ const GeoComunicaciones = () => (
       <path d="M110,100 Q110,50 155,15" fill="none" stroke="#F97316" strokeWidth="0.8" />
       <circle cx="145" cy="105" r="4" fill="none" stroke="#F97316" strokeWidth="1.2" />
     </svg>
-  </div>
+  
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-5px', top: '-5px', width: '40%', height: '45%', opacity: 0.18 }}>
+      <circle cx="30" cy="50" r="8" fill="none" stroke="#2563EB" strokeWidth="1.3" />
+      <path d="M42,38 A20,20 0 0,1 42,62" fill="none" stroke="#2563EB" strokeWidth="1" />
+      <path d="M50,30 A28,28 0 0,1 50,70" fill="none" stroke="#2563EB" strokeWidth="0.8" />
+    </svg></div>
 )
 
 // Cotizaciones — diamond cluster
@@ -160,7 +186,11 @@ const GeoCotizaciones = () => (
       <rect x="75" y="55" width="25" height="25" rx="2" fill="none" stroke="#EF4444" strokeWidth="1" transform="rotate(45,87.5,67.5)" />
       <rect x="105" y="75" width="20" height="20" rx="2" fill="none" stroke="#EF4444" strokeWidth="0.8" transform="rotate(45,115,85)" />
     </svg>
-  </div>
+  
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-5px', top: '-5px', width: '40%', height: '45%', opacity: 0.18 }}>
+      <rect x="35" y="25" width="28" height="28" rx="2" fill="none" stroke="#2563EB" strokeWidth="1.3" transform="rotate(45,49,39)" />
+      <rect x="48" y="38" width="20" height="20" rx="2" fill="none" stroke="#2563EB" strokeWidth="0.9" transform="rotate(45,58,48)" />
+    </svg></div>
 )
 
 // Plantillas — layered offset rectangles
@@ -171,17 +201,50 @@ const GeoPlantillas = () => (
       <rect x="82" y="30" width="60" height="80" rx="4" fill="none" stroke="#FB923C" strokeWidth="1.2" />
       <rect x="94" y="40" width="60" height="80" rx="4" fill="none" stroke="#FB923C" strokeWidth="1" />
     </svg>
-  </div>
+  
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-5px', top: '-5px', width: '40%', height: '45%', opacity: 0.18 }}>
+      <rect x="20" y="15" width="35" height="48" rx="3" fill="none" stroke="#2563EB" strokeWidth="1.3" />
+      <rect x="28" y="22" width="35" height="48" rx="3" fill="none" stroke="#2563EB" strokeWidth="0.9" />
+      <line x1="26" y1="30" x2="48" y2="30" stroke="#2563EB" strokeWidth="0.7" />
+      <line x1="26" y1="38" x2="45" y2="38" stroke="#2563EB" strokeWidth="0.7" />
+    </svg></div>
 )
 
-// Config — interlocking gear polygon
+// Config — interlocking gears (engrane)
 const GeoConfig = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '60%', height: '70%', opacity: 0.25 }}>
-      <polygon points="100,15 108,35 130,35 113,48 119,68 100,56 81,68 87,48 70,35 92,35" fill="none" stroke="#DC2626" strokeWidth="1.5" transform="translate(20,10)" />
-      <polygon points="100,25 106,38 122,38 109,47 114,62 100,53 86,62 91,47 78,38 94,38" fill="none" stroke="#DC2626" strokeWidth="1" transform="translate(40,30) scale(0.7)" />
+      <g transform="translate(90,45)">
+        <circle cx="0" cy="0" r="22" fill="none" stroke="#DC2626" strokeWidth="1.5" />
+        <circle cx="0" cy="0" r="10" fill="none" stroke="#DC2626" strokeWidth="1.2" />
+        <rect x="-4" y="-28" width="8" height="12" rx="1.5" fill="none" stroke="#DC2626" strokeWidth="1.3" />
+        <rect x="-4" y="-28" width="8" height="12" rx="1.5" fill="none" stroke="#DC2626" strokeWidth="1.3" transform="rotate(45,0,0)" />
+        <rect x="-4" y="-28" width="8" height="12" rx="1.5" fill="none" stroke="#DC2626" strokeWidth="1.3" transform="rotate(90,0,0)" />
+        <rect x="-4" y="-28" width="8" height="12" rx="1.5" fill="none" stroke="#DC2626" strokeWidth="1.3" transform="rotate(135,0,0)" />
+        <rect x="-4" y="-28" width="8" height="12" rx="1.5" fill="none" stroke="#DC2626" strokeWidth="1.3" transform="rotate(180,0,0)" />
+        <rect x="-4" y="-28" width="8" height="12" rx="1.5" fill="none" stroke="#DC2626" strokeWidth="1.3" transform="rotate(225,0,0)" />
+        <rect x="-4" y="-28" width="8" height="12" rx="1.5" fill="none" stroke="#DC2626" strokeWidth="1.3" transform="rotate(270,0,0)" />
+        <rect x="-4" y="-28" width="8" height="12" rx="1.5" fill="none" stroke="#DC2626" strokeWidth="1.3" transform="rotate(315,0,0)" />
+      </g>
+      <g transform="translate(130,75)">
+        <circle cx="0" cy="0" r="14" fill="none" stroke="#DC2626" strokeWidth="1" />
+        <circle cx="0" cy="0" r="6" fill="none" stroke="#DC2626" strokeWidth="0.8" />
+        <rect x="-3" y="-19" width="6" height="8" rx="1" fill="none" stroke="#DC2626" strokeWidth="1" />
+        <rect x="-3" y="-19" width="6" height="8" rx="1" fill="none" stroke="#DC2626" strokeWidth="1" transform="rotate(60,0,0)" />
+        <rect x="-3" y="-19" width="6" height="8" rx="1" fill="none" stroke="#DC2626" strokeWidth="1" transform="rotate(120,0,0)" />
+        <rect x="-3" y="-19" width="6" height="8" rx="1" fill="none" stroke="#DC2626" strokeWidth="1" transform="rotate(180,0,0)" />
+        <rect x="-3" y="-19" width="6" height="8" rx="1" fill="none" stroke="#DC2626" strokeWidth="1" transform="rotate(240,0,0)" />
+        <rect x="-3" y="-19" width="6" height="8" rx="1" fill="none" stroke="#DC2626" strokeWidth="1" transform="rotate(300,0,0)" />
+      </g>
     </svg>
-  </div>
+  
+    <svg viewBox="0 0 120 100" style={{ position: 'absolute', left: '-5px', top: '-5px', width: '40%', height: '45%', opacity: 0.18 }}>
+      <circle cx="40" cy="40" r="12" fill="none" stroke="#2563EB" strokeWidth="1.3" />
+      <line x1="40" y1="22" x2="40" y2="15" stroke="#2563EB" strokeWidth="1.5" />
+      <line x1="40" y1="58" x2="40" y2="65" stroke="#2563EB" strokeWidth="1.5" />
+      <line x1="22" y1="40" x2="15" y2="40" stroke="#2563EB" strokeWidth="1.5" />
+      <line x1="58" y1="40" x2="65" y2="40" stroke="#2563EB" strokeWidth="1.5" />
+    </svg></div>
 )
 
 // ============================================================================
