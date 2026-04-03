@@ -1,355 +1,173 @@
-import { useState, useEffect } from 'react'
-import { BarChart3, TrendingUp } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
-import { Card } from '../../components/ui/Card'
-import { KPICard } from '../../components/ui/KPICard'
-import { DataTable } from '../../components/ui/DataTable'
-import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
-import type { Column } from '../../components/ui/DataTable'
 
-interface FunnelStage {
-  etapa: string
-  cantidad: number
-  monto: string
-  porcentaje: string
+/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+   VENTAS â Landing Page (estilo Dashboard V27f)
+   4 cards: Oportunidades, Cotizaciones, Comisiones, Programa
+   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+
+const D = {
+  bg: '#F7F8FA',
+  font: "'Montserrat', sans-serif",
+  fontBody: "'Inter', sans-serif",
+  cardBg: '#FFFFFF',
+  cardBorder: '1px solid rgba(15,23,42,0.06)',
+  cardRadius: '14px',
+  cardShadow: '0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06)',
+  cardHover: '0 2px 4px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.09)',
+  titleSize: '17px',
+  titleWeight: 800,
+  titleColor: '#1E3A8A',
+  kpiSize: '38px',
+  kpiWeight: 600,
+  kpiColor: '#0F172A',
+  subSize: '12px',
+  subColor: '#64748B',
+  dotSize: '8px',
+} as const
+
+const DOT: Record<string, string> = { green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1' }
+
+/* ââ Geometric SVGs ââ */
+const geoBase: React.CSSProperties = {
+  position: 'absolute', top: 0, right: 0, width: '100%', height: '100%',
+  pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px',
+  transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
 }
 
-interface Vendedor {
-  puesto: number
-  nombre: string
-  leads: number
-  monto: string
-  cerrados: number
+const GeoOportunidades = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+      <polygon points="100,15 130,55 170,60 140,90 148,130 100,108 52,130 60,90 30,60 70,55" fill="none" stroke="#3B82F6" strokeWidth="1.2" />
+      <polygon points="100,35 118,58 145,62 125,82 130,108 100,95 70,108 75,82 55,62 82,58" fill="none" stroke="#3B82F6" strokeWidth="0.8" />
+    </svg>
+  </div>
+)
+
+const GeoCotizaciones = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+      <rect x="55" y="20" width="90" height="65" rx="4" fill="none" stroke="#10B981" strokeWidth="1.2" />
+      <line x1="70" y1="38" x2="130" y2="38" stroke="#10B981" strokeWidth="0.8" />
+      <line x1="70" y1="50" x2="120" y2="50" stroke="#10B981" strokeWidth="0.8" />
+      <line x1="70" y1="62" x2="110" y2="62" stroke="#10B981" strokeWidth="0.8" />
+      <text x="125" y="78" fontSize="18" fill="none" stroke="#10B981" strokeWidth="0.8" fontFamily="sans-serif">$</text>
+    </svg>
+  </div>
+)
+
+const GeoComisiones = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+      <circle cx="100" cy="65" r="40" fill="none" stroke="#8B5CF6" strokeWidth="1.2" />
+      <circle cx="100" cy="65" r="28" fill="none" stroke="#8B5CF6" strokeWidth="0.8" />
+      <text x="88" y="73" fontSize="24" fill="none" stroke="#8B5CF6" strokeWidth="1" fontFamily="sans-serif">%</text>
+    </svg>
+  </div>
+)
+
+const GeoPrograma = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+      <rect x="50" y="25" width="100" height="80" rx="6" fill="none" stroke="#F59E0B" strokeWidth="1.2" />
+      <line x1="50" y1="45" x2="150" y2="45" stroke="#F59E0B" strokeWidth="1" />
+      <line x1="83" y1="25" x2="83" y2="105" stroke="#F59E0B" strokeWidth="0.6" />
+      <line x1="116" y1="25" x2="116" y2="105" stroke="#F59E0B" strokeWidth="0.6" />
+      <line x1="50" y1="65" x2="150" y2="65" stroke="#F59E0B" strokeWidth="0.6" />
+      <line x1="50" y1="85" x2="150" y2="85" stroke="#F59E0B" strokeWidth="0.6" />
+    </svg>
+  </div>
+)
+
+/* ââ Card Config ââ */
+interface LandingCard {
+  id: string; label: string; route: string; kpiLabel: string; geo: React.ReactNode; accent: string
 }
 
-const PIPELINE_STAGES = [
-  'Nuevo',
-  'Contactado',
-  'Cotizado',
-  'Negociacion',
-  'Cerrado Ganado',
-  'Cerrado Perdido',
+const CARDS: LandingCard[] = [
+  { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/leads', kpiLabel: 'Pipeline activo', geo: <GeoOportunidades />, accent: '#3B82F6' },
+  { id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva', kpiLabel: 'Pendientes', geo: <GeoCotizaciones />, accent: '#10B981' },
+  { id: 'comisiones', label: 'Comisiones', route: '/ventas/comisiones', kpiLabel: 'Vendedores', geo: <GeoComisiones />, accent: '#8B5CF6' },
+  { id: 'programa', label: 'Programa Semanal', route: '/ventas/programa', kpiLabel: 'Esta semana', geo: <GeoPrograma />, accent: '#F59E0B' },
 ]
 
-function formatCurrency(amount: number): string {
-  if (amount >= 1_000_000) {
-    return `$${(amount / 1_000_000).toFixed(1)}M`
-  }
-  if (amount >= 1_000) {
-    return `$${(amount / 1_000).toFixed(0)}K`
-  }
-  return `$${amount.toFixed(0)}`
-}
-
-function getWeekStart(): string {
-  const now = new Date()
-  const day = now.getDay()
-  const diff = now.getDate() - day + (day === 0 ? -6 : 1)
-  const monday = new Date(now.setDate(diff))
-  monday.setHours(0, 0, 0, 0)
-  return monday.toISOString()
-}
-
+/* ââ Component ââ */
 export default function DashboardVentas() {
-  const [kpis, setKpis] = useState([
-    { titulo: 'Pipeline Total', valor: '$0', color: 'primary' as const },
-    { titulo: 'Leads Nuevos Semana', valor: '0', color: 'green' as const },
-    { titulo: 'Conversión', valor: '0%', color: 'blue' as const },
-    { titulo: 'Cotizaciones Sin Resp.', valor: '0', color: 'orange' as const },
-  ])
-  const [funnelData, setFunnelData] = useState<FunnelStage[]>([])
-  const [vendedores, setVendedores] = useState<Vendedor[]>([])
-  const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
+  const [hovered, setHovered] = useState<string | null>(null)
+  const [kpis, setKpis] = useState<Record<string, number>>({ oportunidades: 0, cotizaciones: 0, comisiones: 0, programa: 0 })
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        // 1. Fetch ALL leads (excluding Cerrado Perdido for pipeline)
-        const { data: allLeads } = await supabase
-          .from('leads')
-          .select('id, estado, valor_estimado, ejecutivo_nombre, fecha_creacion')
-
-        if (!allLeads || allLeads.length === 0) {
-          setLoading(false)
-          return
-        }
-
-        // 2. Pipeline Total — sum valor_estimado excluding Cerrado Perdido
-        const activeLeads = allLeads.filter(
-          (l) => l.estado !== 'Cerrado Perdido'
-        )
-        const pipelineTotal = activeLeads.reduce(
-          (sum, l) => sum + (l.valor_estimado || 0),
-          0
-        )
-
-        // 3. Leads nuevos esta semana
-        const weekStart = getWeekStart()
-        const leadsThisWeek = allLeads.filter(
-          (l) => l.fecha_creacion >= weekStart
-        ).length
-
-        // 4. Tasa de conversión
-        const cerradosGanados = allLeads.filter(
-          (l) => l.estado === 'Cerrado Ganado'
-        ).length
-        const totalLeads = allLeads.length
-        const conversionRate =
-          totalLeads > 0
-            ? ((cerradosGanados / totalLeads) * 100).toFixed(1)
-            : '0'
-
-        // 5. Cotizaciones sin respuesta (Cotizado que no han avanzado)
-        const cotizadosSinResp = allLeads.filter(
-          (l) => l.estado === 'Cotizado'
-        ).length
-
-        setKpis([
-          {
-            titulo: 'Pipeline Total',
-            valor: formatCurrency(pipelineTotal),
-            color: 'primary' as const,
-          },
-          {
-            titulo: 'Leads Nuevos Semana',
-            valor: leadsThisWeek.toString(),
-            color: 'green' as const,
-          },
-          {
-            titulo: 'Conversión',
-            valor: `${conversionRate}%`,
-            color: 'blue' as const,
-          },
-          {
-            titulo: 'Cotizaciones Sin Resp.',
-            valor: cotizadosSinResp.toString(),
-            color: 'orange' as const,
-          },
-        ])
-
-        // 6. Funnel de Ventas — agrupado por estado
-        const stageMap = new Map<string, { count: number; monto: number }>()
-        allLeads.forEach((lead) => {
-          const existing = stageMap.get(lead.estado) || {
-            count: 0,
-            monto: 0,
-          }
-          existing.count++
-          existing.monto += lead.valor_estimado || 0
-          stageMap.set(lead.estado, existing)
-        })
-
-        const funnel: FunnelStage[] = PIPELINE_STAGES.filter((stage) =>
-          stageMap.has(stage)
-        ).map((stage) => {
-          const data = stageMap.get(stage)!
-          const pct =
-            totalLeads > 0
-              ? ((data.count / totalLeads) * 100).toFixed(0)
-              : '0'
-          return {
-            etapa: stage,
-            cantidad: data.count,
-            monto: formatCurrency(data.monto),
-            porcentaje: `${pct}%`,
-          }
-        })
-        setFunnelData(funnel)
-
-        // 7. Top Vendedores — agrupado por ejecutivo_nombre
-        const vendedorMap = new Map<
-          string,
-          { leads: number; monto: number; cerrados: number }
-        >()
-        allLeads.forEach((lead) => {
-          const eid = lead.ejecutivo_nombre || 'sin-asignar'
-          const existing = vendedorMap.get(eid) || {
-            leads: 0,
-            monto: 0,
-            cerrados: 0,
-          }
-          existing.leads++
-          existing.monto += lead.valor_estimado || 0
-          if (lead.estado === 'Cerrado Ganado') existing.cerrados++
-          vendedorMap.set(eid, existing)
-        })
-
-
-        const topVendedores: Vendedor[] = Array.from(vendedorMap.entries())
-          .map(([id, data]) => ({
-            puesto: 0,
-            nombre: id === 'sin-asignar' ? 'Sin asignar' : id,
-            leads: data.leads,
-            monto: formatCurrency(data.monto),
-            cerrados: data.cerrados,
-          }))
-          .sort((a, b) => b.leads - a.leads)
-          .slice(0, 10)
-          .map((v, i) => ({ ...v, puesto: i + 1 }))
-
-        setVendedores(topVendedores)
-      } catch (err) {
-        console.error('Error fetching dashboard data:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchDashboardData()
+  const fetchKpis = useCallback(async () => {
+    try {
+      const [leads, cots, vendedores, prog] = await Promise.all([
+        supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null).not('estado', 'in', '("Cerrado Ganado","Cerrado Perdido")'),
+        supabase.from('cotizaciones').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('estado', 'pendiente'),
+        supabase.from('usuarios_autorizados').select('*', { count: 'exact', head: true }).eq('rol', 'ventas'),
+        supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null).gte('created_at', new Date(Date.now() - 7 * 86400000).toISOString()),
+      ])
+      setKpis({
+        oportunidades: leads.count ?? 0,
+        cotizaciones: cots.count ?? 0,
+        comisiones: vendedores.count ?? 0,
+        programa: prog.count ?? 0,
+      })
+    } catch (e) { console.error('KPI fetch error:', e) }
   }, [])
 
-  const funnelColumns: Column<FunnelStage>[] = [
-    { key: 'etapa', label: 'Etapa', width: '30%' },
-    { key: 'cantidad', label: 'Leads', width: '20%', align: 'center' },
-    { key: 'monto', label: 'Monto', width: '25%', align: 'right' },
-    {
-      key: 'porcentaje',
-      label: '% Total',
-      width: '25%',
-      align: 'center',
-      render: (row: FunnelStage) => (
-        <span style={{ color: tokens.colors.green }}>{row.porcentaje}</span>
-      ),
-    },
-  ]
+  useEffect(() => { fetchKpis() }, [fetchKpis])
 
-  const vendedorColumns: Column<Vendedor>[] = [
-    { key: 'puesto', label: '#', width: '8%', align: 'center' },
-    { key: 'nombre', label: 'Vendedor', width: '30%' },
-    {
-      key: 'leads',
-      label: 'Leads',
-      width: '17%',
-      align: 'center',
-    },
-    { key: 'monto', label: 'Pipeline', width: '25%', align: 'right' },
-    {
-      key: 'cerrados',
-      label: 'Ganados',
-      width: '20%',
-      align: 'center',
-      render: (row: Vendedor) => (
-        <span
-          style={{
-            color:
-              row.cerrados > 0 ? tokens.colors.green : tokens.colors.textMuted,
-          }}
-        >
-          {row.cerrados}
-        </span>
-      ),
-    },
-  ]
+  const getCardStyle = (isH: boolean, accent: string): React.CSSProperties => ({
+    aspectRatio: '1 / 0.7',
+    borderRadius: D.cardRadius,
+    padding: '22px',
+    background: 'linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 100%)',
+    border: D.cardBorder,
+    cursor: 'pointer',
+    position: 'relative',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    transition: 'transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s cubic-bezier(0.23,1,0.32,1)',
+    transform: isH ? 'translateY(-3px)' : 'none',
+    boxShadow: (isH ? D.cardHover : D.cardShadow) + `, inset 0 -1px 0 ${accent}33`,
+  })
 
   return (
-    <ModuleLayout
-      titulo="Dashboard Comercial"
-      subtitulo="Gerente Comercial — Semana en curso"
-    >
-      <div className="space-y-6">
-        <div className="grid grid-cols-4 gap-4">
-          {kpis.map((kpi) => (
-            <KPICard
-              key={kpi.titulo}
-              titulo={kpi.titulo}
-              valor={kpi.valor}
-              color={kpi.color}
-            />
-          ))}
+    <ModuleLayout titulo="Ventas" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
+      <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+          {CARDS.map(card => {
+            const isH = hovered === card.id
+            return (
+              <div
+                key={card.id}
+                style={getCardStyle(isH, card.accent)}
+                onMouseEnter={() => setHovered(card.id)}
+                onMouseLeave={() => setHovered(null)}
+                onClick={() => navigate(card.route)}
+              >
+                <div style={{ ...geoBase, transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none' }}>
+                  {card.geo}
+                </div>
+                <div style={{ position: 'absolute', top: 14, right: 14, width: D.dotSize, height: D.dotSize, borderRadius: '50%', backgroundColor: kpis[card.id] > 0 ? DOT.green : DOT.gray, boxShadow: `0 0 4px ${kpis[card.id] > 0 ? DOT.green : DOT.gray}59` }} />
+                <div style={{ fontFamily: D.font, fontSize: D.titleSize, fontWeight: D.titleWeight, color: D.titleColor, lineHeight: 1.2, position: 'relative', zIndex: 1 }}>
+                  {card.label}
+                </div>
+                <div>
+                  <div style={{ fontFamily: D.font, fontSize: D.kpiSize, fontWeight: D.kpiWeight, color: D.kpiColor, lineHeight: 1, position: 'relative', zIndex: 1 }}>
+                    {(kpis[card.id] ?? 0).toLocaleString()}
+                  </div>
+                  <div style={{ fontFamily: D.fontBody, fontSize: D.subSize, color: D.subColor, marginTop: 3, position: 'relative', zIndex: 1 }}>
+                    {card.kpiLabel}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
         </div>
-
-        <Card>
-          <div className="mb-4 flex items-center gap-2">
-            <BarChart3
-              className="w-5 h-5"
-              style={{ color: tokens.colors.primary }}
-            />
-            <h2
-              className="text-lg font-bold"
-              style={{
-                color: tokens.colors.textPrimary,
-                fontFamily: tokens.fonts.heading,
-              }}
-            >
-              Funnel de Ventas
-            </h2>
-          </div>
-          {loading ? (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '48px 16px',
-                color: tokens.colors.textMuted,
-              }}
-            >
-              <p>Cargando...</p>
-            </div>
-          ) : funnelData.length === 0 ? (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '48px 16px',
-                color: tokens.colors.textMuted,
-              }}
-            >
-              <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>
-                Sin datos
-              </p>
-              <p style={{ fontSize: '14px', marginTop: '8px' }}>
-                Los datos se cargarán cuando estén disponibles en el sistema
-              </p>
-            </div>
-          ) : (
-            <DataTable columns={funnelColumns} data={funnelData} />
-          )}
-        </Card>
-
-        <Card>
-          <div className="mb-4 flex items-center gap-2">
-            <TrendingUp
-              className="w-5 h-5"
-              style={{ color: tokens.colors.green }}
-            />
-            <h2
-              className="text-lg font-bold"
-              style={{
-                color: tokens.colors.textPrimary,
-                fontFamily: tokens.fonts.heading,
-              }}
-            >
-              Top Vendedores
-            </h2>
-          </div>
-          {loading ? (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '48px 16px',
-                color: tokens.colors.textMuted,
-              }}
-            >
-              <p>Cargando...</p>
-            </div>
-          ) : vendedores.length === 0 ? (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '48px 16px',
-                color: tokens.colors.textMuted,
-              }}
-            >
-              <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>
-                Sin datos
-              </p>
-              <p style={{ fontSize: '14px', marginTop: '8px' }}>
-                Los datos se cargarán cuando estén disponibles en el sistema
-              </p>
-            </div>
-          ) : (
-            <DataTable columns={vendedorColumns} data={vendedores} />
-          )}
-        </Card>
       </div>
     </ModuleLayout>
   )
