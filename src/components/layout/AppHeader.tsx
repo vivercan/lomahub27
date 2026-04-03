@@ -225,9 +225,9 @@ export default function AppHeader({
         {/* LEFT — Logo Institucional LomaHUB27 */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <h1 style={{ margin: 0, fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontStyle: 'italic', fontSize: 22, letterSpacing: '-0.5px', lineHeight: 1 }}>
-            <span style={{ color: '#2563EB' }}>Loma</span>
-            <span style={{ color: '#2563EB' }}>HUB</span>
-            <span style={{ color: '#E87A1A' }}>27</span>
+            <span style={{ color: '#0F172A' }}>Loma</span>
+            <span style={{ color: '#0F172A' }}>HUB</span>
+            <span style={{ color: '#2563EB' }}>27</span>
           </h1>
         </div>
 
