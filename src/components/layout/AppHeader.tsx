@@ -37,9 +37,9 @@ export default function AppHeader({
   // --- Date / Week helpers ---
   const now = new Date()
   const fechaStr = now.toLocaleDateString('es-MX', {
-    weekday: 'short',
+    weekday: 'long',
     day: 'numeric',
-    month: 'short',
+    month: 'long',
     year: 'numeric',
   })
   const getWeekNumber = (d: Date): number => {
@@ -232,7 +232,7 @@ export default function AppHeader({
         </div>
 
         {/* CENTER — Fecha, Semana, Tipo Cambio */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 72, marginRight: 'auto', marginLeft: 40 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 56, marginRight: 'auto', marginLeft: 40 }}>
           {/* Fecha */}
           <div style={{ textAlign: 'center' }}>
             <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1E293B', fontFamily: "'Montserrat', sans-serif", textTransform: 'capitalize' as const }}>
@@ -250,12 +250,12 @@ export default function AppHeader({
             }}
           >
             <span style={{ fontSize: 14, fontWeight: 700, color: '#2563EB', fontFamily: "'Montserrat', sans-serif" }}>
-              W{weekNum}
+              Semana {weekNum}
             </span>
           </div>
 
           {/* USD / MXN */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <span style={{ fontSize: 13, color: '#1E293B', fontFamily: "'Montserrat', sans-serif" }}>USD/MXN</span>
             <span
               style={{
@@ -265,7 +265,7 @@ export default function AppHeader({
                 fontFamily: "'Montserrat', sans-serif",
               }}
             >
-              {tipoCambio ? `$${tipoCambio.toFixed(2)}` : '—'}
+              {tipoCambio ? `${tipoCambio.toFixed(2)}` : '—'}
             </span>
           </div>
         </div>
