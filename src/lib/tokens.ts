@@ -2,7 +2,7 @@
 // FUENTE DE VERDAD VISUAL — todos los módulos importan de aquí
 // Cambias algo aquí y se actualiza en todo el sistema automáticamente.
 // NUNCA hardcodear colores, fuentes o espaciados directamente en los componentes.
-// V29 PREMIUM — Actualizado 24/Mar/2026 por JJ
+// V30 LIGHT PREMIUM — Actualizado 24/Mar/2026 por JJ
 // Filosofía: "No necesito presumir, valgo mucho" — autoridad, no adrenalina
 
 export const tokens = {
@@ -23,20 +23,20 @@ export const tokens = {
     primaryHover: '#2F5BC4',
     primaryGlow:  'rgba(59, 108, 231, 0.15)',
 
-    // Fondos — grafito azulado premium (NO azul tech)
-    bgMain:  '#16161E',
-    bgCard:  '#1E1E2A',
-    bgHover: '#272733',
-    bgGlass: 'rgba(22, 22, 30, 0.88)',
+    // Fondos — light premium Apple (blanco + grises sutiles)
+    bgMain:  '#F7F8FA',
+    bgCard:  '#FFFFFF',
+    bgHover: '#F1F5F9',
+    bgGlass: 'rgba(255, 255, 255, 0.92)',
 
-    // Bordes — sutiles, casi invisibles
-    border:      '#2A2A36',
-    borderLight: 'rgba(255, 255, 255, 0.06)',
+    // Bordes — sutiles sobre fondo claro
+    border:      'rgba(15, 23, 42, 0.08)',
+    borderLight: 'rgba(15, 23, 42, 0.04)',
 
     // Texto
-    textPrimary:   '#E8E8ED',
-    textSecondary: '#8B8B9A',
-    textMuted:     '#5C5C6B',
+    textPrimary:   '#0F172A',
+    textSecondary: '#64748B',
+    textMuted:     '#94A3B8',
 
     // Acentos — marca (naranja sobrio, no turbo)
     orange:      '#C27803',
@@ -64,15 +64,15 @@ export const tokens = {
   // ─── EFECTOS ─────────────────────────────────────────
   effects: {
     glassmorphism: {
-      background: 'rgba(22, 22, 30, 0.88)',
+      background: 'rgba(255, 255, 255, 0.92)',
       backdropFilter: 'blur(16px)',
-      border: '1px solid rgba(255, 255, 255, 0.06)',
+      border: '1px solid rgba(15, 23, 42, 0.06)',
     },
     // Sombras premium — amplias, suaves, difusas (NO glow LED)
-    cardShadow:  '0 8px 32px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.15)',
-    cardHover:   '0 12px 40px rgba(0, 0, 0, 0.30), 0 4px 12px rgba(0, 0, 0, 0.20)',
+    cardShadow:  '0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.08)',
+    cardHover:   '0 2px 6px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.12)',
     // Highlight sutil superior para materialidad (hardware digital premium)
-    cardHighlight: 'inset 0 1px 0 rgba(255, 255, 255, 0.04)',
+    cardHighlight: 'inset 0 1px 0 rgba(255, 255, 255, 0.8)',
     // Sin glows — autoridad no adrenalina
     glowPrimary: '0 4px 16px rgba(59, 108, 231, 0.10)',
     glowGreen:   '0 4px 12px rgba(13, 150, 104, 0.08)',
