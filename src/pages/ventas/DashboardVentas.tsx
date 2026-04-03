@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   VENTAS â Landing Page (estilo Dashboard V27f)
+/* ═══════════════════════════════════════════════════════════════
+   VENTAS — Landing Page (estilo Dashboard V27f)
    4 cards: Oportunidades, Cotizaciones, Comisiones, Programa
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 
 const D = {
   bg: '#F7F8FA',
@@ -30,7 +30,7 @@ const D = {
 
 const DOT: Record<string, string> = { green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1' }
 
-/* ââ Geometric SVGs ââ */
+/* ── Geometric SVGs ── */
 const geoBase: React.CSSProperties = {
   position: 'absolute', top: 0, right: 0, width: '100%', height: '100%',
   pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px',
@@ -81,19 +81,76 @@ const GeoPrograma = () => (
   </div>
 )
 
-/* ââ Card Config ââ */
+/* ── Colorful Module SVGs (Propuesta 12 — Logística Colorida) ── */
+const colorSvg: React.CSSProperties = {
+  position: 'absolute', bottom: '-8px', left: '-8px',
+  width: '50%', height: '55%', opacity: 0.22,
+}
+
+const ColorOportunidades = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 54 54" style={colorSvg} xmlns="http://www.w3.org/2000/svg">
+      <rect x="6" y="32" width="10" height="14" rx="2" fill="#3B82F6" opacity=".3"/>
+      <rect x="18" y="24" width="10" height="22" rx="2" fill="#8B5CF6" opacity=".3"/>
+      <rect x="30" y="16" width="10" height="30" rx="2" fill="#10B981" opacity=".3"/>
+      <rect x="42" y="8" width="8" height="38" rx="2" fill="#F59E0B" opacity=".3"/>
+      <path d="M11 30L23 22L35 14L46 6" stroke="#1E293B" strokeWidth="1.5" strokeLinecap="round" opacity=".35"/>
+    </svg>
+  </div>
+)
+
+const ColorCotizaciones = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 54 54" style={colorSvg} xmlns="http://www.w3.org/2000/svg">
+      <rect x="6" y="4" width="28" height="36" rx="4" fill="#3B82F6" opacity=".1"/>
+      <rect x="12" y="12" width="16" height="3" rx="1.5" fill="#8B5CF6" opacity=".25"/>
+      <rect x="12" y="18" width="12" height="3" rx="1.5" fill="#10B981" opacity=".25"/>
+      <rect x="12" y="24" width="8" height="3" rx="1.5" fill="#F59E0B" opacity=".25"/>
+      <circle cx="42" cy="40" r="10" fill="#10B981" opacity=".15"/>
+      <text x="42" y="44" textAnchor="middle" fontFamily="Montserrat" fontWeight="700" fontSize="12" fill="#10B981" opacity=".5">$</text>
+    </svg>
+  </div>
+)
+
+const ColorComisiones = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 54 54" style={colorSvg} xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="12" fill="#8B5CF6" opacity=".1"/>
+      <circle cx="34" cy="34" r="12" fill="#3B82F6" opacity=".1"/>
+      <circle cx="27" cy="27" r="6" fill="#F59E0B" opacity=".2"/>
+      <text x="27" y="30" textAnchor="middle" fontFamily="Montserrat" fontWeight="700" fontSize="8" fill="#F59E0B" opacity=".5">%</text>
+      <rect x="4" y="44" width="46" height="4" rx="2" fill="#10B981" opacity=".12"/>
+    </svg>
+  </div>
+)
+
+const ColorPrograma = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 54 54" style={colorSvg} xmlns="http://www.w3.org/2000/svg">
+      <rect x="6" y="8" width="42" height="36" rx="4" fill="#F59E0B" opacity=".06"/>
+      <rect x="6" y="8" width="42" height="10" rx="4" fill="#F59E0B" opacity=".12"/>
+      <rect x="10" y="22" width="8" height="6" rx="1.5" fill="#3B82F6" opacity=".2"/>
+      <rect x="22" y="22" width="8" height="6" rx="1.5" fill="#10B981" opacity=".2"/>
+      <rect x="34" y="22" width="8" height="6" rx="1.5" fill="#8B5CF6" opacity=".2"/>
+      <rect x="10" y="32" width="8" height="6" rx="1.5" fill="#EC4899" opacity=".15"/>
+      <rect x="22" y="32" width="8" height="6" rx="1.5" fill="#F97316" opacity=".15"/>
+    </svg>
+  </div>
+)
+
+/* ── Card Config ── */
 interface LandingCard {
-  id: string; label: string; route: string; kpiLabel: string; geo: React.ReactNode; accent: string
+  id: string; label: string; route: string; kpiLabel: string; geo: React.ReactNode; geo2?: React.ReactNode; accent: string
 }
 
 const CARDS: LandingCard[] = [
-  { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/leads', kpiLabel: 'Pipeline activo', geo: <GeoOportunidades />, accent: '#3B82F6' },
-  { id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva', kpiLabel: 'Pendientes', geo: <GeoCotizaciones />, accent: '#10B981' },
-  { id: 'comisiones', label: 'Comisiones', route: '/ventas/comisiones', kpiLabel: 'Vendedores', geo: <GeoComisiones />, accent: '#8B5CF6' },
-  { id: 'programa', label: 'Programa Semanal', route: '/ventas/programa', kpiLabel: 'Esta semana', geo: <GeoPrograma />, accent: '#F59E0B' },
+  { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/leads', kpiLabel: 'Pipeline activo', geo: <GeoOportunidades />, geo2: <ColorOportunidades />, accent: '#3B82F6' },
+  { id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva', kpiLabel: 'Pendientes', geo: <GeoCotizaciones />, geo2: <ColorCotizaciones />, accent: '#10B981' },
+  { id: 'comisiones', label: 'Comisiones', route: '/ventas/comisiones', kpiLabel: 'Vendedores', geo: <GeoComisiones />, geo2: <ColorComisiones />, accent: '#8B5CF6' },
+  { id: 'programa', label: 'Programa Semanal', route: '/ventas/programa', kpiLabel: 'Esta semana', geo: <GeoPrograma />, geo2: <ColorPrograma />, accent: '#F59E0B' },
 ]
 
-/* ââ Component ââ */
+/* ── Component ── */
 export default function DashboardVentas() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
@@ -152,6 +209,11 @@ export default function DashboardVentas() {
                 <div style={{ ...geoBase, transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none' }}>
                   {card.geo}
                 </div>
+                {card.geo2 && (
+                  <div style={{ ...geoBase, transform: isH ? 'translate(-3px,3px) scale(1.03)' : 'none' }}>
+                    {card.geo2}
+                  </div>
+                )}
                 <div style={{ position: 'absolute', top: 14, right: 14, width: D.dotSize, height: D.dotSize, borderRadius: '50%', backgroundColor: kpis[card.id] > 0 ? DOT.green : DOT.gray, boxShadow: `0 0 4px ${kpis[card.id] > 0 ? DOT.green : DOT.gray}59` }} />
                 <div style={{ fontFamily: D.font, fontSize: D.titleSize, fontWeight: D.titleWeight, color: D.titleColor, lineHeight: 1.2, position: 'relative', zIndex: 1 }}>
                   {card.label}
