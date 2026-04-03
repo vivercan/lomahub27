@@ -207,7 +207,7 @@ const MetricCard: React.FC<{ label: string; value: number | undefined; format?: 
       <div style={{ fontSize: '24px', fontWeight: 800, color: color, marginBottom: '6px' }}>
         {displayValue}
       </div>
-      <div style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.56)', lineHeight: '1.3' }}>{label}</div>
+      <div style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.50)', lineHeight: '1.3' }}>{label}</div>
     </div>
   );
 };
@@ -219,7 +219,7 @@ const LoadingState: React.FC = () => (
       justifyContent: 'center',
       alignItems: 'center',
       height: '100vh',
-      backgroundColor: '#2a2a36',
+      backgroundColor: '#F7F8FA',
       fontFamily: 'Montserrat, sans-serif',
     }}
   >
@@ -227,12 +227,12 @@ const LoadingState: React.FC = () => (
       <Loader2
         size={48}
         style={{
-          color: 'rgba(255, 255, 255, 0.6)',
+          color: 'rgba(15, 23, 42, 0.55)',
           marginBottom: '16px',
           animation: 'spin 1s linear infinite',
         }}
       />
-      <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '14px' }}>Cargando briefing...</div>
+      <div style={{ color: 'rgba(15, 23, 42, 0.55)', fontSize: '14px' }}>Cargando briefing...</div>
     </div>
     <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
   </div>
@@ -245,7 +245,7 @@ const ErrorState: React.FC<{ message: string }> = ({ message }) => (
       justifyContent: 'center',
       alignItems: 'center',
       height: '100vh',
-      backgroundColor: '#2a2a36',
+      backgroundColor: '#F7F8FA',
       fontFamily: 'Montserrat, sans-serif',
       padding: '24px',
     }}
@@ -261,10 +261,10 @@ const ErrorState: React.FC<{ message: string }> = ({ message }) => (
       }}
     >
       <AlertCircle size={48} style={{ color: '#ef4444', marginBottom: '16px', margin: '0 auto 16px' }} />
-      <div style={{ fontSize: '18px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)', marginBottom: '12px' }}>
+      <div style={{ fontSize: '18px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.87)', marginBottom: '12px' }}>
         No se pudo cargar el briefing
       </div>
-      <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.6)' }}>{message}</div>
+      <div style={{ fontSize: '14px', color: 'rgba(15, 23, 42, 0.55)' }}>{message}</div>
     </div>
   </div>
 );
@@ -325,18 +325,18 @@ const PendienteCard: React.FC<{ pendiente: Pendiente; index: number }> = ({ pend
               {pendiente.status}
             </div>
           </div>
-          <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)', marginBottom: '8px' }}>
+          <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.87)', marginBottom: '8px' }}>
             {pendiente.titulo}
           </div>
           {pendiente.responsable && (
-            <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.56)' }}>Responsable: {pendiente.responsable}</div>
+            <div style={{ fontSize: '12px', color: 'rgba(15, 23, 42, 0.50)' }}>Responsable: {pendiente.responsable}</div>
           )}
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {isExpanded ? (
-            <ChevronUp size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+            <ChevronUp size={24} style={{ color: 'rgba(15, 23, 42, 0.35)' }} />
           ) : (
-            <ChevronDown size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+            <ChevronDown size={24} style={{ color: 'rgba(15, 23, 42, 0.35)' }} />
           )}
         </div>
       </div>
@@ -351,10 +351,10 @@ const PendienteCard: React.FC<{ pendiente: Pendiente; index: number }> = ({ pend
         >
           {pendiente.descripcion && (
             <div style={{ marginBottom: '20px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '8px', textTransform: 'uppercase' }}>
+              <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.50)', marginBottom: '8px', textTransform: 'uppercase' }}>
                 DescripciÃ³n
               </div>
-              <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.6' }}>
+              <div style={{ fontSize: '14px', color: 'rgba(15, 23, 42, 0.75)', lineHeight: '1.6' }}>
                 {pendiente.descripcion}
               </div>
             </div>
@@ -362,10 +362,10 @@ const PendienteCard: React.FC<{ pendiente: Pendiente; index: number }> = ({ pend
 
           {pendiente.accion_sugerida && (
             <div style={{ marginBottom: '20px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '8px', textTransform: 'uppercase' }}>
+              <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.50)', marginBottom: '8px', textTransform: 'uppercase' }}>
                 AcciÃ³n Sugerida
               </div>
-              <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.6' }}>
+              <div style={{ fontSize: '14px', color: 'rgba(15, 23, 42, 0.75)', lineHeight: '1.6' }}>
                 {pendiente.accion_sugerida}
               </div>
             </div>
@@ -373,10 +373,10 @@ const PendienteCard: React.FC<{ pendiente: Pendiente; index: number }> = ({ pend
 
           {pendiente.impacto_estimado && (
             <div style={{ marginBottom: '20px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '8px', textTransform: 'uppercase' }}>
+              <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.50)', marginBottom: '8px', textTransform: 'uppercase' }}>
                 Impacto Estimado
               </div>
-              <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.6' }}>
+              <div style={{ fontSize: '14px', color: 'rgba(15, 23, 42, 0.75)', lineHeight: '1.6' }}>
                 {pendiente.impacto_estimado}
               </div>
             </div>
@@ -503,13 +503,13 @@ const TimelineSection: React.FC<{ timeline: TimelineEntry[] }> = ({ timeline }) 
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Clock size={20} style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
-          <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)' }}>Cronograma del DÃ­a</div>
+          <Clock size={20} style={{ color: 'rgba(15, 23, 42, 0.55)' }} />
+          <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.87)' }}>Cronograma del DÃ­a</div>
         </div>
         {isExpanded ? (
-          <ChevronUp size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+          <ChevronUp size={24} style={{ color: 'rgba(15, 23, 42, 0.35)' }} />
         ) : (
-          <ChevronDown size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+          <ChevronDown size={24} style={{ color: 'rgba(15, 23, 42, 0.35)' }} />
         )}
       </div>
 
@@ -533,7 +533,7 @@ const TimelineSection: React.FC<{ timeline: TimelineEntry[] }> = ({ timeline }) 
                     height: '12px',
                     borderRadius: '50%',
                     background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(34, 197, 94, 0.8))',
-                    border: '2px solid #2a2a36',
+                    border: '2px solid rgba(15, 23, 42, 0.08)',
                   }}
                 />
                 {index !== timeline.length - 1 && (
@@ -548,14 +548,14 @@ const TimelineSection: React.FC<{ timeline: TimelineEntry[] }> = ({ timeline }) 
                     }}
                   />
                 )}
-                <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '4px' }}>
+                <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.50)', marginBottom: '4px' }}>
                   {entry.hora}
                 </div>
-                <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)', marginBottom: '4px' }}>
+                <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.87)', marginBottom: '4px' }}>
                   {entry.evento}
                 </div>
                 {entry.detalle && (
-                  <div style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.6)', lineHeight: '1.5' }}>
+                  <div style={{ fontSize: '13px', color: 'rgba(15, 23, 42, 0.55)', lineHeight: '1.5' }}>
                     {entry.detalle}
                   </div>
                 )}
@@ -602,12 +602,12 @@ const CierreDiaSection: React.FC<{ cierreDia: CierreDia }> = ({ cierreDia }) => 
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <CheckCircle2 size={20} style={{ color: '#22c55e' }} />
-              <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)' }}>Lo que se logrÃ³ hoy</div>
+              <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.87)' }}>Lo que se logrÃ³ hoy</div>
             </div>
             {expandedLogros ? (
-              <ChevronUp size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+              <ChevronUp size={24} style={{ color: 'rgba(15, 23, 42, 0.35)' }} />
             ) : (
-              <ChevronDown size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+              <ChevronDown size={24} style={{ color: 'rgba(15, 23, 42, 0.35)' }} />
             )}
           </div>
 
@@ -623,7 +623,7 @@ const CierreDiaSection: React.FC<{ cierreDia: CierreDia }> = ({ cierreDia }) => 
                 {cierreDia.logros?.map((logro, index) => (
                   <div key={index} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                     <span style={{ fontSize: '18px', marginTop: '2px', flexShrink: 0 }}>â</span>
-                    <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.6' }}>
+                    <div style={{ fontSize: '14px', color: 'rgba(15, 23, 42, 0.75)', lineHeight: '1.6' }}>
                       {logro}
                     </div>
                   </div>
@@ -657,12 +657,12 @@ const CierreDiaSection: React.FC<{ cierreDia: CierreDia }> = ({ cierreDia }) => 
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <AlertTriangle size={20} style={{ color: '#f97316' }} />
-              <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)' }}>Pendiente para maÃ±ana</div>
+              <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.87)' }}>Pendiente para maÃ±ana</div>
             </div>
             {expandedPendientes ? (
-              <ChevronUp size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+              <ChevronUp size={24} style={{ color: 'rgba(15, 23, 42, 0.35)' }} />
             ) : (
-              <ChevronDown size={24} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+              <ChevronDown size={24} style={{ color: 'rgba(15, 23, 42, 0.35)' }} />
             )}
           </div>
 
@@ -678,7 +678,7 @@ const CierreDiaSection: React.FC<{ cierreDia: CierreDia }> = ({ cierreDia }) => 
                 {cierreDia.pendientes_manana?.map((pendiente, index) => (
                   <div key={index} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                     <span style={{ fontSize: '18px', marginTop: '2px', flexShrink: 0 }}>â</span>
-                    <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.6' }}>
+                    <div style={{ fontSize: '14px', color: 'rgba(15, 23, 42, 0.75)', lineHeight: '1.6' }}>
                       {pendiente}
                     </div>
                   </div>
@@ -758,10 +758,10 @@ const BriefingChiefOfStaff: React.FC = () => {
   return (
     <div
       style={{
-        backgroundColor: '#2a2a36',
+        backgroundColor: '#F7F8FA',
         minHeight: '100vh',
         fontFamily: 'Montserrat, sans-serif',
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: 'rgba(15, 23, 42, 0.87)',
         padding: '16px',
       }}
     >
@@ -773,7 +773,7 @@ const BriefingChiefOfStaff: React.FC = () => {
             box-sizing: border-box;
           }
           body {
-            background-color: #2a2a36;
+            background-color: #F7F8FA;
           }
         `}
       </style>
@@ -792,13 +792,13 @@ const BriefingChiefOfStaff: React.FC = () => {
                 justifyContent: 'center',
               }}
             >
-              <Brain size={28} style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+              <Brain size={28} style={{ color: 'rgba(15, 23, 42, 0.75)' }} />
             </div>
             <div>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: 'rgba(255, 255, 255, 0.95)' }}>
+              <div style={{ fontSize: '28px', fontWeight: 800, color: 'rgba(15, 23, 42, 0.92)' }}>
                 AI Chief of Staff
               </div>
-              <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.56)', marginTop: '4px' }}>
+              <div style={{ fontSize: '14px', color: 'rgba(15, 23, 42, 0.50)', marginTop: '4px' }}>
                 {formatSpanishDate(briefing.fecha)}
               </div>
             </div>
@@ -836,7 +836,7 @@ const BriefingChiefOfStaff: React.FC = () => {
         </div>
 
         <div style={{ marginBottom: '24px' }}>
-          <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.50)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             MÃ©tricas Clave
           </div>
           <div
@@ -860,7 +860,7 @@ const BriefingChiefOfStaff: React.FC = () => {
 
         {briefing.resumen_ejecutivo && (
           <div style={{ marginBottom: '24px' }}>
-            <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.50)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Resumen Ejecutivo
             </div>
             <div
@@ -878,7 +878,7 @@ const BriefingChiefOfStaff: React.FC = () => {
                 style={{
                   fontSize: '14px',
                   lineHeight: '1.8',
-                  color: 'rgba(255, 255, 255, 0.8)',
+                  color: 'rgba(15, 23, 42, 0.75)',
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-word',
                 }}
@@ -891,7 +891,7 @@ const BriefingChiefOfStaff: React.FC = () => {
 
         {sortedPendientes && sortedPendientes.length > 0 && (
           <div style={{ marginBottom: '24px' }}>
-            <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.56)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.50)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Pendientes Accionables
             </div>
             <div>
@@ -918,7 +918,7 @@ const BriefingChiefOfStaff: React.FC = () => {
           <div
             style={{
               fontSize: '12px',
-              color: 'rgba(255, 255, 255, 0.4)',
+              color: 'rgba(15, 23, 42, 0.35)',
             }}
           >
             AI Chief of Staff â¢ LomaHUB27 â¢ TROB
