@@ -330,7 +330,7 @@ export default function HomeDashboard() {
   const mainCards: CardConfig[] = [
     {
       id: 'oportunidades', label: 'Oportunidades',
-      route: '/oportunidades/mis-leads',
+      route: '/ventas/mis-leads',
       kpiValue: kpis.leadsActivos, kpiLabel: 'leads',
       statusDot: 'green', statusText: 'Pipeline activo',
       geo: <GeoOportunidades />,
@@ -338,7 +338,7 @@ export default function HomeDashboard() {
     },
     {
       id: 'comercial', label: 'Comercial',
-      route: '/comercial',
+      route: '/ventas/dashboard',
       kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos',
       statusDot: 'green', statusText: '11 submódulos',
       geo: <GeoComercial />,
@@ -346,7 +346,7 @@ export default function HomeDashboard() {
     },
     {
       id: 'servicio-clientes', label: 'Servicio a Clientes',
-      route: '/servicio-clientes',
+      route: '/servicio/dashboard',
       kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes',
       statusDot: 'green', statusText: '3 submódulos',
       geo: <GeoServicio />,
@@ -354,7 +354,7 @@ export default function HomeDashboard() {
     },
     {
       id: 'despacho', label: 'Despacho Inteligente',
-      route: '/despacho-inteligente',
+      route: '/operaciones/despachos',
       kpiValue: kpis.viajesActivos, kpiLabel: 'viajes',
       statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray',
       statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes',
@@ -379,7 +379,7 @@ export default function HomeDashboard() {
     },
     {
       id: 'plantillas', label: 'Plantillas',
-      route: '/plantillas',
+      route: '',
       kpiValue: '\u2014', kpiLabel: 'plantillas',
       statusDot: 'gray', statusText: 'Próximamente',
       geo: <GeoPlantillas />,
@@ -421,7 +421,7 @@ export default function HomeDashboard() {
     return (
       <div
         key={card.id}
-        onClick={() => navigate(card.route)}
+        onClick={() => card.route && navigate(card.route)}
         onMouseEnter={() => setHoveredCard(card.id)}
         onMouseLeave={() => setHoveredCard(null)}
         style={getCardStyle(isHovered, card.accentColor)}
