@@ -1,261 +1,168 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../lib/supabase';
-import { tokens } from '../../lib/tokens';
-import { ModuleLayout } from '../../components/layout/ModuleLayout';
-import { Ticket, Users, Ship, Truck } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ModuleLayout } from '../../components/layout/ModuleLayout'
+import { supabase } from '../../lib/supabase'
 
-/* ───────── types ───────── */
-interface CardDef {
-  id: string;
-  title: string;
-  subtitle: string;
-  icon: React.ComponentType<{ size?: number; color?: string }>;
-  route: string;
-  kpiLabel: string;
-  kpiValue: number | null;
-  gradient: string;
-  iconBg: string;
+/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+   SERVICIO A CLIENTES â Landing Page (estilo Dashboard V27f)
+   4 cards: Tickets, Clientes Activos, ImportaciÃ³n, ExportaciÃ³n
+   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+
+const D = {
+  bg: '#F7F8FA',
+  font: "'Montserrat', sans-serif",
+  fontBody: "'Inter', sans-serif",
+  cardBg: '#FFFFFF',
+  cardBorder: '1px solid rgba(15,23,42,0.06)',
+  cardRadius: '14px',
+  cardShadow: '0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06)',
+  cardHover: '0 2px 4px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.09)',
+  titleSize: '17px',
+  titleWeight: 800,
+  titleColor: '#1E3A8A',
+  kpiSize: '38px',
+  kpiWeight: 600,
+  kpiColor: '#0F172A',
+  subSize: '12px',
+  subColor: '#64748B',
+  dotSize: '8px',
+} as const
+
+const DOT: Record<string, string> = { green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1' }
+
+/* ââ Geometric SVGs ââ */
+const geoBase: React.CSSProperties = {
+  position: 'absolute', top: 0, right: 0, width: '100%', height: '100%',
+  pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px',
+  transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
 }
 
-/* ───────── component ───────── */
+const GeoTickets = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+      <rect x="60" y="20" width="70" height="50" rx="6" fill="none" stroke="#3B82F6" strokeWidth="1.2" />
+      <rect x="75" y="35" width="70" height="50" rx="6" fill="none" stroke="#3B82F6" strokeWidth="1" />
+      <rect x="90" y="50" width="70" height="50" rx="6" fill="none" stroke="#3B82F6" strokeWidth="0.8" />
+    </svg>
+  </div>
+)
+
+const GeoClientes = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+      <circle cx="100" cy="50" r="25" fill="none" stroke="#10B981" strokeWidth="1.2" />
+      <circle cx="130" cy="70" r="20" fill="none" stroke="#10B981" strokeWidth="1" />
+      <circle cx="75" cy="75" r="18" fill="none" stroke="#10B981" strokeWidth="0.8" />
+      <circle cx="110" cy="95" r="15" fill="none" stroke="#10B981" strokeWidth="0.8" />
+    </svg>
+  </div>
+)
+
+const GeoImpo = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+      <path d="M80,90 L120,30 L160,90 Z" fill="none" stroke="#8B5CF6" strokeWidth="1.2" />
+      <path d="M90,90 L120,45 L150,90 Z" fill="none" stroke="#8B5CF6" strokeWidth="1" />
+      <line x1="120" y1="30" x2="120" y2="90" stroke="#8B5CF6" strokeWidth="0.8" />
+      <polygon points="115,35 120,25 125,35" fill="none" stroke="#8B5CF6" strokeWidth="1" />
+    </svg>
+  </div>
+)
+
+const GeoExpo = () => (
+  <div style={geoBase}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+      <path d="M70,40 Q120,20 170,40 Q120,60 70,40" fill="none" stroke="#F59E0B" strokeWidth="1.2" />
+      <path d="M70,65 Q120,45 170,65 Q120,85 70,65" fill="none" stroke="#F59E0B" strokeWidth="1" />
+      <path d="M70,90 Q120,70 170,90 Q120,110 70,90" fill="none" stroke="#F59E0B" strokeWidth="0.8" />
+      <line x1="120" y1="25" x2="120" y2="110" stroke="#F59E0B" strokeWidth="0.8" strokeDasharray="4 3" />
+    </svg>
+  </div>
+)
+
+/* ââ Card Config ââ */
+interface LandingCard {
+  id: string; label: string; route: string; kpiLabel: string; geo: React.ReactNode; accent: string
+}
+
+const CARDS: LandingCard[] = [
+  { id: 'tickets', label: 'Tickets', route: '/servicio/tickets', kpiLabel: 'Activos', geo: <GeoTickets />, accent: '#3B82F6' },
+  { id: 'clientes', label: 'Clientes Activos', route: '/clientes/ficha', kpiLabel: 'Clientes', geo: <GeoClientes />, accent: '#10B981' },
+  { id: 'impo', label: 'ImportaciÃ³n', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO', geo: <GeoImpo />, accent: '#8B5CF6' },
+  { id: 'expo', label: 'ExportaciÃ³n', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO', geo: <GeoExpo />, accent: '#F59E0B' },
+]
+
+/* ââ Component ââ */
 export default function DashboardCS() {
-  const navigate = useNavigate();
-  const [ticketCount, setTicketCount] = useState<number | null>(null);
-  const [clientesCount, setClientesCount] = useState<number | null>(null);
-  const [impoCount, setImpoCount] = useState<number | null>(null);
-  const [expoCount, setExpoCount] = useState<number | null>(null);
+  const navigate = useNavigate()
+  const [hovered, setHovered] = useState<string | null>(null)
+  const [kpis, setKpis] = useState<Record<string, number>>({ tickets: 0, clientes: 0, impo: 0, expo: 0 })
 
-  useEffect(() => {
-    const fetchKpis = async () => {
-      try {
-        /* tickets — viajes activos con incidencia */
-        const { count: tix } = await supabase
-          .from('viajes')
-          .select('*', { count: 'exact', head: true })
-          .is('deleted_at', null);
-        setTicketCount(tix ?? 0);
+  const fetchKpis = useCallback(async () => {
+    try {
+      const [tix, cli, impo, expo] = await Promise.all([
+        supabase.from('tickets').select('*', { count: 'exact', head: true }).is('deleted_at', null).in('estado', ['abierto', 'en_proceso']),
+        supabase.from('clientes').select('*', { count: 'exact', head: true }).is('deleted_at', null),
+        supabase.from('viajes').select('*', { count: 'exact', head: true }).eq('tipo', 'IMPO').in('estado', ['en_transito', 'programado']),
+        supabase.from('viajes').select('*', { count: 'exact', head: true }).eq('tipo', 'EXPO').in('estado', ['en_transito', 'programado']),
+      ])
+      setKpis({ tickets: tix.count ?? 0, clientes: cli.count ?? 0, impo: impo.count ?? 0, expo: expo.count ?? 0 })
+    } catch (e) { console.error('KPI fetch error:', e) }
+  }, [])
 
-        /* clientes activos */
-        const { count: cli } = await supabase
-          .from('clientes')
-          .select('*', { count: 'exact', head: true })
-          .eq('tipo', 'activo')
-          .is('deleted_at', null);
-        setClientesCount(cli ?? 0);
+  useEffect(() => { fetchKpis() }, [fetchKpis])
 
-        /* viajes IMPO */
-        const { count: imp } = await supabase
-          .from('viajes')
-          .select('*', { count: 'exact', head: true })
-          .eq('tipo', 'IMPO')
-          .is('deleted_at', null);
-        setImpoCount(imp ?? 0);
-
-        /* viajes EXPO */
-        const { count: exp } = await supabase
-          .from('viajes')
-          .select('*', { count: 'exact', head: true })
-          .eq('tipo', 'EXPO')
-          .is('deleted_at', null);
-        setExpoCount(exp ?? 0);
-      } catch (err) {
-        console.error('KPI fetch error:', err);
-      }
-    };
-    fetchKpis();
-  }, []);
-
-  const cards: CardDef[] = [
-    {
-      id: 'tickets',
-      title: 'Tickets',
-      subtitle: 'Seguimiento de incidencias y solicitudes',
-      icon: Ticket,
-      route: '/servicio/tickets',
-      kpiLabel: 'Activos',
-      kpiValue: ticketCount,
-      gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
-      iconBg: 'rgba(59, 130, 246, 0.10)',
-    },
-    {
-      id: 'clientes-activos',
-      title: 'Clientes Activos',
-      subtitle: 'Gestión de cuentas activas',
-      icon: Users,
-      route: '/clientes/ficha',
-      kpiLabel: 'Clientes',
-      kpiValue: clientesCount,
-      gradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-      iconBg: 'rgba(16, 185, 129, 0.10)',
-    },
-    {
-      id: 'importacion',
-      title: 'Importación',
-      subtitle: 'Operaciones de servicio IMPO',
-      icon: Ship,
-      route: '/servicio/importacion',
-      kpiLabel: 'Viajes IMPO',
-      kpiValue: impoCount,
-      gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
-      iconBg: 'rgba(139, 92, 246, 0.10)',
-    },
-    {
-      id: 'exportacion',
-      title: 'Exportación',
-      subtitle: 'Operaciones de servicio EXPO',
-      icon: Truck,
-      route: '/servicio/exportacion',
-      kpiLabel: 'Viajes EXPO',
-      kpiValue: expoCount,
-      gradient: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-      iconBg: 'rgba(245, 158, 11, 0.10)',
-    },
-  ];
-
-  /* ───────── styles ───────── */
-  const S = {
-    grid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(4, 1fr)',
-      gap: '28px',
-      padding: '40px 48px',
-      maxWidth: '1400px',
-      margin: '0 auto',
-    } as React.CSSProperties,
-    card: {
-      background: tokens.colors.bgCard,
-      borderRadius: '20px',
-      border: tokens.effects.glassmorphism.border,
-      boxShadow: tokens.effects.cardShadow,
-      cursor: 'pointer',
-      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column' as const,
-      position: 'relative' as const,
-    } as React.CSSProperties,
-    cardHover: {
-      boxShadow: tokens.effects.cardHover,
-      transform: 'translateY(-4px)',
-    },
-    topBar: (gradient: string) => ({
-      height: '6px',
-      background: gradient,
-      width: '100%',
-    }),
-    body: {
-      padding: '28px 24px 24px',
-      display: 'flex',
-      flexDirection: 'column' as const,
-      gap: '16px',
-      flex: 1,
-    } as React.CSSProperties,
-    iconWrap: (bg: string) => ({
-      width: '52px',
-      height: '52px',
-      borderRadius: '14px',
-      background: bg,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }),
-    title: {
-      fontFamily: tokens.fonts.heading,
-      fontSize: '18px',
-      fontWeight: 700,
-      color: tokens.colors.textPrimary,
-      margin: 0,
-      letterSpacing: '-0.01em',
-    } as React.CSSProperties,
-    subtitle: {
-      fontFamily: tokens.fonts.body,
-      fontSize: '13px',
-      color: tokens.colors.textSecondary,
-      margin: 0,
-      lineHeight: 1.5,
-    } as React.CSSProperties,
-    kpiRow: {
-      display: 'flex',
-      alignItems: 'baseline',
-      gap: '8px',
-      marginTop: 'auto',
-      paddingTop: '12px',
-      borderTop: `1px solid ${tokens.colors.border}`,
-    } as React.CSSProperties,
-    kpiValue: {
-      fontFamily: tokens.fonts.heading,
-      fontSize: '32px',
-      fontWeight: 700,
-      color: tokens.colors.textPrimary,
-      lineHeight: 1,
-    } as React.CSSProperties,
-    kpiLabel: {
-      fontFamily: tokens.fonts.body,
-      fontSize: '13px',
-      color: tokens.colors.textMuted,
-    } as React.CSSProperties,
-    pageTitle: {
-      fontFamily: tokens.fonts.heading,
-      fontSize: '26px',
-      fontWeight: 700,
-      color: tokens.colors.textPrimary,
-      margin: 0,
-      padding: '32px 48px 0',
-    } as React.CSSProperties,
-    pageSubtitle: {
-      fontFamily: tokens.fonts.body,
-      fontSize: '14px',
-      color: tokens.colors.textSecondary,
-      margin: 0,
-      padding: '6px 48px 0',
-    } as React.CSSProperties,
-  };
-
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const getCardStyle = (isH: boolean, accent: string): React.CSSProperties => ({
+    aspectRatio: '1 / 0.7',
+    borderRadius: D.cardRadius,
+    padding: '22px',
+    background: 'linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 100%)',
+    border: D.cardBorder,
+    cursor: 'pointer',
+    position: 'relative',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    transition: 'transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s cubic-bezier(0.23,1,0.32,1)',
+    transform: isH ? 'translateY(-3px)' : 'none',
+    boxShadow: (isH ? D.cardHover : D.cardShadow) + `, inset 0 -1px 0 ${accent}33`,
+  })
 
   return (
     <ModuleLayout titulo="Servicio a Clientes" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
-      <div style={{ minHeight: '100vh', background: tokens.colors.bgMain }}>
-        <h1 style={S.pageTitle}>Servicio a Clientes</h1>
-        <p style={S.pageSubtitle}>Gestión integral de servicio, tickets e incidencias</p>
-
-        <div style={S.grid}>
-          {cards.map((card) => {
-            const Icon = card.icon;
-            const isHover = hoveredId === card.id;
+      <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+          {CARDS.map(card => {
+            const isH = hovered === card.id
             return (
               <div
                 key={card.id}
-                style={{
-                  ...S.card,
-                  ...(isHover ? S.cardHover : {}),
-                }}
-                onMouseEnter={() => setHoveredId(card.id)}
-                onMouseLeave={() => setHoveredId(null)}
+                style={getCardStyle(isH, card.accent)}
+                onMouseEnter={() => setHovered(card.id)}
+                onMouseLeave={() => setHovered(null)}
                 onClick={() => navigate(card.route)}
               >
-                <div style={S.topBar(card.gradient)} />
-                <div style={S.body}>
-                  <div style={S.iconWrap(card.iconBg)}>
-                    <Icon size={26} color={card.gradient.includes('#3B82F6') ? '#3B82F6' : card.gradient.includes('#10B981') ? '#10B981' : card.gradient.includes('#8B5CF6') ? '#8B5CF6' : '#F59E0B'} />
+                <div style={{ ...geoBase, transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none' }}>
+                  {card.geo}
+                </div>
+                <div style={{ position: 'absolute', top: 14, right: 14, width: D.dotSize, height: D.dotSize, borderRadius: '50%', backgroundColor: kpis[card.id] > 0 ? DOT.green : DOT.gray, boxShadow: `0 0 4px ${kpis[card.id] > 0 ? DOT.green : DOT.gray}59` }} />
+                <div style={{ fontFamily: D.font, fontSize: D.titleSize, fontWeight: D.titleWeight, color: D.titleColor, lineHeight: 1.2, position: 'relative', zIndex: 1 }}>
+                  {card.label}
+                </div>
+                <div>
+                  <div style={{ fontFamily: D.font, fontSize: D.kpiSize, fontWeight: D.kpiWeight, color: D.kpiColor, lineHeight: 1, position: 'relative', zIndex: 1 }}>
+                    {(kpis[card.id] ?? 0).toLocaleString()}
                   </div>
-                  <div>
-                    <h3 style={S.title}>{card.title}</h3>
-                    <p style={S.subtitle}>{card.subtitle}</p>
-                  </div>
-                  <div style={S.kpiRow}>
-                    <span style={S.kpiValue}>
-                      {card.kpiValue !== null ? card.kpiValue.toLocaleString() : '—'}
-                    </span>
-                    <span style={S.kpiLabel}>{card.kpiLabel}</span>
+                  <div style={{ fontFamily: D.fontBody, fontSize: D.subSize, color: D.subColor, marginTop: 3, position: 'relative', zIndex: 1 }}>
+                    {card.kpiLabel}
                   </div>
                 </div>
               </div>
-            );
+            )
           })}
         </div>
       </div>
     </ModuleLayout>
-  );
+  )
 }
