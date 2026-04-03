@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Upload, MapPin, Globe, AlertTriangle, Plus, X, Calculator, FileText } from 'lucide-react'
+import { Upload, MapPin, Globe, AlertTriangle, Plus, X, Calculator, FileText, ChevronDown } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
 import { Button } from '../../components/ui/Button'
@@ -90,6 +90,7 @@ export default function NuevaCotizacion() {
   const [selectedAcc, setSelectedAcc] = useState<string[]>([])
   const [notas, setNotas] = useState('')
   const [file, setFile] = useState<File | null>(null)
+  const [showAcc, setShowAcc] = useState(false)
   const [fxRate] = useState(17.88) // TODO: fetch real rate from API
   const [saving, setSaving] = useState(false)
 
@@ -276,34 +277,63 @@ export default function NuevaCotizacion() {
               )}
             </Card>
 
-            {/* Card 3: Accesoriales */}
-            <Card>
-              <SectionTitle icon={<Plus size={16} style={{ color: tokens.colors.blue }} />}>Accesoriales</SectionTitle>
-              {accesoriales.length === 0 ? (
-                <p style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body, fontSize: '0.8rem' }}>
-                  Sin accesoriales disponibles. Ejecutar migración 012 en Supabase.
+            {/* Card 3: Accesoriales — colapsable */}
+          <Card>
+            <div
+              onClick={() => setShowAcc(!showAcc)}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', userSelect: 'none' }}
+            >
+              <div className="flex items-center gap-2">
+                <Plus size={16} style={{ color: tokens.colors.blue }} />
+                <h3 style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, fontSize: '1rem', fontWeight: 700, margin: 0 }}>
+                  Accesoriales
+                  {selectedAcc.length > 0 && (
+                    <span style={{ marginLeft: 8, fontSize: '0.75rem', fontWeight: 600, color: tokens.colors.primary, background: `${tokens.colors.primary}18`, padding: '2px 8px', borderRadius: 10 }}>
+                      {selectedAcc.length} seleccionado{selectedAcc.length > 1 ? 's' : ''}
+                    </span>
+                  )}
+                </h3>
+              </div>
+              <ChevronDown size={16} style={{ color: tokens.colors.textMuted, transition: 'transform 0.2s', transform: showAcc ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+            </div>
+            {showAcc && (
+              accesoriales.length === 0 ? (
+                <p style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body, fontSize: '0.8rem', marginTop: 8 }}>
+                  Sin accesoriales disponibles.
                 </p>
               ) : (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.35rem', marginTop: 10, maxHeight: '150px', overflowY: 'auto' }}>
                   {accesoriales.map(acc => {
                     const active = selectedAcc.includes(acc.id)
                     return (
-                      <button key={acc.id} type="button" onClick={() => toggleAcc(acc.id)}
+                      <button
+                        key={acc.id}
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); toggleAcc(acc.id) }}
                         style={{
-                          padding: '4px 10px', borderRadius: 8, fontSize: '0.75rem',
-                          fontFamily: tokens.fonts.body, cursor: 'pointer', transition: 'all 0.15s',
+                          padding: '3px 8px',
+                          borderRadius: 6,
+                          fontSize: '0.7rem',
+                          fontFamily: tokens.fonts.body,
+                          cursor: 'pointer',
+                          transition: 'all 0.15s',
                           border: `1px solid ${active ? tokens.colors.primary : tokens.colors.border}`,
                           background: active ? `${tokens.colors.primary}22` : 'transparent',
                           color: active ? tokens.colors.primary : tokens.colors.textSecondary,
+                          textAlign: 'left',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
                         }}>
-                        {active && <X size={10} style={{ marginRight: 3, display: 'inline' }} />}
-                        {acc.codigo} — ${acc.monto_default} {acc.moneda}
+                        {active && <X size={9} style={{ marginRight: 2, display: 'inline' }} />}
+                        {acc.codigo} ${acc.monto_default} {acc.moneda}
                       </button>
                     )
                   })}
                 </div>
-              )}
-            </Card>
+              )
+            )}
+          </Card>
 
             {/* Card 4: Notas + PDF */}
             <Card>
