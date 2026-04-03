@@ -12,11 +12,11 @@ const D = {
   bg: '#F7F8FA',
   font: "'Montserrat', sans-serif",
   fontBody: "'Inter', sans-serif",
-  cardBg: '#FFFFFF',
-  cardBorder: '1px solid rgba(15,23,42,0.06)',
+  cardBg: 'linear-gradient(180deg, #FFFFFF 0%, #F6F7FA 100%)',
+  cardBorder: '1px solid #CDD5E1',
   cardRadius: '14px',
-  cardShadow: '0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06)',
-  cardHover: '0 2px 4px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.09)',
+  cardShadow: '0 2px 4px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.9)',
+  cardHover: '0 4px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.08), 0 16px 48px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.95)',
   titleSize: '17px',
   titleWeight: 800,
   titleColor: '#1E3A8A',
@@ -193,7 +193,7 @@ export default function DashboardVentas() {
   })
 
   return (
-    <ModuleLayout titulo="Ventas" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
+    <ModuleLayout titulo="Comercial" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', maxWidth: '1200px', margin: '0 auto' }}>
           {CARDS.map(card => {
