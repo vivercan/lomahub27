@@ -1,17 +1,18 @@
 // ╔══════════════════════════════════════════════════════════════════════════════╗
-// ║  🛡️  BLINDAJE DASHBOARD V27f — ARCHIVO PROTEGIDO                          ║
+// ║ 🛡️  BLINDAJE DASHBOARD V27f — ARCHIVO PROTEGIDO                           ║
 // ║                                                                            ║
 // ║  REGLA: Este archivo NO se puede modificar sin autorización EXPLÍCITA      ║
 // ║  de JJ (Juan Viveros). Consultar página 34 Notion antes de cualquier      ║
 // ║  cambio. Requiere tag [DASHBOARD-APPROVED] en commit message.             ║
 // ║                                                                            ║
-// ║  ESTILO: V27f BLINDADO — página 34 Notion                                ║
-// ║  • 14 tarjetas CUADRADAS (aspect-ratio 1:1) en grid 7×2                  ║
-// ║  • Background: #2a2a36 | Font: Montserrat (NUNCA Orbitron)                ║
-// ║  • Cards: gradient 180deg, border-radius 20px, sombras 3 capas           ║
-// ║  • SIN sidebar — navegación directa al hacer click en tarjeta             ║
+// ║  ESTILO: M1 REFINADO — Aprobado por JJ 3/Abr/2026                        ║
+// ║    • 14 tarjetas LANDSCAPE en grid 7×2, aspect-ratio 1/0.65              ║
+// ║    • Background: #E8EBF0 | Cards: #FFFFFF | Font: Montserrat + Inter     ║
+// ║    • Icon pills 40×28 tintados 6% | Status dots | Left-aligned           ║
+// ║    • Row labels: FILA 1 · COMANDO / FILA 2 · SOPORTE                     ║
+// ║    • SIN sidebar — navegación directa al hacer click en tarjeta           ║
 // ║                                                                            ║
-// ║  ÚLTIMA ACTUALIZACIÓN: 29/Mar/2026 — Fix rutas, Flota activo filter, header logo              ║
+// ║  ÚLTIMA ACTUALIZACIÓN: 3/Abr/2026 — M1 REFINADO visual overhaul          ║
 // ╚══════════════════════════════════════════════════════════════════════════════╝
 
 import React, { useState, useEffect, useCallback } from 'react'
@@ -39,6 +40,7 @@ import { useAuthContext } from '../hooks/AuthContext'
 // ============================================================================
 // TYPES
 // ============================================================================
+
 interface CardConfig {
   id: string
   label: string
@@ -52,93 +54,102 @@ interface CardConfig {
 }
 
 // ============================================================================
-// DASHBOARD VISUAL CONSTANTS — EXACTO de página 34 Notion
+// M1 REFINADO — VISUAL CONSTANTS
 // ============================================================================
+
 const DASH = {
-  bg: '#FFFFFF',
+  bg: '#E8EBF0',
+  headerBg: '#FFFFFF',
   fontFamily: "'Montserrat', sans-serif",
+  fontBody: "'Inter', sans-serif",
 
-  // Card gradients
-  cardGradient:
-    'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 50%, rgba(33,33,43,1) 100%)',
-  cardGradientWar:
-    'linear-gradient(180deg, rgba(56,50,56,1) 0%, rgba(42,38,48,1) 50%, rgba(31,30,40,1) 100%)',
+  // Card — white solid
+  cardBg: '#FFFFFF',
+  cardBorder: '1px solid #E8EBF0',
+  cardRadius: '14px',
+  cardPadding: '18px',
+  cardShadow: '0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.03), 0 4px 16px rgba(0,0,0,0.02)',
+  cardHoverShadow: '0 2px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.04)',
 
-  // Card styles — página 34 sección 4
-  cardRadius: '20px',
-  cardPadding: '20px 14px 18px',
-  cardGap: '10px',
-  gridPadding: '4px 20px',
+  // Grid
+  gridGap: '16px',
+  gridPadding: '16px 28px',
 
-  // Borders biselados — página 34 sección 4
-  borderTop: 'rgba(155,168,195,0.18)',
-  borderTopHigh: 'rgba(155,168,195,0.28)',
-  borderBottom: 'rgba(0,0,0,0.42)',
-  borderRight: 'rgba(0,0,0,0.32)',
+  // Icon pill — 40×28, tinted bg 6%
+  pillWidth: '40px',
+  pillHeight: '28px',
+  pillRadius: '8px',
+  pillIconSize: 15,
+  pillStroke: 1.5,
 
-  // Shadows 3 capas — página 34 sección 4
-  cardShadow:
-    '0 10px 24px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.28)',
-  cardShadowInset:
-    'inset 0 1px 0 rgba(200,210,225,0.06), inset 0 -1px 0 rgba(0,0,0,0.14)',
-  cardHoverShadow:
-    '0 14px 32px rgba(0,0,0,0.35), 0 4px 10px rgba(0,0,0,0.30)',
+  // Title — Montserrat 700 / 11px
+  titleSize: '11px',
+  titleWeight: 700,
+  titleColor: '#1E293B',
 
-  // KPI — página 34 sección 6: 30px, 800
-  kpiFontSize: '30px',
-  kpiFontWeight: 800,
-  kpiColorHigh: 'rgba(255,255,255,0.72)',
-  kpiColorMid: 'rgba(255,255,255,0.58)',
-  kpiColorHover: 'rgba(255,255,255,0.92)',
+  // KPI number — Montserrat 600 / 28px
+  kpiSize: '28px',
+  kpiWeight: 600,
+  kpiColor: '#0F172A',
 
-  // Title — página 34 sección 3: 14px, 600
-  titleFontSize: '14px',
-  titleFontWeight: 600,
-  titleLetterSpacing: '0.3px',
+  // Subtitle — Inter 400 / 9px
+  subSize: '9px',
+  subWeight: 400,
+  subColor: '#94A3B8',
 
-  // Subtitle — página 34 sección 7: 11.5px, 500
-  subFontSize: '11.5px',
-  subFontWeight: 500,
-  subColor: 'rgba(255,255,255,0.28)',
-  subColorHover: 'rgba(255,255,255,0.48)',
+  // Status dot
+  dotSize: '6px',
 
-  // Icons — página 34 sección 5: 55px standard, 58-60px boosted
-  iconSize: 55,
-  iconSizeBoosted: 58,
-  iconStroke: 2.1,
-  iconStrokeBoosted: 2.3,
-  iconContainerHeight: '55px',
+  // Row label
+  rowLabelSize: '9px',
+  rowLabelWeight: 700,
+  rowLabelColor: '#94A3B8',
+  rowLabelSpacing: '3px',
 
-  // Metrics bar — página 34 sección 2
-  metricsMarginTop: '14px',
-  metricsMarginBottom: '10px',
-  metricsPadding: '14px 28px',
-  metricsBg: 'rgba(0,0,0,0.03)',
-  metricsBorder: '1px solid rgba(0,0,0,0.06)',
-
-  // Status dots — página 34 sección 7
-  dotSize: '3px',
-
-  // Accent line
-  accentGradient:
-    'linear-gradient(90deg, rgba(194,120,3,0.25) 0%, rgba(59,108,231,0.15) 50%, transparent 100%)',
-  accentGradientHigh:
-    'linear-gradient(90deg, rgba(194,120,3,0.5) 0%, rgba(59,108,231,0.35) 50%, transparent 100%)',
+  // Metrics bar
+  metricsMarginTop: '0px',
+  metricsMarginBottom: '0px',
+  metricsPadding: '12px 28px',
+  metricsBg: 'rgba(255,255,255,0.6)',
+  metricsBorder: '1px solid #D1D5DB',
 } as const
 
 // ============================================================================
-// STATUS DOT COLORS — tonos premium, NO neon
+// PILL COLORS — per module, tinted 6% background + stroke color
 // ============================================================================
+
+const PILL_COLORS: Record<string, { bg: string; stroke: string }> = {
+  'war-room':       { bg: 'rgba(239,68,68,0.06)',   stroke: '#EF4444' },
+  'ventas':         { bg: 'rgba(16,185,129,0.06)',   stroke: '#10B981' },
+  'clientes':       { bg: 'rgba(59,130,246,0.06)',   stroke: '#3B82F6' },
+  'servicio':       { bg: 'rgba(100,116,139,0.06)',  stroke: '#64748B' },
+  'torre-control':  { bg: 'rgba(245,158,11,0.06)',   stroke: '#F59E0B' },
+  'mapa-gps':       { bg: 'rgba(244,63,94,0.06)',    stroke: '#F43F5E' },
+  'flota':          { bg: 'rgba(99,102,241,0.06)',    stroke: '#6366F1' },
+  'dedicados':      { bg: 'rgba(5,150,105,0.06)',     stroke: '#059669' },
+  'cobranza':       { bg: 'rgba(249,115,22,0.06)',    stroke: '#F97316' },
+  'indicadores':    { bg: 'rgba(37,99,235,0.06)',     stroke: '#2563EB' },
+  'rentabilidad':   { bg: 'rgba(16,185,129,0.06)',    stroke: '#10B981' },
+  'comunicaciones': { bg: 'rgba(6,182,212,0.06)',     stroke: '#06B6D4' },
+  'reportes':       { bg: 'rgba(99,102,241,0.06)',    stroke: '#6366F1' },
+  'config':         { bg: 'rgba(148,163,184,0.06)',   stroke: '#94A3B8' },
+}
+
+// ============================================================================
+// STATUS DOT COLORS — premium tones
+// ============================================================================
+
 const DOT_COLORS: Record<string, string> = {
-  green: '#0D9668',
-  yellow: '#B8860B',
-  red: '#C53030',
-  gray: '#6B6B7A',
+  green: '#10B981',
+  yellow: '#F59E0B',
+  red: '#EF4444',
+  gray: '#CBD5E1',
 }
 
 // ============================================================================
 // COMPONENT
 // ============================================================================
+
 export default function HomeDashboard() {
   const navigate = useNavigate()
   const { user, logout } = useAuthContext()
@@ -260,13 +271,13 @@ export default function HomeDashboard() {
     return () => clearInterval(interval)
   }, [fetchKpis])
 
-  // ——— 14 CARD DEFINITIONS (V27f — grid 7×2, cuadradas) ——————————
+  // ——— 14 CARD DEFINITIONS (grid 7×2) ——————————————————
   const cards: CardConfig[] = [
-    // ═══ FILA 1 ═══
+    // ═══ FILA 1 · COMANDO ═══
     {
       id: 'war-room',
       label: 'War Room',
-      icon: <Swords size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      icon: <Swords size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/war-room',
       priority: 'HIGH',
       kpiValue: kpis.alertasHoy,
@@ -277,7 +288,7 @@ export default function HomeDashboard() {
     {
       id: 'ventas',
       label: 'Ventas',
-      icon: <Briefcase size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      icon: <Briefcase size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/ventas/mis-leads',
       priority: 'HIGH',
       kpiValue: kpis.leadsActivos,
@@ -288,7 +299,7 @@ export default function HomeDashboard() {
     {
       id: 'clientes',
       label: 'Clientes',
-      icon: <Users size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      icon: <Users size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/clientes/corporativos',
       priority: 'HIGH',
       kpiValue: kpis.clientes.toLocaleString(),
@@ -299,7 +310,7 @@ export default function HomeDashboard() {
     {
       id: 'servicio',
       label: 'Servicio',
-      icon: <HeadphonesIcon size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
+      icon: <HeadphonesIcon size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/servicio/dashboard',
       priority: 'HIGH',
       kpiValue: kpis.clientes.toLocaleString(),
@@ -310,7 +321,7 @@ export default function HomeDashboard() {
     {
       id: 'torre-control',
       label: 'Torre Control',
-      icon: <Radio size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      icon: <Radio size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/operaciones/torre-control',
       priority: 'HIGH',
       kpiValue: kpis.viajesActivos,
@@ -321,7 +332,7 @@ export default function HomeDashboard() {
     {
       id: 'mapa-gps',
       label: 'Mapa GPS',
-      icon: <MapPin size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      icon: <MapPin size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/operaciones/mapa',
       priority: 'HIGH',
       kpiValue: kpis.unidadesGps,
@@ -332,19 +343,21 @@ export default function HomeDashboard() {
     {
       id: 'flota',
       label: 'Flota',
-      icon: <Truck size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
+      icon: <Truck size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/operaciones/disponibilidad',
       priority: 'MID',
-      kpiValue: (kpis.tractosTotal + kpis.cajasTotal) > 0 ? (kpis.tractosTotal + kpis.cajasTotal) : '—',
+      kpiValue: (kpis.tractosTotal + kpis.cajasTotal) > 0
+        ? (kpis.tractosTotal + kpis.cajasTotal)
+        : '\u2014',
       kpiLabel: 'unidades',
       statusDot: 'green',
       statusText: 'Inventario',
     },
-    // ═══ FILA 2 ═══
+    // ═══ FILA 2 · SOPORTE ═══
     {
       id: 'dedicados',
       label: 'Dedicados',
-      icon: <Container size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      icon: <Container size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/operaciones/dedicados',
       priority: 'MID',
       kpiValue: kpis.segmentosDedicados,
@@ -355,7 +368,7 @@ export default function HomeDashboard() {
     {
       id: 'cobranza',
       label: 'Cobranza',
-      icon: <DollarSign size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      icon: <DollarSign size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/cxc/cartera',
       priority: 'MID',
       kpiValue: kpis.cuentasCxc,
@@ -366,7 +379,7 @@ export default function HomeDashboard() {
     {
       id: 'indicadores',
       label: 'Indicadores',
-      icon: <BarChart3 size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      icon: <BarChart3 size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/inteligencia/pareto',
       priority: 'MID',
       kpiValue: '80/20',
@@ -377,7 +390,7 @@ export default function HomeDashboard() {
     {
       id: 'rentabilidad',
       label: 'Rentabilidad',
-      icon: <TrendingUp size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      icon: <TrendingUp size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/operaciones/rentabilidad',
       priority: 'MID',
       kpiValue: kpis.formatosActivos.toLocaleString(),
@@ -388,7 +401,7 @@ export default function HomeDashboard() {
     {
       id: 'comunicaciones',
       label: 'Comunicaciones',
-      icon: <MessageSquare size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      icon: <MessageSquare size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/servicio/whatsapp',
       priority: 'MID',
       kpiValue: '3',
@@ -399,7 +412,7 @@ export default function HomeDashboard() {
     {
       id: 'reportes',
       label: 'Reportes',
-      icon: <FileBarChart size={DASH.iconSizeBoosted} strokeWidth={DASH.iconStrokeBoosted} />,
+      icon: <FileBarChart size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/servicio/metricas',
       priority: 'LOW',
       kpiValue: '\u2014',
@@ -410,7 +423,7 @@ export default function HomeDashboard() {
     {
       id: 'config',
       label: 'Config',
-      icon: <Settings size={DASH.iconSize} strokeWidth={DASH.iconStroke} />,
+      icon: <Settings size={DASH.pillIconSize} strokeWidth={DASH.pillStroke} />,
       route: '/admin/configuracion',
       priority: 'LOW',
       kpiValue: '\u2699\uFE0F',
@@ -423,142 +436,116 @@ export default function HomeDashboard() {
   const fila1 = cards.slice(0, 7)
   const fila2 = cards.slice(7)
 
-  // ——— CARD STYLE BUILDER ——————————————————————————
+  // ——— CARD STYLE BUILDER — M1 REFINADO ——————————————
   const getCardStyle = (
-    card: CardConfig,
+    _card: CardConfig,
     isHovered: boolean
-  ): React.CSSProperties => {
-    const isHigh = card.priority === 'HIGH'
-    return {
-      aspectRatio: '1 / 1',
-      borderRadius: DASH.cardRadius,
-      padding: DASH.cardPadding,
-      background:
-        card.id === 'war-room' ? DASH.cardGradientWar : DASH.cardGradient,
-      cursor: 'pointer',
-      position: 'relative',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '6px',
-      transition: 'all 0.16s ease',
-      transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+  ): React.CSSProperties => ({
+    aspectRatio: '1 / 0.65',
+    borderRadius: DASH.cardRadius,
+    padding: DASH.cardPadding,
+    background: DASH.cardBg,
+    border: DASH.cardBorder,
+    cursor: 'pointer',
+    position: 'relative',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+    transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
+    boxShadow: isHovered ? DASH.cardHoverShadow : DASH.cardShadow,
+  })
 
-      // Borders biselados
-      borderTop: `1px solid ${isHigh ? DASH.borderTopHigh : DASH.borderTop}`,
-      borderLeft: `1px solid ${isHigh ? DASH.borderTopHigh : DASH.borderTop}`,
-      borderBottom: `1px solid ${DASH.borderBottom}`,
-      borderRight: `1px solid ${DASH.borderRight}`,
+  // ——— RENDER CARD — M1 REFINADO ————————————————————
+  const renderCard = (card: CardConfig) => {
+    const pill = PILL_COLORS[card.id] || { bg: 'rgba(148,163,184,0.06)', stroke: '#94A3B8' }
+    const isHovered = hoveredCard === card.id
 
-      // Shadows 3 capas
-      boxShadow: isHovered
-        ? `${DASH.cardHoverShadow}, ${DASH.cardShadowInset}`
-        : `${DASH.cardShadow}, ${DASH.cardShadowInset}`,
-    }
-  }
-
-  // ——— RENDER CARD ——————————————————————————————————
-  const renderCard = (card: CardConfig) => (
-    <div
-      key={card.id}
-      onClick={() => navigate(card.route)}
-      onMouseEnter={() => setHoveredCard(card.id)}
-      onMouseLeave={() => setHoveredCard(null)}
-      style={getCardStyle(card, hoveredCard === card.id)}
-    >
-      {/* Top accent line */}
+    return (
       <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '2px',
-          background:
-            card.priority === 'HIGH'
-              ? DASH.accentGradientHigh
-              : DASH.accentGradient,
-          borderRadius: `${DASH.cardRadius} ${DASH.cardRadius} 0 0`,
-        }}
-      />
-
-      {/* Icon */}
-      <div
-        style={{
-          height: DASH.iconContainerHeight,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'rgba(200,210,225,0.7)',
-          transition: 'filter 0.16s ease',
-          filter:
-            hoveredCard === card.id ? 'brightness(1.18)' : 'brightness(1)',
-        }}
+        key={card.id}
+        onClick={() => navigate(card.route)}
+        onMouseEnter={() => setHoveredCard(card.id)}
+        onMouseLeave={() => setHoveredCard(null)}
+        style={getCardStyle(card, isHovered)}
       >
-        {card.icon}
-      </div>
-
-      {/* KPI Number */}
-      <div
-        style={{
-          fontSize: DASH.kpiFontSize,
-          fontWeight: DASH.kpiFontWeight,
-          color:
-            hoveredCard === card.id
-              ? DASH.kpiColorHover
-              : card.priority === 'HIGH'
-                ? DASH.kpiColorHigh
-                : DASH.kpiColorMid,
-          lineHeight: 1.1,
-          transition: 'color 0.16s ease',
-        }}
-      >
-        {card.kpiValue}
-      </div>
-
-      {/* Title */}
-      <div
-        style={{
-          fontSize: DASH.titleFontSize,
-          fontWeight: DASH.titleFontWeight,
-          letterSpacing: DASH.titleLetterSpacing,
-          color: 'rgba(255,255,255,0.78)',
-          textAlign: 'center',
-        }}
-      >
-        {card.label}
-      </div>
-
-      {/* Subtitle + Status Dot */}
-      <div
-        style={{
-          fontSize: DASH.subFontSize,
-          fontWeight: DASH.subFontWeight,
-          color:
-            hoveredCard === card.id ? DASH.subColorHover : DASH.subColor,
-          letterSpacing: '0.3px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '5px',
-          transition: 'color 0.16s ease',
-        }}
-      >
-        <span
+        {/* Status dot — top right */}
+        <div
           style={{
+            position: 'absolute',
+            top: '14px',
+            right: '14px',
             width: DASH.dotSize,
             height: DASH.dotSize,
             borderRadius: '50%',
             backgroundColor: DOT_COLORS[card.statusDot] || DOT_COLORS.gray,
-            boxShadow: `0 0 4px ${DOT_COLORS[card.statusDot] || DOT_COLORS.gray}40`,
-            display: 'inline-block',
           }}
         />
-        {card.statusText}
+
+        {/* Icon pill — 40×28, tinted 6% */}
+        <div
+          style={{
+            width: DASH.pillWidth,
+            height: DASH.pillHeight,
+            minHeight: DASH.pillHeight,
+            borderRadius: DASH.pillRadius,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: pill.bg,
+            color: pill.stroke,
+            marginBottom: '10px',
+            flexShrink: 0,
+          }}
+        >
+          {card.icon}
+        </div>
+
+        {/* Title — Montserrat 700 / 11px */}
+        <div
+          style={{
+            fontFamily: DASH.fontFamily,
+            fontSize: DASH.titleSize,
+            fontWeight: DASH.titleWeight,
+            color: DASH.titleColor,
+            lineHeight: 1.2,
+            marginBottom: 'auto',
+          }}
+        >
+          {card.label}
+        </div>
+
+        {/* KPI number — Montserrat 600 / 28px */}
+        <div
+          style={{
+            fontFamily: DASH.fontFamily,
+            fontSize: DASH.kpiSize,
+            fontWeight: DASH.kpiWeight,
+            color: DASH.kpiColor,
+            lineHeight: 1,
+            marginTop: '6px',
+          }}
+        >
+          {card.kpiValue}
+        </div>
+
+        {/* Subtitle — Inter 400 / 9px */}
+        <div
+          style={{
+            fontFamily: DASH.fontBody,
+            fontSize: DASH.subSize,
+            fontWeight: DASH.subWeight,
+            color: DASH.subColor,
+            marginTop: '3px',
+          }}
+        >
+          {card.statusText}
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   // ——— RENDER ————————————————————————————————————————
   return (
@@ -581,16 +568,14 @@ export default function HomeDashboard() {
         userEmail={user?.email}
       />
 
-
-      {/* Zona 2 — Franja de Métricas — página 34 sección 2 */}
+      {/* Zona 2 — Franja de Métricas */}
       <div
         style={{
           marginTop: DASH.metricsMarginTop,
           marginBottom: DASH.metricsMarginBottom,
           padding: DASH.metricsPadding,
           background: DASH.metricsBg,
-          border: DASH.metricsBorder,
-          borderRadius: '0',
+          borderBottom: DASH.metricsBorder,
           display: 'flex',
           justifyContent: 'space-around',
           alignItems: 'center',
@@ -606,9 +591,10 @@ export default function HomeDashboard() {
           <div key={metric.label} style={{ textAlign: 'center' }}>
             <div
               style={{
+                fontFamily: DASH.fontFamily,
                 fontSize: '22px',
                 fontWeight: 700,
-                color: 'rgba(0,0,0,0.72)',
+                color: '#0F172A',
                 lineHeight: 1.2,
               }}
             >
@@ -616,9 +602,10 @@ export default function HomeDashboard() {
             </div>
             <div
               style={{
-                fontSize: '10.5px',
+                fontFamily: DASH.fontBody,
+                fontSize: '10px',
                 fontWeight: 500,
-                color: 'rgba(0,0,0,0.45)',
+                color: '#64748B',
                 letterSpacing: '0.4px',
                 marginTop: '3px',
                 textTransform: 'uppercase',
@@ -630,27 +617,56 @@ export default function HomeDashboard() {
         ))}
       </div>
 
-      {/* Zona 3 — Grid de 14 Tarjetas CUADRADAS (7×2) */}
+      {/* Zona 3 — Grid de 14 Tarjetas M1 REFINADO (7×2) */}
       <div
         style={{
-          flex: 1,
+          flex: '0 0 auto',
           padding: DASH.gridPadding,
           display: 'flex',
           flexDirection: 'column',
-          gap: DASH.cardGap,
+          gap: '12px',
           overflow: 'hidden',
         }}
       >
+        {/* Row label — Fila 1 */}
+        <div
+          style={{
+            fontFamily: DASH.fontFamily,
+            fontSize: DASH.rowLabelSize,
+            fontWeight: DASH.rowLabelWeight,
+            color: DASH.rowLabelColor,
+            textTransform: 'uppercase',
+            letterSpacing: DASH.rowLabelSpacing,
+            marginBottom: '-4px',
+          }}
+        >
+          FILA 1 &middot; COMANDO
+        </div>
+
         {/* Fila 1: 7 tarjetas */}
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(7, 1fr)',
-            gap: DASH.cardGap,
-            flex: 1,
+            gap: DASH.gridGap,
           }}
         >
           {fila1.map(renderCard)}
+        </div>
+
+        {/* Row label — Fila 2 */}
+        <div
+          style={{
+            fontFamily: DASH.fontFamily,
+            fontSize: DASH.rowLabelSize,
+            fontWeight: DASH.rowLabelWeight,
+            color: DASH.rowLabelColor,
+            textTransform: 'uppercase',
+            letterSpacing: DASH.rowLabelSpacing,
+            marginBottom: '-4px',
+          }}
+        >
+          FILA 2 &middot; SOPORTE
         </div>
 
         {/* Fila 2: 7 tarjetas */}
@@ -658,8 +674,7 @@ export default function HomeDashboard() {
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(7, 1fr)',
-            gap: DASH.cardGap,
-            flex: 1,
+            gap: DASH.gridGap,
           }}
         >
           {fila2.map(renderCard)}
