@@ -75,6 +75,8 @@ import Notificaciones from './pages/comunicaciones/Notificaciones'
 import BriefingChiefOfStaff from './pages/comunicaciones/BriefingChiefOfStaff'
 import ChiefOfStaffHome from './pages/comunicaciones/ChiefOfStaffHome'
 import PanelIntegraciones from './pages/admin/PanelIntegraciones'
+import ParametrosConfig from './pages/admin/ParametrosConfig'
+import CatalogosTab from './pages/admin/CatalogosTab'
 import ProgramacionDedicados from './pages/operaciones/ProgramacionDedicados'
 
 function App() {
@@ -327,6 +329,20 @@ function App() {
             </ProtectedRoute>
           } />
 
+          {/* ——— Servicio Importación ——— */}
+          <Route path="/servicio/importacion" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs']}>
+              <DashboardCS />
+            </ProtectedRoute>
+          } />
+
+          {/* ——— Servicio Exportación ——— */}
+          <Route path="/servicio/exportacion" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs']}>
+              <DashboardCS />
+            </ProtectedRoute>
+          } />
+
           {/* âââ 22. Inteligencia / Rankings âââ */}
           <Route path="/inteligencia" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'direccion', 'gerente_comercial', 'gerente_ops']}>
@@ -443,6 +459,33 @@ function App() {
 
           {/* âââ 24. Configuración â SOLO superadmin y admin âââ */}
           <Route path="/admin/configuracion" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
+              <Configuracion />
+            </ProtectedRoute>
+          } />
+
+          {/* ——— Config sub-routes ——— */}
+          <Route path="/admin/configuracion/usuarios" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
+              <Configuracion />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/configuracion/catalogos" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
+              <CatalogosTab />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/configuracion/parametros" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
+              <ParametrosConfig />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/configuracion/integraciones" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
+              <PanelIntegraciones />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/configuracion/auditoria" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
               <Configuracion />
             </ProtectedRoute>
