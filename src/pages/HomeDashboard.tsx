@@ -1,12 +1,12 @@
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// â ð¡ï¸  BLINDAJE DASHBOARD V27f â ARCHIVO PROTEGIDO                           â
-// â                                                                            â
-// â  ESTILO: M1 REFINADO + 3D GEOMETRIC PREMIUM â Aprobado JJ 3/Abr/2026     â
-// â    â¢ 8 cards (7+1): white + subtle 3D geometric per module                â
-// â    â¢ NO icons â solo nombre grande + figuras geomÃ©tricas flotantes        â
-// â    â¢ Hover: movimiento sutil de geometrÃ­a                                  â
-// â    â¢ Fila 1: 7 cards | Fila 2: 1 card (Config) alineada a la derecha     â
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ╔══════════════════════════════════════════════════════════════════════════════╗
+// ║ 🛡️  BLINDAJE DASHBOARD V27f — ARCHIVO PROTEGIDO                           ║
+// ║                                                                            ║
+// ║  ESTILO: M1 REFINADO + 3D GEOMETRIC PREMIUM — Aprobado JJ 3/Abr/2026     ║
+// ║    • 8 cards (7+1): white + subtle 3D geometric per module                ║
+// ║    • NO icons — solo nombre grande + figuras geométricas flotantes        ║
+// ║    • Hover: movimiento sutil de geometría                                  ║
+// ║    • Fila 1: 7 cards | Fila 2: 1 card (Config) alineada a la derecha     ║
+// ╚══════════════════════════════════════════════════════════════════════════════╝
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -30,7 +30,7 @@ interface CardConfig {
 }
 
 // ============================================================================
-// M1 REFINADO + 3D GEOMETRIC â VISUAL CONSTANTS
+// M1 REFINADO + 3D GEOMETRIC — VISUAL CONSTANTS
 // ============================================================================
 
 const DASH = {
@@ -65,7 +65,7 @@ const DOT_COLORS: Record<string, string> = {
 }
 
 // ============================================================================
-// 3D GEOMETRIC SVG PATTERNS â unique per module, very subtle
+// 3D GEOMETRIC SVG PATTERNS — unique per module, very subtle
 // ============================================================================
 
 const geoStyle: React.CSSProperties = {
@@ -80,7 +80,7 @@ const geoStyle: React.CSSProperties = {
   transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
 }
 
-// Oportunidades â ascending chevrons
+// Oportunidades — ascending chevrons
 const GeoOportunidades = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.04 }}>
@@ -91,7 +91,7 @@ const GeoOportunidades = () => (
   </div>
 )
 
-// Comercial â overlapping hexagons
+// Comercial — overlapping hexagons
 const GeoComercial = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.04 }}>
@@ -103,7 +103,7 @@ const GeoComercial = () => (
   </div>
 )
 
-// Servicio a Clientes â concentric arcs
+// Servicio a Clientes — concentric arcs
 const GeoServicio = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-15px', width: '65%', height: '75%', opacity: 0.04 }}>
@@ -115,7 +115,7 @@ const GeoServicio = () => (
   </div>
 )
 
-// Despacho Inteligente â isometric cubes
+// Despacho Inteligente — isometric cubes
 const GeoDespacho = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.04 }}>
@@ -138,7 +138,7 @@ const GeoDespacho = () => (
   </div>
 )
 
-// Comunicaciones â radiating waves
+// Comunicaciones — radiating waves
 const GeoComunicaciones = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.04 }}>
@@ -151,7 +151,7 @@ const GeoComunicaciones = () => (
   </div>
 )
 
-// Cotizaciones â diamond cluster
+// Cotizaciones — diamond cluster
 const GeoCotizaciones = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '65%', height: '80%', opacity: 0.04 }}>
@@ -163,7 +163,7 @@ const GeoCotizaciones = () => (
   </div>
 )
 
-// Plantillas â layered offset rectangles
+// Plantillas — layered offset rectangles
 const GeoPlantillas = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.04 }}>
@@ -174,7 +174,7 @@ const GeoPlantillas = () => (
   </div>
 )
 
-// Config â interlocking gear polygon
+// Config — interlocking gear polygon
 const GeoConfig = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '60%', height: '70%', opacity: 0.04 }}>
@@ -255,7 +255,7 @@ export default function HomeDashboard() {
     return () => clearInterval(interval)
   }, [fetchKpis])
 
-  // âââ 8 CARD DEFINITIONS âââââââââââââââââââââââââââ
+  // ——— 8 CARD DEFINITIONS ———————————————————————————
   const mainCards: CardConfig[] = [
     {
       id: 'oportunidades', label: 'Oportunidades',
@@ -268,14 +268,14 @@ export default function HomeDashboard() {
       id: 'comercial', label: 'Comercial',
       route: '/comercial',
       kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos',
-      statusDot: 'green', statusText: '11 submÃ³dulos',
+      statusDot: 'green', statusText: '11 submódulos',
       geo: <GeoComercial />,
     },
     {
       id: 'servicio-clientes', label: 'Servicio a Clientes',
       route: '/servicio-clientes',
       kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes',
-      statusDot: 'green', statusText: '3 submÃ³dulos',
+      statusDot: 'green', statusText: '3 submódulos',
       geo: <GeoServicio />,
     },
     {
@@ -297,14 +297,14 @@ export default function HomeDashboard() {
       id: 'cotizaciones', label: 'Cotizaciones',
       route: '/cotizador/nueva',
       kpiValue: '\u2014', kpiLabel: 'pendientes',
-      statusDot: 'gray', statusText: 'PrÃ³ximamente',
+      statusDot: 'gray', statusText: 'Próximamente',
       geo: <GeoCotizaciones />,
     },
     {
       id: 'plantillas', label: 'Plantillas',
       route: '/plantillas',
       kpiValue: '\u2014', kpiLabel: 'plantillas',
-      statusDot: 'gray', statusText: 'PrÃ³ximamente',
+      statusDot: 'gray', statusText: 'Próximamente',
       geo: <GeoPlantillas />,
     },
   ]
@@ -317,7 +317,7 @@ export default function HomeDashboard() {
     geo: <GeoConfig />,
   }
 
-  // âââ CARD STYLE ââââââââââââââââââââââââââââââââââ
+  // ——— CARD STYLE ——————————————————————————————————
   const getCardStyle = (isHovered: boolean): React.CSSProperties => ({
     aspectRatio: '1 / 0.65',
     borderRadius: DASH.cardRadius,
@@ -336,7 +336,7 @@ export default function HomeDashboard() {
     boxShadow: isHovered ? DASH.cardHoverShadow : DASH.cardShadow,
   })
 
-  // âââ RENDER CARD ââââââââââââââââââââââââââââââââââ
+  // ——— RENDER CARD ——————————————————————————————————
   const renderCard = (card: CardConfig) => {
     const isHovered = hoveredCard === card.id
     return (
@@ -347,7 +347,7 @@ export default function HomeDashboard() {
         onMouseLeave={() => setHoveredCard(null)}
         style={getCardStyle(isHovered)}
       >
-        {/* 3D Geometric background â moves on hover */}
+        {/* 3D Geometric background — moves on hover */}
         <div style={{
           ...geoStyle,
           transform: isHovered ? 'translate(4px, -4px) scale(1.05)' : 'translate(0,0) scale(1)',
@@ -362,7 +362,7 @@ export default function HomeDashboard() {
           backgroundColor: DOT_COLORS[card.statusDot] || DOT_COLORS.gray,
         }} />
 
-        {/* Module name â BIG, no icon */}
+        {/* Module name — BIG, no icon */}
         <div style={{
           fontFamily: DASH.fontFamily,
           fontSize: DASH.titleSize,
@@ -406,7 +406,7 @@ export default function HomeDashboard() {
     )
   }
 
-  // âââ RENDER ââââââââââââââââââââââââââââââââââââââââ
+  // ——— RENDER ————————————————————————————————————————
   return (
     <div style={{
       height: '100vh',
@@ -422,7 +422,7 @@ export default function HomeDashboard() {
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
       `}</style>
 
-      {/* Zona 1 â AppHeader */}
+      {/* Zona 1 — AppHeader */}
       <AppHeader
         onLogout={handleLogout}
         userName={formatName(user?.email)}
@@ -430,7 +430,7 @@ export default function HomeDashboard() {
         userEmail={user?.email}
       />
 
-      {/* Zona 2 â MÃ©tricas */}
+      {/* Zona 2 — Métricas */}
       <div style={{
         padding: DASH.metricsPadding,
         background: DASH.metricsBg,
@@ -461,7 +461,7 @@ export default function HomeDashboard() {
         ))}
       </div>
 
-      {/* Zona 3 â Grid de Cards */}
+      {/* Zona 3 — Grid de Cards */}
       <div style={{
         flex: '0 0 auto',
         padding: DASH.gridPadding,
