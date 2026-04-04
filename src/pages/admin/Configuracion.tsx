@@ -6,8 +6,8 @@ import {
 } from 'lucide-react'
 
 /* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   CONFIGURACIÃN â Landing Page (estilo Dashboard V27f)
-   5 cards: Usuarios, CatÃ¡logos, ParÃ¡metros, Integraciones, AuditorÃ­a
+   CONFIGURACIÓN — Landing Page (estilo Dashboard V27f)
+   5 cards: Usuarios, Catálogos, Parámetros, Integraciones, Auditoría
    âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
 const DASH = {
@@ -107,10 +107,10 @@ interface ConfigCard {
 
 const CARDS: ConfigCard[] = [
   { id: 'usuarios', label: 'Usuarios', route: '/admin/configuracion/usuarios', subtitle: 'Roles y permisos', dot: 'blue', geo: <GeoUsuarios /> },
-  { id: 'catalogos', label: 'CatÃ¡logos', route: '/admin/configuracion/catalogos', subtitle: 'Tipos y estados', dot: 'green', geo: <GeoCatalogos /> },
-  { id: 'parametros', label: 'ParÃ¡metros', route: '/admin/configuracion/parametros', subtitle: 'Tarifas y costos', dot: 'yellow', geo: <GeoParametros /> },
+  { id: 'catalogos', label: 'Catálogos', route: '/admin/configuracion/catalogos', subtitle: 'Tipos y estados', dot: 'green', geo: <GeoCatalogos /> },
+  { id: 'parametros', label: 'Parámetros', route: '/admin/configuracion/parametros', subtitle: 'Tarifas y costos', dot: 'yellow', geo: <GeoParametros /> },
   { id: 'integraciones', label: 'Integraciones', route: '/admin/configuracion/integraciones', subtitle: 'ANODOS, GPS, WhatsApp', dot: 'purple', geo: <GeoIntegraciones /> },
-  { id: 'auditoria', label: 'AuditorÃ­a', route: '/admin/configuracion/auditoria', subtitle: 'Actividad del sistema', dot: 'red', geo: <GeoAuditoria /> },
+  { id: 'auditoria', label: 'Auditoría', route: '/admin/configuracion/auditoria', subtitle: 'Actividad del sistema', dot: 'red', geo: <GeoAuditoria /> },
 ]
 
 /* ââ Component ââ */
@@ -137,7 +137,7 @@ export default function Configuracion() {
   })
 
   return (
-    <ModuleLayout titulo="ConfiguraciÃ³n" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
+    <ModuleLayout titulo="Configuración" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
       `}</style>
