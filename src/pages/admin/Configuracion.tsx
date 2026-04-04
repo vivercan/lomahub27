@@ -5,15 +5,15 @@ import {
   Users, BookOpen, SlidersHorizontal, Plug, ShieldCheck
 } from 'lucide-react'
 
-/* ═══════════════════════════════════════════════════════════════
-   CONFIGURACIÓN — Landing Page (estilo Dashboard V27f)
-   5 cards: Usuarios, Catálogos, Parámetros, Integraciones, Auditoría
-   ═══════════════════════════════════════════════════════════════ */
+/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+   CONFIGURACIÃN â Landing Page (estilo Dashboard V27f)
+   5 cards: Usuarios, CatÃ¡logos, ParÃ¡metros, Integraciones, AuditorÃ­a
+   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
 const DASH = {
   bg: '#F3F4F8',
   fontFamily: "'Montserrat', sans-serif",
-  fontBody: "'Inter', sans-serif",
+  fontBody: "'Montserrat', sans-serif",
   cardBg: 'linear-gradient(180deg, #FFFFFF 0%, #F6F7FA 100%)',
   cardBorder: '1px solid #CDD5E1',
   cardRadius: '20px',
@@ -33,7 +33,7 @@ const DOT: Record<string, string> = {
   purple: '#8B5CF6', red: '#EF4444', gray: '#CBD5E1',
 }
 
-/* ── Geometric SVGs (matching dashboard style) ── */
+/* ââ Geometric SVGs (matching dashboard style) ââ */
 const geoStyle: React.CSSProperties = {
   position: 'absolute', top: 0, right: 0, width: '100%', height: '100%',
   pointerEvents: 'none', overflow: 'hidden', borderRadius: '20px',
@@ -95,7 +95,7 @@ const GeoAuditoria = () => (
   </div>
 )
 
-/* ── Card definitions ── */
+/* ââ Card definitions ââ */
 interface ConfigCard {
   id: string
   label: string
@@ -107,13 +107,13 @@ interface ConfigCard {
 
 const CARDS: ConfigCard[] = [
   { id: 'usuarios', label: 'Usuarios', route: '/admin/configuracion/usuarios', subtitle: 'Roles y permisos', dot: 'blue', geo: <GeoUsuarios /> },
-  { id: 'catalogos', label: 'Catálogos', route: '/admin/configuracion/catalogos', subtitle: 'Tipos y estados', dot: 'green', geo: <GeoCatalogos /> },
-  { id: 'parametros', label: 'Parámetros', route: '/admin/configuracion/parametros', subtitle: 'Tarifas y costos', dot: 'yellow', geo: <GeoParametros /> },
+  { id: 'catalogos', label: 'CatÃ¡logos', route: '/admin/configuracion/catalogos', subtitle: 'Tipos y estados', dot: 'green', geo: <GeoCatalogos /> },
+  { id: 'parametros', label: 'ParÃ¡metros', route: '/admin/configuracion/parametros', subtitle: 'Tarifas y costos', dot: 'yellow', geo: <GeoParametros /> },
   { id: 'integraciones', label: 'Integraciones', route: '/admin/configuracion/integraciones', subtitle: 'ANODOS, GPS, WhatsApp', dot: 'purple', geo: <GeoIntegraciones /> },
-  { id: 'auditoria', label: 'Auditoría', route: '/admin/configuracion/auditoria', subtitle: 'Actividad del sistema', dot: 'red', geo: <GeoAuditoria /> },
+  { id: 'auditoria', label: 'AuditorÃ­a', route: '/admin/configuracion/auditoria', subtitle: 'Actividad del sistema', dot: 'red', geo: <GeoAuditoria /> },
 ]
 
-/* ── Component ── */
+/* ââ Component ââ */
 export default function Configuracion() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
@@ -137,9 +137,9 @@ export default function Configuracion() {
   })
 
   return (
-    <ModuleLayout titulo="Configuración" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
+    <ModuleLayout titulo="ConfiguraciÃ³n" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
       `}</style>
 
       <div style={{
