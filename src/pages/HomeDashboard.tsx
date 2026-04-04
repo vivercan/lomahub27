@@ -1,12 +1,12 @@
 // ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// â ð¡ï¸  BLINDAJE DASHBOARD V27f â ARCHIVO PROTEGIDO                           â
+// â ð¡ï¸  BLINDAJE DASHBOARD V27f — ARCHIVO PROTEGIDO                           â
 // â                                                                            â
-// â  ESTILO: M1 REFINADO + 3D GEOMETRIC PREMIUM â Aprobado JJ 3/Abr/2026     â
+// â  ESTILO: M1 REFINADO + 3D GEOMETRIC PREMIUM — Aprobado JJ 3/Abr/2026     â
 // â    â¢ 9 cards (7+2): white + dual SVG layers (geometric + colorful)        â
-// â    â¢ NO icons â solo nombre grande + figuras geomÃ©tricas flotantes        â
-// â    â¢ Hover: movimiento sutil de geometrÃ­a en 2 capas                       â
+// â    â¢ NO icons — solo nombre grande + figuras geométricas flotantes        â
+// â    â¢ Hover: movimiento sutil de geometría en 2 capas                       â
 // â    â¢ Fila 1: 7 cards | Fila 2: Comunicaciones + Config a la derecha       â
-// â    â¢ Sin barra KPIs â eliminada por JJ 3/Abr/2026                         â
+// â    â¢ Sin barra KPIs — eliminada por JJ 3/Abr/2026                         â
 // ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 import React, { useState, useEffect, useCallback } from 'react'
@@ -32,7 +32,7 @@ interface CardConfig {
 }
 
 // ============================================================================
-// M1 REFINADO + 3D GEOMETRIC â VISUAL CONSTANTS
+// M1 REFINADO + 3D GEOMETRIC — VISUAL CONSTANTS
 // ============================================================================
 
 const DASH = {
@@ -64,7 +64,7 @@ const DOT_COLORS: Record<string, string> = {
 }
 
 // ============================================================================
-// 3D GEOMETRIC SVG PATTERNS â blue + orange mixed strokes
+// 3D GEOMETRIC SVG PATTERNS — blue + orange mixed strokes
 // ============================================================================
 
 const geoStyle: React.CSSProperties = {
@@ -79,7 +79,7 @@ const geoStyle: React.CSSProperties = {
   transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
 }
 
-// Oportunidades â ascending chevrons (blue + orange)
+// Oportunidades — ascending chevrons (blue + orange)
 const GeoOportunidades = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
@@ -90,7 +90,7 @@ const GeoOportunidades = () => (
   </div>
 )
 
-// Comercial â overlapping hexagons (blue + orange)
+// Comercial — overlapping hexagons (blue + orange)
 const GeoComercial = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.18 }}>
@@ -102,7 +102,7 @@ const GeoComercial = () => (
   </div>
 )
 
-// Servicio a Clientes â concentric arcs (blue + orange)
+// Servicio a Clientes — concentric arcs (blue + orange)
 const GeoServicio = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-15px', width: '65%', height: '75%', opacity: 0.18 }}>
@@ -114,7 +114,7 @@ const GeoServicio = () => (
   </div>
 )
 
-// Despacho Inteligente â isometric cubes (blue + orange)
+// Despacho Inteligente — isometric cubes (blue + orange)
 const GeoDespacho = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.18 }}>
@@ -137,7 +137,7 @@ const GeoDespacho = () => (
   </div>
 )
 
-// Ventas â rising bar chart (blue + orange) â NEW
+// Ventas — rising bar chart (blue + orange) — NEW
 const GeoVentas = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '65%', height: '75%', opacity: 0.18 }}>
@@ -150,7 +150,7 @@ const GeoVentas = () => (
   </div>
 )
 
-// Comunicaciones â radiating waves (blue + orange)
+// Comunicaciones — radiating waves (blue + orange)
 const GeoComunicaciones = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
@@ -163,7 +163,7 @@ const GeoComunicaciones = () => (
   </div>
 )
 
-// Cotizaciones â diamond cluster (blue + orange)
+// Cotizaciones — diamond cluster (blue + orange)
 const GeoCotizaciones = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '65%', height: '80%', opacity: 0.18 }}>
@@ -175,7 +175,7 @@ const GeoCotizaciones = () => (
   </div>
 )
 
-// Plantillas â layered offset rectangles (blue + orange)
+// Plantillas — layered offset rectangles (blue + orange)
 const GeoPlantillas = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
@@ -186,7 +186,7 @@ const GeoPlantillas = () => (
   </div>
 )
 
-// Config â interlocking gear polygon (blue + orange)
+// Config — interlocking gear polygon (blue + orange)
 const GeoConfig = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '60%', height: '70%', opacity: 0.18 }}>
