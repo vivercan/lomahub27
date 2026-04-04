@@ -324,7 +324,7 @@ export default function Login() {
       try {
         await loginWithGoogleIdToken(response.credential)
       } catch (err: any) {
-        setError(err.message || 'Error al iniciar sesiÃ³n con Google')
+        setError(err.message || 'Error al iniciar sesión con Google')
       } finally {
         setGoogleLoading(false)
       }
@@ -515,7 +515,7 @@ export default function Login() {
             </div>
           )}
 
-          {/* Hidden Google button for auth flow â key forces remount on retry */}
+          {/* Hidden Google button for auth flow — key forces remount on retry */}
           <div
             key={'gsi-' + gsiAttempt}
             ref={hiddenGoogleRef}
@@ -691,7 +691,7 @@ export default function Login() {
               letterSpacing: '0.3px',
             }}
           >
-            ConexiÃ³n cifrada Â· Solo personal autorizado
+            Conexión cifrada Â· Solo personal autorizado
           </span>
         </div>
       </div>
@@ -726,7 +726,7 @@ export default function Login() {
           >
             hola@trob.com.mx
           </a>{' '}
-          {'Â·'} OperaciÃ³n inteligente... Resultados reales
+          {'Â·'} Operación inteligente... Resultados reales
         </span>
       </div>
     </div>
