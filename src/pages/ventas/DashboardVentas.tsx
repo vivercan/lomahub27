@@ -4,7 +4,7 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 
 /* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   VENTAS â Landing Page (estilo Dashboard V27f)
+   VENTAS — Landing Page (estilo Dashboard V27f)
    4 cards: Oportunidades, Cotizaciones, Comisiones, Programa
    âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
@@ -81,7 +81,7 @@ const GeoPrograma = () => (
   </div>
 )
 
-/* ââ Colorful Module SVGs (Propuesta 12 â LogÃ­stica Colorida) ââ */
+/* ââ Colorful Module SVGs (Propuesta 12 — Logística Colorida) ââ */
 const colorSvg: React.CSSProperties = {
   position: 'absolute', bottom: '-8px', left: '-8px',
   width: '50%', height: '55%', opacity: 0.22,
