@@ -49,7 +49,7 @@ const DASH = {
   gridPadding: '16px 28px',
   titleSize: '20px',
   titleWeight: 800,
-  titleColor: '#1E3A8A',
+  titleColor: '#0F172A',
   kpiSize: '28px',
   kpiWeight: 600,
   kpiColor: '#0F172A',
@@ -60,7 +60,7 @@ const DASH = {
 } as const
 
 const DOT_COLORS: Record<string, string> = {
-  green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1',
+  green: '#0D9668', yellow: '#B8860B', red: '#C53030', gray: '#CBD5E1',
 }
 
 // ============================================================================
@@ -83,9 +83,9 @@ const geoStyle: React.CSSProperties = {
 const GeoOportunidades = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <polygon points="100,20 140,60 120,60 120,100 80,100 80,60 60,60" fill="none" stroke="#3B82F6" strokeWidth="1.5" transform="translate(20,0)" />
+      <polygon points="100,20 140,60 120,60 120,100 80,100 80,60 60,60" fill="none" stroke="#3B6CE7" strokeWidth="1.5" transform="translate(20,0)" />
       <polygon points="100,35 130,65 115,65 115,95 85,95 85,65 70,65" fill="none" stroke="#F59E0B" strokeWidth="1" transform="translate(40,20)" />
-      <polygon points="100,50 125,75 113,75 113,100 87,100 87,75 75,75" fill="none" stroke="#3B82F6" strokeWidth="0.8" transform="translate(60,10)" />
+      <polygon points="100,50 125,75 113,75 113,100 87,100 87,75 75,75" fill="none" stroke="#3B6CE7" strokeWidth="0.8" transform="translate(60,10)" />
     </svg>
   </div>
 )
@@ -94,9 +94,9 @@ const GeoOportunidades = () => (
 const GeoComercial = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.18 }}>
-      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#3B82F6" strokeWidth="1.5" transform="translate(60,15) scale(0.7)" />
+      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#3B6CE7" strokeWidth="1.5" transform="translate(60,15) scale(0.7)" />
       <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#F59E0B" strokeWidth="1.2" transform="translate(90,35) scale(0.6)" />
-      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#3B82F6" strokeWidth="1" transform="translate(40,50) scale(0.5)" />
+      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#3B6CE7" strokeWidth="1" transform="translate(40,50) scale(0.5)" />
       <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#F59E0B" strokeWidth="0.8" transform="translate(110,10) scale(0.45)" />
     </svg>
   </div>
@@ -106,9 +106,9 @@ const GeoComercial = () => (
 const GeoServicio = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-15px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <circle cx="130" cy="90" r="60" fill="none" stroke="#3B82F6" strokeWidth="1.5" />
+      <circle cx="130" cy="90" r="60" fill="none" stroke="#3B6CE7" strokeWidth="1.5" />
       <circle cx="130" cy="90" r="45" fill="none" stroke="#F59E0B" strokeWidth="1.2" />
-      <circle cx="130" cy="90" r="30" fill="none" stroke="#3B82F6" strokeWidth="1" />
+      <circle cx="130" cy="90" r="30" fill="none" stroke="#3B6CE7" strokeWidth="1" />
       <circle cx="130" cy="90" r="15" fill="none" stroke="#F59E0B" strokeWidth="0.8" />
     </svg>
   </div>
@@ -119,19 +119,19 @@ const GeoDespacho = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.18 }}>
       <g transform="translate(80,30)">
-        <polygon points="30,0 60,17 30,34 0,17" fill="none" stroke="#3B82F6" strokeWidth="1.2" />
+        <polygon points="30,0 60,17 30,34 0,17" fill="none" stroke="#3B6CE7" strokeWidth="1.2" />
         <polygon points="0,17 30,34 30,64 0,47" fill="none" stroke="#F59E0B" strokeWidth="1.2" />
-        <polygon points="60,17 30,34 30,64 60,47" fill="none" stroke="#3B82F6" strokeWidth="1.2" />
+        <polygon points="60,17 30,34 30,64 60,47" fill="none" stroke="#3B6CE7" strokeWidth="1.2" />
       </g>
       <g transform="translate(110,50)">
         <polygon points="25,0 50,14 25,28 0,14" fill="none" stroke="#F59E0B" strokeWidth="1" />
-        <polygon points="0,14 25,28 25,53 0,39" fill="none" stroke="#3B82F6" strokeWidth="1" />
+        <polygon points="0,14 25,28 25,53 0,39" fill="none" stroke="#3B6CE7" strokeWidth="1" />
         <polygon points="50,14 25,28 25,53 50,39" fill="none" stroke="#F59E0B" strokeWidth="1" />
       </g>
       <g transform="translate(60,60)">
-        <polygon points="20,0 40,11 20,22 0,11" fill="none" stroke="#3B82F6" strokeWidth="0.8" />
+        <polygon points="20,0 40,11 20,22 0,11" fill="none" stroke="#3B6CE7" strokeWidth="0.8" />
         <polygon points="0,11 20,22 20,42 0,31" fill="none" stroke="#F59E0B" strokeWidth="0.8" />
-        <polygon points="40,11 20,22 20,42 40,31" fill="none" stroke="#3B82F6" strokeWidth="0.8" />
+        <polygon points="40,11 20,22 20,42 40,31" fill="none" stroke="#3B6CE7" strokeWidth="0.8" />
       </g>
     </svg>
   </div>
@@ -141,11 +141,11 @@ const GeoDespacho = () => (
 const GeoVentas = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <rect x="60" y="80" width="18" height="40" rx="2" fill="none" stroke="#3B82F6" strokeWidth="1.5" />
+      <rect x="60" y="80" width="18" height="40" rx="2" fill="none" stroke="#3B6CE7" strokeWidth="1.5" />
       <rect x="85" y="60" width="18" height="60" rx="2" fill="none" stroke="#F59E0B" strokeWidth="1.3" />
-      <rect x="110" y="40" width="18" height="80" rx="2" fill="none" stroke="#3B82F6" strokeWidth="1.1" />
+      <rect x="110" y="40" width="18" height="80" rx="2" fill="none" stroke="#3B6CE7" strokeWidth="1.1" />
       <rect x="135" y="20" width="18" height="100" rx="2" fill="none" stroke="#F59E0B" strokeWidth="1" />
-      <path d="M68 78 L93 58 L118 38 L143 18" fill="none" stroke="#3B82F6" strokeWidth="1" strokeDasharray="4 3" />
+      <path d="M68 78 L93 58 L118 38 L143 18" fill="none" stroke="#3B6CE7" strokeWidth="1" strokeDasharray="4 3" />
     </svg>
   </div>
 )
@@ -154,11 +154,11 @@ const GeoVentas = () => (
 const GeoComunicaciones = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <path d="M140,100 Q140,60 170,40" fill="none" stroke="#3B82F6" strokeWidth="1.5" />
+      <path d="M140,100 Q140,60 170,40" fill="none" stroke="#3B6CE7" strokeWidth="1.5" />
       <path d="M130,100 Q130,55 165,30" fill="none" stroke="#F59E0B" strokeWidth="1.2" />
-      <path d="M120,100 Q120,50 160,20" fill="none" stroke="#3B82F6" strokeWidth="1" />
+      <path d="M120,100 Q120,50 160,20" fill="none" stroke="#3B6CE7" strokeWidth="1" />
       <path d="M110,100 Q110,50 155,15" fill="none" stroke="#F59E0B" strokeWidth="0.8" />
-      <circle cx="145" cy="105" r="4" fill="none" stroke="#3B82F6" strokeWidth="1.2" />
+      <circle cx="145" cy="105" r="4" fill="none" stroke="#3B6CE7" strokeWidth="1.2" />
     </svg>
   </div>
 )
@@ -167,9 +167,9 @@ const GeoComunicaciones = () => (
 const GeoCotizaciones = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '65%', height: '80%', opacity: 0.18 }}>
-      <rect x="90" y="30" width="40" height="40" rx="2" fill="none" stroke="#3B82F6" strokeWidth="1.5" transform="rotate(45,110,50)" />
+      <rect x="90" y="30" width="40" height="40" rx="2" fill="none" stroke="#3B6CE7" strokeWidth="1.5" transform="rotate(45,110,50)" />
       <rect x="110" y="50" width="30" height="30" rx="2" fill="none" stroke="#F59E0B" strokeWidth="1.2" transform="rotate(45,125,65)" />
-      <rect x="75" y="55" width="25" height="25" rx="2" fill="none" stroke="#3B82F6" strokeWidth="1" transform="rotate(45,87.5,67.5)" />
+      <rect x="75" y="55" width="25" height="25" rx="2" fill="none" stroke="#3B6CE7" strokeWidth="1" transform="rotate(45,87.5,67.5)" />
       <rect x="105" y="75" width="20" height="20" rx="2" fill="none" stroke="#F59E0B" strokeWidth="0.8" transform="rotate(45,115,85)" />
     </svg>
   </div>
@@ -179,9 +179,9 @@ const GeoCotizaciones = () => (
 const GeoPlantillas = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <rect x="70" y="20" width="60" height="80" rx="4" fill="none" stroke="#3B82F6" strokeWidth="1.5" />
+      <rect x="70" y="20" width="60" height="80" rx="4" fill="none" stroke="#3B6CE7" strokeWidth="1.5" />
       <rect x="82" y="30" width="60" height="80" rx="4" fill="none" stroke="#F59E0B" strokeWidth="1.2" />
-      <rect x="94" y="40" width="60" height="80" rx="4" fill="none" stroke="#3B82F6" strokeWidth="1" />
+      <rect x="94" y="40" width="60" height="80" rx="4" fill="none" stroke="#3B6CE7" strokeWidth="1" />
     </svg>
   </div>
 )
@@ -190,439 +190,212 @@ const GeoPlantillas = () => (
 const GeoConfig = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '60%', height: '70%', opacity: 0.18 }}>
-      <polygon points="100,15 108,35 130,35 113,48 119,68 100,56 81,68 87,48 70,35 92,35" fill="none" stroke="#3B82F6" strokeWidth="1.5" transform="translate(20,10)" />
-      <polygon points="100,25 106,38 122,38 109,47 114,62 100,53 86,62 91,47 78,38 94,38" fill="none" stroke="#F59E0B" strokeWidth="1" transform="translate(40,30) scale(0.7)" />
-    </svg>
-  </div>
-)
+      <polygon points="100,15 108,35 130,35 113,48 119,68 100,56 81,68
+Ë
+
+ÌÍHLÍH[HÛHÝÚÙOHÌÐÑMÈÝÚÙUÚYHKH[ÙÜOH[Û]JL
+HÏÛYÛÛÚ[ÏHLHL
+ÎLÎLK
 
-// ============================================================================
-// COLORFUL MODULE-SPECIFIC SVGs (Propuesta 12 â LogÃ­stica Colorida)
-// Positioned bottom-left â 20% bigger + more color saturation
-// ============================================================================
+ÈLM
+L
+LÈ
+
+LK
 
-const colorStyle: React.CSSProperties = {
-  position: 'absolute', bottom: '-8px', left: '-8px',
-  width: '60%', height: '66%', opacity: 0.27,
-}
+È
+ÎÎMÎ[HÛHÝÚÙOHÑNQLÝÚÙUÚYHH[ÙÜOH[Û]J
+Ì
+HØØ[JÊHÏÜÝÏÙ]BËÈOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOBËÈÓÓÔSSÑSKTÔPÒQPÈÕÜÈ
+ÜY\ÝHL8 %Ùðë\ÝXØHÛÛÜYJBËÈÜÚ][ÛYÝÛK[Y8 %	HYÙÙ\
+È[ÜHÛÛÜØ]\][ÛËÈOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOBÛÛÝÛÛÜÝ[NXXÝÔÔÔÜ\Y\ÈHÂÜÚ][Û	ØXÛÛ]IËÝÛN	ËN	ËY	ËN	ËÚY	Í	IËZYÚ	ÍIËÜXÚ]NËBÛÛÝÛÛÜÜÜ[YY\ÈH
 
-const ColorOportunidades = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <rect x="6" y="32" width="10" height="14" rx="2" fill="#3B82F6" opacity=".35"/>
-      <rect x="18" y="24" width="10" height="22" rx="2" fill="#8B5CF6" opacity=".35"/>
-      <rect x="30" y="16" width="10" height="30" rx="2" fill="#10B981" opacity=".35"/>
-      <rect x="42" y="8" width="8" height="38" rx="2" fill="#F59E0B" opacity=".35"/>
-      <path d="M11 30L23 22L35 14L46 6" stroke="#1E293B" strokeWidth="1.5" strokeLinecap="round" opacity=".4"/>
-    </svg>
-  </div>
-)
+HO
+]Ý[O^ÙÙ[ÔÝ[_HÛ\ÜÓ[YOHÛÛÜZ[\ÝÈY]ÐÞH
+M
+MÝ[O^ØÛÛÜÝ[_H[ÏHËÝÝÝËÌËÜËÌÜÝÈXÝHOHÌÚYHLZYÚHMH[HÌÐÑMÈÜXÚ]OHÍHÏXÝHNOHÚYHLZYÚHH[HÎPÑÜXÚ]OHÍHÏXÝHÌOHMÚYHLZYÚHÌH[HÌMÜXÚ]OHÍHÏXÝHOHÚYHZYÚHÎH[HÑNQLÜXÚ]OHÍHÏ]HLLHÌÈÍHM
 
-const ColorComercial = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <circle cx="18" cy="16" r="7" fill="#8B5CF6" opacity=".25"/>
-      <circle cx="36" cy="16" r="7" fill="#3B82F6" opacity=".25"/>
-      <path d="M8 40C8 32 16 28 27 28C38 28 46 32 46 40" fill="#10B981" opacity=".15"/>
-      <path d="M20 22L27 18L34 22" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" opacity=".45"/>
-    </svg>
-  </div>
-)
+
+ÝÚÙOHÌQLLÐÝÚÙUÚYHKHÝÚÙS[XØ\HÝ[ÜXÚ]OHÏÜÝÏÙ]BÛÛÝÛÛÜÛÛY\ÚX[H
 
-const ColorServicio = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <path d="M14 28V18C14 11 20 6 27 6C34 6 40 11 40 18V28" stroke="#8B5CF6" strokeWidth="2" fill="none" opacity=".45"/>
-      <rect x="8" y="28" width="12" height="14" rx="4" fill="#3B82F6" opacity=".30"/>
-      <rect x="34" y="28" width="12" height="14" rx="4" fill="#10B981" opacity=".30"/>
-      <rect x="22" y="44" width="10" height="5" rx="2.5" fill="#F59E0B" opacity=".35"/>
-    </svg>
-  </div>
-)
+HO
+]Ý[O^ÙÙ[ÔÝ[_HÛ\ÜÓ[YOHÛÛÜZ[\ÝÈY]ÐÞH
+M
+MÝ[O^ØÛÛÜÝ[_H[ÏHËÝÝÝËÌËÜËÌÜÝÈÚ\ÛHÞHNÞOHMHÈ[HÎPÑÜXÚ]OHHÏÚ\ÛHÞHÍÞOHMHÈ[HÌÐÑMÈÜXÚ]OHHÏ]HN
+ÎÌMÈÌÎ
 
-const ColorDespacho = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <rect x="2" y="16" width="30" height="20" rx="3" fill="#3B82F6" opacity=".20"/>
-      <path d="M32 22H44L50 30V36H32" fill="#10B981" opacity=".25"/>
-      <circle cx="12" cy="38" r="5" fill="#F59E0B" opacity=".35"/>
-      <circle cx="42" cy="38" r="5" fill="#F59E0B" opacity=".35"/>
-      <rect x="6" y="20" width="22" height="3" rx="1.5" fill="#8B5CF6" opacity=".25"/>
-    </svg>
-  </div>
-)
+Ì
 
-// Ventas â money + trend (NEW)
-const ColorVentas = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <circle cx="20" cy="30" r="14" fill="#10B981" opacity=".15"/>
-      <text x="20" y="35" textAnchor="middle" fontFamily="Montserrat" fontWeight="700" fontSize="14" fill="#10B981" opacity=".5">$</text>
-      <path d="M32 40L38 28L44 32L50 18" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" fill="none" opacity=".4"/>
-      <circle cx="50" cy="18" r="2.5" fill="#F59E0B" opacity=".4"/>
-      <rect x="6" y="44" width="42" height="3" rx="1.5" fill="#3B82F6" opacity=".2"/>
-    </svg>
-  </div>
-)
+
+[HÌMÜXÚ]OHMHÏ]HLÈNÍÝÚÙOHÑNQLÝÚÙUÚYHÝÚÙS[XØ\HÝ[ÜXÚ]OH
+HÏÜÝÏÙ]BÛÛÝÛÛÜÙ\XÚ[ÈH
 
-const ColorComunicaciones = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="6" width="28" height="20" rx="6" fill="#EC4899" opacity=".18"/>
-      <rect x="22" y="24" width="28" height="16" rx="6" fill="#3B82F6" opacity=".22"/>
-      <circle cx="14" cy="15" r="2.5" fill="#F59E0B" opacity=".45"/>
-      <circle cx="20" cy="15" r="2.5" fill="#10B981" opacity=".45"/>
-      <circle cx="26" cy="15" r="2.5" fill="#8B5CF6" opacity=".45"/>
-    </svg>
-  </div>
-)
+HO
+]Ý[O^ÙÙ[ÔÝ[_HÛ\ÜÓ[YOHÛÛÜZ[\ÝÈY]ÐÞH
+M
+MÝ[O^ØÛÛÜÝ[_H[ÏHËÝÝÝËÌËÜËÌÜÝÈ]HLMNÌMLH
+È
+ÌÍ
+
+LH
+NÝÚÙOHÎPÑÝÚÙUÚYH[HÛHÜXÚ]OH
+HÏXÝHOHÚYHLZYÚHMH[HÌÐÑMÈÜXÚ]OHÌÏXÝHÍOHÚYHLZYÚHMH[HÌMÜXÚ]OHÌÏXÝHOH
+ÚYHLZYÚHHHH[HÑNQLÜXÚ]OHÍHÏÜÝÏÙ]BÛÛÝÛÛÜ\ÜXÚÈH
 
-const ColorCotizaciones = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <rect x="6" y="4" width="28" height="36" rx="4" fill="#3B82F6" opacity=".12"/>
-      <rect x="12" y="12" width="16" height="3" rx="1.5" fill="#8B5CF6" opacity=".30"/>
-      <rect x="12" y="18" width="12" height="3" rx="1.5" fill="#10B981" opacity=".30"/>
-      <rect x="12" y="24" width="8" height="3" rx="1.5" fill="#F59E0B" opacity=".30"/>
-      <circle cx="42" cy="40" r="10" fill="#10B981" opacity=".18"/>
-      <text x="42" y="44" textAnchor="middle" fontFamily="Montserrat" fontWeight="700" fontSize="12" fill="#10B981" opacity=".55">$</text>
-    </svg>
-  </div>
-)
+HO
+]Ý[O^ÙÙ[ÔÝ[_HÛ\ÜÓ[YOHÛÛÜZ[\ÝÈY]ÐÞH
+M
+MÝ[O^ØÛÛÜÝ[_H[ÏHËÝÝÝËÌËÜËÌÜÝÈXÝHOHMÚYHÌZYÚHHÈ[HÌÐÑMÈÜXÚ]OHÏ]HLÌ
 
-const ColorPlantillas = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <rect x="18" y="2" width="20" height="26" rx="3" fill="#3B82F6" opacity=".15"/>
-      <rect x="14" y="8" width="20" height="26" rx="3" fill="#8B5CF6" opacity=".18"/>
-      <rect x="10" y="14" width="20" height="26" rx="3" fill="#F97316" opacity=".22"/>
-      <rect x="6" y="20" width="20" height="26" rx="3" fill="#10B981" opacity=".15"/>
-    </svg>
-  </div>
-)
+
+LÌÍÌ[HÌMÜXÚ]OHHÏÚ\ÛHÞHLÞOHÎHH[HÑNQLÜXÚ]OHÍHÏÚ\ÛHÞHÞOHÎHH[HÑNQLÜXÚ]OHÍHÏXÝHOHÚYHZYÚHÈHKH[HÎPÑÜXÚ]OHHÏÜÝÏÙ]BËÈ[\È8 %[Û^H
+È[
+UÊBÛÛÝÛÛÜ[\ÈH
 
-const ColorConfig = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <circle cx="27" cy="27" r="16" fill="#6366F1" opacity=".08"/>
-      <circle cx="27" cy="27" r="10" fill="#3B82F6" opacity=".12"/>
-      <circle cx="27" cy="27" r="5" fill="#10B981" opacity=".25"/>
-      <rect x="25" y="4" width="4" height="8" rx="2" fill="#F59E0B" opacity=".30"/>
-      <rect x="25" y="42" width="4" height="8" rx="2" fill="#F59E0B" opacity=".30"/>
-      <rect x="4" y="25" width="8" height="4" rx="2" fill="#EC4899" opacity=".30"/>
-      <rect x="42" y="25" width="8" height="4" rx="2" fill="#EC4899" opacity=".30"/>
-    </svg>
-  </div>
-)
+HO
+]Ý[O^ÙÙ[ÔÝ[_HÛ\ÜÓ[YOHÛÛÜZ[\ÝÈY]ÐÞH
+M
+MÝ[O^ØÛÛÜÝ[_H[ÏHËÝÝÝËÌËÜËÌÜÝÈÚ\ÛHÞHÞOHÌHM[HÌMÜXÚ]OHMHÏ^HOHÍH^[ÚÜHZYHÛ[Z[OH[ÛÙ\]ÛÙZYÚHÌÛÚ^OHM[HÌMÜXÚ]OHHÝ^]HLÌ
+Î
 
-// ============================================================================
-// COMPONENT
-// ============================================================================
+Ì
+LNÝÚÙOHÑNQLÝÚÙUÚYHÝÚÙS[XØ\HÝ[[HÛHÜXÚ]OHÏÚ\ÛHÞHLÞOHNHH[HÑNQLÜXÚ]OHÏXÝHOH
+ÚYHZYÚHÈHKH[HÌÐÑMÈÜXÚ]OHÏÜÝÏÙ]BÛÛÝÛÛÜÛÛ][XØXÚ[Û\ÈH
 
-export default function HomeDashboard() {
-  const navigate = useNavigate()
-  const { user, logout } = useAuthContext()
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null)
+HO
+]Ý[O^ÙÙ[ÔÝ[_HÛ\ÜÓ[YOHÛÛÜZ[\ÝÈY]ÐÞH
+M
+MÝ[O^ØÛÛÜÝ[_H[ÏHËÝÝÝËÌËÜËÌÜÝÈXÝHOHÚYHZYÚHH[HÑPÍNHÜXÚ]OHNÏXÝHOHÚYHZYÚHMH[HÌÐÑMÈÜXÚ]OHÏÚ\ÛHÞHMÞOHMHHH[HÑNQLÜXÚ]OH
+HÏÚ\ÛHÞHÞOHMHHH[HÌMÜXÚ]OH
+HÏÚ\ÛHÞHÞOHMHHH[HÎPÑÜXÚ]OH
+HÏÜÝÏÙ]BÛÛÝÛÛÜÛÝ^XÚ[Û\ÈH
 
-  const formatName = (email?: string) => {
-    if (!email) return 'Usuario'
-    const name = email.split('@')[0]
-    return name
-      .split('.')
-      .map((p: string) => p.charAt(0).toUpperCase() + p.slice(1))
-      .join(' ')
-  }
+HO
+]Ý[O^ÙÙ[ÔÝ[_HÛ\ÜÓ[YOHÛÛÜZ[\ÝÈY]ÐÞH
+M
+MÝ[O^ØÛÛÜÝ[_H[ÏHËÝÝÝËÌËÜËÌÜÝÈXÝHOHÚYHZYÚHÍH[HÌÐÑMÈÜXÚ]OHLÏXÝHLOHLÚYHMZYÚHÈHKH[HÎPÑÜXÚ]OHÌÏXÝHLOHNÚYHLZYÚHÈHKH[HÌMÜXÚ]OHÌÏXÝHLOHÚYHZYÚHÈHKH[HÑNQLÜXÚ]OHÌÏÚ\ÛHÞHÞOHHL[HÌMÜXÚ]OHNÏ^HOH
+^[ÚÜHZYHÛ[Z[OH[ÛÙ\]ÛÙZYÚHÌÛÚ^OHL[HÌMÜXÚ]OHMHÝ^ÜÝÏÙ]BÛÛÝÛÛÜ[[\ÈH
 
-  const handleLogout = async () => {
-    await logout()
-    navigate('/login')
-  }
+HO
+]Ý[O^ÙÙ[ÔÝ[_HÛ\ÜÓ[YOHÛÛÜZ[\ÝÈY]ÐÞH
+M
+MÝ[O^ØÛÛÜÝ[_H[ÏHËÝÝÝËÌËÜËÌÜÝÈXÝHNOHÚYHZYÚHHÈ[HÌÐÑMÈÜXÚ]OHMHÏXÝHMOHÚYHZYÚHHÈ[HÎPÑÜXÚ]OHNÏXÝHLOHMÚYHZYÚHHÈ[HÑMÌÌMÜXÚ]OHÏXÝHOHÚYHZYÚHHÈ[HÌMÜXÚ]OHMHÏÜÝÏÙ]BÛÛÝÛÛÜÛÛYÈH
 
-  // KPI state â kept for card values, bar removed
-  const [kpis, setKpis] = useState({
-    leadsActivos: 0, viajesActivos: 0, clientes: 0,
-    segmentosDedicados: 0, cuentasCxc: 0, unidadesGps: 0,
-    alertasHoy: 0, formatosActivos: 0, leadsPipeline: 0,
-    tractosTotal: 0, cajasTotal: 0,
-  })
+HO
+]Ý[O^ÙÙ[ÔÝ[_HÛ\ÜÓ[YOHÛÛÜZ[\ÝÈY]ÐÞH
+M
+MÝ[O^ØÛÛÜÝ[_H[ÏHËÝÝÝËÌËÜËÌÜÝÈÚ\ÛHÞHÈÞOHÈHM[HÍÍHÜXÚ]OHÏÚ\ÛHÞHÈÞOHÈHL[HÌÐÑMÈÜXÚ]OHLÏÚ\ÛHÞHÈÞOHÈHH[HÌMÜXÚ]OHHÏXÝHHOHÚYHZYÚHH[HÑNQLÜXÚ]OHÌÏXÝHHOHÚYHZYÚHH[HÑNQLÜXÚ]OHÌÏXÝHOHHÚYHZYÚHH[HÑPÍNHÜXÚ]OHÌÏXÝHOHHÚYHZYÚHH[HÑPÍNHÜXÚ]OHÌÏÜÝÏÙ]BËÈOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOBËÈÓÓTÓSËÈOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOB^ÜY][[Ý[ÛÛYQ\ÚØ\
 
-  const fetchKpis = useCallback(async () => {
-    try {
-      const [
-        { count: leads }, { count: viajes }, { count: clientes },
-        { count: dedicados }, { count: cxc }, { count: gps },
-        { count: formatosActivos }, { count: viajesRiesgo },
-        { count: notifUnread }, { count: tractos }, { count: cajas },
-      ] = await Promise.all([
-        supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null),
-        supabase.from('viajes').select('*', { count: 'exact', head: true }).in('estado', ['asignado', 'en_transito', 'en_curso', 'programado']),
-        supabase.from('clientes').select('*', { count: 'exact', head: true }).is('deleted_at', null),
-        supabase.from('formatos_venta').select('*', { count: 'exact', head: true }).eq('tipo_servicio', 'DEDICADO'),
-        supabase.from('cxc_cartera').select('*', { count: 'exact', head: true }),
-        supabase.from('gps_tracking').select('*', { count: 'exact', head: true }),
-        supabase.from('formatos_venta').select('*', { count: 'exact', head: true }).eq('activo', true),
-        supabase.from('viajes').select('*', { count: 'exact', head: true }).in('estado', ['en_riesgo', 'retrasado']),
-        supabase.from('notificaciones').select('*', { count: 'exact', head: true }).eq('leida', false).is('deleted_at', null),
-        supabase.from('tractos').select('*', { count: 'exact', head: true }).eq('activo', true),
-        supabase.from('cajas').select('*', { count: 'exact', head: true }).eq('activo', true),
-      ])
-      const totalAlertas = (viajesRiesgo ?? 0) + (notifUnread ?? 0)
-      setKpis({
-        leadsActivos: leads ?? 0, viajesActivos: viajes ?? 0,
-        clientes: clientes ?? 0, segmentosDedicados: dedicados ?? 0,
-        cuentasCxc: cxc ?? 0, unidadesGps: gps ?? 0,
-        alertasHoy: totalAlertas, formatosActivos: formatosActivos ?? 0,
-        leadsPipeline: leads ?? 0, tractosTotal: tractos ?? 0,
-        cajasTotal: cajas ?? 0,
-      })
-    } catch (err) {
-      console.error('Error fetching KPIs:', err)
-    }
-  }, [])
+HÂÛÛÝ]YØ]HH\ÙS]YØ]J
+BÛÛÝÈ\Ù\ÙÛÝ]HH\ÙP]]ÛÛ^
 
-  useEffect(() => {
-    fetchKpis()
-    const interval = setInterval(fetchKpis, 60000)
-    return () => clearInterval(interval)
-  }, [fetchKpis])
+BÛÛÝÚÝ\YØ\Ù]Ý\YØ\HH\ÙTÝ]OÝ[È[[
+BÛÛÝÜX][YHH
+[XZ[ÎÝ[ÊHOÂY
+Y[XZ[
+H]\	Õ\ÝX\[ÉÂÛÛÝ[YHH[XZ[Ü]
+	Ð	ÊVÌB]\[YBÜ]
+	ËÊBX\
 
-  // âââ 9 CARD DEFINITIONS âââââââââââââââââââââââââââ
-  // Fila 1: Oportunidades, Comercial, Servicio, Despacho, Ventas, Cotizaciones, Plantillas
-  // Fila 2: Comunicaciones (col 6) + Config (col 7)
-  const mainCards: CardConfig[] = [
-    {
-      id: 'oportunidades', label: 'Oportunidades',
-      route: '/ventas/mis-leads',
-      kpiValue: kpis.leadsActivos, kpiLabel: 'leads',
-      statusDot: 'green', statusText: 'Pipeline activo',
-      geo: <GeoOportunidades />,
-      geo2: <ColorOportunidades />,
-    },
-    {
-      id: 'comercial', label: 'Comercial',
-      route: '/ventas/dashboard',
-      kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos',
-      statusDot: 'green', statusText: '11 submÃ³dulos',
-      geo: <GeoComercial />,
-      geo2: <ColorComercial />,
-    },
-    {
-      id: 'servicio-clientes', label: 'Servicio a Clientes',
-      route: '/servicio/dashboard',
-      kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes',
-      statusDot: 'green', statusText: '3 submÃ³dulos',
-      geo: <GeoServicio />,
-      geo2: <ColorServicio />,
-    },
-    {
-      id: 'despacho', label: 'Despacho Inteligente',
-      route: '/operaciones/torre-control',
-      kpiValue: kpis.viajesActivos, kpiLabel: 'viajes',
-      statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray',
-      statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes',
-      geo: <GeoDespacho />,
-      geo2: <ColorDespacho />,
-    },
-    {
-      id: 'ventas', label: 'Ventas',
-      route: '/ventas/mis-leads',
-      kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos',
-      statusDot: 'green', statusText: 'Pipeline activo',
-      geo: <GeoVentas />,
-      geo2: <ColorVentas />,
-    },
-    {
-      id: 'cotizaciones', label: 'Cotizaciones',
-      route: '/cotizador/nueva',
-      kpiValue: '\u2014', kpiLabel: 'pendientes',
-      statusDot: 'gray', statusText: 'Disponible',
-      geo: <GeoCotizaciones />,
-      geo2: <ColorCotizaciones />,
-    },
-    {
-      id: 'plantillas', label: 'Plantillas',
-      route: '/documentos',
-      kpiValue: '\u2014', kpiLabel: 'plantillas',
-      statusDot: 'gray', statusText: 'Disponible',
-      geo: <GeoPlantillas />,
-      geo2: <ColorPlantillas />,
-    },
-  ]
+Ý[ÊHOÚ\]
+
+KÕ\\Ø\ÙJ
+H
+ÈÛXÙJJJBÚ[	È	ÊBBÛÛÝ[SÙÛÝ]H\Þ[È
 
-  const row2Cards: CardConfig[] = [
-    {
-      id: 'comunicaciones', label: 'Comunicaciones',
-      route: '/comunicaciones/correos',
-      kpiValue: '3', kpiLabel: 'canales',
-      statusDot: 'green', statusText: 'Activo',
-      geo: <GeoComunicaciones />,
-      geo2: <ColorComunicaciones />,
-    },
-    {
-      id: 'config', label: 'ConfiguraciÃ³n',
-      route: '/admin/configuracion',
-      kpiValue: '\u2699\uFE0F', kpiLabel: 'admin',
-      statusDot: 'gray', statusText: 'Sistema',
-      geo: <GeoConfig />,
-      geo2: <ColorConfig />,
-    },
-  ]
+HOÂ]ØZ]ÙÛÝ]
 
-  // âââ CARD STYLE ââââââââââââââââââââââââââââââââââ
-  const getCardStyle = (isHovered: boolean): React.CSSProperties => ({
-    aspectRatio: '1 / 0.75',
-    borderRadius: DASH.cardRadius,
-    padding: DASH.cardPadding,
-    background: DASH.cardBg,
-    border: DASH.cardBorder,
-    cursor: 'pointer',
-    position: 'relative',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-    transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
-    boxShadow: isHovered ? DASH.cardHoverShadow : DASH.cardShadow,
-  })
+B]YØ]J	ËÛÙÚ[ÊBBËÈÔHÝ]H8 %Ù\ÜØ\[Y\Ë\[[ÝYÛÛÝÚÜ\ËÙ]Ü\×HH\ÙTÝ]JÂXYÐXÝ]ÜÎXZ\ÐXÝ]ÜÎÛY[\ÎÙYÛY[ÜÑYXØYÜÎÝY[\ÐÞÎ[YY\ÑÜÎ[\\ÒÞNÜX]ÜÐXÝ]ÜÎXYÔ\[[NXÝÜÕÝ[ØZ\ÕÝ[JBÛÛÝ]ÚÜ\ÈH\ÙPØ[XÚÊ\Þ[È
 
-  // âââ RENDER CARD ââââââââââââââââââââââââââââââââââ
-  const renderCard = (card: CardConfig) => {
-    const isHovered = hoveredCard === card.id
-    return (
-      <div
-        key={card.id}
-        onClick={() => navigate(card.route)}
-        onMouseEnter={() => setHoveredCard(card.id)}
-        onMouseLeave={() => setHoveredCard(null)}
-        style={getCardStyle(isHovered)}
-      >
-        {/* 3D Geometric background â moves on hover */}
-        <div style={{
-          ...geoStyle,
-          transform: isHovered ? 'translate(4px, -4px) scale(1.05)' : 'translate(0,0) scale(1)',
-        }}>
-          {card.geo}
-        </div>
+HOÂHÂÛÛÝÂÈÛÝ[XYÈKÈÛÝ[XZ\ÈKÈÛÝ[ÛY[\ÈKÈÛÝ[YXØYÜÈKÈÛÝ[ÞÈKÈÛÝ[ÜÈKÈÛÝ[ÜX]ÜÐXÝ]ÜÈKÈÛÝ[XZ\ÔY\ÙÛÈKÈÛÝ[ÝY[XYKÈÛÝ[XÝÜÈKÈÛÝ[ØZ\ÈKHH]ØZ]ÛZ\ÙK[
+ÂÝ\X\ÙKÛJ	ÛXYÉÊKÙ[XÝ
+	ÊËÈÛÝ[	Ù^XÝ	ËXYYHJK\Ê	Ù[]YØ]	Ë[
+KÝ\X\ÙKÛJ	ÝXZ\ÉÊKÙ[XÝ
+	ÊËÈÛÝ[	Ù^XÝ	ËXYYHJK[	Ù\ÝYÉËÉØ\ÚYÛYÉË	Ù[Ý[Ú]ÉË	Ù[ØÝ\ÛÉË	ÜÙÜ[XYÉ×JKÝ\X\ÙKÛJ	ØÛY[\ÉÊKÙ[XÝ
+	ÊËÈÛÝ[	Ù^XÝ	ËXYYHJK\Ê	Ù[]YØ]	Ë[
+KÝ\X\ÙKÛJ	ÙÜX]Ü×Ý[IÊKÙ[XÝ
+	ÊËÈÛÝ[	Ù^XÝ	ËXYYHJK\J	Ý\×ÜÙ\XÚ[ÉË	ÑQPÐQÉÊKÝ\X\ÙKÛJ	ØÞ×ØØ\\IÊKÙ[XÝ
+	ÊËÈÛÝ[	Ù^XÝ	ËXYYHJKÝ\X\ÙKÛJ	ÙÜ×ÝXÚÚ[ÉÊKÙ[XÝ
+	ÊËÈÛÝ[	Ù^XÝ	ËXYYHJKÝ\X\ÙKÛJ	ÙÜX]Ü×Ý[IÊKÙ[XÝ
+	ÊËÈÛÝ[	Ù^XÝ	ËXYYHJK\J	ØXÝ]ÉËYJKÝ\X\ÙKÛJ	ÝXZ\ÉÊKÙ[XÝ
+	ÊËÈÛÝ[	Ù^XÝ	ËXYYHJK[	Ù\ÝYÉËÉÙ[ÜY\ÙÛÉË	Ü]\ØYÉ×JKÝ\X\ÙKÛJ	ÛÝYXØXÚ[Û\ÉÊKÙ[XÝ
+	ÊËÈÛÝ[	Ù^XÝ	ËXYYHJK\J	ÛZYIË[ÙJK\Ê	Ù[]YØ]	Ë[
+KÝ\X\ÙKÛJ	ÝXÝÜÉÊKÙ[XÝ
+	ÊËÈÛÝ[	Ù^XÝ	ËXYYHJK\J	ØXÝ]ÉËYJKÝ\X\ÙKÛJ	ØØZ\ÉÊKÙ[XÝ
+	ÊËÈÛÝ[	Ù^XÝ	ËXYYHJK\J	ØXÝ]ÉËYJKJBÛÛÝÝ[[\\ÈH
+XZ\ÔY\ÙÛÈÏÈ
+H
+È
+ÝY[XYÏÈ
+BÙ]Ü\ÊÂXYÐXÝ]ÜÎXYÈÏÈXZ\ÐXÝ]ÜÎXZ\ÈÏÈÛY[\ÎÛY[\ÈÏÈÙYÛY[ÜÑYXØYÜÎYXØYÜÈÏÈÝY[\ÐÞÎÞÈÏÈ[YY\ÑÜÎÜÈÏÈ[\\ÒÞNÝ[[\\ËÜX]ÜÐXÝ]ÜÎÜX]ÜÐXÝ]ÜÈÏÈXYÔ\[[NXYÈÏÈXÝÜÕÝ[XÝÜÈÏÈØZ\ÕÝ[ØZ\ÈÏÈJBHØ]Ú
+\HÂÛÛÛÛK\Ü	Ñ\Ü]Ú[ÈÔ\ÎË\BBK×JB\ÙQYXÝ
 
-        {/* Colorful module SVG â moves opposite direction on hover */}
-        {card.geo2 && (
-          <div style={{
-            ...geoStyle,
-            transform: isHovered ? 'translate(-3px, 3px) scale(1.03)' : 'translate(0,0) scale(1)',
-          }}>
-            {card.geo2}
-          </div>
-        )}
 
-        {/* Status dot */}
-        <div style={{
-          position: 'absolute', top: '14px', right: '14px',
-          width: DASH.dotSize, height: DASH.dotSize, borderRadius: '50%',
-          backgroundColor: DOT_COLORS[card.statusDot] || DOT_COLORS.gray,
-        }} />
+HOÂ]ÚÜ\Ê
+BÛÛÝ[\[HÙ][\[
+]ÚÜ\Ë
+
+B]\
 
-        {/* Module name â BIG, no icon */}
-        <div style={{
-          fontFamily: DASH.fontFamily,
-          fontSize: DASH.titleSize,
-          fontWeight: DASH.titleWeight,
-          color: DASH.titleColor,
-          lineHeight: 1.2,
-          marginBottom: 'auto',
-          position: 'relative',
-          zIndex: 1,
-        }}>
-          {card.label}
-        </div>
+HOÛX\[\[
+[\[
+BKÙ]ÚÜ\×JBËÈ8 %8 %8 %HÐTQSUSÓÈ8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %ËÈ[HNÜÜ[YY\ËÛÛY\ÚX[Ù\XÚ[Ë\ÜXÚË[\ËÛÝ^XÚ[Û\Ë[[\ÂËÈ[HÛÛ][XØXÚ[Û\È
+ÛÛ
+H
+ÈÛÛYÈ
+ÛÛ
+ÊBÛÛÝXZ[Ø\ÎØ\ÛÛYÖ×HHÂÂY	ÛÜÜ[YY\ÉËX[	ÓÜÜ[YY\ÉËÝ]N	ËÝ[\ËÛZ\Ë[XYÉËÜU[YNÜ\ËXYÐXÝ]ÜËÜSX[	ÛXYÉËÝ]\ÑÝ	ÙÜY[ËÝ]\Õ^	Ô\[[HXÝ]ÉËÙ[ÎÙ[ÓÜÜ[YY\ÈÏÙ[ÌÛÛÜÜÜ[YY\ÈÏKÂY	ØÛÛY\ÚX[	ËX[	ÐÛÛY\ÚX[	ËÝ]N	ËÝ[\ËÙ\ÚØ\	ËÜU[YNÜ\ËÜX]ÜÐXÝ]ÜËÓØØ[TÝ[Ê
+KÜSX[	ÙÜX]ÜÉËÝ]\ÑÝ	ÙÜY[ËÝ]\Õ^	ÌLHÝXpìÙ[ÜÉËÙ[ÎÙ[ÐÛÛY\ÚX[ÏÙ[ÌÛÛÜÛÛY\ÚX[ÏKÂY	ÜÙ\XÚ[ËXÛY[\ÉËX[	ÔÙ\XÚ[ÈHÛY[\ÉËÝ]N	ËÜÙ\XÚ[ËÙ\ÚØ\	ËÜU[YNÜ\ËÛY[\ËÓØØ[TÝ[Ê
+KÜSX[	ØÛY[\ÉËÝ]\ÑÝ	ÙÜY[ËÝ]\Õ^	ÌÈÝXpìÙ[ÜÉËÙ[ÎÙ[ÔÙ\XÚ[ÈÏÙ[ÌÛÛÜÙ\XÚ[ÈÏKÂY	Ù\ÜXÚÉËX[	Ñ\ÜXÚÈ[[YÙ[IËÝ]N	ËÛÜ\XÚ[Û\ËÝÜKXÛÛÛ	ËÜU[YNÜ\ËXZ\ÐXÝ]ÜËÜSX[	ÝXZ\ÉËÝ]\ÑÝÜ\ËXZ\ÐXÝ]ÜÈÈ	ÙÜY[È	ÙÜ^IËÝ]\Õ^Ü\ËXZ\ÐXÝ]ÜÈÈ	ÓÜ\[ÉÈ	ÔÚ[XZ\ÉËÙ[ÎÙ[Ñ\ÜXÚÈÏÙ[ÌÛÛÜ\ÜXÚÈÏKÂY	Ý[\ÉËX[	Õ[\ÉËÝ]N	ËÝ[\ËÛZ\Ë[XYÉËÜU[YNÜ\ËÜX]ÜÐXÝ]ÜËÓØØ[TÝ[Ê
+KÜSX[	ÙÜX]ÜÉËÝ]\ÑÝ	ÙÜY[ËÝ]\Õ^	Ô\[[HXÝ]ÉËÙ[ÎÙ[Õ[\ÈÏÙ[ÌÛÛÜ[\ÈÏKÂY	ØÛÝ^XÚ[Û\ÉËX[	ÐÛÝ^XÚ[Û\ÉËÝ]N	ËØÛÝ^YÜÛY]IËÜU[YN	×LM	ËÜSX[	Ü[Y[\ÉËÝ]\ÑÝ	ÙÜ^IËÝ]\Õ^	Ñ\ÜÛXIËÙ[ÎÙ[ÐÛÝ^XÚ[Û\ÈÏÙ[ÌÛÛÜÛÝ^XÚ[Û\ÈÏKÂY	Ü[[\ÉËX[	Ô[[\ÉËÝ]N	ËÙØÝ[Y[ÜÉËÜU[YN	×LM	ËÜSX[	Ü[[\ÉËÝ]\ÑÝ	ÙÜ^IËÝ]\Õ^	Ñ\ÜÛXIËÙ[ÎÙ[Ô[[\ÈÏÙ[ÌÛÛÜ[[\ÈÏKBÛÛÝÝÌØ\ÎØ\ÛÛYÖ×HHÂÂY	ØÛÛ][XØXÚ[Û\ÉËX[	ÐÛÛ][XØXÚ[Û\ÉËÝ]N	ËØÛÛ][XØXÚ[Û\ËØÛÜ[ÜÉËÜU[YN	ÌÉËÜSX[	ØØ[[\ÉËÝ]\ÑÝ	ÙÜY[ËÝ]\Õ^	ÐXÝ]ÉËÙ[ÎÙ[ÐÛÛ][XØXÚ[Û\ÈÏÙ[ÌÛÛÜÛÛ][XØXÚ[Û\ÈÏKÂY	ØÛÛYÉËX[	ÐÛÛYÝ\XÚpìÛËÝ]N	ËØYZ[ØÛÛYÝ\XÚ[ÛËÜU[YN	×LNWQLËÜSX[	ØYZ[ËÝ]\ÑÝ	ÙÜ^IËÝ]\Õ^	ÔÚ\Ý[XIËÙ[ÎÙ[ÐÛÛYÈÏÙ[ÌÛÛÜÛÛYÈÏKBËÈ8 %8 %8 %ÐTÕSH8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %ÛÛÝÙ]Ø\Ý[HH
+\ÒÝ\YÛÛX[NXXÝÔÔÔÜ\Y\ÈO
+Â\ÜXÝ][Î	ÌHÈÍIËÜ\Y]\ÎTÒØ\Y]\ËY[ÎTÒØ\Y[ËXÚÙÜÝ[TÒØ\ËÜ\TÒØ\Ü\Ý\ÛÜ	ÜÚ[\ËÜÚ][Û	Ü[]]IËÝ\ÝÎ	ÚY[Ë\Ü^N	Ù^	Ë^\XÝ[Û	ØÛÛ[[Ë[YÛ][\Î	Ù^\Ý\	Ë\ÝYPÛÛ[	Ù^\Ý\	Ë[Ú][Û	Ý[ÙÜH\ÈX\ÙKÞ\ÚYÝÈ\ÈX\ÙIË[ÙÜN\ÒÝ\YÈ	Ý[Û]VJLÜ
+IÈ	Ý[Û]VJ
+IËÞÚYÝÎ\ÒÝ\YÈTÒØ\Ý\ÚYÝÈTÒØ\ÚYÝËJBËÈ8 %8 %8 %STÐT8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %ÛÛÝ[\Ø\H
+Ø\Ø\ÛÛYÊHOÂÛÛÝ\ÒÝ\YHÝ\YØ\OOHØ\Y]\
+]Ù^O^ØØ\YBÛÛXÚÏ^Ê
+HO]YØ]JØ\Ý]J_BÛ[Ý\ÙQ[\^Ê
+HOÙ]Ý\YØ\
+Ø\Y
+_BÛ[Ý\ÙSX]O^Ê
+HOÙ]Ý\YØ\
+[
+_BÝ[O^ÙÙ]Ø\Ý[J\ÒÝ\Y
+_BËÊÑÙ[ÛY]XÈXÚÙÜÝ[8 %[Ý\ÈÛÝ\
+ßB]Ý[O^ÞÂÙ[ÔÝ[K[ÙÜN\ÒÝ\YÈ	Ý[Û]J
+M
+HØØ[JK
+JIÈ	Ý[Û]J
+HØØ[JJIË_OØØ\Ù[ßBÙ]ËÊÛÛÜ[[Ù[HÕÈ8 %[Ý\ÈÜÜÚ]H\XÝ[ÛÛÝ\
+ßBØØ\Ù[Ì	
+]Ý[O^ÞÂÙ[ÔÝ[K[ÙÜN\ÒÝ\YÈ	Ý[Û]JLÜÜ
+HØØ[JKÊIÈ	Ý[Û]J
+HØØ[JJIË_OØØ\Ù[ÌBÙ]
+_BËÊÝ]\ÈÝ
+ßB]Ý[O^ÞÂÜÚ][Û	ØXÛÛ]IËÜ	ÌM	ËYÚ	ÌM	ËÚYTÒÝÚ^KZYÚTÒÝÚ^KÜ\Y]\Î	ÍL	IËXÚÙÜÝ[ÛÛÜÕÐÓÓÔÖØØ\Ý]\ÑÝHÕÐÓÓÔËÜ^K_HÏËÊ[Ù[H[YH8 %QËÈXÛÛ
+ßB]Ý[O^ÞÂÛ[Z[NTÒÛ[Z[KÛÚ^NTÒ]TÚ^KÛÙZYÚTÒ]UÙZYÚÛÛÜTÒ]PÛÛÜ[RZYÚKX\Ú[ÝÛN	Ø]]ÉËÜÚ][Û	Ü[]]IË[^K_OØØ\X[BÙ]ËÊÔH
+ßB]Ý[O^ÞÂÛ[Z[NTÒÛ[Z[KÛÚ^NTÒÜTÚ^KÛÙZYÚTÒÜUÙZYÚÛÛÜTÒÜPÛÛÜ[RZYÚKX\Ú[Ü	Í	ËÜÚ][Û	Ü[]]IË[^K_OØØ\ÜU[Y_BÙ]ËÊÝX]H
+ßB]Ý[O^ÞÂÛ[Z[NTÒÛÙKÛÚ^NTÒÝXÚ^KÛÙZYÚTÒÝXÙZYÚÛÛÜTÒÝXÛÛÜX\Ú[Ü	ÌÜ	ËÜÚ][Û	Ü[]]IË[^K_OØØ\Ý]\Õ^BÙ]Ù]
+BBËÈ8 %8 %8 %ST8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %8 %]\
+]Ý[O^ÞÂZYÚ	ÌL	ËÝ\ÝÎ	ÚY[Ë\Ü^N	Ù^	Ë^\XÝ[Û	ØÛÛ[[ËXÚÙÜÝ[ÛÛÜTÒËÛ[Z[NTÒÛ[Z[KÛÛÜ	ÈÌQLLÐË_OËÊÔÔÈÜÝ\Ù[È[[X][Û
+ßBÝ[OØ[\Ü\
+	ÚÎËÙÛËÛÛÙÛX\\ËÛÛKØÜÜÌÙ[Z[OS[ÛÙ\]ÙÚ
+ÍLÍÍÌÎ	\Ü^O\ÝØ\	ÊNÂOÜÝ[OËÊÛHH8 %\XY\
+ßB\XY\ÛÙÛÝ]^Ú[SÙÛÝ]B\Ù\[YO^ÙÜX][YJ\Ù\Ë[XZ[
+_B\Ù\ÛO^Ý\Ù\ËÛ	ØYZ[ßB\Ù\[XZ[^Ý\Ù\Ë[XZ[BÏËÊÛH8 %ÜYHØ\È
+Ú[\HÔ\ÊH
+ßB]Ý[O^ÞÂ^	ÌHH]]ÉËY[ÎTÒÜYY[Ë\Ü^N	Ù^	Ë^\XÝ[Û	ØÛÛ[[ËØ\TÒÜYØ\Ý\ÝÎ	ÚY[Ë_OËÊ[HN
+ÈØ\È[Ú\[\È
+ßB]Ý[O^ÞÂ\Ü^N	ÙÜY	ËÜY[\]PÛÛ[[Î	Ü\X]
 
-        {/* KPI */}
-        <div style={{
-          fontFamily: DASH.fontFamily,
-          fontSize: DASH.kpiSize,
-          fontWeight: DASH.kpiWeight,
-          color: DASH.kpiColor,
-          lineHeight: 1,
-          marginTop: '6px',
-          position: 'relative',
-          zIndex: 1,
-        }}>
-          {card.kpiValue}
-        </div>
+ËYIËØ\TÒÜYØ\_OÛXZ[Ø\ËX\
+[\Ø\
+_BÙ]ËÊ[HÛÛ][XØXÚ[Û\È
+ÈÛÛYÈ[[XYÜÈHH\XÚH
+ßB]Ý[O^ÞÂ\Ü^N	ÙÜY	ËÜY[\]PÛÛ[[Î	Ü\X]
 
-        {/* Subtitle */}
-        <div style={{
-          fontFamily: DASH.fontBody,
-          fontSize: DASH.subSize,
-          fontWeight: DASH.subWeight,
-          color: DASH.subColor,
-          marginTop: '3px',
-          position: 'relative',
-          zIndex: 1,
-        }}>
-          {card.statusText}
-        </div>
-      </div>
-    )
-  }
-
-  // âââ RENDER ââââââââââââââââââââââââââââââââââââââââ
-  return (
-    <div style={{
-      height: '100vh',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      backgroundColor: DASH.bg,
-      fontFamily: DASH.fontFamily,
-      color: '#1E293B',
-    }}>
-      {/* CSS for hover geo animation */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
-      `}</style>
-
-      {/* Zona 1 â AppHeader */}
-      <AppHeader
-        onLogout={handleLogout}
-        userName={formatName(user?.email)}
-        userRole={user?.rol || 'admin'}
-        userEmail={user?.email}
-      />
-
-      {/* Zona 2 â Grid de Cards (sin barra KPIs) */}
-      <div style={{
-        flex: '1 1 auto',
-        padding: DASH.gridPadding,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: DASH.gridGap,
-        overflow: 'hidden',
-      }}>
-        {/* Fila 1: 7 cards principales */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(7, 1fr)',
-          gap: DASH.gridGap,
-        }}>
-          {mainCards.map(renderCard)}
-        </div>
-
-        {/* Fila 2: Comunicaciones + Config alineados a la derecha */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(7, 1fr)',
-          gap: DASH.gridGap,
-        }}>
-          <div style={{ gridColumn: '6 / 7' }}>
-            {renderCard(row2Cards[0])}
-          </div>
-          <div style={{ gridColumn: '7 / 8' }}>
-            {renderCard(row2Cards[1])}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+ËYIËØ\TÒÜYØ\_O]Ý[O^ÞÈÜYÛÛ[[	ÍÈ
+ÉÈ_OÜ[\Ø\
+ÝÌØ\ÖÌJ_BÙ]]Ý[O^ÞÈÜYÛÛ[[	ÍÈÈ	È_OÜ[\Ø\
+ÝÌØ\ÖÌWJ_BÙ]Ù]Ù]Ù]
+BB
