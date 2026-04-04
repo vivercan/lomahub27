@@ -61,7 +61,7 @@ const CATALOGS: CatalogConfig[] = [
     color: '#3B6CE7',
     columns: [
       { key: 'nombre', label: 'Nombre', type: 'text', required: true, editable: true },
-      { key: 'codigo', label: 'CÃ³digo', type: 'text', required: true, editable: true },
+      { key: 'codigo', label: 'Código', type: 'text', required: true, editable: true },
       { key: 'activo', label: 'Activo', type: 'boolean', editable: true },
     ],
     defaultSort: 'nombre',
@@ -85,7 +85,7 @@ const CATALOGS: CatalogConfig[] = [
     table: 'plazas',
     title: 'Plazas',
     icon: MapPin,
-    description: 'Plazas de operaciÃ³n por estado',
+    description: 'Plazas de operación por estado',
     color: '#0D9668',
     columns: [
       { key: 'nombre', label: 'Nombre', type: 'text', required: true, editable: true },
@@ -102,7 +102,7 @@ const CATALOGS: CatalogConfig[] = [
     description: 'Flota de tractocamiones registrados',
     color: '#B8860B',
     columns: [
-      { key: 'numero_economico', label: '# EconÃ³mico', type: 'text', required: true, editable: true },
+      { key: 'numero_economico', label: '# Económico', type: 'text', required: true, editable: true },
       { key: 'empresa', label: 'Empresa', type: 'text', required: true, editable: true },
       { key: 'segmento', label: 'Segmento', type: 'text', editable: true },
       { key: 'estado_operativo', label: 'Estado', type: 'select', editable: true, options: ['disponible', 'en_viaje', 'mantenimiento', 'siniestrado', 'baja'] },
@@ -119,11 +119,11 @@ const CATALOGS: CatalogConfig[] = [
     description: 'Cajas secas y refrigeradas',
     color: '#C53030',
     columns: [
-      { key: 'numero_economico', label: '# EconÃ³mico', type: 'text', required: true, editable: true },
+      { key: 'numero_economico', label: '# Económico', type: 'text', required: true, editable: true },
       { key: 'empresa', label: 'Empresa', type: 'text', required: true, editable: true },
       { key: 'tipo', label: 'Tipo', type: 'select', editable: true, options: ['seco', 'refrigerado'] },
       { key: 'estado', label: 'Estado', type: 'select', editable: true, options: ['disponible', 'en_uso', 'mantenimiento', 'baja'] },
-      { key: 'ubicacion_actual', label: 'UbicaciÃ³n', type: 'text', editable: true },
+      { key: 'ubicacion_actual', label: 'Ubicación', type: 'text', editable: true },
       { key: 'activo', label: 'Activo', type: 'boolean', editable: true },
     ],
     defaultSort: 'numero_economico',
@@ -138,7 +138,7 @@ const CATALOGS: CatalogConfig[] = [
     columns: [
       { key: 'nombre', label: 'Nombre', type: 'text', required: true, editable: true },
       { key: 'licencia', label: 'Licencia', type: 'text', editable: true },
-      { key: 'telefono', label: 'TelÃ©fono', type: 'text', editable: true },
+      { key: 'telefono', label: 'Teléfono', type: 'text', editable: true },
       { key: 'empresa', label: 'Empresa', type: 'text', editable: true },
       { key: 'estado', label: 'Estado', type: 'select', editable: true, options: ['disponible', 'en_viaje', 'descanso', 'incapacidad', 'baja'] },
       { key: 'activo', label: 'Activo', type: 'boolean', editable: true },
@@ -354,12 +354,12 @@ export default function CatalogosTab() {
 
   /* ââ Render cell value ââ */
   function renderCellValue(col: ColumnDef, value: unknown): string {
-    if (col.type === 'boolean') return value ? 'SÃ­' : 'No';
+    if (col.type === 'boolean') return value ? 'Sí' : 'No';
     if (col.key === 'empresa_id' && typeof value === 'string') {
       const emp = empresasLookup.find((e) => e.id === value);
       return emp ? emp.nombre : value;
     }
-    if (value === null || value === undefined) return 'â';
+    if (value === null || value === undefined) return '—';
     return String(value);
   }
 
@@ -450,14 +450,14 @@ export default function CatalogosTab() {
   }
 
   /* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-     RENDER â Catalog Card Grid (when no catalog selected)
+     RENDER — Catalog Card Grid (when no catalog selected)
      ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
   if (!selectedCatalog) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20, height: '100%' }}>
         <p style={{ ...styles.body, color: styles.textSecondary, fontSize: 14, margin: 0 }}>
-          Selecciona un catÃ¡logo para administrar sus registros
+          Selecciona un catálogo para administrar sus registros
         </p>
         <div
           style={{
@@ -553,7 +553,7 @@ export default function CatalogosTab() {
   }
 
   /* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-     RENDER â Table CRUD View (when catalog is selected)
+     RENDER — Table CRUD View (when catalog is selected)
      ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
   if (!catalog) return null;
@@ -627,7 +627,7 @@ export default function CatalogosTab() {
             }}
           >
             <ArrowLeft size={16} />
-            CatÃ¡logos
+            Catálogos
           </button>
           <div
             style={{
