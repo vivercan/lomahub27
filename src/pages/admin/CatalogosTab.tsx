@@ -21,7 +21,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 
-/* ─── Types ──────────────────────────────────────────────── */
+/* âââ Types ââââââââââââââââââââââââââââââââââââââââââââââââ */
 
 interface ColumnDef {
   key: string;
@@ -49,7 +49,7 @@ interface Toast {
   message: string;
 }
 
-/* ─── Catalog Configurations ─────────────────────────────── */
+/* âââ Catalog Configurations âââââââââââââââââââââââââââââââ */
 
 const CATALOGS: CatalogConfig[] = [
   {
@@ -61,7 +61,7 @@ const CATALOGS: CatalogConfig[] = [
     color: '#3B6CE7',
     columns: [
       { key: 'nombre', label: 'Nombre', type: 'text', required: true, editable: true },
-      { key: 'codigo', label: 'Código', type: 'text', required: true, editable: true },
+      { key: 'codigo', label: 'CÃ³digo', type: 'text', required: true, editable: true },
       { key: 'activo', label: 'Activo', type: 'boolean', editable: true },
     ],
     defaultSort: 'nombre',
@@ -85,7 +85,7 @@ const CATALOGS: CatalogConfig[] = [
     table: 'plazas',
     title: 'Plazas',
     icon: MapPin,
-    description: 'Plazas de operación por estado',
+    description: 'Plazas de operaciÃ³n por estado',
     color: '#0D9668',
     columns: [
       { key: 'nombre', label: 'Nombre', type: 'text', required: true, editable: true },
@@ -102,7 +102,7 @@ const CATALOGS: CatalogConfig[] = [
     description: 'Flota de tractocamiones registrados',
     color: '#B8860B',
     columns: [
-      { key: 'numero_economico', label: '# Económico', type: 'text', required: true, editable: true },
+      { key: 'numero_economico', label: '# EconÃ³mico', type: 'text', required: true, editable: true },
       { key: 'empresa', label: 'Empresa', type: 'text', required: true, editable: true },
       { key: 'segmento', label: 'Segmento', type: 'text', editable: true },
       { key: 'estado_operativo', label: 'Estado', type: 'select', editable: true, options: ['disponible', 'en_viaje', 'mantenimiento', 'siniestrado', 'baja'] },
@@ -119,11 +119,11 @@ const CATALOGS: CatalogConfig[] = [
     description: 'Cajas secas y refrigeradas',
     color: '#C53030',
     columns: [
-      { key: 'numero_economico', label: '# Económico', type: 'text', required: true, editable: true },
+      { key: 'numero_economico', label: '# EconÃ³mico', type: 'text', required: true, editable: true },
       { key: 'empresa', label: 'Empresa', type: 'text', required: true, editable: true },
       { key: 'tipo', label: 'Tipo', type: 'select', editable: true, options: ['seco', 'refrigerado'] },
       { key: 'estado', label: 'Estado', type: 'select', editable: true, options: ['disponible', 'en_uso', 'mantenimiento', 'baja'] },
-      { key: 'ubicacion_actual', label: 'Ubicación', type: 'text', editable: true },
+      { key: 'ubicacion_actual', label: 'UbicaciÃ³n', type: 'text', editable: true },
       { key: 'activo', label: 'Activo', type: 'boolean', editable: true },
     ],
     defaultSort: 'numero_economico',
@@ -138,7 +138,7 @@ const CATALOGS: CatalogConfig[] = [
     columns: [
       { key: 'nombre', label: 'Nombre', type: 'text', required: true, editable: true },
       { key: 'licencia', label: 'Licencia', type: 'text', editable: true },
-      { key: 'telefono', label: 'Teléfono', type: 'text', editable: true },
+      { key: 'telefono', label: 'TelÃ©fono', type: 'text', editable: true },
       { key: 'empresa', label: 'Empresa', type: 'text', editable: true },
       { key: 'estado', label: 'Estado', type: 'select', editable: true, options: ['disponible', 'en_viaje', 'descanso', 'incapacidad', 'baja'] },
       { key: 'activo', label: 'Activo', type: 'boolean', editable: true },
@@ -147,7 +147,7 @@ const CATALOGS: CatalogConfig[] = [
   },
 ];
 
-/* ─── Styles (tokens-aligned, Montserrat headings) ───────── */
+/* âââ Styles (tokens-aligned, Montserrat headings) âââââââââ */
 
 const styles = {
   heading: { fontFamily: tokens.fonts.heading, fontWeight: 700 as const },
@@ -166,7 +166,7 @@ const styles = {
   yellow: '#B8860B',
 };
 
-/* ─── CatalogosTab Component ─────────────────────────────── */
+/* âââ CatalogosTab Component âââââââââââââââââââââââââââââââ */
 
 export default function CatalogosTab() {
   const [selectedCatalog, setSelectedCatalog] = useState<string | null>(null);
@@ -183,13 +183,13 @@ export default function CatalogosTab() {
 
   const catalog = CATALOGS.find((c) => c.key === selectedCatalog);
 
-  /* ── Toast ── */
+  /* ââ Toast ââ */
   const showToast = useCallback((type: Toast['type'], message: string) => {
     setToast({ type, message });
     setTimeout(() => setToast(null), 3000);
   }, []);
 
-  /* ── Load counts for all catalogs ── */
+  /* ââ Load counts for all catalogs ââ */
   useEffect(() => {
     async function loadCounts() {
       const newCounts: Record<string, number> = {};
@@ -204,7 +204,7 @@ export default function CatalogosTab() {
     loadCounts();
   }, []);
 
-  /* ── Load empresas for segmentos FK ── */
+  /* ââ Load empresas for segmentos FK ââ */
   useEffect(() => {
     async function loadEmpresas() {
       const { data } = await supabase
@@ -217,7 +217,7 @@ export default function CatalogosTab() {
     loadEmpresas();
   }, []);
 
-  /* ── Load records when catalog selected ── */
+  /* ââ Load records when catalog selected ââ */
   useEffect(() => {
     if (!catalog) return;
     loadRecords();
@@ -263,7 +263,7 @@ export default function CatalogosTab() {
     }
   }
 
-  /* ── CRUD Operations ── */
+  /* ââ CRUD Operations ââ */
 
   async function handleSaveNew() {
     if (!catalog) return;
@@ -343,7 +343,7 @@ export default function CatalogosTab() {
     setIsAdding(true);
   }
 
-  /* ── Filter records ── */
+  /* ââ Filter records ââ */
   const filtered = records.filter((r) => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
@@ -352,18 +352,18 @@ export default function CatalogosTab() {
     );
   });
 
-  /* ── Render cell value ── */
+  /* ââ Render cell value ââ */
   function renderCellValue(col: ColumnDef, value: unknown): string {
-    if (col.type === 'boolean') return value ? 'Sí' : 'No';
+    if (col.type === 'boolean') return value ? 'SÃ­' : 'No';
     if (col.key === 'empresa_id' && typeof value === 'string') {
       const emp = empresasLookup.find((e) => e.id === value);
       return emp ? emp.nombre : value;
     }
-    if (value === null || value === undefined) return '—';
+    if (value === null || value === undefined) return 'â';
     return String(value);
   }
 
-  /* ── Render form field ── */
+  /* ââ Render form field ââ */
   function renderFormField(
     col: ColumnDef,
     formData: Record<string, unknown>,
@@ -449,15 +449,15 @@ export default function CatalogosTab() {
     );
   }
 
-  /* ══════════════════════════════════════════════════════════
-     RENDER — Catalog Card Grid (when no catalog selected)
-     ══════════════════════════════════════════════════════════ */
+  /* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+     RENDER â Catalog Card Grid (when no catalog selected)
+     ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
   if (!selectedCatalog) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20, height: '100%' }}>
         <p style={{ ...styles.body, color: styles.textSecondary, fontSize: 14, margin: 0 }}>
-          Selecciona un catálogo para administrar sus registros
+          Selecciona un catÃ¡logo para administrar sus registros
         </p>
         <div
           style={{
@@ -552,9 +552,9 @@ export default function CatalogosTab() {
     );
   }
 
-  /* ══════════════════════════════════════════════════════════
-     RENDER — Table CRUD View (when catalog is selected)
-     ══════════════════════════════════════════════════════════ */
+  /* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+     RENDER â Table CRUD View (when catalog is selected)
+     ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
   if (!catalog) return null;
   const Icon = catalog.icon;
@@ -605,30 +605,29 @@ export default function CatalogosTab() {
               setEditingId(null);
             }}
             style={{
-              background: styles.bgCard,
-              border: '1px solid ' + styles.border,
+              background: '#F59E0B',
+              border: '1px solid #D97706',
               borderRadius: 10,
               padding: '8px 12px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: 6,
-              color: styles.textSecondary,
+              color: '#FFFFFF',
               ...styles.body,
               fontSize: 13,
+              fontWeight: 600,
               transition: 'all 0.2s',
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = styles.primary;
-              (e.currentTarget as HTMLButtonElement).style.color = styles.textPrimary;
+              (e.currentTarget as HTMLButtonElement).style.background = '#D97706';
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = styles.border;
-              (e.currentTarget as HTMLButtonElement).style.color = styles.textSecondary;
+              (e.currentTarget as HTMLButtonElement).style.background = '#F59E0B';
             }}
           >
             <ArrowLeft size={16} />
-            Catálogos
+            CatÃ¡logos
           </button>
           <div
             style={{
