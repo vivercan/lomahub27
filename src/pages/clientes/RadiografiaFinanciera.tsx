@@ -114,7 +114,7 @@ export default function RadiografiaFinanciera() {
     try {
       const { data: sessionData } = await supabase.auth.getSession()
       const token = sessionData.session?.access_token
-      if (!token) throw new Error('SesiÃ³n expirada')
+      if (!token) throw new Error('Sesión expirada')
 
       const res = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/radiografia-financiera`,
@@ -128,7 +128,7 @@ export default function RadiografiaFinanciera() {
         }
       )
       const json: RadiografiaResponse = await res.json()
-      if (!json.ok) throw new Error(json.mensaje || 'Error al obtener radiografÃ­a')
+      if (!json.ok) throw new Error(json.mensaje || 'Error al obtener radiografía')
       setData(json)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
@@ -340,7 +340,7 @@ export default function RadiografiaFinanciera() {
       align: 'right',
       render: (row) => (
         <span className="text-sm" style={{ color: tokens.colors.textMuted }}>
-          {row.presupuesto > 0 ? formatCurrency(row.presupuesto) : 'â'}
+          {row.presupuesto > 0 ? formatCurrency(row.presupuesto) : '—'}
         </span>
       ),
     },
@@ -354,7 +354,7 @@ export default function RadiografiaFinanciera() {
             {row.cumplimiento}%
           </Badge>
         ) : (
-          <span className="text-xs" style={{ color: tokens.colors.textMuted }}>â</span>
+          <span className="text-xs" style={{ color: tokens.colors.textMuted }}>—</span>
         )
       ),
     },
@@ -362,7 +362,7 @@ export default function RadiografiaFinanciera() {
 
   return (
     <ModuleLayout
-      titulo={data ? `RadiografÃ­a â ${data.cliente.razon_social}` : 'RadiografÃ­a Financiera'}
+      titulo={data ? `Radiografía — ${data.cliente.razon_social}` : 'Radiografía Financiera'}
       subtitulo="Perfil financiero 360Â° del cliente"
       acciones={
         <div className="flex items-center gap-2">
@@ -435,7 +435,7 @@ export default function RadiografiaFinanciera() {
             <KPICard titulo="Viajes/Mes" valor={data.kpis.viajesPromMensual} color="blue" icono={<Calendar size={16} />} />
             <KPICard titulo="Tendencia" valor={`${data.kpis.tendencia > 0 ? '+' : ''}${data.kpis.tendencia}%`} color={data.kpis.tendencia >= 0 ? 'green' : 'red'} icono={getTendenciaIcon(data.kpis.tendencia)} />
             <KPICard titulo="Saldo Vencido" valor={formatCurrency(data.cartera.saldoVencido)} color={data.cartera.saldoVencido > 0 ? 'red' : 'green'} icono={<AlertTriangle size={16} />} />
-            <KPICard titulo="DÃ­as Pago" valor={data.cartera.diasPromedioPago} color={data.cartera.diasPromedioPago > data.cartera.diasCreditoPactados ? 'red' : 'green'} icono={<Calendar size={16} />} />
+            <KPICard titulo="Días Pago" valor={data.cartera.diasPromedioPago} color={data.cartera.diasPromedioPago > data.cartera.diasCreditoPactados ? 'red' : 'green'} icono={<Calendar size={16} />} />
           </div>
 
           {/* Revenue chart + Cartera */}
@@ -443,7 +443,7 @@ export default function RadiografiaFinanciera() {
             <Card className="lg:col-span-2">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>
-                  FacturaciÃ³n Mensual (Ãºltimos {data.kpis.periodoMeses} meses)
+                  Facturación Mensual (últimos {data.kpis.periodoMeses} meses)
                 </h3>
                 <button onClick={() => setShowChart(!showChart)} className="p-1" style={{ color: tokens.colors.textMuted }}>
                   {showChart ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -497,15 +497,15 @@ export default function RadiografiaFinanciera() {
                 </div>
                 <div className="border-t pt-2" style={{ borderColor: tokens.colors.border }}>
                   <div className="flex justify-between items-center">
-                    <span className="text-xs" style={{ color: tokens.colors.textMuted }}>CrÃ©dito pactado</span>
-                    <span className="text-sm" style={{ color: tokens.colors.textSecondary }}>{data.cartera.diasCreditoPactados} dÃ­as</span>
+                    <span className="text-xs" style={{ color: tokens.colors.textMuted }}>Crédito pactado</span>
+                    <span className="text-sm" style={{ color: tokens.colors.textSecondary }}>{data.cartera.diasCreditoPactados} días</span>
                   </div>
                   <div className="flex justify-between items-center mt-1">
                     <span className="text-xs" style={{ color: tokens.colors.textMuted }}>Promedio pago</span>
                     <span className="text-sm font-medium" style={{
                       color: data.cartera.diasPromedioPago > data.cartera.diasCreditoPactados ? tokens.colors.red : tokens.colors.green
                     }}>
-                      {data.cartera.diasPromedioPago} dÃ­as
+                      {data.cartera.diasPromedioPago} días
                     </span>
                   </div>
                 </div>
@@ -543,11 +543,11 @@ export default function RadiografiaFinanciera() {
                 <p className="text-sm" style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
                   {data.cliente.razon_social} genera {formatCurrency(data.kpis.totalIngreso)} en {data.kpis.periodoMeses} meses
                   con margen de {data.kpis.margenGlobal}% y ticket promedio de {formatCurrency(data.kpis.ticketPromedio)}.
-                  {data.kpis.tendencia > 10 ? ' Tendencia al alza â cliente en crecimiento.' :
-                   data.kpis.tendencia < -10 ? ' Tendencia a la baja â requiere atenciÃ³n comercial.' :
-                   ' FacturaciÃ³n estable.'}
+                  {data.kpis.tendencia > 10 ? ' Tendencia al alza — cliente en crecimiento.' :
+                   data.kpis.tendencia < -10 ? ' Tendencia a la baja — requiere atención comercial.' :
+                   ' Facturación estable.'}
                   {data.cartera.saldoVencido > 0 ? ` Alerta: ${formatCurrency(data.cartera.saldoVencido)} vencido.` : ''}
-                  {data.riesgo.score >= 7 ? ' Riesgo alto â revisar condiciones.' : ''}
+                  {data.riesgo.score >= 7 ? ' Riesgo alto — revisar condiciones.' : ''}
                 </p>
               </div>
             </div>
@@ -565,7 +565,7 @@ export default function RadiografiaFinanciera() {
                 columns={rutasColumns}
                 data={data.topRutas}
                 loading={false}
-                emptyMessage="Sin rutas en el perÃ­odo"
+                emptyMessage="Sin rutas en el período"
               />
             </Card>
 
