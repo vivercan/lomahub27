@@ -4,7 +4,7 @@ import { tokens } from '../../lib/tokens';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Save, Plus, Trash2, DollarSign, Truck, Ship, MapPin } from 'lucide-react';
 
-/* ───────── types ───────── */
+/* âââââââââ types âââââââââ */
 interface Tarifa {
   id?: string;
   categoria: string;
@@ -16,12 +16,12 @@ interface Tarifa {
 }
 
 const CATEGORIAS = [
-  { key: 'km_mexico', label: 'Costo por Kilómetro (México)', icon: Truck, color: '#3B82F6' },
-  { key: 'milla_usa', label: 'Costo por Milla (USA)', icon: Truck, color: '#10B981' },
+  { key: 'km_mexico', label: 'Costo por KilÃ³metro (MÃ©xico)', icon: Truck, color: '#3B6CE7' },
+  { key: 'milla_usa', label: 'Costo por Milla (USA)', icon: Truck, color: '#0D9668' },
   { key: 'cruces', label: 'Cruces Fronterizos', icon: MapPin, color: '#F59E0B' },
   { key: 'accesoriales', label: 'Accesoriales', icon: DollarSign, color: '#8B5CF6' },
-  { key: 'importacion', label: 'Importación', icon: Ship, color: '#EF4444' },
-  { key: 'exportacion', label: 'Exportación', icon: Ship, color: '#06B6D4' },
+  { key: 'importacion', label: 'ImportaciÃ³n', icon: Ship, color: '#C53030' },
+  { key: 'exportacion', label: 'ExportaciÃ³n', icon: Ship, color: '#06B6D4' },
 ];
 
 const DEFAULT_TARIFAS: Tarifa[] = [
@@ -35,7 +35,7 @@ const DEFAULT_TARIFAS: Tarifa[] = [
   { categoria: 'cruces', concepto: 'Cruce El Paso', unidad: 'USD', valor: 0, moneda: 'USD', notas: '' },
   { categoria: 'cruces', concepto: 'Cruce Nogales', unidad: 'USD', valor: 0, moneda: 'USD', notas: '' },
   { categoria: 'cruces', concepto: 'Cruce Otay/Tijuana', unidad: 'USD', valor: 0, moneda: 'USD', notas: '' },
-  { categoria: 'accesoriales', concepto: 'Estadía (por hora)', unidad: 'MXN/hr', valor: 0, moneda: 'MXN', notas: '' },
+  { categoria: 'accesoriales', concepto: 'EstadÃ­a (por hora)', unidad: 'MXN/hr', valor: 0, moneda: 'MXN', notas: '' },
   { categoria: 'accesoriales', concepto: 'Maniobras carga/descarga', unidad: 'MXN', valor: 0, moneda: 'MXN', notas: '' },
   { categoria: 'accesoriales', concepto: 'Stop-off adicional', unidad: 'MXN', valor: 0, moneda: 'MXN', notas: '' },
   { categoria: 'accesoriales', concepto: 'Seguro de carga', unidad: '% valor', valor: 0, moneda: 'MXN', notas: '' },
@@ -45,7 +45,7 @@ const DEFAULT_TARIFAS: Tarifa[] = [
   { categoria: 'exportacion', concepto: 'Certificado de origen', unidad: 'USD', valor: 0, moneda: 'USD', notas: '' },
 ];
 
-/* ───────── component ───────── */
+/* âââââââââ component âââââââââ */
 export default function ParametrosConfig() {
   const [tarifas, setTarifas] = useState<Tarifa[]>(DEFAULT_TARIFAS);
   const [saving, setSaving] = useState(false);
@@ -62,7 +62,7 @@ export default function ParametrosConfig() {
           .order('categoria');
         if (data && data.length > 0) setTarifas(data as Tarifa[]);
       } catch (err) {
-        console.log('Using defaults — table may not exist yet:', err);
+        console.log('Using defaults â table may not exist yet:', err);
       }
     };
     loadTarifas();
@@ -98,7 +98,7 @@ export default function ParametrosConfig() {
 
   const activeCat = CATEGORIAS.find(c => c.key === activeTab);
 
-  /* ───────── styles ───────── */
+  /* âââââââââ styles âââââââââ */
   const S = {
     container: {
       minHeight: '100vh',
@@ -199,7 +199,7 @@ export default function ParametrosConfig() {
       fontSize: '14px',
       fontWeight: 600,
       color: '#FFFFFF',
-      background: saved ? '#10B981' : tokens.colors.primary,
+      background: saved ? '#0D9668' : tokens.colors.primary,
       border: 'none',
       borderRadius: '12px',
       padding: '12px 28px',
@@ -218,11 +218,11 @@ export default function ParametrosConfig() {
   };
 
   return (
-    <ModuleLayout titulo="Parámetros" moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}>
+    <ModuleLayout titulo="ParÃ¡metros" moduloPadre={{ nombre: 'ConfiguraciÃ³n', ruta: '/admin/configuracion' }}>
       <div style={S.container}>
         <div style={S.header}>
-          <h1 style={S.title}>Parámetros de Cotización</h1>
-          <p style={S.subtitle}>Tarifas base por km/milla, costos de cruce fronterizo y accesoriales para el módulo de cotización</p>
+          <h1 style={S.title}>ParÃ¡metros de CotizaciÃ³n</h1>
+          <p style={S.subtitle}>Tarifas base por km/milla, costos de cruce fronterizo y accesoriales para el mÃ³dulo de cotizaciÃ³n</p>
         </div>
 
         <div style={S.tabs}>
