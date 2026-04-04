@@ -35,8 +35,8 @@ const L = {
   w08: 'rgba(255,255,255,0.08)',
   w04: 'rgba(255,255,255,0.04)',
   w02: 'rgba(255,255,255,0.02)',
-  red: '#EF4444',
-  green: '#10B981',
+  red: '#C53030',
+  green: '#0D9668',
   font: "'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif",
 } as const
 
@@ -324,7 +324,7 @@ export default function Login() {
       try {
         await loginWithGoogleIdToken(response.credential)
       } catch (err: any) {
-        setError(err.message || 'Error al iniciar sesión con Google')
+        setError(err.message || 'Error al iniciar sesiÃ³n con Google')
       } finally {
         setGoogleLoading(false)
       }
@@ -515,7 +515,7 @@ export default function Login() {
             </div>
           )}
 
-          {/* Hidden Google button for auth flow — key forces remount on retry */}
+          {/* Hidden Google button for auth flow â key forces remount on retry */}
           <div
             key={'gsi-' + gsiAttempt}
             ref={hiddenGoogleRef}
@@ -691,7 +691,7 @@ export default function Login() {
               letterSpacing: '0.3px',
             }}
           >
-            Conexión cifrada · Solo personal autorizado
+            ConexiÃ³n cifrada Â· Solo personal autorizado
           </span>
         </div>
       </div>
@@ -711,7 +711,7 @@ export default function Login() {
 
       <div style={S.statusBar}>
         <span style={S.statusR}>
-          Grupo Loma 2026 {'·'}{' '}
+          Grupo Loma 2026 {'Â·'}{' '}
           <a
             href="mailto:hola@trob.com.mx"
             onDoubleClick={(e) => {
@@ -726,7 +726,7 @@ export default function Login() {
           >
             hola@trob.com.mx
           </a>{' '}
-          {'·'} Operación inteligente... Resultados reales
+          {'Â·'} OperaciÃ³n inteligente... Resultados reales
         </span>
       </div>
     </div>
