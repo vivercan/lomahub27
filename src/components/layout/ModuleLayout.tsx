@@ -64,13 +64,12 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
               alignItems: 'center',
               gap: '6px',
               padding: '6px 12px',
-              background: '#F59E0B',
-              border: '1px solid #D97706',
+              background: '#FF4500',
+              border: '1px solid #CC3700',
               borderRadius: '8px',
               color: '#FFFFFF',
-              fontWeight: 600,
               fontSize: '13px',
-              fontWeight: 500,
+              fontWeight: 600,
               cursor: 'pointer',
               fontFamily: tokens.fonts.body,
               transition: 'all 0.15s ease'
@@ -80,7 +79,7 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
             <span>Dashboard</span>
           </button>
 
-          {moduloPadre && (
+          {moduloPadre && moduloPadre.ruta !== '/dashboard' && (
             <>
               <ChevronRight size={14} style={{ color: tokens.colors.textMuted, margin: '0 2px' }} />
               <button
