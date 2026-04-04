@@ -15,7 +15,7 @@ import { Badge } from '../../components/ui/Badge'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 
-// ─── Types ───────────────────────────────────────────
+// âââ Types âââââââââââââââââââââââââââââââââââââââââââ
 interface MesData {
   mes: string
   label: string
@@ -82,7 +82,7 @@ interface RadiografiaResponse {
   mensaje?: string
 }
 
-// ─── Helpers ─────────────────────────────────────────
+// âââ Helpers âââââââââââââââââââââââââââââââââââââââââ
 function formatCurrency(n: number): string {
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0 }).format(n)
 }
@@ -114,7 +114,7 @@ export default function RadiografiaFinanciera() {
     try {
       const { data: sessionData } = await supabase.auth.getSession()
       const token = sessionData.session?.access_token
-      if (!token) throw new Error('Sesión expirada')
+      if (!token) throw new Error('SesiÃ³n expirada')
 
       const res = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/radiografia-financiera`,
@@ -128,7 +128,7 @@ export default function RadiografiaFinanciera() {
         }
       )
       const json: RadiografiaResponse = await res.json()
-      if (!json.ok) throw new Error(json.mensaje || 'Error al obtener radiografía')
+      if (!json.ok) throw new Error(json.mensaje || 'Error al obtener radiografÃ­a')
       setData(json)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
@@ -141,7 +141,7 @@ export default function RadiografiaFinanciera() {
     fetchData()
   }, [id])
 
-  // ─── Revenue chart (SVG) ──────────────────────────
+  // âââ Revenue chart (SVG) ââââââââââââââââââââââââââ
   function RevenueChart({ series }: { series: MesData[] }) {
     if (!series.length) return null
     const maxVal = Math.max(...series.map(s => Math.max(s.ingreso, s.presupuesto)), 1)
@@ -212,7 +212,7 @@ export default function RadiografiaFinanciera() {
     )
   }
 
-  // ─── Risk gauge SVG ────────────────────────────────
+  // âââ Risk gauge SVG ââââââââââââââââââââââââââââââââ
   function RiskGauge({ score, label }: { score: number; label: string }) {
     const angle = (score / 10) * 360
     const r = 50
@@ -255,7 +255,7 @@ export default function RadiografiaFinanciera() {
     )
   }
 
-  // ─── Top Routes table columns ──────────────────────
+  // âââ Top Routes table columns ââââââââââââââââââââââ
   const rutasColumns: Column<RutaData>[] = [
     {
       key: 'ruta',
@@ -299,7 +299,7 @@ export default function RadiografiaFinanciera() {
     },
   ]
 
-  // ─── Monthly series table columns ──────────────────
+  // âââ Monthly series table columns ââââââââââââââââââ
   const mesColumns: Column<MesData>[] = [
     {
       key: 'label',
@@ -340,7 +340,7 @@ export default function RadiografiaFinanciera() {
       align: 'right',
       render: (row) => (
         <span className="text-sm" style={{ color: tokens.colors.textMuted }}>
-          {row.presupuesto > 0 ? formatCurrency(row.presupuesto) : '—'}
+          {row.presupuesto > 0 ? formatCurrency(row.presupuesto) : 'â'}
         </span>
       ),
     },
@@ -354,7 +354,7 @@ export default function RadiografiaFinanciera() {
             {row.cumplimiento}%
           </Badge>
         ) : (
-          <span className="text-xs" style={{ color: tokens.colors.textMuted }}>—</span>
+          <span className="text-xs" style={{ color: tokens.colors.textMuted }}>â</span>
         )
       ),
     },
@@ -362,14 +362,26 @@ export default function RadiografiaFinanciera() {
 
   return (
     <ModuleLayout
-      titulo={data ? `Radiografía — ${data.cliente.razon_social}` : 'Radiografía Financiera'}
-      subtitulo="Perfil financiero 360° del cliente"
+      titulo={data ? `RadiografÃ­a â ${data.cliente.razon_social}` : 'RadiografÃ­a Financiera'}
+      subtitulo="Perfil financiero 360Â° del cliente"
       acciones={
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '6px 14px', borderRadius: '8px',
+              border: '1px solid #D97706', background: '#F59E0B',
+              color: '#FFFFFF', fontSize: '13px', fontWeight: 600,
+              fontFamily: tokens.fonts.body, cursor: 'pointer',
+              transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#D97706' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#F59E0B' }}
+          >
             <ArrowLeft size={16} />
             Volver
-          </Button>
+          </button>
           <Button variant="secondary" size="sm" onClick={fetchData} loading={loading}>
             <RefreshCw size={16} />
             Actualizar
@@ -406,7 +418,7 @@ export default function RadiografiaFinanciera() {
                     {data.cliente.prioridad}
                   </Badge>
                   <span className="text-xs" style={{ color: tokens.colors.textMuted }}>
-                    {data.cliente.empresa} · {data.cliente.antiguedad_meses} meses
+                    {data.cliente.empresa} Â· {data.cliente.antiguedad_meses} meses
                   </span>
                 </div>
               </div>
@@ -423,7 +435,7 @@ export default function RadiografiaFinanciera() {
             <KPICard titulo="Viajes/Mes" valor={data.kpis.viajesPromMensual} color="blue" icono={<Calendar size={16} />} />
             <KPICard titulo="Tendencia" valor={`${data.kpis.tendencia > 0 ? '+' : ''}${data.kpis.tendencia}%`} color={data.kpis.tendencia >= 0 ? 'green' : 'red'} icono={getTendenciaIcon(data.kpis.tendencia)} />
             <KPICard titulo="Saldo Vencido" valor={formatCurrency(data.cartera.saldoVencido)} color={data.cartera.saldoVencido > 0 ? 'red' : 'green'} icono={<AlertTriangle size={16} />} />
-            <KPICard titulo="Días Pago" valor={data.cartera.diasPromedioPago} color={data.cartera.diasPromedioPago > data.cartera.diasCreditoPactados ? 'red' : 'green'} icono={<Calendar size={16} />} />
+            <KPICard titulo="DÃ­as Pago" valor={data.cartera.diasPromedioPago} color={data.cartera.diasPromedioPago > data.cartera.diasCreditoPactados ? 'red' : 'green'} icono={<Calendar size={16} />} />
           </div>
 
           {/* Revenue chart + Cartera */}
@@ -431,7 +443,7 @@ export default function RadiografiaFinanciera() {
             <Card className="lg:col-span-2">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold" style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading }}>
-                  Facturación Mensual (últimos {data.kpis.periodoMeses} meses)
+                  FacturaciÃ³n Mensual (Ãºltimos {data.kpis.periodoMeses} meses)
                 </h3>
                 <button onClick={() => setShowChart(!showChart)} className="p-1" style={{ color: tokens.colors.textMuted }}>
                   {showChart ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -441,7 +453,7 @@ export default function RadiografiaFinanciera() {
               <div className="flex items-center gap-4 mt-2">
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded" style={{ background: tokens.colors.green }} />
-                  <span className="text-xs" style={{ color: tokens.colors.textMuted }}>Margen ≥20%</span>
+                  <span className="text-xs" style={{ color: tokens.colors.textMuted }}>Margen â¥20%</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded" style={{ background: tokens.colors.yellow }} />
@@ -485,15 +497,15 @@ export default function RadiografiaFinanciera() {
                 </div>
                 <div className="border-t pt-2" style={{ borderColor: tokens.colors.border }}>
                   <div className="flex justify-between items-center">
-                    <span className="text-xs" style={{ color: tokens.colors.textMuted }}>Crédito pactado</span>
-                    <span className="text-sm" style={{ color: tokens.colors.textSecondary }}>{data.cartera.diasCreditoPactados} días</span>
+                    <span className="text-xs" style={{ color: tokens.colors.textMuted }}>CrÃ©dito pactado</span>
+                    <span className="text-sm" style={{ color: tokens.colors.textSecondary }}>{data.cartera.diasCreditoPactados} dÃ­as</span>
                   </div>
                   <div className="flex justify-between items-center mt-1">
                     <span className="text-xs" style={{ color: tokens.colors.textMuted }}>Promedio pago</span>
                     <span className="text-sm font-medium" style={{
                       color: data.cartera.diasPromedioPago > data.cartera.diasCreditoPactados ? tokens.colors.red : tokens.colors.green
                     }}>
-                      {data.cartera.diasPromedioPago} días
+                      {data.cartera.diasPromedioPago} dÃ­as
                     </span>
                   </div>
                 </div>
@@ -504,7 +516,7 @@ export default function RadiografiaFinanciera() {
                       <span className="text-xs font-semibold" style={{ color: tokens.colors.textPrimary }}>Contrato Activo</span>
                     </div>
                     <span className="text-xs" style={{ color: tokens.colors.textMuted }}>
-                      {data.contrato.fechaInicio} → {data.contrato.fechaFin}
+                      {data.contrato.fechaInicio} â {data.contrato.fechaFin}
                     </span>
                   </div>
                 )}
@@ -531,11 +543,11 @@ export default function RadiografiaFinanciera() {
                 <p className="text-sm" style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
                   {data.cliente.razon_social} genera {formatCurrency(data.kpis.totalIngreso)} en {data.kpis.periodoMeses} meses
                   con margen de {data.kpis.margenGlobal}% y ticket promedio de {formatCurrency(data.kpis.ticketPromedio)}.
-                  {data.kpis.tendencia > 10 ? ' Tendencia al alza — cliente en crecimiento.' :
-                   data.kpis.tendencia < -10 ? ' Tendencia a la baja — requiere atención comercial.' :
-                   ' Facturación estable.'}
+                  {data.kpis.tendencia > 10 ? ' Tendencia al alza â cliente en crecimiento.' :
+                   data.kpis.tendencia < -10 ? ' Tendencia a la baja â requiere atenciÃ³n comercial.' :
+                   ' FacturaciÃ³n estable.'}
                   {data.cartera.saldoVencido > 0 ? ` Alerta: ${formatCurrency(data.cartera.saldoVencido)} vencido.` : ''}
-                  {data.riesgo.score >= 7 ? ' Riesgo alto — revisar condiciones.' : ''}
+                  {data.riesgo.score >= 7 ? ' Riesgo alto â revisar condiciones.' : ''}
                 </p>
               </div>
             </div>
@@ -553,7 +565,7 @@ export default function RadiografiaFinanciera() {
                 columns={rutasColumns}
                 data={data.topRutas}
                 loading={false}
-                emptyMessage="Sin rutas en el período"
+                emptyMessage="Sin rutas en el perÃ­odo"
               />
             </Card>
 
