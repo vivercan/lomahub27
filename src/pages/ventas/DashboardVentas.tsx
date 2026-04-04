@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 
-/* ═══════════════════════════════════════════════════════════════
-   VENTAS — Landing Page (estilo Dashboard V27f)
+/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+   VENTAS â Landing Page (estilo Dashboard V27f)
    4 cards: Oportunidades, Cotizaciones, Comisiones, Programa
-   ═══════════════════════════════════════════════════════════════ */
+   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
 const D = {
   bg: '#F7F8FA',
   font: "'Montserrat', sans-serif",
-  fontBody: "'Inter', sans-serif",
+  fontBody: "'Montserrat', sans-serif",
   cardBg: 'linear-gradient(180deg, #FFFFFF 0%, #F6F7FA 100%)',
   cardBorder: '1px solid #CDD5E1',
   cardRadius: '14px',
@@ -30,7 +30,7 @@ const D = {
 
 const DOT: Record<string, string> = { green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1' }
 
-/* ── Geometric SVGs ── */
+/* ââ Geometric SVGs ââ */
 const geoBase: React.CSSProperties = {
   position: 'absolute', top: 0, right: 0, width: '100%', height: '100%',
   pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px',
@@ -81,7 +81,7 @@ const GeoPrograma = () => (
   </div>
 )
 
-/* ── Colorful Module SVGs (Propuesta 12 — Logística Colorida) ── */
+/* ââ Colorful Module SVGs (Propuesta 12 â LogÃ­stica Colorida) ââ */
 const colorSvg: React.CSSProperties = {
   position: 'absolute', bottom: '-8px', left: '-8px',
   width: '50%', height: '55%', opacity: 0.22,
@@ -138,7 +138,7 @@ const ColorPrograma = () => (
   </div>
 )
 
-/* ── Card Config ── */
+/* ââ Card Config ââ */
 interface LandingCard {
   id: string; label: string; route: string; kpiLabel: string; geo: React.ReactNode; geo2?: React.ReactNode; accent: string
 }
@@ -150,7 +150,7 @@ const CARDS: LandingCard[] = [
   { id: 'programa', label: 'Programa Semanal', route: '/ventas/programa', kpiLabel: 'Esta semana', geo: <GeoPrograma />, geo2: <ColorPrograma />, accent: '#F59E0B' },
 ]
 
-/* ── Component ── */
+/* ââ Component ââ */
 export default function DashboardVentas() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
