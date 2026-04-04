@@ -176,9 +176,9 @@ export default function AppHeader({
 
   const typeColor = (t: string) => {
     switch (t) {
-      case 'alerta': return '#F59E0B'
-      case 'exito': return '#10B981'
-      case 'info': return '#3B82F6'
+      case 'alerta': return '#B8860B'
+      case 'exito': return '#0D9668'
+      case 'info': return '#3B6CE7'
       case 'pendiente': return '#A855F7'
       default: return '#6B7280'
     }
@@ -222,16 +222,16 @@ export default function AppHeader({
           zIndex: 10,
         }}
       >
-        {/* LEFT — Logo Institucional LomaHUB27 */}
+        {/* LEFT â Logo Institucional LomaHUB27 */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <h1 style={{ margin: 0, fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontStyle: 'italic', fontSize: 22, letterSpacing: '-0.5px', lineHeight: 1 }}>
             <span style={{ color: '#0F172A' }}>Loma</span>
             <span style={{ color: '#0F172A' }}>HUB</span>
-            <span style={{ color: '#2563EB' }}>27</span>
+            <span style={{ color: '#3B6CE7' }}>27</span>
           </h1>
         </div>
 
-        {/* CENTER — Fecha, Semana, Tipo Cambio */}
+        {/* CENTER â Fecha, Semana, Tipo Cambio */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 56, marginRight: 'auto', marginLeft: 40 }}>
           {/* Fecha */}
           <div style={{ textAlign: 'center' }}>
@@ -249,7 +249,7 @@ export default function AppHeader({
               padding: '3px 0',
             }}
           >
-            <span style={{ fontSize: 14, fontWeight: 700, color: '#2563EB', fontFamily: "'Montserrat', sans-serif" }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: '#3B6CE7', fontFamily: "'Montserrat', sans-serif" }}>
               Semana {weekNum}
             </span>
           </div>
@@ -265,14 +265,14 @@ export default function AppHeader({
                 fontFamily: "'Montserrat', sans-serif",
               }}
             >
-              {tipoCambio ? `${tipoCambio.toFixed(2)}` : '—'}
+              {tipoCambio ? `${tipoCambio.toFixed(2)}` : 'â'}
             </span>
           </div>
         </div>
 
-        {/* RIGHT — User + Bell + Logout */}
+        {/* RIGHT â User + Bell + Logout */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {/* User info — name + role stacked */}
+          {/* User info â name + role stacked */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.3 }}>
             <span style={{ fontSize: 13, color: '#1E293B', fontWeight: 600, fontFamily: "'Montserrat', sans-serif" }}>
               {userName}
@@ -282,10 +282,10 @@ export default function AppHeader({
             </span>
           </div>
 
-          {/* Logout — Power icon blue metallic */}
+          {/* Logout â Power icon blue metallic */}
           <button
             onClick={onLogout}
-            title="Cerrar sesión"
+            title="Cerrar sesiÃ³n"
             style={{
               width: 36,
               height: 36,
