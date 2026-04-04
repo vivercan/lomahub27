@@ -19,7 +19,7 @@ const D = {
   cardHover: '0 4px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.08), 0 16px 48px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.95)',
   titleSize: '17px',
   titleWeight: 800,
-  titleColor: '#1E3A8A',
+  titleColor: '#0F172A',
   kpiSize: '38px',
   kpiWeight: 600,
   kpiColor: '#0F172A',
@@ -28,7 +28,7 @@ const D = {
   dotSize: '8px',
 } as const
 
-const DOT: Record<string, string> = { green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1' }
+const DOT: Record<string, string> = { green: '#0D9668', yellow: '#B8860B', red: '#C53030', gray: '#CBD5E1' }
 
 /* ââ Geometric SVGs ââ */
 const geoBase: React.CSSProperties = {
@@ -40,9 +40,9 @@ const geoBase: React.CSSProperties = {
 const GeoTickets = () => (
   <div style={geoBase}>
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
-      <rect x="60" y="20" width="70" height="50" rx="6" fill="none" stroke="#3B82F6" strokeWidth="1.2" />
-      <rect x="75" y="35" width="70" height="50" rx="6" fill="none" stroke="#3B82F6" strokeWidth="1" />
-      <rect x="90" y="50" width="70" height="50" rx="6" fill="none" stroke="#3B82F6" strokeWidth="0.8" />
+      <rect x="60" y="20" width="70" height="50" rx="6" fill="none" stroke="#3B6CE7" strokeWidth="1.2" />
+      <rect x="75" y="35" width="70" height="50" rx="6" fill="none" stroke="#3B6CE7" strokeWidth="1" />
+      <rect x="90" y="50" width="70" height="50" rx="6" fill="none" stroke="#3B6CE7" strokeWidth="0.8" />
     </svg>
   </div>
 )
@@ -50,10 +50,10 @@ const GeoTickets = () => (
 const GeoClientes = () => (
   <div style={geoBase}>
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
-      <circle cx="100" cy="50" r="25" fill="none" stroke="#10B981" strokeWidth="1.2" />
-      <circle cx="130" cy="70" r="20" fill="none" stroke="#10B981" strokeWidth="1" />
-      <circle cx="75" cy="75" r="18" fill="none" stroke="#10B981" strokeWidth="0.8" />
-      <circle cx="110" cy="95" r="15" fill="none" stroke="#10B981" strokeWidth="0.8" />
+      <circle cx="100" cy="50" r="25" fill="none" stroke="#0D9668" strokeWidth="1.2" />
+      <circle cx="130" cy="70" r="20" fill="none" stroke="#0D9668" strokeWidth="1" />
+      <circle cx="75" cy="75" r="18" fill="none" stroke="#0D9668" strokeWidth="0.8" />
+      <circle cx="110" cy="95" r="15" fill="none" stroke="#0D9668" strokeWidth="0.8" />
     </svg>
   </div>
 )
@@ -90,8 +90,8 @@ const ColorTickets = () => (
   <div style={geoBase}>
     <svg viewBox="0 0 54 54" style={colorSvg} xmlns="http://www.w3.org/2000/svg">
       <circle cx="27" cy="16" r="8" stroke="#8B5CF6" strokeWidth="1.5" fill="none" opacity=".4"/>
-      <path d="M23 14L26 18L32 12" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity=".5"/>
-      <rect x="14" y="30" width="26" height="14" rx="3" fill="#3B82F6" opacity=".15"/>
+      <path d="M23 14L26 18L32 12" stroke="#0D9668" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity=".5"/>
+      <rect x="14" y="30" width="26" height="14" rx="3" fill="#3B6CE7" opacity=".15"/>
       <rect x="18" y="34" width="18" height="2.5" rx="1" fill="#F59E0B" opacity=".25"/>
       <rect x="18" y="39" width="12" height="2.5" rx="1" fill="#EC4899" opacity=".25"/>
     </svg>
@@ -102,8 +102,8 @@ const ColorClientes = () => (
   <div style={geoBase}>
     <svg viewBox="0 0 54 54" style={colorSvg} xmlns="http://www.w3.org/2000/svg">
       <circle cx="18" cy="16" r="7" fill="#8B5CF6" opacity=".2"/>
-      <circle cx="36" cy="16" r="7" fill="#3B82F6" opacity=".2"/>
-      <path d="M8 40C8 32 16 28 27 28C38 28 46 32 46 40" fill="#10B981" opacity=".12"/>
+      <circle cx="36" cy="16" r="7" fill="#3B6CE7" opacity=".2"/>
+      <path d="M8 40C8 32 16 28 27 28C38 28 46 32 46 40" fill="#0D9668" opacity=".12"/>
       <path d="M20 22L27 18L34 22" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" opacity=".4"/>
     </svg>
   </div>
@@ -112,10 +112,10 @@ const ColorClientes = () => (
 const ColorImpo = () => (
   <div style={geoBase}>
     <svg viewBox="0 0 54 54" style={colorSvg} xmlns="http://www.w3.org/2000/svg">
-      <rect x="8" y="18" width="22" height="16" rx="2" fill="#3B82F6" opacity=".15"/>
+      <rect x="8" y="18" width="22" height="16" rx="2" fill="#3B6CE7" opacity=".15"/>
       <rect x="12" y="22" width="14" height="8" rx="1" fill="#8B5CF6" opacity=".12"/>
-      <path d="M36 18L36 34" stroke="#10B981" strokeWidth="2" strokeLinecap="round" opacity=".35"/>
-      <polygon points="36,14 40,20 32,20" fill="#10B981" opacity=".3"/>
+      <path d="M36 18L36 34" stroke="#0D9668" strokeWidth="2" strokeLinecap="round" opacity=".35"/>
+      <polygon points="36,14 40,20 32,20" fill="#0D9668" opacity=".3"/>
       <circle cx="42" cy="40" r="6" fill="#F59E0B" opacity=".15"/>
       <path d="M40 40L42 42L45 38" stroke="#F59E0B" strokeWidth="1.5" strokeLinecap="round" opacity=".4"/>
     </svg>
@@ -127,10 +127,10 @@ const ColorExpo = () => (
     <svg viewBox="0 0 54 54" style={colorSvg} xmlns="http://www.w3.org/2000/svg">
       <rect x="8" y="18" width="22" height="16" rx="2" fill="#F59E0B" opacity=".15"/>
       <rect x="12" y="22" width="14" height="8" rx="1" fill="#F97316" opacity=".12"/>
-      <path d="M36 34L36 18" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" opacity=".35"/>
-      <polygon points="36,38 40,32 32,32" fill="#3B82F6" opacity=".3"/>
-      <circle cx="42" cy="10" r="6" fill="#10B981" opacity=".15"/>
-      <path d="M39 10L42 7L45 10" stroke="#10B981" strokeWidth="1.5" strokeLinecap="round" opacity=".4"/>
+      <path d="M36 34L36 18" stroke="#3B6CE7" strokeWidth="2" strokeLinecap="round" opacity=".35"/>
+      <polygon points="36,38 40,32 32,32" fill="#3B6CE7" opacity=".3"/>
+      <circle cx="42" cy="10" r="6" fill="#0D9668" opacity=".15"/>
+      <path d="M39 10L42 7L45 10" stroke="#0D9668" strokeWidth="1.5" strokeLinecap="round" opacity=".4"/>
     </svg>
   </div>
 )
@@ -141,8 +141,8 @@ interface LandingCard {
 }
 
 const CARDS: LandingCard[] = [
-  { id: 'tickets', label: 'Tickets', route: '/servicio/tickets', kpiLabel: 'Activos', geo: <GeoTickets />, geo2: <ColorTickets />, accent: '#3B82F6' },
-  { id: 'clientes', label: 'Clientes Activos', route: '/clientes/ficha', kpiLabel: 'Clientes', geo: <GeoClientes />, geo2: <ColorClientes />, accent: '#10B981' },
+  { id: 'tickets', label: 'Tickets', route: '/servicio/tickets', kpiLabel: 'Activos', geo: <GeoTickets />, geo2: <ColorTickets />, accent: '#3B6CE7' },
+  { id: 'clientes', label: 'Clientes Activos', route: '/clientes/ficha', kpiLabel: 'Clientes', geo: <GeoClientes />, geo2: <ColorClientes />, accent: '#0D9668' },
   { id: 'impo', label: 'ImportaciÃ³n', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO', geo: <GeoImpo />, geo2: <ColorImpo />, accent: '#8B5CF6' },
   { id: 'expo', label: 'ExportaciÃ³n', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO', geo: <GeoExpo />, geo2: <ColorExpo />, accent: '#F59E0B' },
 ]
