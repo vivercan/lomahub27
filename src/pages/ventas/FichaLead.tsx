@@ -35,7 +35,7 @@ const PIPELINE_STAGES = [
   { id: 'Nuevo', label: 'Nuevo', color: tokens.colors.blue },
   { id: 'Contactado', label: 'Contactado', color: tokens.colors.yellow },
   { id: 'Cotizado', label: 'Cotizado', color: tokens.colors.orange },
-  { id: 'Negociacion', label: 'Negociación', color: '#A855F7' },
+  { id: 'Negociacion', label: 'NegociaciÃ³n', color: '#A855F7' },
   { id: 'Cerrado Ganado', label: 'Cerrado Ganado', color: tokens.colors.green },
   { id: 'Cerrado Perdido', label: 'Cerrado Perdido', color: tokens.colors.red },
 ]
@@ -96,10 +96,11 @@ export default function FichaLead() {
       gap: '6px',
       padding: '6px 12px',
       borderRadius: tokens.radius.md,
-      border: `1px solid ${tokens.colors.border}`,
-      background: tokens.colors.bgCard,
-      color: tokens.colors.textSecondary,
+      border: '1px solid #D97706',
+      background: '#F59E0B',
+      color: '#FFFFFF',
       fontSize: '13px',
+      fontWeight: 600,
       fontFamily: tokens.fonts.body,
       cursor: 'pointer',
       transition: 'all 0.15s',
@@ -218,7 +219,7 @@ export default function FichaLead() {
       <ModuleLayout titulo="Lead">
         <div style={{ textAlign: 'center', padding: '60px', color: tokens.colors.textMuted }}>
           <p style={{ fontSize: '18px', fontWeight: 500, margin: 0, fontFamily: tokens.fonts.heading }}>Lead no encontrado</p>
-          <p style={{ fontSize: '14px', marginTop: '8px', fontFamily: tokens.fonts.body }}>No hay información disponible para este lead</p>
+          <p style={{ fontSize: '14px', marginTop: '8px', fontFamily: tokens.fonts.body }}>No hay informaciÃ³n disponible para este lead</p>
           <button style={{ ...s.actionBtn, marginTop: '16px', display: 'inline-flex' }} onClick={() => navigate('/ventas/mis-leads')}>
             <ArrowLeft size={14} /> Volver al Panel
           </button>
@@ -231,20 +232,20 @@ export default function FichaLead() {
 
   return (
     <ModuleLayout
-      titulo={`Lead — ${lead.empresa}`}
+      titulo={`Lead â ${lead.empresa}`}
       acciones={
         <button
           style={s.backBtn}
           onClick={() => navigate('/ventas/mis-leads')}
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgCard }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#D97706' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#F59E0B' }}
         >
           <ArrowLeft size={14} /> Volver
         </button>
       }
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%', overflow: 'hidden' }}>
-        {/* ── PIPELINE ── */}
+        {/* ââ PIPELINE ââ */}
         <div style={s.card}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {PIPELINE_STAGES.map((stage, idx) => {
@@ -269,7 +270,7 @@ export default function FichaLead() {
           </div>
         </div>
 
-        {/* ── BODY: 2 columns ── */}
+        {/* ââ BODY: 2 columns ââ */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px', flex: 1, minHeight: 0, overflow: 'auto' }}>
 
           {/* LEFT: Info del lead */}
@@ -296,7 +297,7 @@ export default function FichaLead() {
                   <div style={s.infoRow}>
                     <Phone size={15} style={{ color: tokens.colors.primary, flexShrink: 0 }} />
                     <div>
-                      <p style={s.label}>Teléfono</p>
+                      <p style={s.label}>TelÃ©fono</p>
                       <p style={s.value}>{lead.telefono}</p>
                     </div>
                   </div>
@@ -324,7 +325,7 @@ export default function FichaLead() {
 
             {/* Info comercial */}
             <div style={s.card}>
-              <p style={s.sectionTitle}>Información Comercial</p>
+              <p style={s.sectionTitle}>InformaciÃ³n Comercial</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {lead.ruta_interes && (
                   <div style={s.infoRow}>
@@ -416,7 +417,7 @@ export default function FichaLead() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Calendar size={15} style={{ color: tokens.colors.yellow }} />
                   <div>
-                    <p style={s.label}>Último Movimiento</p>
+                    <p style={s.label}>Ãltimo Movimiento</p>
                     <p style={s.value}>{formatDate(lead.fecha_ultimo_mov)}</p>
                   </div>
                 </div>
@@ -446,7 +447,7 @@ export default function FichaLead() {
                 <Plus size={14} /> Registrar Actividad
               </button>
               <button style={s.actionBtn}>
-                <FileText size={14} /> Crear Cotización
+                <FileText size={14} /> Crear CotizaciÃ³n
               </button>
               <button style={s.actionBtn}>
                 <UserCheck size={14} /> Convertir a Cliente
