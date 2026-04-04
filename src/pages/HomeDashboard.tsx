@@ -1,13 +1,13 @@
-// ╔══════════════════════════════════════════════════════════════════════════════╗
-// ║ 🛡️  BLINDAJE DASHBOARD V27f — ARCHIVO PROTEGIDO                           ║
-// ║                                                                            ║
-// ║  ESTILO: M1 REFINADO + 3D GEOMETRIC PREMIUM — Aprobado JJ 3/Abr/2026     ║
-// ║    • 9 cards (7+2): white + dual SVG layers (geometric + colorful)        ║
-// ║    • NO icons — solo nombre grande + figuras geométricas flotantes        ║
-// ║    • Hover: movimiento sutil de geometría en 2 capas                       ║
-// ║    • Fila 1: 7 cards | Fila 2: Comunicaciones + Config a la derecha       ║
-// ║    • Sin barra KPIs — eliminada por JJ 3/Abr/2026                         ║
-// ╚══════════════════════════════════════════════════════════════════════════════╝
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// â ð¡ï¸  BLINDAJE DASHBOARD V27f â ARCHIVO PROTEGIDO                           â
+// â                                                                            â
+// â  ESTILO: M1 REFINADO + 3D GEOMETRIC PREMIUM â Aprobado JJ 3/Abr/2026     â
+// â    â¢ 9 cards (7+2): white + dual SVG layers (geometric + colorful)        â
+// â    â¢ NO icons â solo nombre grande + figuras geomÃ©tricas flotantes        â
+// â    â¢ Hover: movimiento sutil de geometrÃ­a en 2 capas                       â
+// â    â¢ Fila 1: 7 cards | Fila 2: Comunicaciones + Config a la derecha       â
+// â    â¢ Sin barra KPIs â eliminada por JJ 3/Abr/2026                         â
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -32,13 +32,13 @@ interface CardConfig {
 }
 
 // ============================================================================
-// M1 REFINADO + 3D GEOMETRIC — VISUAL CONSTANTS
+// M1 REFINADO + 3D GEOMETRIC â VISUAL CONSTANTS
 // ============================================================================
 
 const DASH = {
   bg: '#E8EBF0',
   fontFamily: "'Montserrat', sans-serif",
-  fontBody: "'Inter', sans-serif",
+  fontBody: "'Montserrat', sans-serif",
   cardBg: 'linear-gradient(180deg, #FFFFFF 0%, #F6F7FA 100%)',
   cardBorder: '1px solid #CDD5E1',
   cardRadius: '14px',
@@ -64,7 +64,7 @@ const DOT_COLORS: Record<string, string> = {
 }
 
 // ============================================================================
-// 3D GEOMETRIC SVG PATTERNS — blue + orange mixed strokes
+// 3D GEOMETRIC SVG PATTERNS â blue + orange mixed strokes
 // ============================================================================
 
 const geoStyle: React.CSSProperties = {
@@ -79,7 +79,7 @@ const geoStyle: React.CSSProperties = {
   transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
 }
 
-// Oportunidades — ascending chevrons (blue + orange)
+// Oportunidades â ascending chevrons (blue + orange)
 const GeoOportunidades = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
@@ -90,7 +90,7 @@ const GeoOportunidades = () => (
   </div>
 )
 
-// Comercial — overlapping hexagons (blue + orange)
+// Comercial â overlapping hexagons (blue + orange)
 const GeoComercial = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.18 }}>
@@ -102,7 +102,7 @@ const GeoComercial = () => (
   </div>
 )
 
-// Servicio a Clientes — concentric arcs (blue + orange)
+// Servicio a Clientes â concentric arcs (blue + orange)
 const GeoServicio = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-15px', width: '65%', height: '75%', opacity: 0.18 }}>
@@ -114,7 +114,7 @@ const GeoServicio = () => (
   </div>
 )
 
-// Despacho Inteligente — isometric cubes (blue + orange)
+// Despacho Inteligente â isometric cubes (blue + orange)
 const GeoDespacho = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.18 }}>
@@ -137,7 +137,7 @@ const GeoDespacho = () => (
   </div>
 )
 
-// Ventas — rising bar chart (blue + orange) — NEW
+// Ventas â rising bar chart (blue + orange) â NEW
 const GeoVentas = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '65%', height: '75%', opacity: 0.18 }}>
@@ -150,7 +150,7 @@ const GeoVentas = () => (
   </div>
 )
 
-// Comunicaciones — radiating waves (blue + orange)
+// Comunicaciones â radiating waves (blue + orange)
 const GeoComunicaciones = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
@@ -163,7 +163,7 @@ const GeoComunicaciones = () => (
   </div>
 )
 
-// Cotizaciones — diamond cluster (blue + orange)
+// Cotizaciones â diamond cluster (blue + orange)
 const GeoCotizaciones = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '65%', height: '80%', opacity: 0.18 }}>
@@ -175,7 +175,7 @@ const GeoCotizaciones = () => (
   </div>
 )
 
-// Plantillas — layered offset rectangles (blue + orange)
+// Plantillas â layered offset rectangles (blue + orange)
 const GeoPlantillas = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
@@ -186,7 +186,7 @@ const GeoPlantillas = () => (
   </div>
 )
 
-// Config — interlocking gear polygon (blue + orange)
+// Config â interlocking gear polygon (blue + orange)
 const GeoConfig = () => (
   <div style={geoStyle} className="geo-inner">
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '60%', height: '70%', opacity: 0.18 }}>
@@ -197,8 +197,8 @@ const GeoConfig = () => (
 )
 
 // ============================================================================
-// COLORFUL MODULE-SPECIFIC SVGs (Propuesta 12 — Logística Colorida)
-// Positioned bottom-left — 20% bigger + more color saturation
+// COLORFUL MODULE-SPECIFIC SVGs (Propuesta 12 â LogÃ­stica Colorida)
+// Positioned bottom-left â 20% bigger + more color saturation
 // ============================================================================
 
 const colorStyle: React.CSSProperties = {
@@ -252,7 +252,7 @@ const ColorDespacho = () => (
   </div>
 )
 
-// Ventas — money + trend (NEW)
+// Ventas â money + trend (NEW)
 const ColorVentas = () => (
   <div style={geoStyle} className="color-inner">
     <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
@@ -338,7 +338,7 @@ export default function HomeDashboard() {
     navigate('/login')
   }
 
-  // KPI state — kept for card values, bar removed
+  // KPI state â kept for card values, bar removed
   const [kpis, setKpis] = useState({
     leadsActivos: 0, viajesActivos: 0, clientes: 0,
     segmentosDedicados: 0, cuentasCxc: 0, unidadesGps: 0,
@@ -386,7 +386,7 @@ export default function HomeDashboard() {
     return () => clearInterval(interval)
   }, [fetchKpis])
 
-  // ——— 9 CARD DEFINITIONS ———————————————————————————
+  // âââ 9 CARD DEFINITIONS âââââââââââââââââââââââââââ
   // Fila 1: Oportunidades, Comercial, Servicio, Despacho, Ventas, Cotizaciones, Plantillas
   // Fila 2: Comunicaciones (col 6) + Config (col 7)
   const mainCards: CardConfig[] = [
@@ -402,7 +402,7 @@ export default function HomeDashboard() {
       id: 'comercial', label: 'Comercial',
       route: '/ventas/dashboard',
       kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos',
-      statusDot: 'green', statusText: '11 submódulos',
+      statusDot: 'green', statusText: '11 submÃ³dulos',
       geo: <GeoComercial />,
       geo2: <ColorComercial />,
     },
@@ -410,7 +410,7 @@ export default function HomeDashboard() {
       id: 'servicio-clientes', label: 'Servicio a Clientes',
       route: '/servicio/dashboard',
       kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes',
-      statusDot: 'green', statusText: '3 submódulos',
+      statusDot: 'green', statusText: '3 submÃ³dulos',
       geo: <GeoServicio />,
       geo2: <ColorServicio />,
     },
@@ -459,7 +459,7 @@ export default function HomeDashboard() {
       geo2: <ColorComunicaciones />,
     },
     {
-      id: 'config', label: 'Configuración',
+      id: 'config', label: 'ConfiguraciÃ³n',
       route: '/admin/configuracion',
       kpiValue: '\u2699\uFE0F', kpiLabel: 'admin',
       statusDot: 'gray', statusText: 'Sistema',
@@ -468,7 +468,7 @@ export default function HomeDashboard() {
     },
   ]
 
-  // ——— CARD STYLE ——————————————————————————————————
+  // âââ CARD STYLE ââââââââââââââââââââââââââââââââââ
   const getCardStyle = (isHovered: boolean): React.CSSProperties => ({
     aspectRatio: '1 / 0.75',
     borderRadius: DASH.cardRadius,
@@ -487,7 +487,7 @@ export default function HomeDashboard() {
     boxShadow: isHovered ? DASH.cardHoverShadow : DASH.cardShadow,
   })
 
-  // ——— RENDER CARD ——————————————————————————————————
+  // âââ RENDER CARD ââââââââââââââââââââââââââââââââââ
   const renderCard = (card: CardConfig) => {
     const isHovered = hoveredCard === card.id
     return (
@@ -498,7 +498,7 @@ export default function HomeDashboard() {
         onMouseLeave={() => setHoveredCard(null)}
         style={getCardStyle(isHovered)}
       >
-        {/* 3D Geometric background — moves on hover */}
+        {/* 3D Geometric background â moves on hover */}
         <div style={{
           ...geoStyle,
           transform: isHovered ? 'translate(4px, -4px) scale(1.05)' : 'translate(0,0) scale(1)',
@@ -506,7 +506,7 @@ export default function HomeDashboard() {
           {card.geo}
         </div>
 
-        {/* Colorful module SVG — moves opposite direction on hover */}
+        {/* Colorful module SVG â moves opposite direction on hover */}
         {card.geo2 && (
           <div style={{
             ...geoStyle,
@@ -523,7 +523,7 @@ export default function HomeDashboard() {
           backgroundColor: DOT_COLORS[card.statusDot] || DOT_COLORS.gray,
         }} />
 
-        {/* Module name — BIG, no icon */}
+        {/* Module name â BIG, no icon */}
         <div style={{
           fontFamily: DASH.fontFamily,
           fontSize: DASH.titleSize,
@@ -567,7 +567,7 @@ export default function HomeDashboard() {
     )
   }
 
-  // ——— RENDER ————————————————————————————————————————
+  // âââ RENDER ââââââââââââââââââââââââââââââââââââââââ
   return (
     <div style={{
       height: '100vh',
@@ -580,10 +580,10 @@ export default function HomeDashboard() {
     }}>
       {/* CSS for hover geo animation */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
       `}</style>
 
-      {/* Zona 1 — AppHeader */}
+      {/* Zona 1 â AppHeader */}
       <AppHeader
         onLogout={handleLogout}
         userName={formatName(user?.email)}
@@ -591,7 +591,7 @@ export default function HomeDashboard() {
         userEmail={user?.email}
       />
 
-      {/* Zona 2 — Grid de Cards (sin barra KPIs) */}
+      {/* Zona 2 â Grid de Cards (sin barra KPIs) */}
       <div style={{
         flex: '1 1 auto',
         padding: DASH.gridPadding,
