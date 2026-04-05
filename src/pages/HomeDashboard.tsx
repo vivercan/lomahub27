@@ -63,17 +63,17 @@ const DOT_COLORS: Record<string, string> = {
   green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1',
 }
 
-// Acento cromático por módulo — solo para borderLeft, título y hover glow
+// Color sólido vívido por módulo — fondo completo de cada card
 const CARD_BG: Record<string, string> = {
-  'oportunidades': '#1D4ED8',
-  'comercial': '#0F4C5C',
-  'servicio-clientes': '#0F766E',
-  'despacho': '#B45309',
-  'ventas': '#047857',
-  'cotizaciones': '#A16207',
-  'plantillas': '#6D28D9',
-  'comunicaciones': '#BE185D',
-  'config': '#334155',
+  'oportunidades': '#2563EB',     // Vivid Blue
+  'comercial': '#0891B2',         // Vivid Cyan
+  'servicio-clientes': '#059669', // Vivid Emerald
+  'despacho': '#EA580C',          // Vivid Orange
+  'ventas': '#16A34A',            // Vivid Green
+  'cotizaciones': '#D97706',      // Vivid Amber
+  'plantillas': '#7C3AED',        // Vivid Violet
+  'comunicaciones': '#DB2777',    // Vivid Pink
+  'config': '#6366F1',            // Vivid Indigo
 }
 
 // ============================================================================
@@ -413,7 +413,7 @@ export default function HomeDashboard() {
     return () => clearInterval(interval)
   }, [fetchKpis])
 
-  // âââ 9 CARD DEFINITIONS ââââââââââââââââââââââââ
+  // âââ 9 CARD DEFINITIONS âââââââââââââââââââââââââ
   // Fila 1: Oportunidades, Comercial, Servicio, Despacho, Ventas, Cotizaciones, Plantillas
   // Fila 2: Comunicaciones (col 6) + Config (col 7)
   const mainCards: CardConfig[] = [
@@ -496,31 +496,25 @@ export default function HomeDashboard() {
   ]
 
   // âââ CARD STYLE ââââââââââââââââââââââââââââââââ
-  const getCardStyle = (isHovered: boolean, cardId?: string): React.CSSProperties => {
-    const moduleColor = cardId ? CARD_BG[cardId] : undefined
-    return {
-      aspectRatio: '1 / 0.75',
-      borderRadius: DASH.cardRadius,
-      padding: DASH.cardPadding,
-      background: DASH.cardBg,
-      border: DASH.cardBorder,
-      borderLeft: moduleColor ? `3.5px solid ${moduleColor}` : DASH.cardBorder,
-      cursor: 'pointer',
-      position: 'relative',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      justifyContent: 'flex-start',
-      transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-      transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
-      boxShadow: isHovered
-        ? `${DASH.cardHoverShadow}${moduleColor ? `, 0 8px 32px ${moduleColor}18` : ''}`
-        : DASH.cardShadow,
-    }
-  }
+  const getCardStyle = (isHovered: boolean, cardId?: string): React.CSSProperties => ({
+    aspectRatio: '1 / 0.75',
+    borderRadius: DASH.cardRadius,
+    padding: DASH.cardPadding,
+    background: (cardId && CARD_BG[cardId]) || DASH.cardBg,
+    border: 'none',
+    cursor: 'pointer',
+    position: 'relative',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+    transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
+    boxShadow: isHovered ? DASH.cardHoverShadow : DASH.cardShadow,
+  })
 
-  // âââ RENDER CARD ââââââââââââââââââââââââââââââââââ
+  // âââ RENDER CARD âââââââââââââââââââââââââââââââââ
   const renderCard = (card: CardConfig) => {
     const isHovered = hoveredCard === card.id
     return (
@@ -561,7 +555,7 @@ export default function HomeDashboard() {
           fontFamily: DASH.fontFamily,
           fontSize: DASH.titleSize,
           fontWeight: DASH.titleWeight,
-          color: CARD_BG[card.id] || DASH.titleColor,
+          color: '#FFFFFF',
           lineHeight: 1.2,
           marginBottom: 'auto',
           position: 'relative',
@@ -575,7 +569,7 @@ export default function HomeDashboard() {
           fontFamily: DASH.fontFamily,
           fontSize: DASH.kpiSize,
           fontWeight: DASH.kpiWeight,
-          color: DASH.kpiColor,
+          color: '#FFFFFF',
           lineHeight: 1,
           marginTop: '6px',
           position: 'relative',
@@ -589,7 +583,7 @@ export default function HomeDashboard() {
           fontFamily: DASH.fontBody,
           fontSize: DASH.subSize,
           fontWeight: DASH.subWeight,
-          color: DASH.subColor,
+          color: 'rgba(255,255,255,0.7)',
           marginTop: '3px',
           position: 'relative',
           zIndex: 1,
