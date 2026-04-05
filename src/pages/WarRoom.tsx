@@ -98,11 +98,11 @@ export default function WarRoom() {
         { count: gpsUnidades },
         { data: gpsRecent },
       ] = await Promise.all([
-        // Viajes activos
+        // Viajes activos (filtrar por estados operativos, NO por columna 'activo' que no existe)
         supabase
           .from('viajes')
           .select('*', { count: 'exact', head: true })
-          .eq('activo', true),
+          .in('estado', ['asignado', 'en_transito', 'en_curso', 'programado']),
         // Viajes en riesgo
         supabase
           .from('viajes')
@@ -147,13 +147,13 @@ export default function WarRoom() {
           .from('tickets')
           .select('*', { count: 'exact', head: true })
           .in('estado', ['abierto', 'en_progreso']),
-        // CXC cuentas
+        // CXC cartera (tabla real es cxc_cartera, NO cxc_cuentas)
         supabase
-          .from('cxc_cuentas')
+          .from('cxc_cartera')
           .select('*', { count: 'exact', head: true }),
-        // GPS unidades
+        // GPS unidades (tabla real es gps_tracking, NOT gps_unidades)
         supabase
-          .from('gps_unidades')
+          .from('gps_tracking')
           .select('*', { count: 'exact', head: true }),
         // GPS last tracking (most recent position)
         supabase
