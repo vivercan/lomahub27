@@ -282,6 +282,172 @@ export default function AppHeader({
             </span>
           </div>
 
+          {/* Bell — Notification icon */}
+          <div style={{ position: 'relative' }}>
+            <button
+              ref={bellButtonRef}
+              onClick={() => setShowNotifPanel((p) => !p)}
+              title="Notificaciones"
+              style={{
+                width: 36,
+                height: 36,
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+                transition: 'all 0.25s ease',
+                opacity: 0.7,
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.7'; }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E293B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+              {unreadCount > 0 && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: 4,
+                    right: 4,
+                    width: 16,
+                    height: 16,
+                    borderRadius: '50%',
+                    background: '#DC2626',
+                    color: '#FFFFFF',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    lineHeight: 1,
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}
+                >
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </button>
+
+            {/* Notification Panel */}
+            {showNotifPanel && (
+              <div
+                ref={notifPanelRef}
+                style={{
+                  position: 'absolute',
+                  top: 44,
+                  right: 0,
+                  width: 340,
+                  maxHeight: 420,
+                  background: '#FFFFFF',
+                  borderRadius: 12,
+                  boxShadow: '0 12px 40px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.08)',
+                  border: '1px solid #E2E8F0',
+                  overflow: 'hidden',
+                  zIndex: 100,
+                  fontFamily: "'Montserrat', sans-serif",
+                }}
+              >
+                {/* Panel header */}
+                <div
+                  style={{
+                    padding: '12px 16px',
+                    borderBottom: '1px solid #E2E8F0',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <span style={{ fontSize: 14, fontWeight: 700, color: '#1E293B' }}>
+                    Notificaciones
+                  </span>
+                  {unreadCount > 0 && (
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 600,
+                        color: '#3B6CE7',
+                        background: '#EFF6FF',
+                        padding: '2px 8px',
+                        borderRadius: 10,
+                      }}
+                    >
+                      {unreadCount} nueva{unreadCount > 1 ? 's' : ''}
+                    </span>
+                  )}
+                </div>
+
+                {/* Panel body */}
+                <div style={{ maxHeight: 360, overflowY: 'auto' }}>
+                  {loading && (
+                    <div style={{ padding: 20, textAlign: 'center', color: '#94A3B8', fontSize: 13 }}>
+                      Cargando...
+                    </div>
+                  )}
+                  {!loading && recent.length === 0 && (
+                    <div style={{ padding: 20, textAlign: 'center', color: '#94A3B8', fontSize: 13 }}>
+                      Sin notificaciones
+                    </div>
+                  )}
+                  {!loading &&
+                    recent.map((n) => (
+                      <div
+                        key={n.id}
+                        onClick={() => handleNotifClick(n)}
+                        style={{
+                          padding: '10px 16px',
+                          cursor: n.url_destino ? 'pointer' : 'default',
+                          borderBottom: '1px solid #F1F5F9',
+                          background: n.leida ? 'transparent' : '#F8FAFC',
+                          transition: 'background 0.15s ease',
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = '#F1F5F9'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = n.leida ? 'transparent' : '#F8FAFC'; }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                          <div
+                            style={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: '50%',
+                              background: n.leida ? 'transparent' : typeColor(n.tipo),
+                              marginTop: 5,
+                              flexShrink: 0,
+                            }}
+                          />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: '#1E293B', lineHeight: 1.3 }}>
+                              {n.titulo}
+                            </p>
+                            <p
+                              style={{
+                                margin: '2px 0 0',
+                                fontSize: 12,
+                                color: '#64748B',
+                                lineHeight: 1.4,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              {n.mensaje}
+                            </p>
+                            <p style={{ margin: '3px 0 0', fontSize: 11, color: '#94A3B8' }}>
+                              {timeAgo(n.created_at)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Logout — Power icon blue metallic */}
           <button
             onClick={onLogout}
