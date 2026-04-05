@@ -63,6 +63,19 @@ const DOT_COLORS: Record<string, string> = {
   green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1',
 }
 
+// Paleta sólida por card (prueba visual JJ 4/Abr/2026)
+const CARD_BG: Record<string, string> = {
+  'oportunidades': '#1D4ED8',
+  'comercial': '#0F4C5C',
+  'servicio-clientes': '#0F766E',
+  'despacho': '#B45309',
+  'ventas': '#047857',
+  'cotizaciones': '#A16207',
+  'plantillas': '#6D28D9',
+  'comunicaciones': '#BE185D',
+  'config': '#334155',
+}
+
 // ============================================================================
 // 3D GEOMETRIC SVG PATTERNS â blue + orange mixed strokes
 // ============================================================================
@@ -199,7 +212,7 @@ const GeoConfig = () => (
 // ============================================================================
 // COLORFUL MODULE-SPECIFIC SVGs (Propuesta 12 â Logística Colorida)
 // Positioned bottom-left â 20% bigger + more color saturation
-// ============================================================================
+// ===============================================================================
 
 const colorStyle: React.CSSProperties = {
   position: 'absolute', bottom: '-8px', left: '-8px',
@@ -400,7 +413,7 @@ export default function HomeDashboard() {
     return () => clearInterval(interval)
   }, [fetchKpis])
 
-  // âââ 9 CARD DEFINITIONS âââââââââââââââââââââââââââ
+  // âââ 9 CARD DEFINITIONS ââââââââââââââââââââââââââ
   // Fila 1: Oportunidades, Comercial, Servicio, Despacho, Ventas, Cotizaciones, Plantillas
   // Fila 2: Comunicaciones (col 6) + Config (col 7)
   const mainCards: CardConfig[] = [
@@ -482,12 +495,12 @@ export default function HomeDashboard() {
     },
   ]
 
-  // âââ CARD STYLE ââââââââââââââââââââââââââââââââââ
-  const getCardStyle = (isHovered: boolean): React.CSSProperties => ({
+  // âââ CARD STYLE ââââââââââââââââââââââââââââââââ
+  const getCardStyle = (isHovered: boolean, cardId?: string): React.CSSProperties => ({
     aspectRatio: '1 / 0.75',
     borderRadius: DASH.cardRadius,
     padding: DASH.cardPadding,
-    background: DASH.cardBg,
+    background: (cardId && CARD_BG[cardId]) || DASH.cardBg,
     border: DASH.cardBorder,
     cursor: 'pointer',
     position: 'relative',
@@ -510,7 +523,7 @@ export default function HomeDashboard() {
         onClick={() => navigate(card.route)}
         onMouseEnter={() => setHoveredCard(card.id)}
         onMouseLeave={() => setHoveredCard(null)}
-        style={getCardStyle(isHovered)}
+        style={getCardStyle(isHovered, card.id)}
       >
         {/* 3D Geometric background â moves on hover */}
         <div style={{
