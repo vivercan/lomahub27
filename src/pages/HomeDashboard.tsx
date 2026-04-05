@@ -338,47 +338,61 @@ export default function HomeDashboard() {
     navigate('/login')
   }
 
-  // KPI state â kept for card values, bar removed
+  // KPI state — kept for card values, bar removed
   const [kpis, setKpis] = useState({
     leadsActivos: 0, viajesActivos: 0, clientes: 0,
     segmentosDedicados: 0, cuentasCxc: 0, unidadesGps: 0,
     alertasHoy: 0, formatosActivos: 0, leadsPipeline: 0,
     tractosTotal: 0, cajasTotal: 0,
   })
+  const [kpisLoaded, setKpisLoaded] = useState(false)
 
   const fetchKpis = useCallback(async () => {
-    try {
-      const [
-        { count: leads }, { count: viajes }, { count: clientes },
-        { count: dedicados }, { count: cxc }, { count: gps },
-        { count: formatosActivos }, { count: viajesRiesgo },
-        { count: notifUnread }, { count: tractos }, { count: cajas },
-      ] = await Promise.all([
-        supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null),
-        supabase.from('viajes').select('*', { count: 'exact', head: true }).in('estado', ['asignado', 'en_transito', 'en_curso', 'programado']),
-        supabase.from('clientes').select('*', { count: 'exact', head: true }).is('deleted_at', null),
-        supabase.from('formatos_venta').select('*', { count: 'exact', head: true }).eq('tipo_servicio', 'DEDICADO'),
-        supabase.from('cxc_cartera').select('*', { count: 'exact', head: true }),
-        supabase.from('gps_tracking').select('*', { count: 'exact', head: true }),
-        supabase.from('formatos_venta').select('*', { count: 'exact', head: true }).eq('activo', true),
-        supabase.from('viajes').select('*', { count: 'exact', head: true }).in('estado', ['en_riesgo', 'retrasado']),
-        supabase.from('notificaciones').select('*', { count: 'exact', head: true }).eq('leida', false).is('deleted_at', null),
-        supabase.from('tractos').select('*', { count: 'exact', head: true }).eq('activo', true),
-        supabase.from('cajas').select('*', { count: 'exact', head: true }).eq('activo', true),
-      ])
-      const totalAlertas = (viajesRiesgo ?? 0) + (notifUnread ?? 0)
-      setKpis({
-        leadsActivos: leads ?? 0, viajesActivos: viajes ?? 0,
-        clientes: clientes ?? 0, segmentosDedicados: dedicados ?? 0,
-        cuentasCxc: cxc ?? 0, unidadesGps: gps ?? 0,
-        alertasHoy: totalAlertas, formatosActivos: formatosActivos ?? 0,
-        leadsPipeline: leads ?? 0, tractosTotal: tractos ?? 0,
-        cajasTotal: cajas ?? 0,
-      })
-    } catch (err) {
-      console.error('Error fetching KPIs:', err)
+    // Verify active session — if expired, redirect to login
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      console.warn('[KPI] No active session — redirecting to login')
+      navigate('/login')
+      return
     }
-  }, [])
+
+    // Safe count helper: logs individual failures instead of breaking all KPIs
+    const sc = async (table: string, fn?: (q: any) => any): Promise<number> => {
+      try {
+        const base = supabase.from(table).select('*', { count: 'exact', head: true })
+        const { count, error } = await (fn ? fn(base) : base)
+        if (error) { console.warn(`[KPI] ${table}:`, error.message); return 0 }
+        return count ?? 0
+      } catch (e) { console.warn(`[KPI] ${table} exception:`, e); return 0 }
+    }
+
+    const [
+      leads, viajes, clientes, dedicados, cxc, gps,
+      formatosActivos, viajesRiesgo, notifUnread, tractos, cajas,
+    ] = await Promise.all([
+      sc('leads', q => q.is('deleted_at', null)),
+      sc('viajes', q => q.in('estado', ['asignado', 'en_transito', 'en_curso', 'programado'])),
+      sc('clientes', q => q.is('deleted_at', null)),
+      sc('formatos_venta', q => q.eq('tipo_servicio', 'DEDICADO')),
+      sc('cxc_cartera'),
+      sc('gps_tracking'),
+      sc('formatos_venta', q => q.eq('activo', true)),
+      sc('viajes', q => q.in('estado', ['en_riesgo', 'retrasado'])),
+      sc('notificaciones', q => q.eq('leida', false).is('deleted_at', null)),
+      sc('tractos', q => q.eq('activo', true)),
+      sc('cajas', q => q.eq('activo', true)),
+    ])
+
+    setKpis({
+      leadsActivos: leads, viajesActivos: viajes,
+      clientes, segmentosDedicados: dedicados,
+      cuentasCxc: cxc, unidadesGps: gps,
+      alertasHoy: viajesRiesgo + notifUnread,
+      formatosActivos, leadsPipeline: leads,
+      tractosTotal: tractos, cajasTotal: cajas,
+    })
+    setKpisLoaded(true)
+  }, [navigate])
 
   useEffect(() => {
     fetchKpis()
@@ -548,7 +562,7 @@ export default function HomeDashboard() {
           position: 'relative',
           zIndex: 1,
         }}>
-          {card.kpiValue}
+          {!kpisLoaded && typeof card.kpiValue === 'number' ? '...' : card.kpiValue}
         </div>
 
         {/* Subtitle */}
