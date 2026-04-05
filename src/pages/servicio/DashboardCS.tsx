@@ -142,7 +142,7 @@ interface LandingCard {
 
 const CARDS: LandingCard[] = [
   { id: 'tickets', label: 'Tickets', route: '/servicio/tickets', kpiLabel: 'Activos', geo: <GeoTickets />, geo2: <ColorTickets />, accent: '#2563EB' },
-  { id: 'clientes', label: 'Clientes Activos', route: '/clientes/ficha', kpiLabel: 'Clientes', geo: <GeoClientes />, geo2: <ColorClientes />, accent: '#059669' },
+  { id: 'clientes', label: 'Clientes Activos', route: '/clientes/corporativos', kpiLabel: 'Clientes', geo: <GeoClientes />, geo2: <ColorClientes />, accent: '#059669' },
   { id: 'impo', label: 'Importación', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO', geo: <GeoImpo />, geo2: <ColorImpo />, accent: '#7C3AED' },
   { id: 'expo', label: 'Exportación', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO', geo: <GeoExpo />, geo2: <ColorExpo />, accent: '#D97706' },
 ]
