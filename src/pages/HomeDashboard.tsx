@@ -63,7 +63,7 @@ const DOT_COLORS: Record<string, string> = {
   green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1',
 }
 
-// Paleta sólida por card (prueba visual JJ 4/Abr/2026)
+// Acento cromático por módulo — solo para borderLeft, título y hover glow
 const CARD_BG: Record<string, string> = {
   'oportunidades': '#1D4ED8',
   'comercial': '#0F4C5C',
@@ -413,7 +413,7 @@ export default function HomeDashboard() {
     return () => clearInterval(interval)
   }, [fetchKpis])
 
-  // âââ 9 CARD DEFINITIONS ââââââââââââââââââââââââââ
+  // âââ 9 CARD DEFINITIONS ââââââââââââââââââââââââ
   // Fila 1: Oportunidades, Comercial, Servicio, Despacho, Ventas, Cotizaciones, Plantillas
   // Fila 2: Comunicaciones (col 6) + Config (col 7)
   const mainCards: CardConfig[] = [
@@ -496,23 +496,29 @@ export default function HomeDashboard() {
   ]
 
   // âââ CARD STYLE ââââââââââââââââââââââââââââââââ
-  const getCardStyle = (isHovered: boolean, cardId?: string): React.CSSProperties => ({
-    aspectRatio: '1 / 0.75',
-    borderRadius: DASH.cardRadius,
-    padding: DASH.cardPadding,
-    background: (cardId && CARD_BG[cardId]) || DASH.cardBg,
-    border: DASH.cardBorder,
-    cursor: 'pointer',
-    position: 'relative',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-    transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
-    boxShadow: isHovered ? DASH.cardHoverShadow : DASH.cardShadow,
-  })
+  const getCardStyle = (isHovered: boolean, cardId?: string): React.CSSProperties => {
+    const moduleColor = cardId ? CARD_BG[cardId] : undefined
+    return {
+      aspectRatio: '1 / 0.75',
+      borderRadius: DASH.cardRadius,
+      padding: DASH.cardPadding,
+      background: DASH.cardBg,
+      border: DASH.cardBorder,
+      borderLeft: moduleColor ? `3.5px solid ${moduleColor}` : DASH.cardBorder,
+      cursor: 'pointer',
+      position: 'relative',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+      transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+      transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
+      boxShadow: isHovered
+        ? `${DASH.cardHoverShadow}${moduleColor ? `, 0 8px 32px ${moduleColor}18` : ''}`
+        : DASH.cardShadow,
+    }
+  }
 
   // âââ RENDER CARD ââââââââââââââââââââââââââââââââââ
   const renderCard = (card: CardConfig) => {
@@ -555,7 +561,7 @@ export default function HomeDashboard() {
           fontFamily: DASH.fontFamily,
           fontSize: DASH.titleSize,
           fontWeight: DASH.titleWeight,
-          color: DASH.titleColor,
+          color: CARD_BG[card.id] || DASH.titleColor,
           lineHeight: 1.2,
           marginBottom: 'auto',
           position: 'relative',
