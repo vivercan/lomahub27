@@ -144,10 +144,10 @@ interface LandingCard {
 }
 
 const CARDS: LandingCard[] = [
-  { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/leads', kpiLabel: 'Pipeline activo', geo: <GeoOportunidades />, geo2: <ColorOportunidades />, accent: '#2563EB' },
+  { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', kpiLabel: 'Pipeline activo', geo: <GeoOportunidades />, geo2: <ColorOportunidades />, accent: '#2563EB' },
   { id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva', kpiLabel: 'Pendientes', geo: <GeoCotizaciones />, geo2: <ColorCotizaciones />, accent: '#059669' },
   { id: 'comisiones', label: 'Comisiones', route: '/ventas/comisiones', kpiLabel: 'Vendedores', geo: <GeoComisiones />, geo2: <ColorComisiones />, accent: '#7C3AED' },
-  { id: 'programa', label: 'Programa Semanal', route: '/ventas/programa', kpiLabel: 'Esta semana', geo: <GeoPrograma />, geo2: <ColorPrograma />, accent: '#D97706' },
+  { id: 'programa', label: 'Programa Semanal', route: '/ventas/programa-semanal', kpiLabel: 'Esta semana', geo: <GeoPrograma />, geo2: <ColorPrograma />, accent: '#D97706' },
 ]
 
 /* ââ Component ââ */
