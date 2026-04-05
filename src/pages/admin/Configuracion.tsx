@@ -43,10 +43,10 @@ const geoStyle: React.CSSProperties = {
 const GeoUsuarios = () => (
   <div style={geoStyle}>
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <circle cx="100" cy="45" r="22" fill="none" stroke="#3B6CE7" strokeWidth="1.2" />
-      <circle cx="130" cy="65" r="18" fill="none" stroke="#F59E0B" strokeWidth="1" />
-      <circle cx="75" cy="70" r="16" fill="none" stroke="#3B6CE7" strokeWidth="0.8" />
-      <path d="M70,100 Q100,80 130,100" fill="none" stroke="#F59E0B" strokeWidth="1" />
+      <circle cx="100" cy="45" r="22" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
+      <circle cx="130" cy="65" r="18" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
+      <circle cx="75" cy="70" r="16" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
+      <path d="M70,100 Q100,80 130,100" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
     </svg>
   </div>
 )
@@ -54,10 +54,10 @@ const GeoUsuarios = () => (
 const GeoCatalogos = () => (
   <div style={geoStyle}>
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <rect x="65" y="25" width="60" height="45" rx="4" fill="none" stroke="#0D9668" strokeWidth="1.2" />
-      <rect x="80" y="40" width="60" height="45" rx="4" fill="none" stroke="#F59E0B" strokeWidth="1" />
-      <line x1="75" y1="42" x2="115" y2="42" stroke="#0D9668" strokeWidth="0.8" />
-      <line x1="75" y1="50" x2="110" y2="50" stroke="#0D9668" strokeWidth="0.6" />
+      <rect x="65" y="25" width="60" height="45" rx="4" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
+      <rect x="80" y="40" width="60" height="45" rx="4" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
+      <line x1="75" y1="42" x2="115" y2="42" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
+      <line x1="75" y1="50" x2="110" y2="50" stroke="rgba(255,255,255,0.5)" strokeWidth="0.6" />
     </svg>
   </div>
 )
@@ -65,12 +65,12 @@ const GeoCatalogos = () => (
 const GeoParametros = () => (
   <div style={geoStyle}>
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <line x1="70" y1="40" x2="160" y2="40" stroke="#F59E0B" strokeWidth="1.2" />
-      <circle cx="110" cy="40" r="6" fill="none" stroke="#3B6CE7" strokeWidth="1.5" />
-      <line x1="70" y1="65" x2="160" y2="65" stroke="#F59E0B" strokeWidth="1" />
-      <circle cx="130" cy="65" r="6" fill="none" stroke="#3B6CE7" strokeWidth="1.5" />
-      <line x1="70" y1="90" x2="160" y2="90" stroke="#F59E0B" strokeWidth="0.8" />
-      <circle cx="90" cy="90" r="6" fill="none" stroke="#3B6CE7" strokeWidth="1.5" />
+      <line x1="70" y1="40" x2="160" y2="40" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
+      <circle cx="110" cy="40" r="6" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
+      <line x1="70" y1="65" x2="160" y2="65" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
+      <circle cx="130" cy="65" r="6" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
+      <line x1="70" y1="90" x2="160" y2="90" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
+      <circle cx="90" cy="90" r="6" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
     </svg>
   </div>
 )
@@ -78,10 +78,10 @@ const GeoParametros = () => (
 const GeoIntegraciones = () => (
   <div style={geoStyle}>
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <circle cx="90" cy="55" r="18" fill="none" stroke="#8B5CF6" strokeWidth="1.2" />
-      <circle cx="140" cy="55" r="18" fill="none" stroke="#F59E0B" strokeWidth="1" />
-      <line x1="108" y1="55" x2="122" y2="55" stroke="#3B6CE7" strokeWidth="1.5" strokeDasharray="4 3" />
-      <circle cx="115" cy="85" r="12" fill="none" stroke="#3B6CE7" strokeWidth="0.8" />
+      <circle cx="90" cy="55" r="18" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
+      <circle cx="140" cy="55" r="18" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
+      <line x1="108" y1="55" x2="122" y2="55" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeDasharray="4 3" />
+      <circle cx="115" cy="85" r="12" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
     </svg>
   </div>
 )
@@ -89,8 +89,8 @@ const GeoIntegraciones = () => (
 const GeoAuditoria = () => (
   <div style={geoStyle}>
     <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <path d="M100,25 L130,45 L120,80 L80,80 L70,45 Z" fill="none" stroke="#C53030" strokeWidth="1.2" />
-      <path d="M90,55 L100,65 L120,45" fill="none" stroke="#F59E0B" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M100,25 L130,45 L120,80 L80,80 L70,45 Z" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
+      <path d="M90,55 L100,65 L120,45" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   </div>
 )
@@ -102,15 +102,16 @@ interface ConfigCard {
   route: string
   subtitle: string
   dot: string
+  accent: string
   geo: React.ReactNode
 }
 
 const CARDS: ConfigCard[] = [
-  { id: 'usuarios', label: 'Usuarios', route: '/admin/configuracion/usuarios', subtitle: 'Roles y permisos', dot: 'blue', geo: <GeoUsuarios /> },
-  { id: 'catalogos', label: 'Catálogos', route: '/admin/configuracion/catalogos', subtitle: 'Tipos y estados', dot: 'green', geo: <GeoCatalogos /> },
-  { id: 'parametros', label: 'Parámetros', route: '/admin/configuracion/parametros', subtitle: 'Tarifas y costos', dot: 'yellow', geo: <GeoParametros /> },
-  { id: 'integraciones', label: 'Integraciones', route: '/admin/configuracion/integraciones', subtitle: 'ANODOS, GPS, WhatsApp', dot: 'purple', geo: <GeoIntegraciones /> },
-  { id: 'auditoria', label: 'Auditoría', route: '/admin/configuracion/auditoria', subtitle: 'Actividad del sistema', dot: 'red', geo: <GeoAuditoria /> },
+  { id: 'usuarios', label: 'Usuarios', route: '/admin/configuracion/usuarios', subtitle: 'Roles y permisos', dot: 'blue', accent: '#2563EB', geo: <GeoUsuarios /> },
+  { id: 'catalogos', label: 'Catálogos', route: '/admin/configuracion/catalogos', subtitle: 'Tipos y estados', dot: 'green', accent: '#059669', geo: <GeoCatalogos /> },
+  { id: 'parametros', label: 'Parámetros', route: '/admin/configuracion/parametros', subtitle: 'Tarifas y costos', dot: 'yellow', accent: '#D97706', geo: <GeoParametros /> },
+  { id: 'integraciones', label: 'Integraciones', route: '/admin/configuracion/integraciones', subtitle: 'ANODOS, GPS, WhatsApp', dot: 'purple', accent: '#7C3AED', geo: <GeoIntegraciones /> },
+  { id: 'auditoria', label: 'Auditoría', route: '/admin/configuracion/auditoria', subtitle: 'Actividad del sistema', dot: 'red', accent: '#DC2626', geo: <GeoAuditoria /> },
 ]
 
 /* ââ Component ââ */
@@ -118,12 +119,12 @@ export default function Configuracion() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
 
-  const getCardStyle = (isH: boolean): React.CSSProperties => ({
+  const getCardStyle = (isH: boolean, accent: string): React.CSSProperties => ({
     aspectRatio: '1 / 0.75',
     borderRadius: DASH.cardRadius,
     padding: DASH.cardPadding,
-    background: DASH.cardBg,
-    border: DASH.cardBorder,
+    background: accent,
+    border: 'none',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
@@ -133,7 +134,7 @@ export default function Configuracion() {
     justifyContent: 'flex-start',
     transition: 'transform 0.25s ease, box-shadow 0.25s ease',
     transform: isH ? 'translateY(-3px)' : 'translateY(0)',
-    boxShadow: isH ? DASH.cardHoverShadow : DASH.cardShadow,
+    boxShadow: isH ? '0 6px 20px rgba(0,0,0,0.25)' : '0 2px 8px rgba(0,0,0,0.15)',
   })
 
   return (
@@ -159,7 +160,7 @@ export default function Configuracion() {
             return (
               <div
                 key={card.id}
-                style={getCardStyle(isH)}
+                style={getCardStyle(isH, card.accent)}
                 onMouseEnter={() => setHovered(card.id)}
                 onMouseLeave={() => setHovered(null)}
                 onClick={() => navigate(card.route)}
@@ -184,7 +185,7 @@ export default function Configuracion() {
                   fontFamily: DASH.fontFamily,
                   fontSize: DASH.titleSize,
                   fontWeight: DASH.titleWeight,
-                  color: DASH.titleColor,
+                  color: '#FFFFFF',
                   lineHeight: 1.2,
                   marginBottom: 'auto',
                   position: 'relative',
@@ -197,7 +198,7 @@ export default function Configuracion() {
                 <div style={{
                   fontFamily: DASH.fontBody,
                   fontSize: DASH.subSize,
-                  color: DASH.subColor,
+                  color: 'rgba(255,255,255,0.7)',
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 1,
