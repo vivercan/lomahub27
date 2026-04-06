@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { CARD_ICON_POS, CARD_ICON_P, CARD_ICON_S } from '../../lib/cardIconStyle'
+import { Filter, Receipt, Percent, Calendar } from 'lucide-react'
 
 /* ———————————————————————————————————————————————————————————————
    COMERCIAL — Landing Page (alineada a plantilla madre del dashboard)
@@ -38,54 +39,12 @@ const iconWrap: React.CSSProperties = {
 
 const svgPos: React.CSSProperties = CARD_ICON_POS
 
-/* 1. Oportunidades — Funnel/Pipeline ascending */
-const IconOportunidades = () => (
-  <svg viewBox="0 0 200 140" style={svgPos}>
-    <polygon points="55,25 145,25 125,65 75,65" fill="none" stroke={P} strokeWidth="2.5" strokeLinejoin="round" />
-    <rect x="75" y="65" width="50" height="45" rx="3" fill="none" stroke={P} strokeWidth="2.5" />
-    <line x1="75" y1="85" x2="125" y2="85" stroke={S} strokeWidth="1.5" />
-    <path d="M100,58 L100,32" stroke={P} strokeWidth="2" strokeLinecap="round" />
-    <path d="M92,40 L100,32 L108,40" fill="none" stroke={P} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-)
-
-/* 2. Cotizaciones — Document with $ */
-const IconCotizaciones = () => (
-  <svg viewBox="0 0 200 140" style={svgPos}>
-    <rect x="58" y="12" width="75" height="100" rx="6" fill="none" stroke={P} strokeWidth="2.5" />
-    <line x1="74" y1="38" x2="118" y2="38" stroke={S} strokeWidth="1.5" strokeLinecap="round" />
-    <line x1="74" y1="52" x2="108" y2="52" stroke={S} strokeWidth="1.5" strokeLinecap="round" />
-    <line x1="74" y1="66" x2="98" y2="66" stroke={S} strokeWidth="1.5" strokeLinecap="round" />
-    <text x="112" y="92" fontSize="28" fontFamily="Montserrat" fontWeight="700" fill="none" stroke={P} strokeWidth="1.5">$</text>
-  </svg>
-)
-
-/* 3. Comisiones — Circle with % */
-const IconComisiones = () => (
-  <svg viewBox="0 0 200 140" style={svgPos}>
-    <circle cx="100" cy="68" r="38" fill="none" stroke={P} strokeWidth="2.5" />
-    <circle cx="100" cy="68" r="26" fill="none" stroke={S} strokeWidth="1.5" />
-    <circle cx="85" cy="55" r="6" fill="none" stroke={P} strokeWidth="2" />
-    <circle cx="115" cy="82" r="6" fill="none" stroke={P} strokeWidth="2" />
-    <line x1="120" y1="48" x2="82" y2="90" stroke={P} strokeWidth="2.5" strokeLinecap="round" />
-  </svg>
-)
-
-/* 4. Programa Semanal — Calendar grid */
-const IconPrograma = () => (
-  <svg viewBox="0 0 200 140" style={svgPos}>
-    <rect x="40" y="22" width="120" height="90" rx="6" fill="none" stroke={P} strokeWidth="2.5" />
-    <line x1="40" y1="44" x2="160" y2="44" stroke={P} strokeWidth="2" />
-    <line x1="70" y1="22" x2="70" y2="112" stroke={S} strokeWidth="1.2" />
-    <line x1="100" y1="22" x2="100" y2="112" stroke={S} strokeWidth="1.2" />
-    <line x1="130" y1="22" x2="130" y2="112" stroke={S} strokeWidth="1.2" />
-    <line x1="40" y1="66" x2="160" y2="66" stroke={S} strokeWidth="1.2" />
-    <line x1="40" y1="88" x2="160" y2="88" stroke={S} strokeWidth="1.2" />
-    <rect x="56" y="14" width="6" height="16" rx="1.5" fill={P} />
-    <rect x="138" y="14" width="6" height="16" rx="1.5" fill={P} />
-    <rect x="104" y="70" width="22" height="14" rx="2" fill={S} stroke={P} strokeWidth="1.5" />
-  </svg>
-)
+// Lucide premium outline family — single visual family via cardIconStyle.ts
+const lucideStyle = { ...svgPos, color: P } as React.CSSProperties
+const IconOportunidades = () => (<Filter style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
+const IconCotizaciones = () => (<Receipt style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
+const IconComisiones = () => (<Percent style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
+const IconPrograma = () => (<Calendar style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
 
 /* —— Card Config —— */
 interface LandingCard {
