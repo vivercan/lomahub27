@@ -86,8 +86,8 @@ const iconWrap: React.CSSProperties = {
 }
 
 const svgPos: React.CSSProperties = {
-  position: 'absolute', right: '-5px', bottom: '-5px',
-  width: '60%', height: '70%',
+  position: 'absolute', right: '-18%', bottom: '-16%',
+  width: '95%', height: '112%',
 }
 
 // 1. Oportunidades — Funnel/Pipeline ascending
