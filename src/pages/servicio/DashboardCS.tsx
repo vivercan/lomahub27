@@ -36,8 +36,8 @@ const iconWrap: React.CSSProperties = {
 }
 
 const svgPos: React.CSSProperties = {
-  position: 'absolute', right: '-5px', bottom: '-5px',
-  width: '58%', height: '68%',
+  position: 'absolute', right: '-18%', bottom: '-16%',
+  width: '95%', height: '112%',
 }
 
 /* 1. Tickets — Ticket with checkmark */
