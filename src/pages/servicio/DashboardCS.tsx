@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { CARD_ICON_POS, CARD_ICON_P, CARD_ICON_S } from '../../lib/cardIconStyle'
+import { Ticket, Users, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react'
 
 /* ———————————————————————————————————————————————————————————————
    SERVICIO A CLIENTES — Landing Page (alineada a plantilla madre)
@@ -38,54 +39,12 @@ const iconWrap: React.CSSProperties = {
 
 const svgPos: React.CSSProperties = CARD_ICON_POS
 
-/* 1. Tickets — Ticket with checkmark */
-const IconTickets = () => (
-  <svg viewBox="0 0 200 140" style={svgPos}>
-    <path d="M45,40 L155,40 L155,70 Q145,70 145,80 Q145,90 155,90 L155,115 L45,115 L45,90 Q55,90 55,80 Q55,70 45,70 Z" fill="none" stroke={P} strokeWidth="2.5" strokeLinejoin="round" />
-    <line x1="100" y1="40" x2="100" y2="115" stroke={S} strokeWidth="1.5" strokeDasharray="4 3" />
-    <path d="M70,78 L82,90 L105,64" fill="none" stroke={P} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-    <line x1="115" y1="70" x2="140" y2="70" stroke={S} strokeWidth="1.5" />
-    <line x1="115" y1="82" x2="135" y2="82" stroke={S} strokeWidth="1.5" />
-  </svg>
-)
-
-/* 2. Clientes Activos — Three figures / team */
-const IconClientes = () => (
-  <svg viewBox="0 0 200 140" style={svgPos}>
-    <circle cx="100" cy="42" r="14" fill="none" stroke={P} strokeWidth="2.5" />
-    <path d="M78,90 Q78,66 100,66 Q122,66 122,90 L122,100 L78,100 Z" fill="none" stroke={P} strokeWidth="2.5" strokeLinejoin="round" />
-    <circle cx="62" cy="55" r="10" fill="none" stroke={P} strokeWidth="2" />
-    <path d="M46,95 Q46,76 62,76 Q72,76 77,83" fill="none" stroke={P} strokeWidth="2" strokeLinejoin="round" />
-    <circle cx="138" cy="55" r="10" fill="none" stroke={P} strokeWidth="2" />
-    <path d="M154,95 Q154,76 138,76 Q128,76 123,83" fill="none" stroke={P} strokeWidth="2" strokeLinejoin="round" />
-  </svg>
-)
-
-/* 3. Importación — Inbound arrow into container */
-const IconImpo = () => (
-  <svg viewBox="0 0 200 140" style={svgPos}>
-    <rect x="40" y="55" width="85" height="55" rx="4" fill="none" stroke={P} strokeWidth="2.5" />
-    <line x1="58" y1="70" x2="58" y2="110" stroke={S} strokeWidth="1.2" />
-    <line x1="80" y1="70" x2="80" y2="110" stroke={S} strokeWidth="1.2" />
-    <line x1="102" y1="70" x2="102" y2="110" stroke={S} strokeWidth="1.2" />
-    <line x1="125" y1="82" x2="168" y2="82" stroke={P} strokeWidth="2.5" strokeLinecap="round" />
-    <path d="M135,72 L125,82 L135,92" fill="none" stroke={P} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="168" cy="82" r="4" fill={S} />
-  </svg>
-)
-
-/* 4. Exportación — Outbound arrow from container */
-const IconExpo = () => (
-  <svg viewBox="0 0 200 140" style={svgPos}>
-    <rect x="30" y="55" width="85" height="55" rx="4" fill="none" stroke={P} strokeWidth="2.5" />
-    <line x1="48" y1="70" x2="48" y2="110" stroke={S} strokeWidth="1.2" />
-    <line x1="70" y1="70" x2="70" y2="110" stroke={S} strokeWidth="1.2" />
-    <line x1="92" y1="70" x2="92" y2="110" stroke={S} strokeWidth="1.2" />
-    <line x1="115" y1="82" x2="168" y2="82" stroke={P} strokeWidth="2.5" strokeLinecap="round" />
-    <path d="M158,72 L168,82 L158,92" fill="none" stroke={P} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="115" cy="82" r="4" fill={S} />
-  </svg>
-)
+// Lucide premium outline family — single visual family via cardIconStyle.ts
+const lucideStyle = { ...svgPos, color: P } as React.CSSProperties
+const IconTickets = () => (<Ticket style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
+const IconClientes = () => (<Users style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
+const IconImpo = () => (<ArrowDownToLine style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
+const IconExpo = () => (<ArrowUpFromLine style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
 
 /* —— Card Config —— */
 interface LandingCard {
