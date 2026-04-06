@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
+import { CARD_ICON_POS, CARD_ICON_P, CARD_ICON_S } from '../../lib/cardIconStyle'
 
 /* ———————————————————————————————————————————————————————————————
    COMERCIAL — Landing Page (alineada a plantilla madre del dashboard)
@@ -24,8 +25,8 @@ const D = {
 
 const DOT: Record<string, string> = { green: '#0D9668', gray: '#CBD5E1' }
 
-const P = 'rgba(255,255,255,0.13)'
-const S = 'rgba(255,255,255,0.09)'
+const P = CARD_ICON_P
+const S = CARD_ICON_S
 
 const iconWrap: React.CSSProperties = {
   position: 'absolute',
@@ -35,12 +36,7 @@ const iconWrap: React.CSSProperties = {
   transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
 }
 
-const svgPos: React.CSSProperties = {
-  position: 'absolute', right: 0, bottom: 0,
-  width: '100%', height: '100%',
-  transform: 'scale(2.1)',
-  transformOrigin: '100% 100%',
-}
+const svgPos: React.CSSProperties = CARD_ICON_POS
 
 /* 1. Oportunidades — Funnel/Pipeline ascending */
 const IconOportunidades = () => (
