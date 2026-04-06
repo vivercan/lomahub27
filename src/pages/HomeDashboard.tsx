@@ -74,8 +74,8 @@ const CARD_BG: Record<string, string> = {
 // ICON SYSTEM — White-stroke premium icons
 // Principal: rgba(255,255,255,0.12)  |  Secondary: rgba(255,255,255,0.08)
 // ============================================================================
-const P = 'rgba(255,255,255,0.12)'  // principal
-const S = 'rgba(255,255,255,0.08)'  // secondary
+const P = 'rgba(255,255,255,0.13)'  // principal
+const S = 'rgba(255,255,255,0.09)'  // secondary
 
 const iconWrap: React.CSSProperties = {
   position: 'absolute',
@@ -86,8 +86,10 @@ const iconWrap: React.CSSProperties = {
 }
 
 const svgPos: React.CSSProperties = {
-  position: 'absolute', right: '-18%', bottom: '-16%',
-  width: '95%', height: '112%',
+  position: 'absolute', right: 0, bottom: 0,
+  width: '100%', height: '100%',
+  transform: 'scale(2.1)',
+  transformOrigin: '100% 100%',
 }
 
 // 1. Oportunidades — Funnel/Pipeline ascending
