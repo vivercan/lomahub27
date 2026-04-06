@@ -1,14 +1,13 @@
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// â ð¡ï¸  BLINDAJE DASHBOARD V27f â ARCHIVO PROTEGIDO                           â
-// â                                                                            â
-// â  ESTILO: M1 REFINADO + 3D GEOMETRIC PREMIUM â Aprobado JJ 3/Abr/2026     â
-// â    â¢ 9 cards (7+2): white + dual SVG layers (geometric + colorful)        â
-// â    â¢ NO icons â solo nombre grande + figuras geométricas flotantes        â
-// â    â¢ Hover: movimiento sutil de geometría en 2 capas                       â
-// â    â¢ Fila 1: 7 cards | Fila 2: Comunicaciones + Config a la derecha       â
-// â    â¢ Sin barra KPIs â eliminada por JJ 3/Abr/2026                         â
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-
+// ——————————————————————————————————————————————————————————————————————————————
+// | BLINDAJE DASHBOARD V27f — ARCHIVO PROTEGIDO                               |
+// |                                                                            |
+// | ESTILO: M1 REFINADO + ICONOS PREMIUM WHITE-STROKE  | Aprobado JJ Abr/2026 |
+// | • 9 cards (7+2): solid vivid colors + single white-stroke icon per card    |
+// | • Icon principal: rgba(255,255,255,0.12) | Secondary: rgba(255,255,255,0.08)|
+// | • Hover: movimiento sutil de icono                                         |
+// | • Fila 1: 7 cards | Fila 2: Comunicaciones + Config a la derecha           |
+// | • Sin barra KPIs — eliminada por JJ 3/Abr/2026                            |
+// ——————————————————————————————————————————————————————————————————————————————
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -18,7 +17,6 @@ import { useAuthContext } from '../hooks/AuthContext'
 // ============================================================================
 // TYPES
 // ============================================================================
-
 interface CardConfig {
   id: string
   label: string
@@ -27,20 +25,16 @@ interface CardConfig {
   kpiLabel: string
   statusDot: 'green' | 'yellow' | 'red' | 'gray'
   statusText: string
-  geo: React.ReactNode
-  geo2?: React.ReactNode
+  icon: React.ReactNode
 }
 
 // ============================================================================
-// M1 REFINADO + 3D GEOMETRIC â VISUAL CONSTANTS
+// M1 REFINADO — VISUAL CONSTANTS
 // ============================================================================
-
 const DASH = {
   bg: '#E8EBF0',
   fontFamily: "'Montserrat', sans-serif",
   fontBody: "'Montserrat', sans-serif",
-  cardBg: 'linear-gradient(180deg, #FFFFFF 0%, #F6F7FA 100%)',
-  cardBorder: '1px solid #CDD5E1',
   cardRadius: '14px',
   cardPadding: '22px',
   cardShadow: '0 2px 4px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.9)',
@@ -49,289 +43,162 @@ const DASH = {
   gridPadding: '16px 28px',
   titleSize: '20px',
   titleWeight: 800,
-  titleColor: '#1E3A8A',
   kpiSize: '28px',
   kpiWeight: 600,
-  kpiColor: '#0F172A',
   subSize: '9px',
   subWeight: 400,
-  subColor: '#94A3B8',
   dotSize: '6px',
 } as const
 
 const DOT_COLORS: Record<string, string> = {
-  green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1',
+  green: '#10B981',
+  yellow: '#F59E0B',
+  red: '#EF4444',
+  gray: '#CBD5E1',
 }
 
-// Color sólido vívido por módulo — fondo completo de cada card
+// Color solido vívido por modulo — fondo completo de cada card
 const CARD_BG: Record<string, string> = {
-  'oportunidades': '#2563EB',     // Vivid Blue
-  'comercial': '#0891B2',         // Vivid Cyan
-  'servicio-clientes': '#059669', // Vivid Emerald
-  'despacho': '#EA580C',          // Vivid Orange
-  'ventas': '#16A34A',            // Vivid Green
-  'cotizaciones': '#D97706',      // Vivid Amber
-  'plantillas': '#7C3AED',        // Vivid Violet
-  'comunicaciones': '#DB2777',    // Vivid Pink
-  'config': '#6366F1',            // Vivid Indigo
+  'oportunidades': '#2563EB',
+  'comercial':     '#0891B2',
+  'servicio-clientes': '#059669',
+  'despacho':      '#EA580C',
+  'ventas':        '#16A34A',
+  'cotizaciones':  '#D97706',
+  'plantillas':    '#7C3AED',
+  'comunicaciones':'#DB2777',
+  'config':        '#6366F1',
 }
 
 // ============================================================================
-// 3D GEOMETRIC SVG PATTERNS â blue + orange mixed strokes
+// ICON SYSTEM — White-stroke premium icons
+// Principal: rgba(255,255,255,0.12)  |  Secondary: rgba(255,255,255,0.08)
 // ============================================================================
+const P = 'rgba(255,255,255,0.12)'  // principal
+const S = 'rgba(255,255,255,0.08)'  // secondary
 
-const geoStyle: React.CSSProperties = {
+const iconWrap: React.CSSProperties = {
   position: 'absolute',
-  top: 0,
-  right: 0,
-  width: '100%',
-  height: '100%',
-  pointerEvents: 'none',
-  overflow: 'hidden',
+  top: 0, right: 0, width: '100%', height: '100%',
+  pointerEvents: 'none', overflow: 'hidden',
   borderRadius: '14px',
   transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
 }
 
-// Oportunidades â ascending chevrons (blue + orange)
-const GeoOportunidades = () => (
-  <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <polygon points="100,20 140,60 120,60 120,100 80,100 80,60 60,60" fill="none" stroke="#3B82F6" strokeWidth="1.5" transform="translate(20,0)" />
-      <polygon points="100,35 130,65 115,65 115,95 85,95 85,65 70,65" fill="none" stroke="#F59E0B" strokeWidth="1" transform="translate(40,20)" />
-      <polygon points="100,50 125,75 113,75 113,100 87,100 87,75 75,75" fill="none" stroke="#3B82F6" strokeWidth="0.8" transform="translate(60,10)" />
-    </svg>
-  </div>
-)
-
-// Comercial â overlapping hexagons (blue + orange)
-const GeoComercial = () => (
-  <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.18 }}>
-      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#3B82F6" strokeWidth="1.5" transform="translate(60,15) scale(0.7)" />
-      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#F59E0B" strokeWidth="1.2" transform="translate(90,35) scale(0.6)" />
-      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#3B82F6" strokeWidth="1" transform="translate(40,50) scale(0.5)" />
-      <polygon points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" fill="none" stroke="#F59E0B" strokeWidth="0.8" transform="translate(110,10) scale(0.45)" />
-    </svg>
-  </div>
-)
-
-// Servicio a Clientes â concentric arcs (blue + orange)
-const GeoServicio = () => (
-  <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-15px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <circle cx="130" cy="90" r="60" fill="none" stroke="#3B82F6" strokeWidth="1.5" />
-      <circle cx="130" cy="90" r="45" fill="none" stroke="#F59E0B" strokeWidth="1.2" />
-      <circle cx="130" cy="90" r="30" fill="none" stroke="#3B82F6" strokeWidth="1" />
-      <circle cx="130" cy="90" r="15" fill="none" stroke="#F59E0B" strokeWidth="0.8" />
-    </svg>
-  </div>
-)
-
-// Despacho Inteligente â isometric cubes (blue + orange)
-const GeoDespacho = () => (
-  <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '70%', height: '80%', opacity: 0.18 }}>
-      <g transform="translate(80,30)">
-        <polygon points="30,0 60,17 30,34 0,17" fill="none" stroke="#3B82F6" strokeWidth="1.2" />
-        <polygon points="0,17 30,34 30,64 0,47" fill="none" stroke="#F59E0B" strokeWidth="1.2" />
-        <polygon points="60,17 30,34 30,64 60,47" fill="none" stroke="#3B82F6" strokeWidth="1.2" />
-      </g>
-      <g transform="translate(110,50)">
-        <polygon points="25,0 50,14 25,28 0,14" fill="none" stroke="#F59E0B" strokeWidth="1" />
-        <polygon points="0,14 25,28 25,53 0,39" fill="none" stroke="#3B82F6" strokeWidth="1" />
-        <polygon points="50,14 25,28 25,53 50,39" fill="none" stroke="#F59E0B" strokeWidth="1" />
-      </g>
-      <g transform="translate(60,60)">
-        <polygon points="20,0 40,11 20,22 0,11" fill="none" stroke="#3B82F6" strokeWidth="0.8" />
-        <polygon points="0,11 20,22 20,42 0,31" fill="none" stroke="#F59E0B" strokeWidth="0.8" />
-        <polygon points="40,11 20,22 20,42 40,31" fill="none" stroke="#3B82F6" strokeWidth="0.8" />
-      </g>
-    </svg>
-  </div>
-)
-
-// Ventas â rising bar chart (blue + orange) â NEW
-const GeoVentas = () => (
-  <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <rect x="60" y="80" width="18" height="40" rx="2" fill="none" stroke="#3B82F6" strokeWidth="1.5" />
-      <rect x="85" y="60" width="18" height="60" rx="2" fill="none" stroke="#F59E0B" strokeWidth="1.3" />
-      <rect x="110" y="40" width="18" height="80" rx="2" fill="none" stroke="#3B82F6" strokeWidth="1.1" />
-      <rect x="135" y="20" width="18" height="100" rx="2" fill="none" stroke="#F59E0B" strokeWidth="1" />
-      <path d="M68 78 L93 58 L118 38 L143 18" fill="none" stroke="#3B82F6" strokeWidth="1" strokeDasharray="4 3" />
-    </svg>
-  </div>
-)
-
-// Comunicaciones â radiating waves (blue + orange)
-const GeoComunicaciones = () => (
-  <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <path d="M140,100 Q140,60 170,40" fill="none" stroke="#3B82F6" strokeWidth="1.5" />
-      <path d="M130,100 Q130,55 165,30" fill="none" stroke="#F59E0B" strokeWidth="1.2" />
-      <path d="M120,100 Q120,50 160,20" fill="none" stroke="#3B82F6" strokeWidth="1" />
-      <path d="M110,100 Q110,50 155,15" fill="none" stroke="#F59E0B" strokeWidth="0.8" />
-      <circle cx="145" cy="105" r="4" fill="none" stroke="#3B82F6" strokeWidth="1.2" />
-    </svg>
-  </div>
-)
-
-// Cotizaciones â diamond cluster (blue + orange)
-const GeoCotizaciones = () => (
-  <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '65%', height: '80%', opacity: 0.18 }}>
-      <rect x="90" y="30" width="40" height="40" rx="2" fill="none" stroke="#3B82F6" strokeWidth="1.5" transform="rotate(45,110,50)" />
-      <rect x="110" y="50" width="30" height="30" rx="2" fill="none" stroke="#F59E0B" strokeWidth="1.2" transform="rotate(45,125,65)" />
-      <rect x="75" y="55" width="25" height="25" rx="2" fill="none" stroke="#3B82F6" strokeWidth="1" transform="rotate(45,87.5,67.5)" />
-      <rect x="105" y="75" width="20" height="20" rx="2" fill="none" stroke="#F59E0B" strokeWidth="0.8" transform="rotate(45,115,85)" />
-    </svg>
-  </div>
-)
-
-// Plantillas â layered offset rectangles (blue + orange)
-const GeoPlantillas = () => (
-  <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.18 }}>
-      <rect x="70" y="20" width="60" height="80" rx="4" fill="none" stroke="#3B82F6" strokeWidth="1.5" />
-      <rect x="82" y="30" width="60" height="80" rx="4" fill="none" stroke="#F59E0B" strokeWidth="1.2" />
-      <rect x="94" y="40" width="60" height="80" rx="4" fill="none" stroke="#3B82F6" strokeWidth="1" />
-    </svg>
-  </div>
-)
-
-// Config â interlocking gear polygon (blue + orange)
-const GeoConfig = () => (
-  <div style={geoStyle} className="geo-inner">
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5px', bottom: '-5px', width: '60%', height: '70%', opacity: 0.18 }}>
-      <polygon points="100,15 108,35 130,35 113,48 119,68 100,56 81,68 87,48 70,35 92,35" fill="none" stroke="#3B82F6" strokeWidth="1.5" transform="translate(20,10)" />
-      <polygon points="100,25 106,38 122,38 109,47 114,62 100,53 86,62 91,47 78,38 94,38" fill="none" stroke="#F59E0B" strokeWidth="1" transform="translate(40,30) scale(0.7)" />
-    </svg>
-  </div>
-)
-
-// ============================================================================
-// COLORFUL MODULE-SPECIFIC SVGs (Propuesta 12 â Logística Colorida)
-// Positioned bottom-left â 20% bigger + more color saturation
-// ===============================================================================
-
-const colorStyle: React.CSSProperties = {
-  position: 'absolute', bottom: '-8px', left: '-8px',
-  width: '60%', height: '66%', opacity: 0.27,
+const svgPos: React.CSSProperties = {
+  position: 'absolute', right: '-5px', bottom: '-5px',
+  width: '60%', height: '70%',
 }
 
-const ColorOportunidades = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <rect x="6" y="32" width="10" height="14" rx="2" fill="#3B82F6" opacity=".35"/>
-      <rect x="18" y="24" width="10" height="22" rx="2" fill="#8B5CF6" opacity=".35"/>
-      <rect x="30" y="16" width="10" height="30" rx="2" fill="#10B981" opacity=".35"/>
-      <rect x="42" y="8" width="8" height="38" rx="2" fill="#F59E0B" opacity=".35"/>
-      <path d="M11 30L23 22L35 14L46 6" stroke="#1E293B" strokeWidth="1.5" strokeLinecap="round" opacity=".4"/>
-    </svg>
-  </div>
+// 1. Oportunidades — Funnel/Pipeline ascending
+const IconOportunidades = () => (
+  <svg viewBox="0 0 200 140" style={svgPos}>
+    <polygon points="55,25 145,25 125,65 75,65" fill="none" stroke={P} strokeWidth="2.5" strokeLinejoin="round" />
+    <rect x="75" y="65" width="50" height="45" rx="3" fill="none" stroke={P} strokeWidth="2.5" />
+    <line x1="75" y1="85" x2="125" y2="85" stroke={S} strokeWidth="1.5" />
+    <path d="M100,58 L100,32" stroke={P} strokeWidth="2" strokeLinecap="round" />
+    <path d="M92,40 L100,32 L108,40" fill="none" stroke={P} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
 )
 
-const ColorComercial = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <circle cx="18" cy="16" r="7" fill="#8B5CF6" opacity=".25"/>
-      <circle cx="36" cy="16" r="7" fill="#3B82F6" opacity=".25"/>
-      <path d="M8 40C8 32 16 28 27 28C38 28 46 32 46 40" fill="#10B981" opacity=".15"/>
-      <path d="M20 22L27 18L34 22" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" opacity=".45"/>
-    </svg>
-  </div>
+// 2. Comercial — Briefcase
+const IconComercial = () => (
+  <svg viewBox="0 0 200 140" style={svgPos}>
+    <rect x="50" y="45" width="100" height="65" rx="8" fill="none" stroke={P} strokeWidth="2.5" />
+    <path d="M78,45 L78,35 Q78,25 88,25 L112,25 Q122,25 122,35 L122,45" fill="none" stroke={P} strokeWidth="2" />
+    <line x1="50" y1="72" x2="150" y2="72" stroke={S} strokeWidth="1.5" />
+    <rect x="90" y="64" width="20" height="16" rx="4" fill="none" stroke={P} strokeWidth="1.5" />
+  </svg>
 )
 
-const ColorServicio = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <path d="M14 28V18C14 11 20 6 27 6C34 6 40 11 40 18V28" stroke="#8B5CF6" strokeWidth="2" fill="none" opacity=".45"/>
-      <rect x="8" y="28" width="12" height="14" rx="4" fill="#3B82F6" opacity=".30"/>
-      <rect x="34" y="28" width="12" height="14" rx="4" fill="#10B981" opacity=".30"/>
-      <rect x="22" y="44" width="10" height="5" rx="2.5" fill="#F59E0B" opacity=".35"/>
-    </svg>
-  </div>
+// 3. Servicio a Clientes — Headset
+const IconServicio = () => (
+  <svg viewBox="0 0 200 140" style={svgPos}>
+    <path d="M62,80 Q62,35 100,35 Q138,35 138,80" fill="none" stroke={P} strokeWidth="2.5" />
+    <rect x="50" y="72" width="20" height="34" rx="8" fill="none" stroke={P} strokeWidth="2" />
+    <rect x="130" y="72" width="20" height="34" rx="8" fill="none" stroke={P} strokeWidth="2" />
+    <path d="M150,95 Q158,95 158,105 L158,108 Q158,118 145,118 L130,118" fill="none" stroke={S} strokeWidth="1.5" strokeLinecap="round" />
+    <circle cx="130" cy="118" r="4" fill="none" stroke={S} strokeWidth="1.5" />
+  </svg>
 )
 
-const ColorDespacho = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <rect x="2" y="16" width="30" height="20" rx="3" fill="#3B82F6" opacity=".20"/>
-      <path d="M32 22H44L50 30V36H32" fill="#10B981" opacity=".25"/>
-      <circle cx="12" cy="38" r="5" fill="#F59E0B" opacity=".35"/>
-      <circle cx="42" cy="38" r="5" fill="#F59E0B" opacity=".35"/>
-      <rect x="6" y="20" width="22" height="3" rx="1.5" fill="#8B5CF6" opacity=".25"/>
-    </svg>
-  </div>
+// 4. Despacho Inteligente — Truck
+const IconDespacho = () => (
+  <svg viewBox="0 0 200 140" style={svgPos}>
+    <rect x="25" y="42" width="85" height="52" rx="4" fill="none" stroke={P} strokeWidth="2.5" />
+    <path d="M110,55 L142,55 L158,78 L158,94 L110,94 Z" fill="none" stroke={P} strokeWidth="2" strokeLinejoin="round" />
+    <circle cx="55" cy="100" r="10" fill="none" stroke={P} strokeWidth="2" />
+    <circle cx="95" cy="100" r="10" fill="none" stroke={S} strokeWidth="1.5" />
+    <circle cx="142" cy="100" r="10" fill="none" stroke={P} strokeWidth="2" />
+    <line x1="25" y1="62" x2="110" y2="62" stroke={S} strokeWidth="1.2" />
+  </svg>
 )
 
-// Ventas â money + trend (NEW)
-const ColorVentas = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <circle cx="20" cy="30" r="14" fill="#10B981" opacity=".15"/>
-      <text x="20" y="35" textAnchor="middle" fontFamily="Montserrat" fontWeight="700" fontSize="14" fill="#10B981" opacity=".5">$</text>
-      <path d="M32 40L38 28L44 32L50 18" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" fill="none" opacity=".4"/>
-      <circle cx="50" cy="18" r="2.5" fill="#F59E0B" opacity=".4"/>
-      <rect x="6" y="44" width="42" height="3" rx="1.5" fill="#3B82F6" opacity=".2"/>
-    </svg>
-  </div>
+// 5. Ventas — Ascending bar chart with trend
+const IconVentas = () => (
+  <svg viewBox="0 0 200 140" style={svgPos}>
+    <rect x="42" y="82" width="20" height="34" rx="3" fill={S} stroke={P} strokeWidth="2" />
+    <rect x="70" y="60" width="20" height="56" rx="3" fill={S} stroke={P} strokeWidth="2" />
+    <rect x="98" y="38" width="20" height="78" rx="3" fill={S} stroke={P} strokeWidth="2" />
+    <rect x="126" y="18" width="20" height="98" rx="3" fill={S} stroke={P} strokeWidth="2" />
+    <path d="M52,78 L80,56 L108,34 L136,14" fill="none" stroke={P} strokeWidth="1.8" strokeLinecap="round" strokeDasharray="5 4" />
+  </svg>
 )
 
-const ColorComunicaciones = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="6" width="28" height="20" rx="6" fill="#EC4899" opacity=".18"/>
-      <rect x="22" y="24" width="28" height="16" rx="6" fill="#3B82F6" opacity=".22"/>
-      <circle cx="14" cy="15" r="2.5" fill="#F59E0B" opacity=".45"/>
-      <circle cx="20" cy="15" r="2.5" fill="#10B981" opacity=".45"/>
-      <circle cx="26" cy="15" r="2.5" fill="#8B5CF6" opacity=".45"/>
-    </svg>
-  </div>
+// 6. Cotizaciones — Document with $ sign
+const IconCotizaciones = () => (
+  <svg viewBox="0 0 200 140" style={svgPos}>
+    <rect x="58" y="12" width="75" height="100" rx="6" fill="none" stroke={P} strokeWidth="2.5" />
+    <line x1="74" y1="38" x2="118" y2="38" stroke={S} strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="74" y1="52" x2="108" y2="52" stroke={S} strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="74" y1="66" x2="98" y2="66" stroke={S} strokeWidth="1.5" strokeLinecap="round" />
+    <text x="112" y="92" fontSize="28" fontFamily="Montserrat" fontWeight="700" fill="none" stroke={P} strokeWidth="1.5">$</text>
+  </svg>
 )
 
-const ColorCotizaciones = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <rect x="6" y="4" width="28" height="36" rx="4" fill="#3B82F6" opacity=".12"/>
-      <rect x="12" y="12" width="16" height="3" rx="1.5" fill="#8B5CF6" opacity=".30"/>
-      <rect x="12" y="18" width="12" height="3" rx="1.5" fill="#10B981" opacity=".30"/>
-      <rect x="12" y="24" width="8" height="3" rx="1.5" fill="#F59E0B" opacity=".30"/>
-      <circle cx="42" cy="40" r="10" fill="#10B981" opacity=".18"/>
-      <text x="42" y="44" textAnchor="middle" fontFamily="Montserrat" fontWeight="700" fontSize="12" fill="#10B981" opacity=".55">$</text>
-    </svg>
-  </div>
+// 7. Plantillas — Stacked layered documents
+const IconPlantillas = () => (
+  <svg viewBox="0 0 200 140" style={svgPos}>
+    <rect x="68" y="14" width="55" height="78" rx="5" fill="none" stroke={S} strokeWidth="1.8" />
+    <rect x="78" y="24" width="55" height="78" rx="5" fill="none" stroke={P} strokeWidth="2" />
+    <rect x="88" y="34" width="55" height="78" rx="5" fill="none" stroke={P} strokeWidth="2.5" />
+    <line x1="98" y1="52" x2="132" y2="52" stroke={S} strokeWidth="1.2" strokeLinecap="round" />
+    <line x1="98" y1="64" x2="126" y2="64" stroke={S} strokeWidth="1.2" strokeLinecap="round" />
+    <line x1="98" y1="76" x2="120" y2="76" stroke={S} strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
 )
 
-const ColorPlantillas = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <rect x="18" y="2" width="20" height="26" rx="3" fill="#3B82F6" opacity=".15"/>
-      <rect x="14" y="8" width="20" height="26" rx="3" fill="#8B5CF6" opacity=".18"/>
-      <rect x="10" y="14" width="20" height="26" rx="3" fill="#F97316" opacity=".22"/>
-      <rect x="6" y="20" width="20" height="26" rx="3" fill="#10B981" opacity=".15"/>
-    </svg>
-  </div>
+// 8. Comunicaciones — Chat bubbles
+const IconComunicaciones = () => (
+  <svg viewBox="0 0 200 140" style={svgPos}>
+    <rect x="35" y="18" width="72" height="50" rx="12" fill="none" stroke={P} strokeWidth="2.5" />
+    <path d="M55,68 L45,82 L70,68" fill="none" stroke={P} strokeWidth="2" strokeLinejoin="round" />
+    <rect x="90" y="52" width="68" height="44" rx="12" fill="none" stroke={P} strokeWidth="2" />
+    <path d="M140,96 L148,108 L128,96" fill="none" stroke={S} strokeWidth="1.5" strokeLinejoin="round" />
+    <circle cx="58" cy="40" r="4" fill={S} />
+    <circle cx="72" cy="40" r="4" fill={S} />
+    <circle cx="86" cy="40" r="4" fill={S} />
+  </svg>
 )
 
-const ColorConfig = () => (
-  <div style={geoStyle} className="color-inner">
-    <svg viewBox="0 0 54 54" style={colorStyle} xmlns="http://www.w3.org/2000/svg">
-      <circle cx="27" cy="27" r="16" fill="#6366F1" opacity=".08"/>
-      <circle cx="27" cy="27" r="10" fill="#3B82F6" opacity=".12"/>
-      <circle cx="27" cy="27" r="5" fill="#10B981" opacity=".25"/>
-      <rect x="25" y="4" width="4" height="8" rx="2" fill="#F59E0B" opacity=".30"/>
-      <rect x="25" y="42" width="4" height="8" rx="2" fill="#F59E0B" opacity=".30"/>
-      <rect x="4" y="25" width="8" height="4" rx="2" fill="#EC4899" opacity=".30"/>
-      <rect x="42" y="25" width="8" height="4" rx="2" fill="#EC4899" opacity=".30"/>
-    </svg>
-  </div>
+// 9. Configuracion — Gear
+const IconConfig = () => (
+  <svg viewBox="0 0 200 140" style={svgPos}>
+    <circle cx="100" cy="68" r="28" fill="none" stroke={P} strokeWidth="2.5" />
+    <circle cx="100" cy="68" r="14" fill="none" stroke={P} strokeWidth="2" />
+    {/* Gear teeth — 6 positions */}
+    <rect x="96" y="32" width="8" height="14" rx="2" fill={S} stroke={P} strokeWidth="1.2" />
+    <rect x="96" y="90" width="8" height="14" rx="2" fill={S} stroke={P} strokeWidth="1.2" />
+    <rect x="64" y="64" width="14" height="8" rx="2" fill={S} stroke={P} strokeWidth="1.2" />
+    <rect x="122" y="64" width="14" height="8" rx="2" fill={S} stroke={P} strokeWidth="1.2" />
+    <rect x="73" y="43" width="10" height="8" rx="2" fill={S} stroke={S} strokeWidth="1" transform="rotate(-45,78,47)" />
+    <rect x="117" y="85" width="10" height="8" rx="2" fill={S} stroke={S} strokeWidth="1" transform="rotate(-45,122,89)" />
+  </svg>
 )
 
 // ============================================================================
 // COMPONENT
 // ============================================================================
-
 export default function HomeDashboard() {
   const navigate = useNavigate()
   const { user, logout } = useAuthContext()
@@ -351,17 +218,23 @@ export default function HomeDashboard() {
     navigate('/login')
   }
 
-  // KPI state — kept for card values, bar removed
+  // KPI state
   const [kpis, setKpis] = useState({
-    leadsActivos: 0, viajesActivos: 0, clientes: 0,
-    segmentosDedicados: 0, cuentasCxc: 0, unidadesGps: 0,
-    alertasHoy: 0, formatosActivos: 0, leadsPipeline: 0,
-    tractosTotal: 0, cajasTotal: 0,
+    leadsActivos: 0,
+    viajesActivos: 0,
+    clientes: 0,
+    segmentosDedicados: 0,
+    cuentasCxc: 0,
+    unidadesGps: 0,
+    alertasHoy: 0,
+    formatosActivos: 0,
+    leadsPipeline: 0,
+    tractosTotal: 0,
+    cajasTotal: 0,
   })
   const [kpisLoaded, setKpisLoaded] = useState(false)
 
   const fetchKpis = useCallback(async () => {
-    // Verify active session — if expired, redirect to login
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) {
       console.warn('[KPI] No active session — redirecting to login')
@@ -369,7 +242,6 @@ export default function HomeDashboard() {
       return
     }
 
-    // Safe count helper: logs individual failures instead of breaking all KPIs
     const sc = async (table: string, fn?: (q: any) => any): Promise<number> => {
       try {
         const base = supabase.from(table).select('*', { count: 'exact', head: true })
@@ -397,12 +269,17 @@ export default function HomeDashboard() {
     ])
 
     setKpis({
-      leadsActivos: leads, viajesActivos: viajes,
-      clientes, segmentosDedicados: dedicados,
-      cuentasCxc: cxc, unidadesGps: gps,
+      leadsActivos: leads,
+      viajesActivos: viajes,
+      clientes,
+      segmentosDedicados: dedicados,
+      cuentasCxc: cxc,
+      unidadesGps: gps,
       alertasHoy: viajesRiesgo + notifUnread,
-      formatosActivos, leadsPipeline: leads,
-      tractosTotal: tractos, cajasTotal: cajas,
+      formatosActivos,
+      leadsPipeline: leads,
+      tractosTotal: tractos,
+      cajasTotal: cajas,
     })
     setKpisLoaded(true)
   }, [navigate])
@@ -413,94 +290,74 @@ export default function HomeDashboard() {
     return () => clearInterval(interval)
   }, [fetchKpis])
 
-  // âââ 9 CARD DEFINITIONS âââââââââââââââââââââââââ
-  // Fila 1: Oportunidades, Comercial, Servicio, Despacho, Ventas, Cotizaciones, Plantillas
-  // Fila 2: Comunicaciones (col 6) + Config (col 7)
+  // ——— 9 CARD DEFINITIONS ———————————————————————
   const mainCards: CardConfig[] = [
     {
-      id: 'oportunidades', label: 'Oportunidades',
-      route: '/ventas/mis-leads',
+      id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads',
       kpiValue: kpis.leadsActivos, kpiLabel: 'leads',
       statusDot: 'green', statusText: 'Pipeline activo',
-      geo: <GeoOportunidades />,
-      geo2: <ColorOportunidades />,
+      icon: <IconOportunidades />,
     },
     {
-      id: 'comercial', label: 'Comercial',
-      route: '/ventas/dashboard',
+      id: 'comercial', label: 'Comercial', route: '/ventas/dashboard',
       kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos',
-      statusDot: 'green', statusText: '11 submódulos',
-      geo: <GeoComercial />,
-      geo2: <ColorComercial />,
+      statusDot: 'green', statusText: '11 submodulos',
+      icon: <IconComercial />,
     },
     {
-      id: 'servicio-clientes', label: 'Servicio a Clientes',
-      route: '/servicio/dashboard',
+      id: 'servicio-clientes', label: 'Servicio a Clientes', route: '/servicio/dashboard',
       kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes',
-      statusDot: 'green', statusText: '3 submódulos',
-      geo: <GeoServicio />,
-      geo2: <ColorServicio />,
+      statusDot: 'green', statusText: '3 submodulos',
+      icon: <IconServicio />,
     },
     {
-      id: 'despacho', label: 'Despacho Inteligente',
-      route: '/operaciones/torre-control',
+      id: 'despacho', label: 'Despacho Inteligente', route: '/operaciones/torre-control',
       kpiValue: kpis.viajesActivos, kpiLabel: 'viajes',
       statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray',
       statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes',
-      geo: <GeoDespacho />,
-      geo2: <ColorDespacho />,
+      icon: <IconDespacho />,
     },
     {
-      id: 'ventas', label: 'Ventas',
-      route: '/ventas/mis-leads',
+      id: 'ventas', label: 'Ventas', route: '/ventas/mis-leads',
       kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos',
       statusDot: 'green', statusText: 'Pipeline activo',
-      geo: <GeoVentas />,
-      geo2: <ColorVentas />,
+      icon: <IconVentas />,
     },
     {
-      id: 'cotizaciones', label: 'Cotizaciones',
-      route: '/cotizador/nueva',
+      id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva',
       kpiValue: '\u2014', kpiLabel: 'pendientes',
       statusDot: 'gray', statusText: 'Disponible',
-      geo: <GeoCotizaciones />,
-      geo2: <ColorCotizaciones />,
+      icon: <IconCotizaciones />,
     },
     {
-      id: 'plantillas', label: 'Plantillas',
-      route: '/documentos',
+      id: 'plantillas', label: 'Plantillas', route: '/documentos',
       kpiValue: '\u2014', kpiLabel: 'plantillas',
       statusDot: 'gray', statusText: 'Disponible',
-      geo: <GeoPlantillas />,
-      geo2: <ColorPlantillas />,
+      icon: <IconPlantillas />,
     },
   ]
 
   const row2Cards: CardConfig[] = [
     {
-      id: 'comunicaciones', label: 'Comunicaciones',
-      route: '/comunicaciones/correos',
+      id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/correos',
       kpiValue: '3', kpiLabel: 'canales',
       statusDot: 'green', statusText: 'Activo',
-      geo: <GeoComunicaciones />,
-      geo2: <ColorComunicaciones />,
+      icon: <IconComunicaciones />,
     },
     {
-      id: 'config', label: 'Configuración',
-      route: '/admin/configuracion',
+      id: 'config', label: 'Configuracion', route: '/admin/configuracion',
       kpiValue: '\u2699\uFE0F', kpiLabel: 'admin',
       statusDot: 'gray', statusText: 'Sistema',
-      geo: <GeoConfig />,
-      geo2: <ColorConfig />,
+      icon: <IconConfig />,
     },
   ]
 
-  // âââ CARD STYLE ââââââââââââââââââââââââââââââââ
+  // ——— CARD STYLE ————————————————————————————————
   const getCardStyle = (isHovered: boolean, cardId?: string): React.CSSProperties => ({
     aspectRatio: '1 / 0.75',
     borderRadius: DASH.cardRadius,
     padding: DASH.cardPadding,
-    background: (cardId && CARD_BG[cardId]) || DASH.cardBg,
+    background: (cardId && CARD_BG[cardId]) || '#2563EB',
     border: 'none',
     cursor: 'pointer',
     position: 'relative',
@@ -514,7 +371,7 @@ export default function HomeDashboard() {
     boxShadow: isHovered ? DASH.cardHoverShadow : DASH.cardShadow,
   })
 
-  // âââ RENDER CARD âââââââââââââââââââââââââââââââââ
+  // ——— RENDER CARD ————————————————————————————————
   const renderCard = (card: CardConfig) => {
     const isHovered = hoveredCard === card.id
     return (
@@ -525,32 +382,22 @@ export default function HomeDashboard() {
         onMouseLeave={() => setHoveredCard(null)}
         style={getCardStyle(isHovered, card.id)}
       >
-        {/* 3D Geometric background â moves on hover */}
+        {/* Single icon layer — moves on hover */}
         <div style={{
-          ...geoStyle,
+          ...iconWrap,
           transform: isHovered ? 'translate(4px, -4px) scale(1.05)' : 'translate(0,0) scale(1)',
         }}>
-          {card.geo}
+          {card.icon}
         </div>
 
-        {/* Colorful module SVG â moves opposite direction on hover */}
-        {card.geo2 && (
-          <div style={{
-            ...geoStyle,
-            transform: isHovered ? 'translate(-3px, 3px) scale(1.03)' : 'translate(0,0) scale(1)',
-          }}>
-            {card.geo2}
-          </div>
-        )}
-
-        {/* Status dot */}
+        {/* Status dot — unificado blanco sutil (Opción B) */}
         <div style={{
           position: 'absolute', top: '14px', right: '14px',
-          width: DASH.dotSize, height: DASH.dotSize, borderRadius: '50%',
-          backgroundColor: DOT_COLORS[card.statusDot] || DOT_COLORS.gray,
+          width: '6px', height: '6px', borderRadius: '50%',
+          backgroundColor: 'rgba(255,255,255,0.35)',
         }} />
 
-        {/* Module name â BIG, no icon */}
+        {/* Module name */}
         <div style={{
           fontFamily: DASH.fontFamily,
           fontSize: DASH.titleSize,
@@ -594,7 +441,7 @@ export default function HomeDashboard() {
     )
   }
 
-  // âââ RENDER ââââââââââââââââââââââââââââââââââââââââ
+  // ——— RENDER ————————————————————————————————————
   return (
     <div style={{
       height: '100vh',
@@ -605,12 +452,11 @@ export default function HomeDashboard() {
       fontFamily: DASH.fontFamily,
       color: '#1E293B',
     }}>
-      {/* CSS for hover geo animation */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
       `}</style>
 
-      {/* Zona 1 â AppHeader */}
+      {/* Zona 1 — AppHeader */}
       <AppHeader
         onLogout={handleLogout}
         userName={formatName(user?.email)}
@@ -618,7 +464,7 @@ export default function HomeDashboard() {
         userEmail={user?.email}
       />
 
-      {/* Zona 2 â Grid de Cards (sin barra KPIs) */}
+      {/* Zona 2 — Grid de Cards */}
       <div style={{
         flex: '1 1 auto',
         padding: DASH.gridPadding,
