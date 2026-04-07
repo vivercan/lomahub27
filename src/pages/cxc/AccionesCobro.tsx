@@ -51,8 +51,8 @@ export default function AccionesCobro() {
     const fetchData = async () => {
       try {
         const { data, error } = await supabase
-          .from('clientes')
-          .select('*')
+          .from('cxc_cartera')
+          .select('id, saldo_total, saldo_vencido, dias_credito_pactados, dias_promedio_pago, ejecutivo_cxc_id, clientes(razon_social)')
           .gt('saldo_vencido', 0)
           .order('saldo_vencido', { ascending: false });
 
@@ -60,15 +60,15 @@ export default function AccionesCobro() {
           console.error('Error fetching acciones cobro:', error);
           setCuentas([]);
         } else if (data) {
-          setCuentas(data.map((c) => ({
+          setCuentas(data.map((c: any) => ({
             id: c.id,
-            razon_social: c.razon_social || 'Sin nombre',
+            razon_social: c.clientes?.razon_social || 'Sin nombre',
             saldo_vencido: c.saldo_vencido || 0,
-            dias_credito: c.dias_credito || 0,
-            dias_prom_pago: c.dias_prom_pago || 0,
-            ejecutivo_cxc: c.ejecutivo_cxc || 'Sin asignar',
-            ultimo_contacto: c.ultimo_contacto || null,
-            estatus_cobro: c.estatus_cobro || 'Pendiente',
+            dias_credito: c.dias_credito_pactados || 0,
+            dias_prom_pago: c.dias_promedio_pago || 0,
+            ejecutivo_cxc: c.ejecutivo_cxc_id || 'Sin asignar',
+            ultimo_contacto: null,
+            estatus_cobro: 'Pendiente',
           })));
         }
       } catch (err) {
