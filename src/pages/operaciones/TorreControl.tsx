@@ -54,10 +54,10 @@ export default function TorreControl(): ReactElement {
     const fetchViajes = async () => {
       try {
         setLoading(true);
-        // Query WITHOUT joins — avoids FK relationship errors
+        // Query WITH joins to clientes + tractos for display
         const { data, error } = await supabase
           .from('viajes')
-          .select('*')
+          .select('*, clientes(razon_social), tractos(numero_economico)')
           .not('estado', 'eq', 'cancelado')
           .order('created_at', { ascending: false });
 
@@ -74,9 +74,9 @@ export default function TorreControl(): ReactElement {
 
           return {
             folio: viaje.folio || viaje.id?.substring(0, 8)?.toUpperCase() || '—',
-            cliente: viaje.cliente_nombre || viaje.cliente || '—',
+            cliente: viaje.clientes?.razon_social || viaje.cliente_nombre || '—',
             ruta: `${viaje.origen || '?'} → ${viaje.destino || '?'}`,
-            tracto: viaje.tracto_numero || viaje.tracto || '—',
+            tracto: viaje.tractos?.numero_economico || viaje.tracto_numero || '—',
             eta: eta
               ? eta.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
               : '—',
