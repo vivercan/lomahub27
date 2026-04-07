@@ -100,10 +100,10 @@ const IconCotizaciones = () => (<Receipt style={lucideStyle} strokeWidth={1.5} a
 const IconPlantillas = () => (<Files style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
 const IconComunicaciones = () => (<Radio style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
 const IconConfig = () => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-    <Star style={{ position: 'absolute', right: '40%', bottom: '34%', width: '20%', height: '20%', color: P }} strokeWidth={1.5} absoluteStrokeWidth />
-    <RefreshCw style={{ position: 'absolute', right: '-6%', bottom: '-8%', width: '34%', height: '34%', color: P }} strokeWidth={1.5} absoluteStrokeWidth />
-    <Settings style={{ position: 'absolute', right: '-14%', bottom: '-20%', width: '72%', height: '100%', color: P }} strokeWidth={1.5} absoluteStrokeWidth />
+  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.18 }}>
+    <img src="https://api.iconify.design/solar:star-linear.svg?color=%23ffffff" alt="" style={{ position: 'absolute', right: '44%', bottom: '38%', width: '22%', height: '22%' }} />
+    <img src="https://api.iconify.design/solar:refresh-linear.svg?color=%23ffffff" alt="" style={{ position: 'absolute', right: '-4%', bottom: '-6%', width: '36%', height: '36%' }} />
+    <img src="https://api.iconify.design/solar:settings-linear.svg?color=%23ffffff" alt="" style={{ position: 'absolute', right: '-14%', bottom: '-20%', width: '74%', height: '102%' }} />
   </div>
 )
 
