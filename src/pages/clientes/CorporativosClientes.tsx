@@ -121,7 +121,7 @@ export default function CorporativosClientes(): ReactElement {
         /* clientes */
         const { data: clientesData } = await supabase
           .from('clientes')
-          .select('id,razon_social,rfc,tipo,segmento,ejecutivo,empresa,corporativo_id,fecha_alta,ciudad,telefono,email')
+          .select('id,razon_social,rfc,tipo,segmento,ejecutivo_asignado,empresa,fecha_alta')
           .is('deleted_at', null)
           .order('razon_social');
 
@@ -129,16 +129,16 @@ export default function CorporativosClientes(): ReactElement {
 
         /* cxc resumen */
         const { data: cxcData } = await supabase
-          .from('cxc_cuentas')
-          .select('cliente_id,saldo_pendiente,facturas_pendientes');
+          .from('cxc_cartera')
+          .select('cliente_id,saldo_total,saldo_vencido');
 
         if (cxcData) {
           const map: Record<string, CXCResumen> = {};
           for (const row of cxcData) {
             map[row.cliente_id] = {
               cliente_id: row.cliente_id,
-              saldo_total: row.saldo_pendiente || 0,
-              facturas_pendientes: row.facturas_pendientes || 0,
+              saldo_total: row.saldo_total || 0,
+              facturas_pendientes: 0,
             };
           }
           setCxcMap(map);
