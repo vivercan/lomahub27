@@ -77,10 +77,10 @@ export default function ControlTractos() {
           return;
         }
 
-        // Enrich with tractos table (operador, etc.)
+        // Enrich with tractos table (operador_actual_id, estado_operativo, segmento)
         const { data: tractosDB } = await supabase
           .from('tractos')
-          .select('numero_economico, operador, estado');
+          .select('numero_economico, operador_actual_id, estado_operativo, segmento');
 
         const tractosMap = new Map<string, any>();
         (tractosDB || []).forEach((t) => {
@@ -103,7 +103,7 @@ export default function ControlTractos() {
             empresa: gps.empresa || '\u2014',
             segmento: gps.segmento || '\u2014',
             estado,
-            operador: tractoInfo?.operador || '\u2014',
+            operador: tractoInfo?.operador_actual_id ? 'Asignado' : '\u2014',
             ubicacion: gps.ubicacion || 'Sin ubicación',
             latitud: gps.latitud || null,
             longitud: gps.longitud || null,
