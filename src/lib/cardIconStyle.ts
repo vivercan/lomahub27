@@ -8,10 +8,10 @@ import type { CSSProperties } from 'react'
 
 export const CARD_ICON_POS: CSSProperties = {
   position: 'absolute',
-  right: '14px',
-  bottom: '14px',
-  width: '42%',
-  height: '48%',
+  right: '-12%',
+  bottom: '-14%',
+  width: '88%',
+  height: '100%',
   pointerEvents: 'none',
 }
 
