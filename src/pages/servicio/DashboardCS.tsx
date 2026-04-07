@@ -2,8 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
-import { CARD_ICON_POS, CARD_ICON_P, CARD_ICON_S } from '../../lib/cardIconStyle'
-import { Ticket, Users, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react'
+// Hugeicons via Iconify CDN — mismo patron HomeDashboard
 
 /* ———————————————————————————————————————————————————————————————
    SERVICIO A CLIENTES — Landing Page (alineada a plantilla madre)
@@ -24,27 +23,21 @@ const D = {
   dotSize: '8px',
 } as const
 
-const DOT: Record<string, string> = { green: '#0D9668', gray: '#CBD5E1' }
-
-const P = CARD_ICON_P
-const S = CARD_ICON_S
-
-const iconWrap: React.CSSProperties = {
-  position: 'absolute',
-  top: 0, right: 0, width: '100%', height: '100%',
-  pointerEvents: 'none', overflow: 'hidden',
-  borderRadius: '14px',
-  transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
-}
-
-const svgPos: React.CSSProperties = CARD_ICON_POS
-
-// Lucide premium outline family — single visual family via cardIconStyle.ts
-const lucideStyle = { ...svgPos, color: P } as React.CSSProperties
-const IconTickets = () => (<Ticket style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
-const IconClientes = () => (<Users style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
-const IconImpo = () => (<ArrowDownToLine style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
-const IconExpo = () => (<ArrowUpFromLine style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
+const ICO_OPACITY = 0.22
+const ico = (path: string, style: React.CSSProperties) => (
+  <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
+)
+const compose = (main: string, sat: string, accent: string) => () => (
+  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
+    {ico(sat,    { position: 'absolute', right: '46%', bottom: '40%', width: '24%', height: '24%' })}
+    {ico(accent, { position: 'absolute', right: '-2%',  bottom: '-4%',  width: '38%', height: '38%' })}
+    {ico(main,   { position: 'absolute', right: '-18%', bottom: '-26%', width: '88%', height: '120%' })}
+  </div>
+)
+const IconTickets  = compose('hugeicons:ticket-01',         'hugeicons:alert-circle',     'hugeicons:checkmark-circle-01')
+const IconClientes = compose('hugeicons:user-multiple',     'hugeicons:user-circle',      'hugeicons:star')
+const IconImpo     = compose('hugeicons:package-moving',    'hugeicons:arrow-down-01',    'hugeicons:ship-02')
+const IconExpo     = compose('hugeicons:package-delivered', 'hugeicons:arrow-up-01',      'hugeicons:airplane-take-off-01')
 
 /* —— Card Config —— */
 interface LandingCard {
@@ -117,7 +110,7 @@ export default function DashboardCS() {
                 onMouseLeave={() => setHovered(null)}
                 onClick={() => navigate(card.route)}
               >
-                <div style={{ ...iconWrap, transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none' }}>
+                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px', transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)', transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none' }}>
                   {card.icon}
                 </div>
                 <div style={{ position: 'absolute', top: 14, right: 14, width: 6, height: 6, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.35)' }} />
