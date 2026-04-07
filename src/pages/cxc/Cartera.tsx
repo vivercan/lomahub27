@@ -39,22 +39,22 @@ export default function Cartera() {
     const fetchCartera = async () => {
       try {
         const { data, error } = await supabase
-          .from('clientes')
-          .select('*');
+          .from('cxc_cartera')
+          .select('id, saldo_total, saldo_vencido, dias_credito_pactados, dias_promedio_pago, ejecutivo_cxc_id, clientes(razon_social)');
 
         if (error) {
           console.error('Error fetching cartera:', error);
           setClientesCartera([]);
         } else if (data) {
-          const cartera: ClienteCarteraRow[] = data.map((cliente) => ({
-            id: cliente.id,
-            cliente: cliente.razon_social || 'Sin nombre',
-            saldo_total: cliente.saldo_total || 0,
-            saldo_vencido: cliente.saldo_vencido || 0,
-            dias_credito: cliente.dias_credito || 0,
-            dias_prom_pago: cliente.dias_prom_pago || 0,
-            ejecutivo_cxc: cliente.ejecutivo_cxc || 'Sin asignar',
-            riesgo_dias: cliente.dias_prom_pago ? Math.max(0, cliente.dias_prom_pago - cliente.dias_credito) : 0,
+          const cartera: ClienteCarteraRow[] = (data as any[]).map((row) => ({
+            id: row.id,
+            cliente: row.clientes?.razon_social || 'Sin nombre',
+            saldo_total: Number(row.saldo_total) || 0,
+            saldo_vencido: Number(row.saldo_vencido) || 0,
+            dias_credito: row.dias_credito_pactados || 0,
+            dias_prom_pago: row.dias_promedio_pago || 0,
+            ejecutivo_cxc: row.ejecutivo_cxc_id ? 'Asignado' : 'Sin asignar',
+            riesgo_dias: row.dias_promedio_pago ? Math.max(0, row.dias_promedio_pago - (row.dias_credito_pactados || 30)) : 0,
           }));
 
           setClientesCartera(cartera);
