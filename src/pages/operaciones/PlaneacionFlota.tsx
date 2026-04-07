@@ -62,7 +62,7 @@ export default function PlaneacionFlota(): ReactElement {
       /* Tractos con viaje actual y ETA */
       const { data: tractos, error: e1 } = await supabase
         .from('tractos')
-        .select('id, numero_economico, empresa, ubicacion, estatus')
+        .select('id, numero_economico, empresa, segmento, estado_operativo')
         .is('deleted_at', null)
         .order('numero_economico')
 
@@ -70,8 +70,8 @@ export default function PlaneacionFlota(): ReactElement {
 
       const { data: viajes, error: e2 } = await supabase
         .from('viajes')
-        .select('id, tracto_id, origen, destino, eta_descarga, estatus')
-        .in('estatus', ['en_transito', 'en_carga', 'programado'])
+        .select('id, tracto_id, origen, destino, cita_descarga, estado')
+        .in('estado', ['en_transito', 'en_carga', 'programado'])
 
       if (e2) console.error('viajes:', e2)
 
@@ -81,15 +81,15 @@ export default function PlaneacionFlota(): ReactElement {
       const proyectadas: UnidadProyectada[] = (tractos || []).map((t: any) => {
         const v = viajeMap.get(t.id)
         let disponibleEn: string | null = null
-        let ciudadDisp = t.ubicacion || 'Desconocida'
+        let ciudadDisp = t.segmento || 'Sin segmento'
         let horasDisp = 0
 
-        if (v && v.eta_descarga) {
-          const eta = new Date(v.eta_descarga).getTime()
+        if (v && v.cita_descarga) {
+          const eta = new Date(v.cita_descarga).getTime()
           horasDisp = Math.max(0, (eta - now) / 3600000)
-          disponibleEn = v.eta_descarga
+          disponibleEn = v.cita_descarga
           ciudadDisp = v.destino || ciudadDisp
-        } else if (t.estatus === 'disponible') {
+        } else if (t.estado_operativo === 'disponible') {
           horasDisp = 0
           disponibleEn = new Date().toISOString()
         }
@@ -98,10 +98,10 @@ export default function PlaneacionFlota(): ReactElement {
           tracto_id: t.id,
           numero_economico: t.numero_economico,
           empresa: t.empresa || 'TROB',
-          ubicacion_actual: t.ubicacion || '—',
-          estatus: t.estatus,
+          ubicacion_actual: t.segmento || '—',
+          estatus: t.estado_operativo,
           viaje_actual_id: v?.id || null,
-          eta_descarga: v?.eta_descarga || null,
+          eta_descarga: v?.cita_descarga || null,
           disponible_en: disponibleEn,
           ciudad_disponible: ciudadDisp,
           horas_para_disponible: Math.round(horasDisp * 10) / 10,
