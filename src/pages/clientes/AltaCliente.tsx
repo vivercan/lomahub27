@@ -88,11 +88,7 @@ export default function AltaCliente(): ReactElement {
       razon_social: razonSocial.trim(),
       rfc: rfc.trim().toUpperCase(),
       tipo,
-      contacto_nombre: contactoNombre.trim(),
-      telefono: telefono.trim(),
-      email: email.trim(),
-      ciudad: ciudad.trim(),
-      estado_mx: estadoMx.trim(),
+      notas: [contactoNombre, telefono, email, ciudad, estadoMx].filter(Boolean).join(' | '),
     })
     setSaving(false)
     if (err) { setError(err.message); return }
