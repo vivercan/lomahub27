@@ -14,7 +14,7 @@ import { supabase } from '../lib/supabase'
 import AppHeader from '../components/layout/AppHeader'
 import { useAuthContext } from '../hooks/AuthContext'
 import { CARD_ICON_POS, CARD_ICON_P, CARD_ICON_S } from '../lib/cardIconStyle'
-import { Filter, Briefcase, MessagesSquare, Truck, BarChart3, Receipt, Files, Radio, Settings, Star, RefreshCw } from 'lucide-react'
+// (Lucide removed — using Hugeicons via Iconify CDN as watermark composition)
 
 // ============================================================================
 // TYPES
@@ -73,39 +73,35 @@ const CARD_BG: Record<string, string> = {
 }
 
 // ============================================================================
-// ICON SYSTEM — White-stroke premium icons
-// Principal: rgba(255,255,255,0.12)  |  Secondary: rgba(255,255,255,0.08)
+// ICON SYSTEM — Hugeicons premium line family via Iconify CDN
+// Replicates the validated Configuracion card watermark composition pattern.
+// Each card = 1 dominant icon (oversized, anchored bottom-right, bleeds off corner)
+//             + 1 satellite (mid-card, smaller)
+//             + 1 accent (overlapping bottom-right of dominant)
+// All white-stroke at opacity 0.22 — recortado naturalmente por overflow:hidden del card.
 // ============================================================================
-const P = CARD_ICON_P  // principal
-const S = CARD_ICON_S  // secondary
+const ICO_OPACITY = 0.22
+const ico = (path: string, style: React.CSSProperties) => (
+  <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
+)
 
-const iconWrap: React.CSSProperties = {
-  position: 'absolute',
-  top: 0, right: 0, width: '100%', height: '100%',
-  pointerEvents: 'none', overflow: 'hidden',
-  borderRadius: '14px',
-  transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
-}
-
-const svgPos: React.CSSProperties = CARD_ICON_POS
-
-// Lucide premium outline family — single visual family, positioned via cardIconStyle.ts
-const lucideStyle = { ...svgPos, color: P } as React.CSSProperties
-const IconOportunidades = () => (<Filter style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
-const IconComercial = () => (<Briefcase style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
-const IconServicio = () => (<MessagesSquare style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
-const IconDespacho = () => (<Truck style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
-const IconVentas = () => (<BarChart3 style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
-const IconCotizaciones = () => (<Receipt style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
-const IconPlantillas = () => (<Files style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
-const IconComunicaciones = () => (<Radio style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
-const IconConfig = () => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.22 }}>
-    <img src="https://api.iconify.design/material-symbols:star-outline-rounded.svg?color=%23ffffff" alt="" style={{ position: 'absolute', right: '46%', bottom: '40%', width: '26%', height: '26%' }} />
-    <img src="https://api.iconify.design/mdi:recycle.svg?color=%23ffffff" alt="" style={{ position: 'absolute', right: '-2%', bottom: '-4%', width: '40%', height: '40%' }} />
-    <img src="https://api.iconify.design/mdi:cog-outline.svg?color=%23ffffff" alt="" style={{ position: 'absolute', right: '-18%', bottom: '-26%', width: '88%', height: '120%' }} />
+const compose = (main: string, sat: string, accent: string) => () => (
+  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
+    {ico(sat,    { position: 'absolute', right: '46%', bottom: '40%', width: '24%', height: '24%' })}
+    {ico(accent, { position: 'absolute', right: '-2%',  bottom: '-4%',  width: '38%', height: '38%' })}
+    {ico(main,   { position: 'absolute', right: '-18%', bottom: '-26%', width: '88%', height: '120%' })}
   </div>
 )
+
+const IconOportunidades  = compose('hugeicons:filter',                'hugeicons:search-01',         'hugeicons:arrow-up-right-01')
+const IconComercial      = compose('hugeicons:briefcase-01',          'hugeicons:chart-line-data-01','hugeicons:handshake-01')
+const IconServicio       = compose('hugeicons:bubble-chat',           'hugeicons:headset',           'hugeicons:star')
+const IconDespacho       = compose('hugeicons:truck',                 'hugeicons:route-01',          'hugeicons:time-04')
+const IconVentas         = compose('hugeicons:chart-line-data-01',    'hugeicons:dollar-circle',     'hugeicons:target-02')
+const IconCotizaciones   = compose('hugeicons:invoice-03',            'hugeicons:calculator-01',     'hugeicons:checkmark-circle-01')
+const IconPlantillas     = compose('hugeicons:file-01',               'hugeicons:edit-01',           'hugeicons:layout-01')
+const IconComunicaciones = compose('hugeicons:radio-01',              'hugeicons:message-01',        'hugeicons:notification-01')
+const IconConfig         = compose('hugeicons:settings-01',           'hugeicons:star',              'hugeicons:refresh')
 
 // ============================================================================
 // COMPONENT
