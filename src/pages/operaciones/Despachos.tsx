@@ -156,22 +156,22 @@ export default function Despachos(): ReactElement {
       try {
         const { data, error: dbError } = await supabase
           .from('viajes')
-          .select('*')
+          .select('*, clientes(razon_social), tractos(numero_economico), cajas(numero_economico), operadores(nombre)')
           .order('created_at', { ascending: false });
 
         if (dbError) {
           console.error('Error fetching viajes:', dbError);
           setViajes([]);
         } else if (data) {
-          const viajesFormatted: Viaje[] = data.map((v) => ({
+          const viajesFormatted: Viaje[] = (data as any[]).map((v) => ({
             id: v.id,
             folio: v.folio || '—',
-            cliente: v.cliente_nombre || '—',
+            cliente: v.clientes?.razon_social || v.cliente_nombre || '—',
             ruta: `${v.origen || '?'} → ${v.destino || '?'}`,
             tipo: v.tipo || '—',
-            tracto: v.tracto_numero || '—',
-            caja: v.caja_numero || '—',
-            operador: v.operador_nombre || '—',
+            tracto: v.tractos?.numero_economico || v.tracto_numero || '—',
+            caja: v.cajas?.numero_economico || v.caja_numero || '—',
+            operador: v.operadores?.nombre || v.operador_nombre || '—',
             estado: v.estado || 'programado',
             citaDescarga: v.cita_descarga ? new Date(v.cita_descarga).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : '—',
             eta_calculado: v.eta_calculado,
