@@ -14,7 +14,7 @@ import { supabase } from '../lib/supabase'
 import AppHeader from '../components/layout/AppHeader'
 import { useAuthContext } from '../hooks/AuthContext'
 import { CARD_ICON_POS, CARD_ICON_P, CARD_ICON_S } from '../lib/cardIconStyle'
-import { Filter, Briefcase, MessagesSquare, Truck, BarChart3, Receipt, Files, Radio, SlidersHorizontal } from 'lucide-react'
+import { Filter, Briefcase, MessagesSquare, Truck, BarChart3, Receipt, Files, Radio, Settings, Star, RefreshCw } from 'lucide-react'
 
 // ============================================================================
 // TYPES
@@ -99,7 +99,13 @@ const IconVentas = () => (<BarChart3 style={lucideStyle} strokeWidth={1.5} absol
 const IconCotizaciones = () => (<Receipt style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
 const IconPlantillas = () => (<Files style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
 const IconComunicaciones = () => (<Radio style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
-const IconConfig = () => (<SlidersHorizontal style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
+const IconConfig = () => (
+  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+    <Star style={{ position: 'absolute', right: '40%', bottom: '34%', width: '20%', height: '20%', color: P }} strokeWidth={1.5} absoluteStrokeWidth />
+    <RefreshCw style={{ position: 'absolute', right: '-6%', bottom: '-8%', width: '34%', height: '34%', color: P }} strokeWidth={1.5} absoluteStrokeWidth />
+    <Settings style={{ position: 'absolute', right: '-14%', bottom: '-20%', width: '72%', height: '100%', color: P }} strokeWidth={1.5} absoluteStrokeWidth />
+  </div>
+)
 
 // ============================================================================
 // COMPONENT
