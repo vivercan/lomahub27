@@ -74,11 +74,11 @@ export default function Disponibilidad(): ReactElement {
       ] = await Promise.all([
         supabase
           .from('tractos')
-          .select('id, numero_economico, ubicacion, estado, tipo')
+          .select('id, numero_economico, segmento, estado_operativo')
           .is('deleted_at', null),
         supabase
           .from('cajas')
-          .select('id, numero_economico, ubicacion, estado, tipo')
+          .select('id, numero_economico, ubicacion_actual, estado, tipo')
           .is('deleted_at', null),
         supabase
           .from('tractos')
@@ -105,17 +105,17 @@ export default function Disponibilidad(): ReactElement {
       })
 
       ;(tractos || []).forEach((t: any) => {
-        const u = t.ubicacion || 'Sin ubicación'
+        const u = t.segmento || 'Sin segmento'
         if (!plazasMap.has(u)) plazasMap.set(u, initPlaza())
         const p = plazasMap.get(u)!
         p.tractosTotal += 1
-        if (t.estado === 'disponible') p.tractosDisp += 1
-        else if (t.estado === 'en_taller' || t.estado === 'mantenimiento') p.tractosTaller += 1
+        if (t.estado_operativo === 'disponible') p.tractosDisp += 1
+        else if (t.estado_operativo === 'en_taller' || t.estado_operativo === 'mantenimiento') p.tractosTaller += 1
         else p.tractosRuta += 1
       })
 
       ;(cajas || []).forEach((c: any) => {
-        const u = c.ubicacion || 'Sin ubicación'
+        const u = c.ubicacion_actual || 'Sin ubicación'
         if (!plazasMap.has(u)) plazasMap.set(u, initPlaza())
         const p = plazasMap.get(u)!
         p.cajasTotal += 1
