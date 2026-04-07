@@ -101,13 +101,13 @@ export default function NuevaCotizacion() {
   useEffect(() => {
     async function load() {
       const [rCli, rMX, rUSA, rCr, rAcc] = await Promise.all([
-        supabase.from('clientes').select('id, nombre').order('nombre'),
+        supabase.from('clientes').select('id, razon_social').order('razon_social'),
         supabase.from('tarifas_mx').select('*').eq('activo', true).order('rango_km_min'),
         supabase.from('tarifas_usa').select('*').eq('activo', true).order('rango_millas_min'),
         supabase.from('cruces').select('*').eq('activo', true).order('nombre'),
         supabase.from('accesoriales').select('*').eq('activo', true).order('codigo'),
       ])
-      if (rCli.data) setClienteOpts([{ value: '', label: 'Seleccionar cliente...' }, ...rCli.data.map(c => ({ value: c.id, label: c.nombre || 'Sin nombre' }))])
+      if (rCli.data) setClienteOpts([{ value: '', label: 'Seleccionar cliente...' }, ...rCli.data.map(c => ({ value: c.id, label: c.razon_social || 'Sin nombre' }))])
       if (rMX.data) setTarifasMX(rMX.data as TarifaMX[])
       if (rUSA.data) setTarifasUSA(rUSA.data as TarifaUSA[])
       if (rCr.data) setCruces(rCr.data as Cruce[])
