@@ -100,10 +100,10 @@ const IconCotizaciones = () => (<Receipt style={lucideStyle} strokeWidth={1.5} a
 const IconPlantillas = () => (<Files style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
 const IconComunicaciones = () => (<Radio style={lucideStyle} strokeWidth={1.5} absoluteStrokeWidth />)
 const IconConfig = () => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.18 }}>
-    <img src="https://api.iconify.design/solar:star-linear.svg?color=%23ffffff" alt="" style={{ position: 'absolute', right: '44%', bottom: '38%', width: '22%', height: '22%' }} />
-    <img src="https://api.iconify.design/solar:refresh-linear.svg?color=%23ffffff" alt="" style={{ position: 'absolute', right: '-4%', bottom: '-6%', width: '36%', height: '36%' }} />
-    <img src="https://api.iconify.design/solar:settings-linear.svg?color=%23ffffff" alt="" style={{ position: 'absolute', right: '-14%', bottom: '-20%', width: '74%', height: '102%' }} />
+  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.22 }}>
+    <img src="https://api.iconify.design/material-symbols:star-outline-rounded.svg?color=%23ffffff" alt="" style={{ position: 'absolute', right: '46%', bottom: '40%', width: '26%', height: '26%' }} />
+    <img src="https://api.iconify.design/mdi:recycle.svg?color=%23ffffff" alt="" style={{ position: 'absolute', right: '-2%', bottom: '-4%', width: '40%', height: '40%' }} />
+    <img src="https://api.iconify.design/mdi:cog-outline.svg?color=%23ffffff" alt="" style={{ position: 'absolute', right: '-18%', bottom: '-26%', width: '88%', height: '120%' }} />
   </div>
 )
 
@@ -257,8 +257,8 @@ export default function HomeDashboard() {
     },
     {
       id: 'config', label: 'Configuracion', route: '/admin/configuracion',
-      kpiValue: '\u2699\uFE0F', kpiLabel: 'admin',
-      statusDot: 'gray', statusText: 'Sistema',
+      kpiValue: '', kpiLabel: '',
+      statusDot: 'gray', statusText: '',
       icon: <IconConfig />,
     },
   ]
