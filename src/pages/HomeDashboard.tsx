@@ -291,7 +291,8 @@ export default function HomeDashboard() {
       >
         {/* Single icon layer — moves on hover */}
         <div style={{
-          ...iconWrap,
+          position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px',
+          transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
           transform: isHovered ? 'translate(4px, -4px) scale(1.05)' : 'translate(0,0) scale(1)',
         }}>
           {card.icon}
