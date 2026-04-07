@@ -1,21 +1,15 @@
-// src/lib/cardIconStyle.ts
-// SOURCE OF TRUTH — Decorative icon positioning for dashboard-family cards.
-// Rule: anchored bottom-right with elegant margin, 42% width / 48% height, opacity 12%.
-// All dashboard and submodule card files MUST import from here.
-// To replace with externally downloaded icons, only swap the SVG glyph inside the
-// component; never override these position/opacity values locally.
+// SSoT — tratamiento visual icono watermark cards (M1 Refinado)
+// Icono Lucide oversized anclado bottom-right, recortado naturalmente por overflow:hidden del card
 import type { CSSProperties } from 'react'
 
 export const CARD_ICON_POS: CSSProperties = {
   position: 'absolute',
-  right: '0',
-  bottom: '0',
-  width: '60%',
-  height: '85%',
-  transform: 'scale(2.2)',
-  transformOrigin: 'bottom right',
+  right: '-8%',
+  bottom: '-12%',
+  width: '78%',
+  height: '108%',
   pointerEvents: 'none',
 }
 
-export const CARD_ICON_P = 'rgba(255,255,255,0.12)'
+export const CARD_ICON_P = 'rgba(255,255,255,0.14)'
 export const CARD_ICON_S = 'rgba(255,255,255,0.08)'
