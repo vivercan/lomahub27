@@ -158,8 +158,8 @@ export default function WarRoom() {
         // GPS last tracking (most recent position)
         supabase
           .from('gps_tracking')
-          .select('fecha_gps')
-          .order('fecha_gps', { ascending: false })
+          .select('ultima_actualizacion')
+          .order('ultima_actualizacion', { ascending: false })
           .limit(1),
       ])
 
@@ -210,20 +210,20 @@ export default function WarRoom() {
       let gpsEstado: SemaforoEstado = 'rojo'
       let gpsDetalle = 'Sin datos GPS'
       if (gpsRecent && gpsRecent.length > 0) {
-        const lastSync = new Date(gpsRecent[0].fecha_gps)
+        const lastSync = new Date(gpsRecent[0].ultima_actualizacion)
         const diffMin = Math.floor((Date.now() - lastSync.getTime()) / 60000)
         if (diffMin <= 15) {
           gpsEstado = 'verde'
-          gpsDetalle = `${gu} unidades, sync ${timeAgo(gpsRecent[0].fecha_gps)}`
+          gpsDetalle = `${gu} unidades, sync ${timeAgo(gpsRecent[0].ultima_actualizacion)}`
         } else if (diffMin <= 30) {
           gpsEstado = 'amarillo'
-          gpsDetalle = `${gu} unidades, último sync ${timeAgo(gpsRecent[0].fecha_gps)}`
+          gpsDetalle = `${gu} unidades, último sync ${timeAgo(gpsRecent[0].ultima_actualizacion)}`
         } else if (diffMin <= 60) {
           gpsEstado = 'naranja'
-          gpsDetalle = `${gu} unidades, sync atrasado ${timeAgo(gpsRecent[0].fecha_gps)}`
+          gpsDetalle = `${gu} unidades, sync atrasado ${timeAgo(gpsRecent[0].ultima_actualizacion)}`
         } else {
           gpsEstado = 'rojo'
-          gpsDetalle = `${gu} unidades, SIN SYNC ${timeAgo(gpsRecent[0].fecha_gps)}`
+          gpsDetalle = `${gu} unidades, SIN SYNC ${timeAgo(gpsRecent[0].ultima_actualizacion)}`
         }
       }
 
