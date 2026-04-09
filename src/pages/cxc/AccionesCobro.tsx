@@ -52,7 +52,7 @@ export default function AccionesCobro() {
       try {
         const { data, error } = await supabase
           .from('cxc_cartera')
-          .select('id, saldo_total, saldo_vencido, dias_credito_pactados, dias_promedio_pago, ejecutivo_cxc_id, clientes(razon_social)')
+          .select('id, saldo_total, saldo_vencido, dias_credito_pactados, dias_promedio_pago, ejecutivo_cxc_id, ultimo_contacto, estatus_cobro, clientes(razon_social)')
           .gt('saldo_vencido', 0)
           .order('saldo_vencido', { ascending: false });
 
@@ -67,8 +67,8 @@ export default function AccionesCobro() {
             dias_credito: c.dias_credito_pactados || 0,
             dias_prom_pago: c.dias_promedio_pago || 0,
             ejecutivo_cxc: c.ejecutivo_cxc_id || 'Sin asignar',
-            ultimo_contacto: null,
-            estatus_cobro: 'Pendiente',
+            ultimo_contacto: c.ultimo_contacto || null,
+            estatus_cobro: c.estatus_cobro || 'Pendiente',
           })));
         }
       } catch (err) {
