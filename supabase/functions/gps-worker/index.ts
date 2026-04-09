@@ -1,6 +1,9 @@
-// GPS Worker — Corre cada 10 minutos (cron)
-// Actualiza posición de toda la flota desde el proveedor GPS
-// V29 — Added diagnostic logging for WideTech API response
+// GPS Worker â V38 â PRODUCTION (Batch optimized)
+// WideTech SOAP: HistoyDataLastLocationByUser (sLogin, sPassword)
+// Namespace: http://shareservice.co/
+// Response: <Plate id="X" MobileID="Y"><hst><DateTimeGPS/><Latitude/><Longitude/><Speed/><Location/></hst></Plate>
+// Rate limit: 40s between calls. Cron every 10 min = safe.
+// Batch upsert: all units in one call instead of 270+ sequential calls
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const supabase = createClient(
@@ -15,71 +18,78 @@ Deno.serve(async (_req) => {
     const GPS_PASS = Deno.env.get('GPS_API_PASS')!
 
     if (!GPS_URL || !GPS_USER || !GPS_PASS) {
-      return new Response(JSON.stringify({
-        ok: false, error: 'Missing GPS secrets',
-        hasUrl: !!GPS_URL, hasUser: !!GPS_USER, hasPass: !!GPS_PASS
-      }), { status: 500, headers: { 'Content-Type': 'application/json' } })
+      return json({ ok: false, error: 'Missing GPS secrets' }, 500)
     }
 
-    // Llamar al proveedor GPS (WideTech XML API)
-    const response = await fetch(GPS_URL, {
+    const NS = 'http://shareservice.co/'
+
+    const soapBody = `<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <HistoyDataLastLocationByUser xmlns="${NS}">
+      <sLogin>${GPS_USER}</sLogin>
+      <sPassword>${GPS_PASS}</sPassword>
+    </HistoyDataLastLocationByUser>
+  </soap:Body>
+</soap:Envelope>`
+
+    const res = await fetch(GPS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/xml' },
-      body: `<?xml version="1.0"?>
-<request>
-  <login>${GPS_USER}</login>
-  <password>${GPS_PASS}</password>
-</request>`
+      headers: {
+        'Content-Type': 'text/xml; charset=utf-8',
+        'SOAPAction': `"${NS}HistoyDataLastLocationByUser"`
+      },
+      body: soapBody
     })
 
-    const xmlText = await response.text()
-    const httpStatus = response.status
+    const xmlText = await res.text()
 
-    // Diagnostic: log raw response info
-    console.log(`[gps-worker] WideTech HTTP ${httpStatus}, body length: ${xmlText.length}, preview: ${xmlText.substring(0, 300)}`)
-
-    if (httpStatus !== 200) {
-      return new Response(JSON.stringify({
-        ok: false, error: 'WideTech API error',
-        httpStatus, bodyPreview: xmlText.substring(0, 500)
-      }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    if (res.status !== 200) {
+      return json({ ok: false, error: `WideTech HTTP ${res.status}`, version: 'V38', bodyPreview: xmlText.substring(0, 500) })
     }
 
-    const units = parseGPSResponse(xmlText)
+    // Rate limit check
+    if (xmlText.includes('<code>109</code>')) {
+      return json({ ok: true, units: 0, version: 'V38', rateLimited: true, note: 'Rate limited. Next cron cycle.' })
+    }
 
-    // If 0 units, return diagnostic info
+    // Error code check
+    const codeMatch = xmlText.match(/<code>(\d+)<\/code>/)
+    const descMatch = xmlText.match(/<description>([^<]+)<\/description>/)
+    if (codeMatch && codeMatch[1] !== '100') {
+      return json({ ok: false, error: `WideTech code ${codeMatch[1]}: ${descMatch?.[1] || 'unknown'}`, version: 'V38' })
+    }
+
+    // Parse
+    const units = parsePlateResponse(xmlText)
+
     if (units.length === 0) {
-      return new Response(JSON.stringify({
-        ok: true, units: 0,
-        diagnostic: {
-          httpStatus,
-          bodyLength: xmlText.length,
-          bodyPreview: xmlText.substring(0, 500),
-          hasUnitTag: xmlText.includes('<Unit>'),
-          hasError: xmlText.toLowerCase().includes('error'),
-        }
-      }), { headers: { 'Content-Type': 'application/json' } })
+      return json({
+        ok: true, units: 0, version: 'V38',
+        diagnostic: { bodyLength: xmlText.length, hasPlateTag: xmlText.includes('<Plate'), bodyPreview: xmlText.substring(0, 800) }
+      })
     }
 
-    // Cargar lookup de tractos y cajas para clasificar tipo_unidad
+    // Load lookup tables for classification
     const { data: tractosData } = await supabase.from('tractos').select('numero_economico')
     const { data: cajasData }   = await supabase.from('cajas').select('numero_economico')
     const tractosSet = new Set((tractosData || []).map(t => t.numero_economico))
     const cajasSet   = new Set((cajasData || []).map(c => c.numero_economico))
 
-    // Upsert en gps_tracking
-    for (const unit of units) {
+    const now = new Date().toISOString()
+
+    // Build batch arrays
+    const trackingRows = units.map(unit => {
       let tipo_unidad = 'tracto'
-      const segLower = (unit.segmento || '').toLowerCase()
-      if (segLower.includes('trailer')) {
+      const imgLower = (unit.img || '').toLowerCase()
+      if (imgLower.includes('trailer') || imgLower.includes('caja') || imgLower.includes('remolque')) {
         tipo_unidad = 'caja'
       } else if (cajasSet.has(unit.economico)) {
         tipo_unidad = 'caja'
       } else if (tractosSet.has(unit.economico)) {
         tipo_unidad = 'tracto'
       }
-
-      await supabase.from('gps_tracking').upsert({
+      return {
         economico: unit.economico,
         empresa: unit.empresa,
         segmento: unit.segmento,
@@ -89,29 +99,56 @@ Deno.serve(async (_req) => {
         ubicacion: unit.location,
         estatus: unit.status,
         tipo_unidad,
-        ultima_actualizacion: new Date().toISOString()
-      }, { onConflict: 'economico' })
+        ultima_actualizacion: now
+      }
+    })
 
-      // Guardar en historial
-      await supabase.from('gps_historial').insert({
-        economico: unit.economico,
-        latitud: unit.latitude,
-        longitud: unit.longitude,
-        velocidad: unit.speed
-      })
+    const historialRows = units.map(unit => ({
+      economico: unit.economico,
+      latitud: unit.latitude,
+      longitud: unit.longitude,
+      velocidad: unit.speed
+    }))
+
+    // BATCH UPSERT â one call for all tracking records
+    const { error: trackError, count: trackCount } = await supabase
+      .from('gps_tracking')
+      .upsert(trackingRows, { onConflict: 'economico', count: 'exact' })
+
+    // BATCH INSERT historial â in chunks of 500 to avoid payload limits
+    let historialInserted = 0
+    for (let i = 0; i < historialRows.length; i += 500) {
+      const chunk = historialRows.slice(i, i + 500)
+      const { error: hError } = await supabase.from('gps_historial').insert(chunk)
+      if (!hError) historialInserted += chunk.length
     }
 
-    // Detectar unidades detenidas en viaje activo
+    // Detect stopped units (quick â runs a single query)
     await detectarUnidadesDetenidas()
 
-    return new Response(JSON.stringify({ ok: true, units: units.length }), {
-      headers: { 'Content-Type': 'application/json' }
+    return json({
+      ok: true,
+      units: units.length,
+      upserted: trackCount || units.length,
+      historial: historialInserted,
+      trackError: trackError?.message || null,
+      version: 'V38'
     })
+
   } catch (error) {
     console.error('GPS Worker error:', error)
-    return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500 })
+    return json({ ok: false, error: (error as Error).message, version: 'V38' }, 500)
   }
 })
+
+function json(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { 'Content-Type': 'application/json' }
+  })
+}
+
+// === PARSER ===
 
 interface GPSUnit {
   economico: string
@@ -122,32 +159,65 @@ interface GPSUnit {
   speed: number
   location: string
   status: string
+  img: string
+  mobileId: string
 }
 
-function parseGPSResponse(xml: string): GPSUnit[] {
-  // Tags WideTech: Latitude, Longitude, Speed, DateTimeGPS, Location (CDATA)
+function parsePlateResponse(xml: string): GPSUnit[] {
   const units: GPSUnit[] = []
-  const unitRegex = /<Unit>([\s\S]*?)<\/Unit>/g
-  let match
-  while ((match = unitRegex.exec(xml)) !== null) {
-    const unitXml = match[1]
+  const plateRegex = /<Plate\s+([^>]*)>([\s\S]*?)<\/Plate>/gi
+  let plateMatch
+
+  while ((plateMatch = plateRegex.exec(xml)) !== null) {
+    const attrs = plateMatch[1]
+    const body = plateMatch[2]
+
+    const plateId = attrVal(attrs, 'id')
+    const img = attrVal(attrs, 'img')
+    const mobileId = attrVal(attrs, 'MobileID')
+
+    // Get most recent <hst> entry
+    const hstMatch = body.match(/<hst[^>]*>([\s\S]*?)<\/hst>/)
+    if (!hstMatch) continue
+
+    const hst = hstMatch[1]
     const get = (tag: string) => {
-      const m = unitXml.match(new RegExp(`<${tag}>([^<]*)</${tag}>`))
-      return m ? m[1].trim() : ''
+      const m = hst.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, 'i'))
+      if (!m) return ''
+      return m[1].replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').trim()
     }
-    units.push({
-      economico: get('UnitId'),
-      empresa: get('Company') || '',
-      segmento: get('Segment') || '',
-      latitude: parseFloat(get('Latitude')) || 0,
-      longitude: parseFloat(get('Longitude')) || 0,
-      speed: parseFloat(get('Speed')) || 0,
-      location: get('Location'),
-      status: get('Status') || 'activo'
-    })
+
+    const lat = parseFloat(get('Latitude') || get('latitude')) || 0
+    const lng = parseFloat(get('Longitude') || get('longitude') || get('Lon')) || 0
+    const speed = parseFloat(get('Speed') || get('speed')) || 0
+    const location = get('Location') || get('location') || get('Address') || ''
+    const status = get('Status') || (speed > 0 ? 'en_movimiento' : 'detenido')
+
+    if (plateId) {
+      units.push({
+        economico: plateId,
+        empresa: '',
+        segmento: '',
+        latitude: lat,
+        longitude: lng,
+        speed,
+        location,
+        status,
+        img,
+        mobileId
+      })
+    }
   }
+
   return units
 }
+
+function attrVal(attrStr: string, name: string): string {
+  const m = attrStr.match(new RegExp(`${name}="([^"]*)"`, 'i'))
+  return m ? m[1] : ''
+}
+
+// === ALERTAS ===
 
 async function detectarUnidadesDetenidas() {
   const { data: params } = await supabase
@@ -165,13 +235,15 @@ async function detectarUnidadesDetenidas() {
     .eq('estado', 'en_transito')
     .lt('updated_at', hace)
 
-  for (const viaje of viajesRiesgo || []) {
-    await supabase.from('incidencias').insert({
-      viaje_id: viaje.id,
-      tracto_id: viaje.tracto_id,
-      tipo: 'unidad_detenida',
-      descripcion: `Unidad sin movimiento por más de ${umbral} minutos`,
-      estado: 'abierta'
-    })
-  }
+  if (!viajesRiesgo || viajesRiesgo.length === 0) return
+
+  const incidencias = viajesRiesgo.map(v => ({
+    viaje_id: v.id,
+    tracto_id: v.tracto_id,
+    tipo: 'unidad_detenida',
+    descripcion: `Unidad sin movimiento por mÃ¡s de ${umbral} minutos`,
+    estado: 'abierta'
+  }))
+
+  await supabase.from('incidencias').insert(incidencias)
 }
