@@ -1,3 +1,6 @@
+// Rentabilidad.tsx â V2 â Real financial data from viajes_anodos + tarifas
+// Calculates estimated revenue per tracto using km Ã tarifa lookup
+// Source: viajes_anodos (ANODOS sync), formatos_venta (km/equipo), tarifas_mx/tarifas_usa
 import { useState, useEffect } from 'react'
 import { DollarSign, TrendingUp, TrendingDown, Truck, RefreshCw, Download } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
@@ -11,51 +14,96 @@ import { Badge } from '../../components/ui/Badge'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 
+/* âââ Types âââââââââââââââââââââââââââââââââââââââ */
+
+interface TarifaMX {
+  rango_km_min: number
+  rango_km_max: number
+  tarifa_por_km: number
+  tipo_equipo: string
+}
+interface TarifaUSA {
+  rango_millas_min: number
+  rango_millas_max: number
+  tarifa_por_milla: number
+  tipo_equipo: string
+}
+
 interface TractoDetalle {
-  tracto_id: string
-  numero_economico: string
+  tracto: string
   empresa: string
   viajes: number
+  kmTotal: number
   ingresoEstimado: number
   costoEstimado: number
   margen: number
   margenPct: number
   utilizacion: number
+  monedaMix: string
 }
 
-interface RentabilidadResponse {
-  ok: boolean
-  periodo: { inicio: string; fin: string }
-  resumen: {
-    totalTractos: number
-    totalViajes: number
-    ingresoTotal: number
-    costoTotal: number
-    margenTotal: number
-    margenPct: number
-  }
-  detalle: TractoDetalle[]
-  mensaje?: string
+interface Resumen {
+  totalTractos: number
+  totalViajes: number
+  ingresoTotal: number
+  costoTotal: number
+  margenTotal: number
+  margenPct: number
+  kmTotal: number
 }
+
+/* âââ Helpers âââââââââââââââââââââââââââââââââââââ */
 
 function getMargenColor(pct: number): string {
-  if (pct >= 25) return '#2D6A4F'
-  if (pct >= 15) return '#92400E'
-  if (pct >= 5) return '#78350F'
-  return '#991B1B'
+  if (pct >= 25) return tokens.colors.green
+  if (pct >= 15) return tokens.colors.yellow
+  if (pct >= 5) return tokens.colors.orange
+  return tokens.colors.red
 }
 
 function formatCurrency(n: number): string {
-  return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0 }).format(n)
+  return new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(n)
 }
 
 function formatPct(n: number): string {
   return `${n.toFixed(1)}%`
 }
 
+function formatNumber(n: number): string {
+  return new Intl.NumberFormat('es-MX', { maximumFractionDigits: 0 }).format(n)
+}
+
+function lookupTarifaMX(km: number, equipo: string, tarifas: TarifaMX[]): number {
+  const match = tarifas.find(
+    (t) => km >= t.rango_km_min && km <= t.rango_km_max && t.tipo_equipo === equipo
+  )
+  if (match) return km * match.tarifa_por_km
+  // Fallback: try without equipo match
+  const fallback = tarifas.find((t) => km >= t.rango_km_min && km <= t.rango_km_max)
+  return fallback ? km * fallback.tarifa_por_km : 0
+}
+
+function lookupTarifaUSA(km: number, equipo: string, tarifas: TarifaUSA[]): number {
+  const millas = km / 1.609
+  const match = tarifas.find(
+    (t) => millas >= t.rango_millas_min && millas <= t.rango_millas_max && t.tipo_equipo === equipo
+  )
+  if (match) return millas * match.tarifa_por_milla
+  const fallback = tarifas.find((t) => millas >= t.rango_millas_min && millas <= t.rango_millas_max)
+  return fallback ? millas * fallback.tarifa_por_milla : 0
+}
+
+/* âââ Component âââââââââââââââââââââââââââââââââââ */
+
 export default function Rentabilidad() {
   const [loading, setLoading] = useState(false)
-  const [data, setData] = useState<RentabilidadResponse | null>(null)
+  const [resumen, setResumen] = useState<Resumen | null>(null)
+  const [detalle, setDetalle] = useState<TractoDetalle[]>([])
   const [error, setError] = useState<string | null>(null)
 
   // Filters
@@ -73,58 +121,173 @@ export default function Rentabilidad() {
   const empresaOptions = [
     { value: '', label: 'Todas las empresas' },
     { value: 'TROB', label: 'TROB' },
-    { value: 'Carroll', label: 'Carroll' },
+    { value: 'WEXPRESS', label: 'WExpress' },
+    { value: 'SHI', label: 'SpeedyHaul' },
+    { value: 'TROB USA', label: 'TROB USA' },
   ]
 
   const fetchData = async () => {
     setLoading(true)
     setError(null)
     try {
-      const { data: viajes, error: vErr } = await supabase
-        .from('viajes')
-        .select('id, tracto_id, origen, destino, created_at')
-        .gte('created_at', `${periodoInicio}T00:00:00`)
-        .lte('created_at', `${periodoFin}T23:59:59`)
-      if (vErr) throw new Error(vErr.message)
+      // 1. Load tarifas (small tables, load once)
+      const [{ data: tarifasMX }, { data: tarifasUSA }] = await Promise.all([
+        supabase.from('tarifas_mx').select('*'),
+        supabase.from('tarifas_usa').select('*'),
+      ])
 
-      const { data: tractos } = await supabase.from('tractos').select('id, numero_economico, empresa')
-      const tractoInfo: Record<string, { numero_economico: string; empresa: string }> = {}
-      for (const t of (tractos || [])) { tractoInfo[t.id] = { numero_economico: t.numero_economico, empresa: t.empresa } }
-
-      const tractoGroups: Record<string, number> = {}
-      for (const v of (viajes || [])) {
-        const tid = v.tracto_id || 'sin_tracto'
-        tractoGroups[tid] = (tractoGroups[tid] || 0) + 1
+      // 2. Load formatos_venta for km + equipo lookup (keyed by anodos_id)
+      const formatoMap = new Map<number, { km: number; equipo: string; moneda: string; sueldo: number }>()
+      let fOffset = 0
+      while (true) {
+        const { data: fChunk } = await supabase
+          .from('formatos_venta')
+          .select('anodos_id, km_total, refrigerado, moneda, sueldo_operador')
+          .not('anodos_id', 'is', null)
+          .range(fOffset, fOffset + 999)
+        if (!fChunk || fChunk.length === 0) break
+        for (const f of fChunk) {
+          formatoMap.set(f.anodos_id, {
+            km: f.km_total || 0,
+            equipo: f.refrigerado ? 'refrigerado' : 'seco',
+            moneda: f.moneda || 'MXN',
+            sueldo: f.sueldo_operador || 0,
+          })
+        }
+        if (fChunk.length < 1000) break
+        fOffset += 1000
       }
 
-      const daysInPeriod = Math.max(1, Math.ceil((new Date(periodoFin).getTime() - new Date(periodoInicio).getTime()) / 86400000) + 1)
+      // 3. Load viajes_anodos in period (paginated)
+      const allViajes: {
+        tracto: string | null
+        kms_viaje: number | null
+        moneda: string
+        id_formato_venta: number | null
+        tipo: string | null
+        cliente: string | null
+      }[] = []
+      let vOffset = 0
+      while (true) {
+        const { data: vChunk, error: vErr } = await supabase
+          .from('viajes_anodos')
+          .select('tracto, kms_viaje, moneda, id_formato_venta, tipo, cliente')
+          .gte('inicia_viaje', `${periodoInicio}T00:00:00`)
+          .lte('inicia_viaje', `${periodoFin}T23:59:59`)
+          .range(vOffset, vOffset + 999)
+        if (vErr) throw new Error(vErr.message)
+        if (!vChunk || vChunk.length === 0) break
+        allViajes.push(...vChunk)
+        if (vChunk.length < 1000) break
+        vOffset += 1000
+      }
 
-      const detalle: TractoDetalle[] = Object.entries(tractoGroups)
-        .map(([tid, count]) => {
-          const info = tractoInfo[tid]
+      if (allViajes.length === 0) {
+        // Try fecha_crea as fallback (some viajes may not have inicia_viaje)
+        let vOffset2 = 0
+        while (true) {
+          const { data: vChunk2 } = await supabase
+            .from('viajes_anodos')
+            .select('tracto, kms_viaje, moneda, id_formato_venta, tipo, cliente')
+            .gte('fecha_crea', `${periodoInicio}T00:00:00`)
+            .lte('fecha_crea', `${periodoFin}T23:59:59`)
+            .range(vOffset2, vOffset2 + 999)
+          if (!vChunk2 || vChunk2.length === 0) break
+          allViajes.push(...vChunk2)
+          if (vChunk2.length < 1000) break
+          vOffset2 += 1000
+        }
+      }
+
+      // 4. Group by tracto and calculate financials
+      const tractoAgg = new Map<string, {
+        viajes: number; kmTotal: number; ingreso: number; costo: number; monedas: Set<string>
+      }>()
+
+      for (const v of allViajes) {
+        const tKey = v.tracto || 'SIN TRACTO'
+        if (!tractoAgg.has(tKey)) {
+          tractoAgg.set(tKey, { viajes: 0, kmTotal: 0, ingreso: 0, costo: 0, monedas: new Set() })
+        }
+        const agg = tractoAgg.get(tKey)!
+        agg.viajes++
+
+        // Get km: prefer viaje.kms_viaje, fallback to formato.km
+        const fmt = v.id_formato_venta ? formatoMap.get(v.id_formato_venta) : null
+        const km = v.kms_viaje || fmt?.km || 0
+        const equipo = fmt?.equipo || 'seco'
+        const moneda = v.moneda || fmt?.moneda || 'MXN'
+        agg.kmTotal += km
+        agg.monedas.add(moneda)
+
+        // Calculate estimated revenue
+        if (moneda === 'USD' && tarifasUSA) {
+          agg.ingreso += lookupTarifaUSA(km, equipo, tarifasUSA as TarifaUSA[])
+        } else if (tarifasMX) {
+          agg.ingreso += lookupTarifaMX(km, equipo, tarifasMX as TarifaMX[])
+        }
+
+        // Cost estimate: sueldo operador (from formato) + diesel rough estimate ($8/km MXN)
+        const sueldoPorViaje = fmt?.sueldo ? fmt.sueldo / 4 : 0
+        const dieselEstimate = km * 8
+        agg.costo += sueldoPorViaje + dieselEstimate
+      }
+
+      // 5. Build detalle array
+      const daysInPeriod = Math.max(1, Math.ceil(
+        (new Date(periodoFin).getTime() - new Date(periodoInicio).getTime()) / 86400000
+      ) + 1)
+
+      const detalleArr: TractoDetalle[] = Array.from(tractoAgg.entries())
+        .map(([tKey, agg]) => {
+          const margen = agg.ingreso - agg.costo
+          const margenPct = agg.ingreso > 0 ? (margen / agg.ingreso) * 100 : 0
           return {
-            tracto_id: tid,
-            numero_economico: info?.numero_economico || tid,
-            empresa: info?.empresa || 'N/A',
-            viajes: count,
-            ingresoEstimado: 0, costoEstimado: 0,
-            margen: 0, margenPct: 0,
-            utilizacion: Math.min(100, (count / daysInPeriod) * 100),
+            tracto: tKey,
+            empresa: '',
+            viajes: agg.viajes,
+            kmTotal: agg.kmTotal,
+            ingresoEstimado: Math.round(agg.ingreso),
+            costoEstimado: Math.round(agg.costo),
+            margen: Math.round(margen),
+            margenPct: Math.round(margenPct * 10) / 10,
+            utilizacion: Math.min(100, (agg.viajes / daysInPeriod) * 100),
+            monedaMix: Array.from(agg.monedas).join('/'),
           }
         })
-        .sort((a, b) => b.viajes - a.viajes)
+        .sort((a, b) => b.ingresoEstimado - a.ingresoEstimado)
 
-      setData({
-        ok: true,
-        periodo: { inicio: periodoInicio, fin: periodoFin },
-        resumen: {
-          totalTractos: detalle.length,
-          totalViajes: viajes?.length || 0,
-          ingresoTotal: 0, costoTotal: 0,
-          margenTotal: 0, margenPct: 0,
-        },
-        detalle,
+      // Enrich empresa from tractos table
+      const { data: tractosDB } = await supabase
+        .from('tractos')
+        .select('numero_economico, empresa')
+      if (tractosDB) {
+        const empresaMap = new Map<string, string>()
+        for (const t of tractosDB) {
+          empresaMap.set(t.numero_economico, t.empresa || '')
+        }
+        for (const d of detalleArr) {
+          d.empresa = empresaMap.get(d.tracto) || ''
+        }
+      }
+
+      // 6. Compute resumen
+      const totalIngreso = detalleArr.reduce((s, d) => s + d.ingresoEstimado, 0)
+      const totalCosto = detalleArr.reduce((s, d) => s + d.costoEstimado, 0)
+      const totalKm = detalleArr.reduce((s, d) => s + d.kmTotal, 0)
+      const totalMargen = totalIngreso - totalCosto
+      const totalMargenPct = totalIngreso > 0 ? (totalMargen / totalIngreso) * 100 : 0
+
+      setResumen({
+        totalTractos: detalleArr.length,
+        totalViajes: allViajes.length,
+        ingresoTotal: totalIngreso,
+        costoTotal: totalCosto,
+        margenTotal: totalMargen,
+        margenPct: Math.round(totalMargenPct * 10) / 10,
+        kmTotal: totalKm,
       })
+      setDetalle(detalleArr)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
@@ -132,34 +295,45 @@ export default function Rentabilidad() {
     }
   }
 
-    useEffect(() => {
+  useEffect(() => {
     fetchData()
   }, [])
 
-  const filteredDetalle = data?.detalle?.filter(
+  const filteredDetalle = detalle.filter(
     (t) => !empresa || t.empresa === empresa
-  ) ?? []
+  )
+
+  /* âââ Table Columns âââââââââââââââââââââââââââââ */
 
   const columns: Column<TractoDetalle>[] = [
     {
       key: 'semaforo',
       label: '',
       width: '40px',
-      render: (row) => <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', backgroundColor: getMargenColor(row.margenPct) }} />,
+      render: (row) => (
+        <span
+          style={{
+            display: 'inline-block', width: 10, height: 10, borderRadius: '50%',
+            backgroundColor: getMargenColor(row.margenPct),
+          }}
+        />
+      ),
     },
     {
-      key: 'numero_economico',
+      key: 'tracto',
       label: 'Tracto',
       render: (row) => (
         <span style={{ color: tokens.colors.textPrimary, fontWeight: 600 }}>
-          {row.numero_economico}
+          {row.tracto}
         </span>
       ),
     },
     {
       key: 'empresa',
       label: 'Empresa',
-      render: (row) => <Badge color="blue">{row.empresa}</Badge>,
+      render: (row) => (
+        <Badge color="blue">{row.empresa || 'â'}</Badge>
+      ),
     },
     {
       key: 'viajes',
@@ -170,19 +344,27 @@ export default function Rentabilidad() {
       ),
     },
     {
-      key: 'ingresoEstimado',
-      label: 'Ingreso',
+      key: 'kmTotal',
+      label: 'Km',
       align: 'right',
       render: (row) => (
-        <span style={{ color: '#2D6A4F' }}>{formatCurrency(row.ingresoEstimado)}</span>
+        <span style={{ color: tokens.colors.textSecondary }}>{formatNumber(row.kmTotal)}</span>
+      ),
+    },
+    {
+      key: 'ingresoEstimado',
+      label: 'Ingreso Est.',
+      align: 'right',
+      render: (row) => (
+        <span style={{ color: tokens.colors.green }}>{formatCurrency(row.ingresoEstimado)}</span>
       ),
     },
     {
       key: 'costoEstimado',
-      label: 'Costo',
+      label: 'Costo Est.',
       align: 'right',
       render: (row) => (
-        <span style={{ color: '#991B1B' }}>{formatCurrency(row.costoEstimado)}</span>
+        <span style={{ color: tokens.colors.red }}>{formatCurrency(row.costoEstimado)}</span>
       ),
     },
     {
@@ -190,7 +372,7 @@ export default function Rentabilidad() {
       label: 'Margen',
       align: 'right',
       render: (row) => (
-        <span style={{ color: row.margen >= 0 ? '#2D6A4F' : '#991B1B', fontWeight: 600 }}>
+        <span style={{ color: row.margen >= 0 ? tokens.colors.green : tokens.colors.red, fontWeight: 600 }}>
           {formatCurrency(row.margen)}
         </span>
       ),
@@ -207,7 +389,7 @@ export default function Rentabilidad() {
     },
     {
       key: 'utilizacion',
-      label: 'Utilización',
+      label: 'UtilizaciÃ³n',
       align: 'center',
       render: (row) => {
         const pct = row.utilizacion
@@ -218,7 +400,7 @@ export default function Rentabilidad() {
                 className="h-full rounded-full transition-all"
                 style={{
                   width: `${Math.min(pct, 100)}%`,
-                  background: pct >= 70 ? '#2D6A4F' : pct >= 40 ? '#92400E' : '#991B1B',
+                  background: pct >= 70 ? tokens.colors.green : pct >= 40 ? tokens.colors.yellow : tokens.colors.red,
                 }}
               />
             </div>
@@ -229,13 +411,23 @@ export default function Rentabilidad() {
         )
       },
     },
+    {
+      key: 'monedaMix',
+      label: 'Moneda',
+      align: 'center',
+      render: (row) => (
+        <span style={{ color: tokens.colors.textMuted, fontSize: '0.75rem' }}>{row.monedaMix || 'â'}</span>
+      ),
+    },
   ]
+
+  /* âââ Export CSV âââââââââââââââââââââââââââââââââ */
 
   const handleExportCSV = () => {
     if (!filteredDetalle.length) return
-    const header = 'Tracto,Empresa,Viajes,Ingreso,Costo,Margen,% Margen,Utilización\n'
-    const rows = filteredDetalle.map(r =>
-      `${r.numero_economico},${r.empresa},${r.viajes},${r.ingresoEstimado},${r.costoEstimado},${r.margen},${r.margenPct},${r.utilizacion}`
+    const header = 'Tracto,Empresa,Viajes,Km,Ingreso,Costo,Margen,%Margen,UtilizaciÃ³n,Moneda\n'
+    const rows = filteredDetalle.map((r) =>
+      `${r.tracto},${r.empresa},${r.viajes},${r.kmTotal},${r.ingresoEstimado},${r.costoEstimado},${r.margen},${r.margenPct},${r.utilizacion.toFixed(1)},${r.monedaMix}`
     ).join('\n')
     const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' })
     const link = document.createElement('a')
@@ -244,10 +436,12 @@ export default function Rentabilidad() {
     link.click()
   }
 
+  /* âââ Render ââââââââââââââââââââââââââââââââââââ */
+
   return (
     <ModuleLayout
       titulo="Rentabilidad por Tracto"
-      subtitulo="Ingreso, costo, margen y utilización por unidad"
+      subtitulo="Ingreso estimado, costo y margen por unidad â datos ANODOS en tiempo real"
       acciones={
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={handleExportCSV} disabled={!filteredDetalle.length}>
@@ -265,7 +459,7 @@ export default function Rentabilidad() {
       <div className="flex flex-wrap gap-4 mb-6 items-end">
         <div>
           <label className="text-xs block mb-1" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-            Período inicio
+            PerÃ­odo inicio
           </label>
           <input
             type="date"
@@ -282,7 +476,7 @@ export default function Rentabilidad() {
         </div>
         <div>
           <label className="text-xs block mb-1" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-            Período fin
+            PerÃ­odo fin
           </label>
           <input
             type="date"
@@ -313,49 +507,30 @@ export default function Rentabilidad() {
       {/* Error */}
       {error && (
         <Card glow="red" className="mb-6">
-          <p className="text-sm" style={{ color: '#991B1B', fontFamily: tokens.fonts.body }}>
+          <p className="text-sm" style={{ color: tokens.colors.red, fontFamily: tokens.fonts.body }}>
             {error}
           </p>
         </Card>
       )}
 
       {/* KPIs */}
-      {data?.resumen && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-          <KPICard
-            titulo="Tractos"
-            valor={data.resumen.totalTractos}
-            color="blue"
-            icono={<Truck size={18} />}
-          />
-          <KPICard
-            titulo="Viajes"
-            valor={data.resumen.totalViajes}
-            color="primary"
-            icono={<TrendingUp size={18} />}
-          />
-          <KPICard
-            titulo="Ingreso"
-            valor={formatCurrency(data.resumen.ingresoTotal)}
-            color="green"
-            icono={<DollarSign size={18} />}
-          />
-          <KPICard
-            titulo="Costo"
-            valor={formatCurrency(data.resumen.costoTotal)}
-            color="red"
-            icono={<TrendingDown size={18} />}
-          />
+      {resumen && (
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
+          <KPICard titulo="Tractos" valor={resumen.totalTractos} color="blue" icono={<Truck size={18} />} />
+          <KPICard titulo="Viajes" valor={formatNumber(resumen.totalViajes)} color="primary" icono={<TrendingUp size={18} />} />
+          <KPICard titulo="Km Totales" valor={formatNumber(resumen.kmTotal)} color="blue" />
+          <KPICard titulo="Ingreso Est." valor={formatCurrency(resumen.ingresoTotal)} color="green" icono={<DollarSign size={18} />} />
+          <KPICard titulo="Costo Est." valor={formatCurrency(resumen.costoTotal)} color="red" icono={<TrendingDown size={18} />} />
           <KPICard
             titulo="Margen"
-            valor={formatCurrency(data.resumen.margenTotal)}
-            color={data.resumen.margenPct >= 15 ? 'green' : 'red'}
+            valor={formatCurrency(resumen.margenTotal)}
+            color={resumen.margenPct >= 15 ? 'green' : 'red'}
             icono={<DollarSign size={18} />}
           />
           <KPICard
             titulo="% Margen"
-            valor={formatPct(data.resumen.margenPct)}
-            color={data.resumen.margenPct >= 25 ? 'green' : data.resumen.margenPct >= 15 ? 'yellow' : 'red'}
+            valor={formatPct(resumen.margenPct)}
+            color={resumen.margenPct >= 25 ? 'green' : resumen.margenPct >= 15 ? 'yellow' : 'red'}
           />
         </div>
       )}
@@ -366,7 +541,7 @@ export default function Rentabilidad() {
           columns={columns}
           data={filteredDetalle}
           loading={loading}
-          emptyMessage="No hay tractos con datos en este período"
+          emptyMessage="No hay viajes con tracto asignado en este perÃ­odo"
         />
       </Card>
     </ModuleLayout>
