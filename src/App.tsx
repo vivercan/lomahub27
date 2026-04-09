@@ -15,7 +15,6 @@ import MisLeads from './pages/ventas/MisLeads'
 import NuevoLead from './pages/ventas/NuevoLead'
 import FichaLead from './pages/ventas/FichaLead'
 import ProgramaSemanal from './pages/ventas/ProgramaSemanal'
-import Comisiones from './pages/ventas/Comisiones'
 import ProspeccionExterna from './pages/ventas/ProspeccionExterna'
 
 // Cotizador
@@ -351,11 +350,6 @@ function App() {
           } />
 
           {/* âââ 28. Comisiones por Ejecutivo âââ */}
-          <Route path="/ventas/comisiones" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'gerente_comercial', 'direccion']}>
-              <Comisiones />
-            </ProtectedRoute>
-          } />
 
           <Route path="/ventas/funnel" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial', 'direccion']}>
