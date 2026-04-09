@@ -363,7 +363,7 @@ export default function RadiografiaFinanciera() {
   return (
     <ModuleLayout
       titulo={data ? `Radiografía — ${data.cliente.razon_social}` : 'Radiografía Financiera'}
-      subtitulo="Perfil financiero 360Â° del cliente"
+      subtitulo="Perfil financiero 360° del cliente"
       acciones={
         <div className="flex items-center gap-2">
           <button
@@ -418,7 +418,7 @@ export default function RadiografiaFinanciera() {
                     {data.cliente.prioridad}
                   </Badge>
                   <span className="text-xs" style={{ color: tokens.colors.textMuted }}>
-                    {data.cliente.empresa} Â· {data.cliente.antiguedad_meses} meses
+                    {data.cliente.empresa} · {data.cliente.antiguedad_meses} meses
                   </span>
                 </div>
               </div>
