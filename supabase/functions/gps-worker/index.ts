@@ -1,5 +1,6 @@
 // GPS Worker — Corre cada 10 minutos (cron)
 // Actualiza posición de toda la flota desde el proveedor GPS
+// V29 — Added diagnostic logging for WideTech API response
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const supabase = createClient(
@@ -9,33 +10,65 @@ const supabase = createClient(
 
 Deno.serve(async (_req) => {
   try {
-    const GPS_URL = Deno.env.get('GPS_API_URL')!
+    const GPS_URL  = Deno.env.get('GPS_API_URL')!
     const GPS_USER = Deno.env.get('GPS_API_USER')!
     const GPS_PASS = Deno.env.get('GPS_API_PASS')!
 
-    // Llamar al proveedor GPS (adaptar según proveedor)
+    if (!GPS_URL || !GPS_USER || !GPS_PASS) {
+      return new Response(JSON.stringify({
+        ok: false, error: 'Missing GPS secrets',
+        hasUrl: !!GPS_URL, hasUser: !!GPS_USER, hasPass: !!GPS_PASS
+      }), { status: 500, headers: { 'Content-Type': 'application/json' } })
+    }
+
+    // Llamar al proveedor GPS (WideTech XML API)
     const response = await fetch(GPS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/xml' },
       body: `<?xml version="1.0"?>
-        <request>
-          <login>${GPS_USER}</login>
-          <password>${GPS_PASS}</password>
-        </request>`
+<request>
+  <login>${GPS_USER}</login>
+  <password>${GPS_PASS}</password>
+</request>`
     })
 
     const xmlText = await response.text()
+    const httpStatus = response.status
+
+    // Diagnostic: log raw response info
+    console.log(`[gps-worker] WideTech HTTP ${httpStatus}, body length: ${xmlText.length}, preview: ${xmlText.substring(0, 300)}`)
+
+    if (httpStatus !== 200) {
+      return new Response(JSON.stringify({
+        ok: false, error: 'WideTech API error',
+        httpStatus, bodyPreview: xmlText.substring(0, 500)
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    }
+
     const units = parseGPSResponse(xmlText)
+
+    // If 0 units, return diagnostic info
+    if (units.length === 0) {
+      return new Response(JSON.stringify({
+        ok: true, units: 0,
+        diagnostic: {
+          httpStatus,
+          bodyLength: xmlText.length,
+          bodyPreview: xmlText.substring(0, 500),
+          hasUnitTag: xmlText.includes('<Unit>'),
+          hasError: xmlText.toLowerCase().includes('error'),
+        }
+      }), { headers: { 'Content-Type': 'application/json' } })
+    }
 
     // Cargar lookup de tractos y cajas para clasificar tipo_unidad
     const { data: tractosData } = await supabase.from('tractos').select('numero_economico')
-    const { data: cajasData } = await supabase.from('cajas').select('numero_economico')
+    const { data: cajasData }   = await supabase.from('cajas').select('numero_economico')
     const tractosSet = new Set((tractosData || []).map(t => t.numero_economico))
-    const cajasSet = new Set((cajasData || []).map(c => c.numero_economico))
+    const cajasSet   = new Set((cajasData || []).map(c => c.numero_economico))
 
     // Upsert en gps_tracking
     for (const unit of units) {
-      // Clasificar tipo_unidad: caja si es trailer/segmento o está en tabla cajas
       let tipo_unidad = 'tracto'
       const segLower = (unit.segmento || '').toLowerCase()
       if (segLower.includes('trailer')) {
@@ -92,11 +125,8 @@ interface GPSUnit {
 }
 
 function parseGPSResponse(xml: string): GPSUnit[] {
-  // TODO: Adaptar según el proveedor GPS real
   // Tags WideTech: Latitude, Longitude, Speed, DateTimeGPS, Location (CDATA)
   const units: GPSUnit[] = []
-
-  // Parser básico — reemplazar con el parser real del proveedor
   const unitRegex = /<Unit>([\s\S]*?)<\/Unit>/g
   let match
   while ((match = unitRegex.exec(xml)) !== null) {
