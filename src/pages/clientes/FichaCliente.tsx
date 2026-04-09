@@ -111,7 +111,7 @@ export default function FichaCliente(): ReactElement {
     { label: 'RFC', value: cliente.rfc },
     { label: 'Tipo', value: cliente.tipo },
     { label: 'Segmento', value: cliente.segmento },
-    { label: 'Ejecutivo', value: cliente.ejecutivo },
+    { label: 'Ejecutivo', value: cliente.ejecutivo_asignado },
     { label: 'Empresa', value: cliente.empresa },
     { label: 'Fecha de Alta', value: cliente.fecha_alta },
   ];
