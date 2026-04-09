@@ -88,7 +88,11 @@ export default function AltaCliente(): ReactElement {
       razon_social: razonSocial.trim(),
       rfc: rfc.trim().toUpperCase(),
       tipo,
-      notas: [contactoNombre, telefono, email, ciudad, estadoMx].filter(Boolean).join(' | '),
+      contacto_nombre: contactoNombre.trim() || null,
+      telefono: telefono.trim() || null,
+      email: email.trim() || null,
+      ciudad: ciudad.trim() || null,
+      estado_mx: estadoMx.trim() || null,
     })
     setSaving(false)
     if (err) { setError(err.message); return }
