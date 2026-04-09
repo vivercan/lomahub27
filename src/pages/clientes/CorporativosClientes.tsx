@@ -113,6 +113,7 @@ export default function CorporativosClientes(): ReactElement {
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [linkMatrizId, setLinkMatrizId] = useState<string | null>(null);
   const [linkSearch, setLinkSearch] = useState('');
+  const [corpMap, setCorpMap] = useState<Record<string, string>>({});
 
   /* ───── fetch ───── */
   useEffect(() => {
@@ -163,6 +164,18 @@ export default function CorporativosClientes(): ReactElement {
           }
           setViajesMap(map);
         }
+
+        /* corporativos — relación matriz↔subsidiaria */
+        const { data: corpData } = await supabase
+          .from('corporativos')
+          .select('corporativo_id, subsidiaria_id');
+        if (corpData) {
+          const cmap: Record<string, string> = {};
+          for (const row of corpData) {
+            cmap[row.subsidiaria_id] = row.corporativo_id;
+          }
+          setCorpMap(cmap);
+        }
       } catch (err) {
         console.error('Error loading corporativos:', err);
       } finally {
@@ -175,14 +188,14 @@ export default function CorporativosClientes(): ReactElement {
   /* ───── build groups ───── */
   const grupos: GrupoCorporativo[] = useMemo(() => {
     const matrices = clientes.filter(
-      (c) => c.tipo === 'corporativo' || clientes.some((s) => s.corporativo_id === c.id)
+      (c) => c.tipo === 'corporativo' || Object.values(corpMap).includes(c.id)
     );
 
     /* deduplicate — a corporativo is either tipo=corporativo OR has subsidiaries pointing to it */
     const matrizIds = new Set<string>();
     for (const c of clientes) {
       if (c.tipo === 'corporativo') matrizIds.add(c.id);
-      if (c.corporativo_id) matrizIds.add(c.corporativo_id);
+      if (corpMap[c.id]) matrizIds.add(corpMap[c.id]);
     }
 
     const result: GrupoCorporativo[] = [];
@@ -190,7 +203,8 @@ export default function CorporativosClientes(): ReactElement {
       const matriz = clientes.find((c) => c.id === matrizId);
       if (!matriz) continue;
 
-      const subsidiarias = clientes.filter((c) => c.corporativo_id === matrizId && c.id !== matrizId);
+      const subIds = Object.entries(corpMap).filter(([,mid]) => mid === matrizId).map(([sid]) => sid);
+      const subsidiarias = clientes.filter((c) => subIds.includes(c.id) && c.id !== matrizId);
 
       const allIds = [matrizId, ...subsidiarias.map((s) => s.id)];
       let viajesActivos = 0;
@@ -242,13 +256,10 @@ export default function CorporativosClientes(): ReactElement {
   const handleLink = async (subsidiariaId: string) => {
     if (!linkMatrizId) return;
     const { error } = await supabase
-      .from('clientes')
-      .update({ corporativo_id: linkMatrizId })
-      .eq('id', subsidiariaId);
+      .from('corporativos')
+      .insert({ corporativo_id: linkMatrizId, subsidiaria_id: subsidiariaId });
     if (!error) {
-      setClientes((prev) =>
-        prev.map((c) => (c.id === subsidiariaId ? { ...c, corporativo_id: linkMatrizId } : c))
-      );
+      setCorpMap((prev) => ({ ...prev, [subsidiariaId]: linkMatrizId }));
       setShowLinkModal(false);
       setLinkSearch('');
     }
@@ -256,13 +267,15 @@ export default function CorporativosClientes(): ReactElement {
 
   const handleUnlink = async (subsidiariaId: string) => {
     const { error } = await supabase
-      .from('clientes')
-      .update({ corporativo_id: null })
-      .eq('id', subsidiariaId);
+      .from('corporativos')
+      .delete()
+      .eq('subsidiaria_id', subsidiariaId);
     if (!error) {
-      setClientes((prev) =>
-        prev.map((c) => (c.id === subsidiariaId ? { ...c, corporativo_id: null } : c))
-      );
+      setCorpMap((prev) => {
+        const next = { ...prev };
+        delete next[subsidiariaId];
+        return next;
+      });
     }
   };
 
@@ -283,7 +296,7 @@ export default function CorporativosClientes(): ReactElement {
     return clientes.filter(
       (c) =>
         c.id !== linkMatrizId &&
-        !c.corporativo_id &&
+        !corpMap[c.id] &&
         c.tipo !== 'corporativo' &&
         (c.razon_social.toLowerCase().includes(q) || (c.rfc && c.rfc.toLowerCase().includes(q)))
     );
@@ -589,7 +602,7 @@ export default function CorporativosClientes(): ReactElement {
                         {c.razon_social}
                       </div>
                       <div style={{ color: tokens.colors.textMuted, fontSize: '12px' }}>
-                        {c.rfc} · {c.tipo} · {c.ejecutivo || 'Sin ejecutivo'}
+                        {c.rfc} · {c.tipo} · {c.ejecutivo_asignado || 'Sin ejecutivo'}
                       </div>
                     </div>
                     <Link2 size={16} style={{ color: tokens.colors.primary }} />
