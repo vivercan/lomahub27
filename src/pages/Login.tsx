@@ -691,7 +691,7 @@ export default function Login() {
               letterSpacing: '0.3px',
             }}
           >
-            Conexión cifrada Â· Solo personal autorizado
+            Conexión cifrada · Solo personal autorizado
           </span>
         </div>
       </div>
@@ -711,7 +711,7 @@ export default function Login() {
 
       <div style={S.statusBar}>
         <span style={S.statusR}>
-          Grupo Loma 2026 {'Â·'}{' '}
+          Grupo Loma 2026 {'·'}{' '}
           <a
             href="mailto:hola@trob.com.mx"
             onDoubleClick={(e) => {
@@ -726,7 +726,7 @@ export default function Login() {
           >
             hola@trob.com.mx
           </a>{' '}
-          {'Â·'} Operación inteligente... Resultados reales
+          {'·'} Operación inteligente... Resultados reales
         </span>
       </div>
     </div>
