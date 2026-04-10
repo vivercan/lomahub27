@@ -1,4 +1,4 @@
-// OfertaEquipo.tsx â V2 â Real last-trip data from viajes_anodos
+// OfertaEquipo.tsx — V2 — Real last-trip data from viajes_anodos
 // Shows clients with their most recent trip info for equipment offers
 import { useState, useEffect } from 'react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
@@ -12,7 +12,7 @@ import { KPICard } from '../../components/ui/KPICard'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 
-/* âââ Types âââââââââââââââââââââââââââââââââââââââ */
+/* ─── Types ─────────────────────────────────────── */
 
 interface ClienteRow {
   id: string
@@ -23,7 +23,7 @@ interface ClienteRow {
   ultimoTracto: string
 }
 
-/* âââ Component âââââââââââââââââââââââââââââââââââ */
+/* ─── Component ─────────────────────────────────── */
 
 export default function OfertaEquipo() {
   const [plaza, setPlaza] = useState<string>('')
@@ -78,7 +78,7 @@ export default function OfertaEquipo() {
             lastDate: v.inicia_viaje || v.fecha_crea || '',
             lastOrigen: v.origen || '?',
             lastDestino: v.destino || '?',
-            lastTracto: v.tracto || 'â',
+            lastTracto: v.tracto || '—',
             rutas: new Map(),
           })
         }
@@ -86,7 +86,7 @@ export default function OfertaEquipo() {
         cm.viajes++
 
         // Track most frequent route
-        const rKey = `${v.origen || '?'} â ${v.destino || '?'}`
+        const rKey = `${v.origen || '?'} → ${v.destino || '?'}`
         cm.rutas.set(rKey, (cm.rutas.get(rKey) || 0) + 1)
       }
 
@@ -94,7 +94,7 @@ export default function OfertaEquipo() {
       const rows: ClienteRow[] = Array.from(clienteMap.entries())
         .map(([cKey, cm]) => {
           // Most frequent route
-          let topRuta = 'â'
+          let topRuta = '—'
           let topRutaCount = 0
           for (const [ruta, count] of cm.rutas) {
             if (count > topRutaCount) {
@@ -104,7 +104,7 @@ export default function OfertaEquipo() {
           }
 
           // Format date
-          let ultimaCarga = 'â'
+          let ultimaCarga = '—'
           if (cm.lastDate) {
             try {
               ultimaCarga = new Date(cm.lastDate).toLocaleDateString('es-MX', {
@@ -169,12 +169,12 @@ export default function OfertaEquipo() {
     { value: 'laredo', label: 'Laredo' },
     { value: 'veracruz', label: 'Veracruz' },
     { value: 'saltillo', label: 'Saltillo' },
-    { value: 'queretaro', label: 'QuerÃ©taro' },
+    { value: 'queretaro', label: 'Querétaro' },
   ]
 
   const equipoOptions = [
     { value: '', label: 'Todos' },
-    { value: 'tractocamion', label: 'TractocamiÃ³n' },
+    { value: 'tractocamion', label: 'Tractocamión' },
     { value: 'refrigerado', label: 'Refrigerado' },
     { value: 'flatbed', label: 'Flatbed' },
     { value: 'volteo', label: 'Volteo' },
@@ -201,7 +201,7 @@ export default function OfertaEquipo() {
       ),
     },
     {
-      key: 'ultimaCarga', label: 'Ãltima Carga',
+      key: 'ultimaCarga', label: 'Última Carga',
       render: (row) => (
         <span style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
           {row.ultimaCarga}
@@ -223,7 +223,7 @@ export default function OfertaEquipo() {
       ),
     },
     {
-      key: 'ultimoTracto', label: 'Ãltimo Tracto',
+      key: 'ultimoTracto', label: 'Último Tracto',
       render: (row) => (
         <span style={{ color: tokens.colors.textMuted, fontSize: '0.85rem' }}>{row.ultimoTracto}</span>
       ),
@@ -233,7 +233,7 @@ export default function OfertaEquipo() {
   return (
     <ModuleLayout
       titulo="Oferta de Equipo"
-      subtitulo="Clientes con historial de carga â datos ANODOS Ãºltimos 90 dÃ­as"
+      subtitulo="Clientes con historial de carga — datos ANODOS últimos 90 días"
       acciones={
         <Button variant="secondary" size="sm" onClick={fetchClientes} loading={loading}>
           <RefreshCw size={16} />
@@ -265,7 +265,7 @@ export default function OfertaEquipo() {
             columns={clienteColumns}
             data={clientes}
             loading={loading}
-            emptyMessage="No hay clientes con viajes en los Ãºltimos 90 dÃ­as"
+            emptyMessage="No hay clientes con viajes en los últimos 90 días"
           />
         </Card>
       </div>
