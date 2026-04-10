@@ -156,7 +156,7 @@ export default function EscalamientoWhatsApp(): ReactElement {
   }
 
   return (
-    <ModuleLayout title="Escalamiento WhatsApp — Supervisión y Gerencia">
+    <ModuleLayout titulo="Escalamiento WhatsApp — Supervisión y Gerencia">
       <div style={{ padding: tokens.spacing.lg, minHeight: '100vh', background: tokens.colors.bgMain }}>
 
         {/* KPIs */}
