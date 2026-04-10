@@ -74,7 +74,7 @@ export default function ChiefOfStaffHome() {
     }}>
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '32px 24px' }}>
 
-        {/* ——— HEADER ——— */}
+        {/* ——— HEADER ——— */}
         <div style={{
           display: 'flex', alignItems: 'center', gap: '16px',
           marginBottom: '28px',
@@ -101,7 +101,7 @@ export default function ChiefOfStaffHome() {
           </div>
         </div>
 
-        {/* ——— FILTROS ——— */}
+        {/* ——— FILTROS ——— */}
         <div style={{
           display: 'flex', gap: '8px', marginBottom: '24px',
         }}>
@@ -125,7 +125,7 @@ export default function ChiefOfStaffHome() {
           ))}
         </div>
 
-        {/* ——— LISTA ——— */}
+        {/* ——— LISTA ——— */}
         {loading ? (
           <div style={{
             textAlign: 'center', padding: '60px 0',
