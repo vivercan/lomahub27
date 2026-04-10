@@ -377,7 +377,7 @@ export default function AltaClienteWorkflow(): ReactElement {
 
                       {isOpen && (
                         <tr key={`${r.id}-detail`}>
-                          <td colSpan={4} style={{ padding: tokens.spacing.md, background: tokens.colors.bgHover }}>
+                          <td colSpan={8} style={{ padding: tokens.spacing.md, background: tokens.colors.bgHover }}>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: tokens.spacing.lg }}>
                               {/* Col 1: Datos empresa */}
                               <div>
@@ -518,7 +518,7 @@ const thStyle: React.CSSProperties = {
   fontFamily: tokens.fonts.heading, textTransform: 'uppercase', letterSpacing: '0.5px',
 }
 const tdStyle: React.CSSProperties = {
-  padding: `${tokens.spacing.sm} ${tokens.sacing.md}`, fontSize: '14px',
+  padding: `${tokens.spacing.sm} ${tokens.spacing.md}`, fontSize: '14px',
   fontFamily: tokens.fonts.body, color: tokens.colors.textSecondary, verticalAlign: 'middle',
 }
 const selectStyle: React.CSSProperties = {
