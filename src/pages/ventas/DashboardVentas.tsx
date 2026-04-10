@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
+import { Loader2 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 
 /* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
@@ -54,10 +55,12 @@ export default function DashboardVentas() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
   const [kpis, setKpis] = useState<Record<string, number>>({ oportunidades: 0, cotizaciones: 0, programa: 0 })
+  const [loading, setLoading] = useState(true)
 
   const fetchKpis = useCallback(async () => {
     try {
-      const [leads, cots, prog] = await Promise.all([
+          try {
+    const [leads, cots, prog] = await Promise.all([
         supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null).not('estado', 'in', '("Cerrado Ganado","Cerrado Perdido")'),
         supabase.from('cotizaciones').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('estado', 'pendiente'),
         supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null).gte('created_at', new Date(Date.now() - 7 * 86400000).toISOString()),
@@ -67,6 +70,7 @@ export default function DashboardVentas() {
         cotizaciones: cots.count ?? 0,
         programa: prog.count ?? 0,
       })
+    } finally { setLoading(false) }
     } catch (e) {
       console.error('KPI fetch error:', e)
     }
@@ -131,4 +135,12 @@ export default function DashboardVentas() {
       </div>
     </ModuleLayout>
   )
-}
+}  if (loading) return (
+    <ModuleLayout titulo="Comercial" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+        <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: '#1E66F5' }} />
+      </div>
+    </ModuleLayout>
+  )
+
+
