@@ -1,29 +1,23 @@
 import type { ReactElement } from 'react'
 import { useState, useEffect } from 'react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
-import { Card } from '../../components/Card'
-import { KPICard } from '../../components/KPICard'
+import { Card } from '../../components/ui/Card'
+import { KPICard } from '../../components/ui/KPICard'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 import {
   Truck,
-  Calendar,
   AlertTriangle,
   CheckCircle2,
   Clock,
   MapPin,
   TrendingUp,
-  ArrowRight,
+  Activity,
   RefreshCw,
   Search,
-  Filter,
-  ChevronDown,
-  ChevronRight,
-  Activity,
-  Zap,
 } from 'lucide-react'
 
-/* ─── types ─── */
+/* ââââ types ââââ */
 interface UnidadProyectada {
   tracto_id: string
   numero_economico: string
@@ -44,7 +38,72 @@ interface SobreDisponibilidad {
   excedente: number
 }
 
-/* ─── component ─── */
+/* ââââ helpers ââââ */
+async function fetchDemandaPorCiudad(): Promise<Map<string, number>> {
+  /* Calcula demanda real por ciudad destino usando viajes_anodos Ãºltimos 30 dÃ­as.
+     Promedia viajes/dÃ­a Ã horizonte/24 para estimar demanda en el horizonte. */
+  const hace30d = new Date()
+  hace30d.setDate(hace30d.getDate() - 30)
+  const desde = hace30d.toISOString()
+
+  const demandaMap = new Map<string, number>()
+  let offset = 0
+  const PAGE = 1000
+
+  while (true) {
+    const { data, error } = await supabase
+      .from('viajes_anodos')
+      .select('destino_ciudad')
+      .gte('inicia_viaje', desde)
+      .not('destino_ciudad', 'is', null)
+      .range(offset, offset + PAGE - 1)
+
+    if (error) { console.error('demanda viajes_anodos:', error); break }
+    if (!data || data.length === 0) break
+
+    for (const row of data) {
+      const c = (row.destino_ciudad || '').trim()
+      if (c) demandaMap.set(c, (demandaMap.get(c) || 0) + 1)
+    }
+
+    if (data.length < PAGE) break
+    offset += PAGE
+  }
+
+  // Si no hay datos con inicia_viaje, intentar con fecha_crea
+  if (demandaMap.size === 0) {
+    offset = 0
+    while (true) {
+      const { data, error } = await supabase
+        .from('viajes_anodos')
+        .select('destino_ciudad')
+        .gte('fecha_crea', desde)
+        .not('destino_ciudad', 'is', null)
+        .range(offset, offset + PAGE - 1)
+
+      if (error) { console.error('demanda viajes_anodos fallback:', error); break }
+      if (!data || data.length === 0) break
+
+      for (const row of data) {
+        const c = (row.destino_ciudad || '').trim()
+        if (c) demandaMap.set(c, (demandaMap.get(c) || 0) + 1)
+      }
+
+      if (data.length < PAGE) break
+      offset += PAGE
+    }
+  }
+
+  // Convertir total 30 dÃ­as â promedio diario
+  const promedioDiario = new Map<string, number>()
+  demandaMap.forEach((total, ciudad) => {
+    promedioDiario.set(ciudad, Math.round(total / 30))
+  })
+
+  return promedioDiario
+}
+
+/* ââââ component ââââ */
 export default function PlaneacionFlota(): ReactElement {
   const [unidades, setUnidades] = useState<UnidadProyectada[]>([])
   const [sobredisp, setSobredisp] = useState<SobreDisponibilidad[]>([])
@@ -75,6 +134,9 @@ export default function PlaneacionFlota(): ReactElement {
 
       if (e2) console.error('viajes:', e2)
 
+      /* Demanda real desde viajes_anodos */
+      const demandaDiaria = await fetchDemandaPorCiudad()
+
       const viajeMap = new Map((viajes || []).map((v: any) => [v.tracto_id, v]))
       const now = Date.now()
 
@@ -98,7 +160,7 @@ export default function PlaneacionFlota(): ReactElement {
           tracto_id: t.id,
           numero_economico: t.numero_economico,
           empresa: t.empresa || 'TROB',
-          ubicacion_actual: t.segmento || '—',
+          ubicacion_actual: t.segmento || 'â',
           estatus: t.estado_operativo,
           viaje_actual_id: v?.id || null,
           eta_descarga: v?.cita_descarga || null,
@@ -110,7 +172,7 @@ export default function PlaneacionFlota(): ReactElement {
 
       setUnidades(proyectadas)
 
-      /* Sobredisponibilidad por ciudad */
+      /* Sobredisponibilidad por ciudad â ahora con demanda REAL */
       const dentroHorizonte = proyectadas.filter(u => u.horas_para_disponible <= horizonte)
       const porCiudad = new Map<string, number>()
       dentroHorizonte.forEach(u => {
@@ -118,10 +180,22 @@ export default function PlaneacionFlota(): ReactElement {
         porCiudad.set(c, (porCiudad.get(c) || 0) + 1)
       })
 
+      // Normalizar demanda al horizonte seleccionado (demandaDiaria es por dÃ­a = 24h)
+      const factorHorizonte = horizonte / 24
+
       const sobreList: SobreDisponibilidad[] = []
+      // Incluir ciudades con tractos disponibles
       porCiudad.forEach((count, ciudad) => {
-        const demanda = 2 /* placeholder — debería venir de programación */
-        sobreList.push({ ciudad, tractos_disponibles: count, demanda_estimada: demanda, excedente: count - demanda })
+        const demandaDia = demandaDiaria.get(ciudad) || 0
+        const demandaEnHorizonte = Math.max(1, Math.round(demandaDia * factorHorizonte))
+        sobreList.push({ ciudad, tractos_disponibles: count, demanda_estimada: demandaEnHorizonte, excedente: count - demandaEnHorizonte })
+      })
+      // Incluir ciudades con demanda pero sin tractos disponibles (dÃ©ficit puro)
+      demandaDiaria.forEach((demDia, ciudad) => {
+        if (!porCiudad.has(ciudad) && demDia > 0) {
+          const demandaEnHorizonte = Math.max(1, Math.round(demDia * factorHorizonte))
+          sobreList.push({ ciudad, tractos_disponibles: 0, demanda_estimada: demandaEnHorizonte, excedente: -demandaEnHorizonte })
+        }
       })
       sobreList.sort((a, b) => b.excedente - a.excedente)
       setSobredisp(sobreList)
@@ -134,7 +208,6 @@ export default function PlaneacionFlota(): ReactElement {
   const deficitTotal = sobredisp.filter(s => s.excedente < 0).reduce((a, b) => a + Math.abs(b.excedente), 0)
 
   const empresas = [...new Set(unidades.map(u => u.empresa))].filter(Boolean)
-  const ciudades = [...new Set(unidades.map(u => u.ciudad_disponible))].filter(Boolean).sort()
 
   const filtered = unidades.filter(u => {
     if (u.horas_para_disponible > horizonte && u.viaje_actual_id) return false
@@ -145,17 +218,17 @@ export default function PlaneacionFlota(): ReactElement {
   })
 
   return (
-    <ModuleLayout title="Planeación de Flota — Disponibilidad Futura">
+    <ModuleLayout titulo="PlaneaciÃ³n de Flota â Disponibilidad Futura">
       <div style={{ padding: tokens.spacing.lg, minHeight: '100vh', background: tokens.colors.bgMain }}>
         {/* KPIs */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
-          <KPICard icon={<Truck size={20} />} label={`Disponibles en ${horizonte}h`} value={disponiblesEnHorizonte} />
-          <KPICard icon={<Activity size={20} />} label="En Tránsito" value={enTransito} />
-          <KPICard icon={<TrendingUp size={20} />} label="Sobredisponibilidad" value={sobreTotal} />
-          <KPICard icon={<AlertTriangle size={20} />} label="Déficit Estimado" value={deficitTotal} />
+          <KPICard titulo={`Disponibles en ${horizonte}h`} valor={disponiblesEnHorizonte} color="green" icono={<Truck size={20} />} />
+          <KPICard titulo="En TrÃ¡nsito" valor={enTransito} color="blue" icono={<Activity size={20} />} />
+          <KPICard titulo="Sobredisponibilidad" valor={sobreTotal} color="yellow" icono={<TrendingUp size={20} />} />
+          <KPICard titulo="DÃ©ficit Estimado" valor={deficitTotal} color="red" icono={<AlertTriangle size={20} />} />
         </div>
 
-        {/* Horizon selector */}
+        {/* Horizonte selector */}
         <div style={{ display: 'flex', gap: tokens.spacing.sm, marginBottom: tokens.spacing.lg, alignItems: 'center' }}>
           <span style={{ fontSize: '14px', fontWeight: 600, color: tokens.colors.textSecondary, fontFamily: tokens.fonts.heading }}>Horizonte:</span>
           {([12, 24, 48, 72] as const).map(h => (
@@ -197,10 +270,10 @@ export default function PlaneacionFlota(): ReactElement {
         {sobredisp.length > 0 && (
           <div style={{ marginBottom: tokens.spacing.lg }}>
             <h3 style={{ fontFamily: tokens.fonts.heading, fontSize: '14px', fontWeight: 700, color: tokens.colors.textSecondary, marginBottom: tokens.spacing.sm, textTransform: 'uppercase' }}>
-              Sobredisponibilidad por Ciudad ({horizonte}h)
+              Sobredisponibilidad por Ciudad ({horizonte}h) â Demanda real ANODOS
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: tokens.spacing.sm }}>
-              {sobredisp.slice(0, 8).map(s => (
+              {sobredisp.slice(0, 12).map(s => (
                 <Card key={s.ciudad} style={{
                   padding: tokens.spacing.md, cursor: 'pointer',
                   borderLeft: `3px solid ${s.excedente > 0 ? tokens.colors.yellow : s.excedente < 0 ? tokens.colors.red : tokens.colors.green}`,
@@ -216,7 +289,7 @@ export default function PlaneacionFlota(): ReactElement {
                     marginTop: tokens.spacing.xs, fontSize: '14px', fontWeight: 700,
                     color: s.excedente > 0 ? tokens.colors.yellow : s.excedente < 0 ? tokens.colors.red : tokens.colors.green,
                   }}>
-                    {s.excedente > 0 ? `+${s.excedente} excedente` : s.excedente < 0 ? `${s.excedente} déficit` : 'Balanceado'}
+                    {s.excedente > 0 ? `+${s.excedente} excedente` : s.excedente < 0 ? `${s.excedente} dÃ©ficit` : 'Balanceado'}
                   </div>
                 </Card>
               ))}
@@ -238,14 +311,14 @@ export default function PlaneacionFlota(): ReactElement {
                 Sin unidades proyectadas
               </p>
               <p style={{ fontSize: '14px', color: tokens.colors.textMuted, marginTop: tokens.spacing.xs }}>
-                No hay tractos con disponibilidad estimada en las próximas {horizonte} horas
+                No hay tractores con disponibilidad estimada en las prÃ³ximas {horizonte} horas
               </p>
             </div>
           ) : (
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ background: tokens.colors.bgHover }}>
-                  {['Tracto', 'Empresa', 'Ubicación Actual', 'Ciudad Disponible', 'Disponible En', 'Estatus'].map(h => (
+                  {['Tracto', 'Empresa', 'UbicaciÃ³n Actual', 'Ciudad Disponible', 'Disponible En', 'Estatus'].map(h => (
                     <th key={h} style={thStyle}>{h}</th>
                   ))}
                 </tr>
@@ -297,7 +370,7 @@ export default function PlaneacionFlota(): ReactElement {
   )
 }
 
-/* ─── styles ─── */
+/* ââââ styles ââââ */
 const thStyle: React.CSSProperties = {
   padding: `${tokens.spacing.sm} ${tokens.spacing.md}`, textAlign: 'left',
   fontSize: '12px', fontWeight: 600, color: tokens.colors.textMuted,
