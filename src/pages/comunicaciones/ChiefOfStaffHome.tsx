@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 import {
+import { ModuleLayout } from '../../components/layout/ModuleLayout'
   Brain, Sun, Moon, Filter, ChevronRight,
   Calendar, Clock
 } from 'lucide-react'
@@ -66,6 +67,7 @@ export default function ChiefOfStaffHome() {
   ]
 
   return (
+    <ModuleLayout titulo="Chief of Staff">
     <div style={{
       minHeight: '100vh', background: t.colors.bgMain,
       fontFamily: t.fonts.body, color: t.colors.textPrimary,
@@ -227,5 +229,6 @@ export default function ChiefOfStaffHome() {
         )}
       </div>
     </div>
+    </ModuleLayout>
   )
 }
