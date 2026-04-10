@@ -64,7 +64,7 @@ Deno.serve(async (_req) => {
       if (!cliente?.contacto_email || kpi.total === 0) continue
       try {
         if (RESEND_API_KEY) {
-          await fetch('https://api.resend.com/emails', {
+          const resEmail = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: { 'Authorization': \`Bearer \${RESEND_API_KEY}\`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -74,6 +74,10 @@ Deno.serve(async (_req) => {
               html: \`<div style="font-family:Montserrat,sans-serif;max-width:600px;margin:0 auto;padding:30px"><h2>Reporte de Cumplimiento</h2><p>Estimado(a) \${cliente.contacto_nombre || 'Cliente'},</p><table style="width:100%;border-collapse:collapse;margin:20px 0"><tr style="background:#0B1220;color:white"><th style="padding:10px;text-align:left">KPI</th><th style="padding:10px;text-align:right">Valor</th></tr><tr><td style="padding:8px;border-bottom:1px solid #eee">Viajes totales</td><td style="padding:8px;text-align:right">\${kpi.total}</td></tr><tr><td style="padding:8px;border-bottom:1px solid #eee">Completados</td><td style="padding:8px;text-align:right">\${kpi.completados}</td></tr><tr><td style="padding:8px;border-bottom:1px solid #eee">Cumplimiento</td><td style="padding:8px;text-align:right">\${kpi.cumplimiento}%</td></tr><tr><td style="padding:8px;border-bottom:1px solid #eee">On-time</td><td style="padding:8px;text-align:right">\${kpi.onTime}%</td></tr></table><p style="color:#666;font-size:13px">Generado por LomaHUB27</p></div>\`,
             }),
           })
+          if (!resEmail.ok) {
+            const errBody = await resEmail.text()
+            console.error('estadisticas-cumplimiento Resend error:', resEmail.status, errBody)
+          }
         }
         enviados.push(cliente.razon_social)
       } catch (e) {
