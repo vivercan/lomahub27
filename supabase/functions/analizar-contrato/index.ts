@@ -59,6 +59,7 @@ Deno.serve(async (req) => {
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     )
   } catch (err) {
+    console.error('analizar-contrato:', err)
     return new Response(
       JSON.stringify({ ok: false, error: 'Error interno', detalle: String(err) }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
