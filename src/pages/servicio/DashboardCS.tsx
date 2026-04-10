@@ -5,12 +5,12 @@ import { supabase } from '../../lib/supabase'
 import { Loader2 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 
-/* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-SERVICIO A CLIENTES â Landing Page (alineada a plantilla madre)
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+SERVICIO A CLIENTES Ã¢ÂÂ Landing Page (alineada a plantilla madre)
 4 cards: Tickets, Clientes Activos, Importacion, Exportacion
 KPIs reales: tickets + clientes de Supabase, IMPO/EXPO de viajes_anodos
-Icono Ãºnico white-stroke: principal 12% | secondary 8%
-ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+Icono ÃÂºnico white-stroke: principal 12% | secondary 8%
+Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 
 const D = {
   bg: '#F7F8FA',
@@ -44,7 +44,7 @@ const IconClientes = compose('hugeicons:user-multiple', 'hugeicons:user-circle',
 const IconImpo = compose('hugeicons:package-moving', 'hugeicons:arrow-down-01', 'hugeicons:ship-02')
 const IconExpo = compose('hugeicons:package-delivered', 'hugeicons:arrow-up-01', 'hugeicons:airplane-take-off-01')
 
-/* ââ Card Config ââ */
+/* Ã¢ÂÂÃ¢ÂÂ Card Config Ã¢ÂÂÃ¢ÂÂ */
 interface LandingCard {
   id: string
   label: string
@@ -57,11 +57,11 @@ interface LandingCard {
 const CARDS: LandingCard[] = [
   { id: 'tickets', label: 'Tickets', route: '/servicio/tickets', kpiLabel: 'Activos', icon: <IconTickets />, accent: '#2563EB' },
   { id: 'clientes', label: 'Clientes Activos', route: '/clientes/corporativos', kpiLabel: 'Clientes', icon: <IconClientes />, accent: '#059669' },
-  { id: 'impo', label: 'ImportaciÃ³n', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO (30d)', icon: <IconImpo />, accent: '#7C3AED' },
-  { id: 'expo', label: 'ExportaciÃ³n', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO (30d)', icon: <IconExpo />, accent: '#D97706' },
+  { id: 'impo', label: 'ImportaciÃÂ³n', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO (30d)', icon: <IconImpo />, accent: '#7C3AED' },
+  { id: 'expo', label: 'ExportaciÃÂ³n', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO (30d)', icon: <IconExpo />, accent: '#D97706' },
 ]
 
-/* ââ Helper: count viajes_anodos by tipo with pagination ââ */
+/* Ã¢ÂÂÃ¢ÂÂ Helper: count viajes_anodos by tipo with pagination Ã¢ÂÂÃ¢ÂÂ */
 async function countViajesAnodosByTipo(tipoViaje: number): Promise<number> {
   const hace30d = new Date()
   hace30d.setDate(hace30d.getDate() - 30)
@@ -92,23 +92,22 @@ async function countViajesAnodosByTipo(tipoViaje: number): Promise<number> {
   return c2 || 0
 }
 
-/* ââ Component ââ */
+/* Ã¢ÂÂÃ¢ÂÂ Component Ã¢ÂÂÃ¢ÂÂ */
 export default function DashboardCS() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
   const [kpis, setKpis] = useState<Record<string, number>>({
-  const [loading, setLoading] = useState(true)
     tickets: 0,
     clientes: 0,
     impo: 0,
     expo: 0,
   })
+  const [loading, setLoading] = useState(true)
 
   const fetchKpis = useCallback(async () => {
     try {
       // Tickets y clientes desde tablas directas
-          try {
-    const [tix, cli] = await Promise.all([
+      const [tix, cli] = await Promise.all([
         supabase.from('tickets').select('*', { count: 'exact', head: true }).is('deleted_at', null).in('estado', ['abierto', 'en_proceso']),
         supabase.from('clientes').select('*', { count: 'exact', head: true }).is('deleted_at', null),
       ])
@@ -126,9 +125,10 @@ export default function DashboardCS() {
         impo: impoCount,
         expo: expoCount,
       })
-    } finally { setLoading(false) }
     } catch (e) {
       console.error('KPI fetch error:', e)
+    } finally {
+      setLoading(false)
     }
   }, [])
 
