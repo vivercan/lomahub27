@@ -27,6 +27,7 @@ import PortalDocumentos from './pages/clientes/PortalDocumentos'
 import FichaCliente from './pages/clientes/FichaCliente'
 import RadiografiaFinanciera from './pages/clientes/RadiografiaFinanciera'
 import CorporativosClientes from './pages/clientes/CorporativosClientes'
+import AltaClienteWorkflow from './pages/clientes/AltaClienteWorkflow'
 
 // Operaciones
 import Despachos from './pages/operaciones/Despachos'
@@ -180,6 +181,13 @@ function App() {
           <Route path="/clientes/:id/radiografia" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'cxc', 'direccion']}>
               <RadiografiaFinanciera />
+            </ProtectedRoute>
+          } />
+
+          {/* ——— 09b. Alta Clientes Workflow ——— */}
+          <Route path="/clientes/workflow-alta" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs', 'cxc']}>
+              <AltaClienteWorkflow />
             </ProtectedRoute>
           } />
 
