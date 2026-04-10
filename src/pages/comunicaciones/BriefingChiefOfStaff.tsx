@@ -14,6 +14,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { ModuleLayout } from '../../components/layout/ModuleLayout';
 
 interface Metrics {
   cotizaciones_pedidas?: number;
@@ -187,6 +188,7 @@ const MetricCard: React.FC<{ label: string; value: number | undefined; format?: 
   const color = getMetricColor(value);
 
   return (
+    <ModuleLayout titulo="Briefing Chief of Staff">
     <div
       style={{
         background: 'linear-gradient(180deg, rgba(54,54,67,1) 0%, rgba(42,42,54,1) 50%, rgba(33,33,43,1) 100%)',
@@ -920,6 +922,7 @@ const BriefingChiefOfStaff: React.FC = () => {
         </div>
       </div>
     </div>
+    </ModuleLayout>
   );
 };
 
