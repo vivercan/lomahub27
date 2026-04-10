@@ -236,7 +236,7 @@ export default function ProgramacionIMPEX() {
   ];
 
   return (
-    <ModuleLayout title="Programación IMPEX" icon={<Calendar size={24} />}>
+    <ModuleLayout titulo="Programación IMPEX">
       <div style={{ padding: tokens.spacing.lg }}>
         {/* KPI Cards Row */}
         <div
@@ -251,25 +251,25 @@ export default function ProgramacionIMPEX() {
             titulo="Viajes Programados"
             valor={kpis.programados}
             icono={<Truck size={20} />}
-            color={tokens.colors.blue}
+            color="blue"
           />
           <KPICard
             titulo="En Tránsito"
             valor={kpis.enTransito}
             icono={<Ship size={20} />}
-            color={tokens.colors.yellow}
+            color="yellow"
           />
           <KPICard
             titulo="Completados"
             valor={kpis.completados}
             icono={<MapPin size={20} />}
-            color={tokens.colors.green}
+            color="green"
           />
           <KPICard
             titulo="Próximos 7 Días"
             valor={kpis.proximos7Dias}
             icono={<Calendar size={20} />}
-            color={tokens.colors.primary}
+            color="primary"
           />
         </div>
 
@@ -356,7 +356,7 @@ export default function ProgramacionIMPEX() {
                     border: isToday
                       ? `2px solid ${tokens.colors.primary}`
                       : `1px solid ${tokens.colors.border}`,
-                    borderRadius: tokens.effects.cardRadius,
+                    borderRadius: tokens.radius.xl,
                     padding: tokens.spacing.sm,
                     backgroundColor: isToday
                       ? `${tokens.colors.primary}15`
