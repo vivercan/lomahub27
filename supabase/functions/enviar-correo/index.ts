@@ -45,6 +45,7 @@ Deno.serve(async (req) => {
       headers: { 'Content-Type': 'application/json' }
     })
   } catch (err) {
+    console.error('enviar-correo:', err)
     return new Response(
       JSON.stringify({ error: 'Error interno', detalle: String(err) }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
