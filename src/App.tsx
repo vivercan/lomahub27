@@ -26,6 +26,7 @@ import ProspeccionExterna from './pages/ventas/ProspeccionExterna'
 import NuevaCotizacion from './pages/cotizador/NuevaCotizacion'
 import FirmaDigital from './pages/cotizador/FirmaDigital'
 import MisCotizaciones from './pages/cotizador/MisCotizaciones'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
 // Clientes
 import AltaCliente from './pages/clientes/AltaCliente'
@@ -90,6 +91,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <ErrorBoundary>
         <Routes>
           {/* âââ Public âââ */}
           <Route path="/login" element={<Login />} />
@@ -511,6 +513,7 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
+        </ErrorBoundary>
       </AuthProvider>
     </BrowserRouter>
   )
