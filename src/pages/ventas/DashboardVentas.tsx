@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
+import { tokens } from '../../lib/tokens'
 
 /* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
    COMERCIAL â Landing Page (alineada al dashboard principal)
@@ -12,7 +13,7 @@ import { supabase } from '../../lib/supabase'
 
 const D = {
   bg: '#E8EBF0',
-  font: "'Montserrat', sans-serif",
+  font: tokens.fonts.heading,
   cardRadius: '14px',
   titleSize: '20px',
   titleWeight: 800,
