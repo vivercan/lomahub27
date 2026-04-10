@@ -5,12 +5,12 @@ import { supabase } from '../../lib/supabase'
 import { Loader2 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
-SERVICIO A CLIENTES Ã¢ÂÂ Landing Page (alineada a plantilla madre)
+/* ———————————————————————————————————————————————————————————————
+SERVICIO A CLIENTES — Landing Page (alineada a plantilla madre)
 4 cards: Tickets, Clientes Activos, Importacion, Exportacion
 KPIs reales: tickets + clientes de Supabase, IMPO/EXPO de viajes_anodos
-Icono ÃÂºnico white-stroke: principal 12% | secondary 8%
-Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+Icono único white-stroke: principal 12% | secondary 8%
+—————————————————————————————————————————————————————————————— */
 
 const D = {
   bg: '#F7F8FA',
@@ -44,7 +44,7 @@ const IconClientes = compose('hugeicons:user-multiple', 'hugeicons:user-circle',
 const IconImpo = compose('hugeicons:package-moving', 'hugeicons:arrow-down-01', 'hugeicons:ship-02')
 const IconExpo = compose('hugeicons:package-delivered', 'hugeicons:arrow-up-01', 'hugeicons:airplane-take-off-01')
 
-/* Ã¢ÂÂÃ¢ÂÂ Card Config Ã¢ÂÂÃ¢ÂÂ */
+/* —— Card Config —— */
 interface LandingCard {
   id: string
   label: string
@@ -57,11 +57,11 @@ interface LandingCard {
 const CARDS: LandingCard[] = [
   { id: 'tickets', label: 'Tickets', route: '/servicio/tickets', kpiLabel: 'Activos', icon: <IconTickets />, accent: '#2563EB' },
   { id: 'clientes', label: 'Clientes Activos', route: '/clientes/corporativos', kpiLabel: 'Clientes', icon: <IconClientes />, accent: '#059669' },
-  { id: 'impo', label: 'ImportaciÃÂ³n', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO (30d)', icon: <IconImpo />, accent: '#7C3AED' },
-  { id: 'expo', label: 'ExportaciÃÂ³n', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO (30d)', icon: <IconExpo />, accent: '#D97706' },
+  { id: 'impo', label: 'Importación', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO (30d)', icon: <IconImpo />, accent: '#7C3AED' },
+  { id: 'expo', label: 'Exportación', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO (30d)', icon: <IconExpo />, accent: '#D97706' },
 ]
 
-/* Ã¢ÂÂÃ¢ÂÂ Helper: count viajes_anodos by tipo with pagination Ã¢ÂÂÃ¢ÂÂ */
+/* —— Helper: count viajes_anodos by tipo with pagination —— */
 async function countViajesAnodosByTipo(tipoViaje: number): Promise<number> {
   const hace30d = new Date()
   hace30d.setDate(hace30d.getDate() - 30)
@@ -92,7 +92,7 @@ async function countViajesAnodosByTipo(tipoViaje: number): Promise<number> {
   return c2 || 0
 }
 
-/* Ã¢ÂÂÃ¢ÂÂ Component Ã¢ÂÂÃ¢ÂÂ */
+/* —— Component —— */
 export default function DashboardCS() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
