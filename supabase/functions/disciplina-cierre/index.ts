@@ -67,7 +67,7 @@ Deno.serve(async (_req) => {
           `<tr><td style="padding:6px 12px">${u.nombre}</td><td style="padding:6px 12px">${u.email}</td><td style="padding:6px 12px;color:#10B981">${u.actividad.total} (${u.actividad.leads}L+${u.actividad.viajes}V)</td></tr>`
         ).join('')
 
-        await fetch('https://api.resend.com/emails', {
+        const resEmail = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -77,6 +77,10 @@ Deno.serve(async (_req) => {
             html: `<h2>Disciplina de cierre - ${fecha}</h2><h3 style="color:#EF4444">Sin actividad (${sinAct.length})</h3><table style="border-collapse:collapse;width:100%"><tr style="background:#0B1220;color:white"><th style="padding:8px 12px;text-align:left">Nombre</th><th style="padding:8px 12px;text-align:left">Email</th><th style="padding:8px 12px;text-align:left">Actividad</th></tr>${sinHTML}</table>${conAct.length > 0 ? `<h3 style="color:#10B981;margin-top:20px">Con actividad (${conAct.length})</h3><table style="border-collapse:collapse;width:100%"><tr style="background:#0B1220;color:white"><th style="padding:8px 12px;text-align:left">Nombre</th><th style="padding:8px 12px;text-align:left">Email</th><th style="padding:8px 12px;text-align:left">Actividad</th></tr>${conHTML}</table>` : ''}<p style="color:#666;font-size:13px;margin-top:16px">Generado por LomaHUB27 6PM CST</p>`,
           }),
         })
+        if (!resEmail.ok) {
+          const errBody = await resEmail.text()
+          console.error('disciplina-cierre Resend error:', resEmail.status, errBody)
+        }
       }
     }
 
