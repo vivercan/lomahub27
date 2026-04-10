@@ -55,10 +55,10 @@ export default function MisCotizaciones() {
 
   const filtered = filtro === 'todas'
     ? cotizaciones
+    : cotizaciones.filter(c => c.estado === filtro)
 
   const totalPages = Math.ceil(filtered.length / pageSize)
   const paginated = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-    : cotizaciones.filter(c => c.estado === filtro)
 
   const kpis = {
     total: cotizaciones.length,
