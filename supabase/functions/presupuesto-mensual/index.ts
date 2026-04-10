@@ -149,6 +149,7 @@ Deno.serve(async (req) => {
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
 
   } catch (err) {
+    console.error('presupuesto-mensual:', err)
     return new Response(JSON.stringify({
       ok: false,
       mensaje: err instanceof Error ? err.message : 'Error interno',
