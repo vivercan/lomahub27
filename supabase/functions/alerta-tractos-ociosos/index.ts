@@ -96,6 +96,7 @@ Deno.serve(async () => {
       { headers: corsHeaders }
     )
   } catch (err) {
+    console.error('alerta-tractos-ociosos:', err)
     return new Response(
       JSON.stringify({ error: err.message }),
       { status: 500, headers: corsHeaders }
