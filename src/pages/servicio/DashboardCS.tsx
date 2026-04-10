@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
+import { Loader2 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 
 /* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
@@ -96,6 +97,7 @@ export default function DashboardCS() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
   const [kpis, setKpis] = useState<Record<string, number>>({
+  const [loading, setLoading] = useState(true)
     tickets: 0,
     clientes: 0,
     impo: 0,
@@ -105,7 +107,8 @@ export default function DashboardCS() {
   const fetchKpis = useCallback(async () => {
     try {
       // Tickets y clientes desde tablas directas
-      const [tix, cli] = await Promise.all([
+          try {
+    const [tix, cli] = await Promise.all([
         supabase.from('tickets').select('*', { count: 'exact', head: true }).is('deleted_at', null).in('estado', ['abierto', 'en_proceso']),
         supabase.from('clientes').select('*', { count: 'exact', head: true }).is('deleted_at', null),
       ])
@@ -123,6 +126,7 @@ export default function DashboardCS() {
         impo: impoCount,
         expo: expoCount,
       })
+    } finally { setLoading(false) }
     } catch (e) {
       console.error('KPI fetch error:', e)
     }
@@ -148,6 +152,14 @@ export default function DashboardCS() {
     transform: isH ? 'translateY(-3px)' : 'none',
     boxShadow: isH ? '0 6px 20px rgba(0,0,0,0.25)' : '0 2px 8px rgba(0,0,0,0.15)',
   })
+
+  if (loading) return (
+    <ModuleLayout titulo="Servicio a Clientes" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+        <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: '#1E66F5' }} />
+      </div>
+    </ModuleLayout>
+  )
 
   return (
     <ModuleLayout titulo="Servicio a Clientes" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
