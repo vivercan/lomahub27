@@ -217,6 +217,7 @@ Deno.serve(async (req) => {
     })
 
   } catch (err) {
+    console.error('radiografia-financiera:', err)
     return new Response(JSON.stringify({
       ok: false,
       mensaje: err instanceof Error ? err.message : 'Error interno',
