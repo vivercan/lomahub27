@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { tokens } from '../../lib/tokens';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
-import { Save, Plus, Trash2, DollarSign, Truck, Ship, MapPin } from 'lucide-react';
+import { Save, Plus, Trash2, DollarSign, Truck, Ship, MapPin , Loader2 } from 'lucide-react';
 
 /* âââââââââ types âââââââââ */
 interface Tarifa {
@@ -51,6 +51,7 @@ export default function ParametrosConfig() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [activeTab, setActiveTab] = useState('km_mexico');
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loadTarifas = async () => {
@@ -63,7 +64,7 @@ export default function ParametrosConfig() {
         if (data && data.length > 0) setTarifas(data as Tarifa[]);
       } catch (err) {
         console.log('Using defaults — table may not exist yet:', err);
-      }
+      } finally { setLoading(false) }
     };
     loadTarifas();
   }, []);
@@ -216,6 +217,14 @@ export default function ParametrosConfig() {
       justifyContent: 'flex-end',
     } as React.CSSProperties,
   };
+
+  if (loading) return (
+    <ModuleLayout titulo="Parametros">
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+        <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: '#1E66F5' }} />
+      </div>
+    </ModuleLayout>
+  )
 
   return (
     <ModuleLayout titulo="Parámetros" moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}>
