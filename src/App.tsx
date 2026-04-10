@@ -1,4 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+          <Route path="/cotizador/mis-cotizaciones" element={
+            <ProtectedRoute>
+              <MisCotizaciones />
+            </ProtectedRoute>
+          } />
 import { AuthProvider } from './hooks/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import HomeDashboard from './pages/HomeDashboard'
@@ -20,6 +25,7 @@ import ProspeccionExterna from './pages/ventas/ProspeccionExterna'
 // Cotizador
 import NuevaCotizacion from './pages/cotizador/NuevaCotizacion'
 import FirmaDigital from './pages/cotizador/FirmaDigital'
+import MisCotizaciones from './pages/cotizador/MisCotizaciones'
 
 // Clientes
 import AltaCliente from './pages/clientes/AltaCliente'
