@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
+import { ModuleLayout } from '../../components/layout/ModuleLayout'
 
 interface DocumentoCliente {
   id: string
@@ -113,7 +114,8 @@ export default function PortalDocumentosStatus() {
       )
       .subscribe()
 
-    return () => {
+    return (
+    <ModuleLayout titulo="Portal de Documentos" subtitulo="Documentos del cliente">) => {
       subscription.unsubscribe()
     }
   }, [clienteId])
@@ -725,6 +727,7 @@ export default function PortalDocumentosStatus() {
         </div>
       </div>
     </div>
+    </ModuleLayout>
   )
 }
 
