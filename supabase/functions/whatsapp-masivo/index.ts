@@ -69,6 +69,7 @@ Deno.serve(async (req) => {
           })
           enviados.push(cliente.razon_social)
         } catch (e) {
+    console.error('whatsapp-masivo:', e)
           errores.push(`${cliente.razon_social}: ${e instanceof Error ? e.message : 'Error'}`)
         }
       }
