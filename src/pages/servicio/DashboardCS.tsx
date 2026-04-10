@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
+import { tokens } from '../../lib/tokens'
 
 /* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 SERVICIO A CLIENTES â Landing Page (alineada a plantilla madre)
@@ -12,8 +13,8 @@ Icono Ãºnico white-stroke: principal 12% | secondary 8%
 
 const D = {
   bg: '#F7F8FA',
-  font: "'Montserrat', sans-serif",
-  fontBody: "'Montserrat', sans-serif",
+  font: tokens.fonts.heading,
+  fontBody: tokens.fonts.body,
   cardRadius: '14px',
   titleSize: '17px',
   titleWeight: 800,
