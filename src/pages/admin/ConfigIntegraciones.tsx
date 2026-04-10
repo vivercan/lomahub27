@@ -11,7 +11,7 @@ import {
   Zap, Globe, Shield
 } from 'lucide-react'
 
-/* âââ types âââ */
+/* ——— types ——— */
 interface IntegrationStatus {
   name: string
   key: string
@@ -42,7 +42,7 @@ export default function ConfigIntegraciones() {
   async function fetchStatus() {
     setLoading(true)
     try {
-      /* GPS WideTech â check gps_tracking for recent data */
+      /* GPS WideTech — check gps_tracking for recent data */
       const { count: gpsCount } = await supabase
         .from('gps_tracking')
         .select('*', { count: 'exact', head: true })
@@ -56,7 +56,7 @@ export default function ConfigIntegraciones() {
         ? Math.floor((Date.now() - new Date(gpsLastSync).getTime()) / 60000)
         : null
 
-      /* ANODOS â check formatos_venta */
+      /* ANODOS — check formatos_venta */
       const { count: anodosCount } = await supabase
         .from('formatos_venta')
         .select('*', { count: 'exact', head: true })
@@ -67,7 +67,7 @@ export default function ConfigIntegraciones() {
         .limit(1)
       const anodosLastSync = latestAnodos?.[0]?.updated_at || null
 
-      /* Supabase Edge Functions â check count */
+      /* Supabase Edge Functions — check count */
       /* We can't directly query edge functions, so we check known tables */
       const { count: leadsCount } = await supabase
         .from('leads')
@@ -104,7 +104,7 @@ export default function ConfigIntegraciones() {
           name: 'GPS Unidades',
           key: 'gps_unidades',
           icon: <Truck size={20} />,
-          description: 'CatÃ¡logo de unidades GPS registradas en WideTech.',
+          description: 'Catálogo de unidades GPS registradas en WideTech.',
           status: (gpsUnidadesCount || 0) > 0 ? 'connected' : 'pending',
           lastSync: null,
           records: gpsUnidadesCount || 0,
@@ -115,7 +115,7 @@ export default function ConfigIntegraciones() {
           name: 'ANODOS TMS',
           key: 'anodos',
           icon: <Database size={20} />,
-          description: 'SincronizaciÃ³n formatos de venta desde ANODOS REST API. CRON cada 10 min.',
+          description: 'Sincronización formatos de venta desde ANODOS REST API. CRON cada 10 min.',
           status: anodosCount && anodosCount > 0 ? 'connected' : 'error',
           lastSync: anodosLastSync,
           records: anodosCount || 0,
@@ -148,7 +148,7 @@ export default function ConfigIntegraciones() {
           name: 'Anthropic Claude API',
           key: 'anthropic',
           icon: <Brain size={20} />,
-          description: 'IA para anÃ¡lisis de cotizaciones PDF y validaciÃ³n de documentos.',
+          description: 'IA para análisis de cotizaciones PDF y validación de documentos.',
           status: 'connected',
           lastSync: null,
           records: null,
@@ -170,7 +170,7 @@ export default function ConfigIntegraciones() {
           name: 'WhatsApp Business',
           key: 'whatsapp',
           icon: <MessageSquare size={20} />,
-          description: 'Meta WhatsApp Business Cloud API â pendiente integraciÃ³n.',
+          description: 'Meta WhatsApp Business Cloud API — pendiente integración.',
           status: 'pending',
           lastSync: null,
           records: null,
@@ -190,7 +190,7 @@ export default function ConfigIntegraciones() {
 
   async function testConnection(key: string) {
     setTesting(key)
-    /* Simulate test â in production this would call edge functions */
+    /* Simulate test — in production this would call edge functions */
     await new Promise(r => setTimeout(r, 1500))
     setTesting(null)
   }
@@ -215,7 +215,7 @@ export default function ConfigIntegraciones() {
   }
 
   function timeAgo(iso: string | null) {
-    if (!iso) return 'â'
+    if (!iso) return '—'
     const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000)
     if (mins < 1) return 'Ahora'
     if (mins < 60) return `Hace ${mins} min`
@@ -224,7 +224,7 @@ export default function ConfigIntegraciones() {
     return new Date(iso).toLocaleDateString('es-MX')
   }
 
-  /* âââ stats âââ */
+  /* ——— stats ——— */
   const stats = {
     total: integrations.length,
     connected: integrations.filter(i => i.status === 'connected').length,
@@ -233,7 +233,7 @@ export default function ConfigIntegraciones() {
   }
 
   return (
-    <ModuleLayout titulo="Integraciones â Panel de Control" moduloPadre={{ nombre: 'ConfiguraciÃ³n', ruta: '/admin/configuracion' }}>
+    <ModuleLayout titulo="Integraciones — Panel de Control" moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}>
       <div style={{ padding: tokens.spacing.lg, minHeight: '100vh', background: tokens.colors.bgMain }}>
         {/* Header stats */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: tokens.spacing.lg }}>
@@ -356,7 +356,7 @@ export default function ConfigIntegraciones() {
                         {integ.lastSync && (
                           <div>
                             <div style={{ fontSize: '10px', color: tokens.colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', fontFamily: tokens.fonts.body }}>
-                              Ãltimo sync
+                              Último sync
                             </div>
                             <div style={{ fontSize: '13px', color: tokens.colors.textPrimary, fontWeight: 600, fontFamily: tokens.fonts.body }}>
                               {timeAgo(integ.lastSync)}
