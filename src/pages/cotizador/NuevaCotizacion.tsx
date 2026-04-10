@@ -7,6 +7,7 @@ import { Input } from '../../components/ui/Input'
 import { Select } from '../../components/ui/Select'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
+import { useAuthContext } from '../../hooks/AuthContext'
 import type { ReactNode } from 'react'
 
 /* ── Types ──────────────────────────────────────────── */
@@ -69,6 +70,7 @@ function SectionTitle({ icon, children }: { icon: ReactNode; children: ReactNode
 
 /* ── COMPONENT ──────────────────────────────────────── */
 export default function NuevaCotizacion() {
+  const { user } = useAuthContext()
   /* catalogs */
   const [clienteOpts, setClienteOpts] = useState<SelectOption[]>([{ value: '', label: 'Seleccionar cliente...' }])
   const [tarifasMX, setTarifasMX] = useState<TarifaMX[]>([])
@@ -172,6 +174,7 @@ export default function NuevaCotizacion() {
     try {
       const { data, error } = await supabase.from('cotizaciones').insert({
         cliente_id: cliente,
+        ejecutivo_id: user?.id,
         tipo_operacion: tipoOp,
         moneda,
         hazmat,
