@@ -78,6 +78,7 @@ Deno.serve(async () => {
       { headers: corsHeaders }
     )
   } catch (err) {
+    console.error('alerta-citas-en-riesgo:', err)
     return new Response(
       JSON.stringify({ error: err.message }),
       { status: 500, headers: corsHeaders }
