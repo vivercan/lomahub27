@@ -130,6 +130,7 @@ Deno.serve(async (req) => {
     })
 
   } catch (error) {
+    console.error('sync-anodos-historico:', error)
     return json({ ok: false, error: (error as Error).message, elapsed_ms: Date.now() - startTime }, 500)
   }
 })
