@@ -87,3 +87,9 @@ body {
 .dash-card-13 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 780ms; opacity: 0; }
 
 .dash-status-bar { animation: statusFadeIn 0.5s ease forwards; }
+
+/* Loading spinner animation */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
