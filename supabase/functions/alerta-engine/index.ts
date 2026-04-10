@@ -517,7 +517,7 @@ async function enviarEmail(to: string, subject: string, body: string): Promise<v
       return
     }
 
-    await fetch('https://api.resend.com/emails', {
+    const resEmail = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${RESEND_KEY}`,
@@ -530,6 +530,10 @@ async function enviarEmail(to: string, subject: string, body: string): Promise<v
         text: body,
       }),
     })
+    if (!resEmail.ok) {
+      const errBody = await resEmail.text()
+      console.error('alerta-engine Resend error:', resEmail.status, errBody)
+    }
 
     console.log(`[EMAIL SENT] To: ${to}, Subject: ${subject}`)
   } catch (err) {
