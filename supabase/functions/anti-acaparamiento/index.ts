@@ -33,6 +33,7 @@ Deno.serve(async (_req) => {
       .not('ejecutivo_email', 'is', null)
       .not('estado', 'in', '("Cerrado Ganado","Cerrado Perdido")')
       .lt('updated_at', fechaCorte)
+      .is('deleted_at', null)
 
     const liberados: Array<{ id: string; empresa: string; ejecutivo_anterior: string; dias: number }> = []
 
