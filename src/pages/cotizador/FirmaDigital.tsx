@@ -124,7 +124,7 @@ export default function FirmaDigital(): ReactElement {
   const fmtMoney = (n: number, m: string) => new Intl.NumberFormat('es-MX', { style: 'currency', currency: m }).format(n)
 
   return (
-    <ModuleLayout title="Firma Digital — Cotizaciones">
+    <ModuleLayout titulo="Firma Digital — Cotizaciones">
       <div style={{ padding: tokens.spacing.lg, minHeight: '100vh', background: tokens.colors.bgMain }}>
         {/* KPIs */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
