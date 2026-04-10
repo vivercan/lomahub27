@@ -78,6 +78,7 @@ import PanelIntegraciones from './pages/admin/PanelIntegraciones'
 import ParametrosConfig from './pages/admin/ParametrosConfig'
 import CatalogosTab from './pages/admin/CatalogosTab'
 import ProgramacionDedicados from './pages/operaciones/ProgramacionDedicados'
+import ConfigIntegraciones from './pages/admin/ConfigIntegraciones'
 
 function App() {
   return (
