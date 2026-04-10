@@ -191,6 +191,7 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (err) {
+    console.error('eta-calculator:', err)
     return new Response(
       JSON.stringify({ error: 'Error interno', detalle: String(err) }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
