@@ -92,6 +92,7 @@ Deno.serve(async (_req) => {
     }), { headers: { 'Content-Type': 'application/json' } })
 
   } catch (err) {
+    console.error('disciplina-cierre:', err)
     return new Response(JSON.stringify({
       ok: false, mensaje: err instanceof Error ? err.message : 'Error interno',
     }), { status: 500, headers: { 'Content-Type': 'application/json' } })
