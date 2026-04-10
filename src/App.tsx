@@ -1,9 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-          <Route path="/cotizador/mis-cotizaciones" element={
-            <ProtectedRoute>
-              <MisCotizaciones />
-            </ProtectedRoute>
-          } />
 import { AuthProvider } from './hooks/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import HomeDashboard from './pages/HomeDashboard'
@@ -147,7 +142,12 @@ function App() {
           } />
 
           {/* âââ 07. Cotizador âââ */}
-          <Route path="/cotizador/nueva" element={
+                    <Route path="/cotizador/mis-cotizaciones" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial', 'pricing']}>
+              <MisCotizaciones />
+            </ProtectedRoute>
+          } />
+<Route path="/cotizador/nueva" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'pricing']}>
               <NuevaCotizacion />
             </ProtectedRoute>
