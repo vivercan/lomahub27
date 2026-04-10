@@ -45,6 +45,7 @@ Deno.serve(async (_req) => {
     return new Response(JSON.stringify({ ok: true, alertas, viajes: viajes.length, umbral }),
       { headers: { 'Content-Type': 'application/json' } })
   } catch (e) {
+    console.error('alerta-unidades-detenidas:', e)
     return new Response(JSON.stringify({ error: 'Error interno', detalle: (e as Error).message }),
       { status: 500, headers: { 'Content-Type': 'application/json' } })
   }
