@@ -188,6 +188,7 @@ Deno.serve(async (req) => {
     })
 
   } catch (err) {
+    console.error('analisis-8020:', err)
     return new Response(JSON.stringify({
       ok: false,
       mensaje: err instanceof Error ? err.message : 'Error interno',
