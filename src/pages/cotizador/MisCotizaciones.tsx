@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
+import { Pagination } from '../../components/ui/Pagination'
 import { Loader2, Plus, FileText, Send, CheckCircle, XCircle, Clock, Eye } from 'lucide-react'
 import { useAuthContext } from '../../hooks/AuthContext'
 
@@ -34,6 +35,8 @@ export default function MisCotizaciones() {
   const [cotizaciones, setCotizaciones] = useState<Cotizacion[]>([])
   const [loading, setLoading] = useState(true)
   const [filtro, setFiltro] = useState('todas')
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 20
 
   const fetchCotizaciones = useCallback(async () => {
     try {
@@ -52,6 +55,9 @@ export default function MisCotizaciones() {
 
   const filtered = filtro === 'todas'
     ? cotizaciones
+
+  const totalPages = Math.ceil(filtered.length / pageSize)
+  const paginated = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize)
     : cotizaciones.filter(c => c.estado === filtro)
 
   const kpis = {
@@ -98,7 +104,7 @@ export default function MisCotizaciones() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <div style={{ display: 'flex', gap: '8px' }}>
             {['todas', 'borrador', 'enviada', 'aceptada', 'rechazada', 'vencida'].map(f => (
-              <button key={f} onClick={() => setFiltro(f)} style={{
+              <button key={f} onClick={() => { setFiltro(f); setCurrentPage(1) }} style={{
                 padding: '6px 14px',
                 borderRadius: '8px',
                 border: filtro === f ? `2px solid ${tokens.colors.primary}` : `1px solid ${tokens.colors.border}`,
@@ -142,11 +148,11 @@ export default function MisCotizaciones() {
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 ? (
+              {paginated.length === 0 ? (
                 <tr><td colSpan={8} style={{ padding: '40px', textAlign: 'center', color: tokens.colors.textMuted, fontSize: '14px' }}>
-                  {filtro === 'todas' ? 'No hay cotizaciones aun. Crea la primera.' : `No hay cotizaciones con estado "${filtro}"`}
+                  {filtered.length === 0 ? 'No hay cotizaciones aun. Crea la primera.' : `No hay cotizaciones con estado "${filtro}"`}
                 </td></tr>
-              ) : filtered.map(c => {
+              ) : paginated.map(c => {
                 const est = estadoConfig[c.estado] || estadoConfig.borrador
                 const Icon = est.icon
                 return (
@@ -177,6 +183,13 @@ export default function MisCotizaciones() {
               })}
             </tbody>
           </table>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filtered.length}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+        />
         </div>
       </div>
     </ModuleLayout>
