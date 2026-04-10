@@ -24,7 +24,7 @@ const t = tokens
 function formatFechaCorta(fecha: string): string {
   const d = new Date(fecha + 'T12:00:00')
   const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
-  const dias = ['Dom', 'Lun', 'Mar', 'MiÃ©', 'Jue', 'Vie', 'SÃ¡b']
+  const dias = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
   return `${dias[d.getDay()]} ${d.getDate()} ${meses[d.getMonth()]} ${d.getFullYear()}`
 }
 
@@ -74,7 +74,7 @@ export default function ChiefOfStaffHome() {
     }}>
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '32px 24px' }}>
 
-        {/* âÂÂâÂÂâÂÂ HEADER âÂÂâÂÂâÂÂ */}
+        {/* ——— HEADER ——— */}
         <div style={{
           display: 'flex', alignItems: 'center', gap: '16px',
           marginBottom: '28px',
@@ -96,12 +96,12 @@ export default function ChiefOfStaffHome() {
             <div style={{
               fontSize: '13px', color: t.colors.textSecondary, marginTop: '2px',
             }}>
-              Tu asistente ejecutivo AI â briefings diarios
+              Tu asistente ejecutivo AI — briefings diarios
             </div>
           </div>
         </div>
 
-        {/* âÂÂâÂÂâÂÂ FILTROS âÂÂâÂÂâÂÂ */}
+        {/* ——— FILTROS ——— */}
         <div style={{
           display: 'flex', gap: '8px', marginBottom: '24px',
         }}>
@@ -125,7 +125,7 @@ export default function ChiefOfStaffHome() {
           ))}
         </div>
 
-        {/* âÂÂâÂÂâÂÂ LISTA âÂÂâÂÂâÂÂ */}
+        {/* ——— LISTA ——— */}
         {loading ? (
           <div style={{
             textAlign: 'center', padding: '60px 0',
@@ -140,9 +140,9 @@ export default function ChiefOfStaffHome() {
             color: t.colors.textMuted,
           }}>
             <Brain size={36} style={{ marginBottom: '12px' }} />
-            <div>No hay briefings aÃºn</div>
+            <div>No hay briefings aún</div>
             <div style={{ fontSize: '13px', marginTop: '4px' }}>
-              Los briefings se generan automÃ¡ticamente a las 7AM y 6PM
+              Los briefings se generan automáticamente a las 7AM y 6PM
             </div>
           </div>
         ) : (
@@ -188,7 +188,7 @@ export default function ChiefOfStaffHome() {
                         fontSize: '14px', fontWeight: 700,
                         fontFamily: t.fonts.heading, color: t.colors.textPrimary,
                       }}>
-                        {isMorning ? 'Briefing Matutino' : 'Cierre del DÃ­a'}
+                        {isMorning ? 'Briefing Matutino' : 'Cierre del Día'}
                       </span>
                       {idx === 0 && (
                         <span style={{
@@ -197,7 +197,7 @@ export default function ChiefOfStaffHome() {
                           background: t.colors.primary, color: '#fff',
                           textTransform: 'uppercase', letterSpacing: '0.5px',
                         }}>
-                          MÃ¡s reciente
+                          Más reciente
                         </span>
                       )}
                     </div>
