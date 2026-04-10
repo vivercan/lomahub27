@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
+import { tokens } from '../../lib/tokens';
 
 interface Metrics {
   cotizaciones_pedidas?: number;
@@ -216,7 +217,7 @@ const LoadingState: React.FC = () => (
       alignItems: 'center',
       height: '100vh',
       backgroundColor: '#F7F8FA',
-      fontFamily: 'Montserrat, sans-serif',
+      fontFamily: tokens.fonts.heading,
     }}
   >
     <div style={{ textAlign: 'center' }}>
@@ -242,7 +243,7 @@ const ErrorState: React.FC<{ message: string }> = ({ message }) => (
       alignItems: 'center',
       height: '100vh',
       backgroundColor: '#F7F8FA',
-      fontFamily: 'Montserrat, sans-serif',
+      fontFamily: tokens.fonts.heading,
       padding: '24px',
     }}
   >
@@ -391,7 +392,7 @@ const PendienteCard: React.FC<{ pendiente: Pendiente; index: number }> = ({ pend
                   cursor: 'pointer',
                   fontSize: '13px',
                   fontWeight: 600,
-                  fontFamily: 'Montserrat, sans-serif',
+                  fontFamily: tokens.fonts.heading,
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
@@ -421,7 +422,7 @@ const PendienteCard: React.FC<{ pendiente: Pendiente; index: number }> = ({ pend
                   cursor: 'pointer',
                   fontSize: '13px',
                   fontWeight: 600,
-                  fontFamily: 'Montserrat, sans-serif',
+                  fontFamily: tokens.fonts.heading,
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
@@ -449,7 +450,7 @@ const PendienteCard: React.FC<{ pendiente: Pendiente; index: number }> = ({ pend
                 cursor: 'pointer',
                 fontSize: '13px',
                 fontWeight: 600,
-                fontFamily: 'Montserrat, sans-serif',
+                fontFamily: tokens.fonts.heading,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -756,7 +757,7 @@ const BriefingChiefOfStaff: React.FC = () => {
       style={{
         backgroundColor: '#F7F8FA',
         minHeight: '100vh',
-        fontFamily: 'Montserrat, sans-serif',
+        fontFamily: tokens.fonts.heading,
         color: 'rgba(15, 23, 42, 0.87)',
         padding: '16px',
       }}
