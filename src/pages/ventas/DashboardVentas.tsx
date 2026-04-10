@@ -5,12 +5,12 @@ import { supabase } from '../../lib/supabase'
 import { Loader2 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   COMERCIAL â Landing Page (alineada al dashboard principal)
+/* ———————————————————————————————————————————————————————————————
+   COMERCIAL — Landing Page (alineada al dashboard principal)
    3 cards reales: Oportunidades, Cotizaciones, Programa Semanal
    Iconos Hugeicons watermark anclados bottom-right (mismo patron
    que HomeDashboard / card Configuracion validado por JJ)
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ——————————————————————————————————————————————————————————————— */
 
 const D = {
   bg: '#E8EBF0',
@@ -23,7 +23,7 @@ const D = {
   subSize: '12px',
 } as const
 
-// ICON SYSTEM â Hugeicons via Iconify CDN (mismo patron HomeDashboard)
+// ICON SYSTEM — Hugeicons via Iconify CDN (mismo patron HomeDashboard)
 const ICO_OPACITY = 0.22
 const ico = (path: string, style: React.CSSProperties) => (
   <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
