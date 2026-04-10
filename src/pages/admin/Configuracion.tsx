@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
-import {
 import { tokens } from '../../lib/tokens'
+import {
   Users, BookOpen, SlidersHorizontal, Plug, ShieldCheck
 } from 'lucide-react'
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   CONFIGURACIÓN — Landing Page (estilo Dashboard V27f)
-   5 cards: Usuarios, Catálogos, Parámetros, Integraciones, Auditoría
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+   CONFIGURACIÃN â Landing Page (estilo Dashboard V27f)
+   5 cards: Usuarios, CatÃ¡logos, ParÃ¡metros, Integraciones, AuditorÃ­a
+   Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 
 const DASH = {
   bg: '#F3F4F8',
@@ -34,7 +34,7 @@ const DOT: Record<string, string> = {
   purple: '#8B5CF6', red: '#C53030', gray: '#CBD5E1',
 }
 
-/* ââ Geometric SVGs (matching dashboard style) ââ */
+/* Ã¢ÂÂÃ¢ÂÂ Geometric SVGs (matching dashboard style) Ã¢ÂÂÃ¢ÂÂ */
 const geoStyle: React.CSSProperties = {
   position: 'absolute', top: 0, right: 0, width: '100%', height: '100%',
   pointerEvents: 'none', overflow: 'hidden', borderRadius: '20px',
@@ -96,7 +96,7 @@ const GeoAuditoria = () => (
   </div>
 )
 
-/* ââ Card definitions ââ */
+/* Ã¢ÂÂÃ¢ÂÂ Card definitions Ã¢ÂÂÃ¢ÂÂ */
 interface ConfigCard {
   id: string
   label: string
@@ -109,13 +109,13 @@ interface ConfigCard {
 
 const CARDS: ConfigCard[] = [
   { id: 'usuarios', label: 'Usuarios', route: '/admin/configuracion/usuarios', subtitle: 'Roles y permisos', dot: 'blue', accent: '#2563EB', geo: <GeoUsuarios /> },
-  { id: 'catalogos', label: 'Catálogos', route: '/admin/configuracion/catalogos', subtitle: 'Tipos y estados', dot: 'green', accent: '#059669', geo: <GeoCatalogos /> },
-  { id: 'parametros', label: 'Parámetros', route: '/admin/configuracion/parametros', subtitle: 'Tarifas y costos', dot: 'yellow', accent: '#D97706', geo: <GeoParametros /> },
+  { id: 'catalogos', label: 'CatÃ¡logos', route: '/admin/configuracion/catalogos', subtitle: 'Tipos y estados', dot: 'green', accent: '#059669', geo: <GeoCatalogos /> },
+  { id: 'parametros', label: 'ParÃ¡metros', route: '/admin/configuracion/parametros', subtitle: 'Tarifas y costos', dot: 'yellow', accent: '#D97706', geo: <GeoParametros /> },
   { id: 'integraciones', label: 'Integraciones', route: '/admin/configuracion/integraciones', subtitle: 'ANODOS, GPS, WhatsApp', dot: 'purple', accent: '#7C3AED', geo: <GeoIntegraciones /> },
-  { id: 'auditoria', label: 'Auditoría', route: '/admin/configuracion/auditoria', subtitle: 'Actividad del sistema', dot: 'red', accent: '#DC2626', geo: <GeoAuditoria /> },
+  { id: 'auditoria', label: 'AuditorÃ­a', route: '/admin/configuracion/auditoria', subtitle: 'Actividad del sistema', dot: 'red', accent: '#DC2626', geo: <GeoAuditoria /> },
 ]
 
-/* ââ Component ââ */
+/* Ã¢ÂÂÃ¢ÂÂ Component Ã¢ÂÂÃ¢ÂÂ */
 export default function Configuracion() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
@@ -139,7 +139,7 @@ export default function Configuracion() {
   })
 
   return (
-    <ModuleLayout titulo="Configuración" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
+    <ModuleLayout titulo="ConfiguraciÃ³n" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=${tokens.fonts.heading}:wght@400;500;600;700;800&display=swap');
       `}</style>
