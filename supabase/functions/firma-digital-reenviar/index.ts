@@ -33,11 +33,15 @@ async function enviarEmail(to: string, subject: string, body: string): Promise<v
     const RESEND_KEY = Deno.env.get('RESEND_API_KEY')
     const FROM = Deno.env.get('RESEND_FROM_EMAIL') || 'noreply@mail.jjcrm27.com'
     if (!RESEND_KEY) { console.log(`[EMAIL SKIP] No RESEND_API_KEY`); return }
-    await fetch('https://api.resend.com/emails', {
+    const resEmail = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ from: FROM, to: [to], subject, html: body }),
     })
+    if (!resEmail.ok) {
+      const errBody = await resEmail.text()
+      console.error('firma-digital-reenviar Resend error:', resEmail.status, errBody)
+    }
   } catch (err) { console.error(`[EMAIL ERROR] ${err}`) }
 }
 
