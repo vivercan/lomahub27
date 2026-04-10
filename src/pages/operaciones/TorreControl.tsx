@@ -11,7 +11,7 @@ import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 import { Truck, AlertTriangle, Clock, CheckCircle2, BarChart3 } from 'lucide-react'
 
-/* ââââ types ââââ */
+/* ──── types ──── */
 interface Viaje {
   folio: string
   cliente: string
@@ -32,7 +32,7 @@ interface RutaStats {
   avgKm: number
 }
 
-/* ââââ helpers ââââ */
+/* ──── helpers ──── */
 const estadoToSemaforo = (estado: string): SemaforoEstado => {
   switch (estado) {
     case 'en_transito': return 'verde'
@@ -46,7 +46,7 @@ const estadoToSemaforo = (estado: string): SemaforoEstado => {
 
 const estadoLabel = (estado: string): string => {
   switch (estado) {
-    case 'en_transito': return 'En TrÃ¡nsito'
+    case 'en_transito': return 'En Tránsito'
     case 'programado': return 'Programado'
     case 'en_riesgo': return 'En Riesgo'
     case 'retrasado': return 'Retrasado'
@@ -76,7 +76,7 @@ async function fetchRutaStats(): Promise<Map<string, RutaStats>> {
     if (!data || data.length === 0) break
 
     for (const row of data) {
-      const ruta = `${row.origen_ciudad || '?'} â ${row.destino_ciudad || '?'}`
+      const ruta = `${row.origen_ciudad || '?'} → ${row.destino_ciudad || '?'}`
       const prev = rutaMap.get(ruta) || { total: 0, kmSum: 0 }
       prev.total += 1
       prev.kmSum += Number(row.km_total) || 0
@@ -101,7 +101,7 @@ async function fetchRutaStats(): Promise<Map<string, RutaStats>> {
       if (!data || data.length === 0) break
 
       for (const row of data) {
-        const ruta = `${row.origen_ciudad || '?'} â ${row.destino_ciudad || '?'}`
+        const ruta = `${row.origen_ciudad || '?'} → ${row.destino_ciudad || '?'}`
         const prev = rutaMap.get(ruta) || { total: 0, kmSum: 0 }
         prev.total += 1
         prev.kmSum += Number(row.km_total) || 0
@@ -120,7 +120,7 @@ async function fetchRutaStats(): Promise<Map<string, RutaStats>> {
   return result
 }
 
-/* ââââ component ââââ */
+/* ──── component ──── */
 export default function TorreControl(): ReactElement {
   const [viajes, setViajes] = useState<Viaje[]>([])
   const [loading, setLoading] = useState(true)
@@ -159,16 +159,16 @@ export default function TorreControl(): ReactElement {
           const eta = viaje.eta_calculado ? new Date(viaje.eta_calculado) : null
           const cita = viaje.cita_descarga ? new Date(viaje.cita_descarga) : null
           const diffMin = eta && cita ? Math.round((eta.getTime() - cita.getTime()) / 60000) : 0
-          const ruta = `${viaje.origen || '?'} â ${viaje.destino || '?'}`
+          const ruta = `${viaje.origen || '?'} → ${viaje.destino || '?'}`
           const stats = rutaStats.get(ruta)
 
           return {
-            folio: viaje.folio || viaje.id?.substring(0, 8)?.toUpperCase() || 'â',
-            cliente: viaje.clientes?.razon_social || viaje.cliente_nombre || 'â',
+            folio: viaje.folio || viaje.id?.substring(0, 8)?.toUpperCase() || '—',
+            cliente: viaje.clientes?.razon_social || viaje.cliente_nombre || '—',
             ruta,
-            tracto: viaje.tractos?.numero_economico || viaje.tracto_numero || 'â',
-            eta: eta ? eta.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'â',
-            cita: cita ? cita.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'â',
+            tracto: viaje.tractos?.numero_economico || viaje.tracto_numero || '—',
+            eta: eta ? eta.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
+            cita: cita ? cita.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
             diferencia: diffMin,
             estadoViaje: viaje.estado || 'programado',
             semaforo: estadoToSemaforo(viaje.estado || 'programado'),
@@ -211,7 +211,7 @@ export default function TorreControl(): ReactElement {
   const viajesColumns = [
     { key: 'folio', label: 'Folio' },
     { key: 'cliente', label: 'Cliente' },
-    { key: 'ruta', label: 'Origen â Destino' },
+    { key: 'ruta', label: 'Origen → Destino' },
     { key: 'tracto', label: 'Tracto' },
     { key: 'eta', label: 'ETA' },
     { key: 'cita', label: 'Cita' },
@@ -230,7 +230,7 @@ export default function TorreControl(): ReactElement {
       align: 'center' as const,
       render: (row: Viaje) => (
         <span style={{ color: tokens.colors.textSecondary, fontSize: '13px' }}>
-          {row.kmRuta > 0 ? `${row.kmRuta.toLocaleString()} km` : 'â'}
+          {row.kmRuta > 0 ? `${row.kmRuta.toLocaleString()} km` : '—'}
         </span>
       ),
     },
@@ -243,7 +243,7 @@ export default function TorreControl(): ReactElement {
           color: row.viajesHistoricos > 20 ? tokens.colors.green : row.viajesHistoricos > 5 ? tokens.colors.blue : tokens.colors.textMuted,
           fontSize: '13px', fontWeight: 600,
         }}>
-          {row.viajesHistoricos > 0 ? row.viajesHistoricos : 'â'}
+          {row.viajesHistoricos > 0 ? row.viajesHistoricos : '—'}
         </span>
       ),
     },
@@ -260,13 +260,13 @@ export default function TorreControl(): ReactElement {
   ]
 
   // Extract unique empresas for filter
-  const empresasUnicas = [...new Set(viajes.map(v => v.cliente).filter(c => c !== 'â'))]
+  const empresasUnicas = [...new Set(viajes.map(v => v.cliente).filter(c => c !== '—'))]
 
   return (
     <ModuleLayout titulo="Torre de Control">
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
-        <KPICard titulo="En TrÃ¡nsito" valor={enTransito} color="green" icono={<Truck size={18} />} />
+        <KPICard titulo="En Tránsito" valor={enTransito} color="green" icono={<Truck size={18} />} />
         <KPICard titulo="En Riesgo" valor={enRiesgo} color="yellow" icono={<AlertTriangle size={18} />} />
         <KPICard titulo="Retrasados" valor={retrasados} color="red" icono={<Clock size={18} />} />
         <KPICard titulo="Programados" valor={programados} color="primary" icono={<CheckCircle2 size={18} />} />
@@ -289,7 +289,7 @@ export default function TorreControl(): ReactElement {
           value={filtroEstado}
           onChange={(val) => setFiltroEstado(val)}
           options={[
-            { value: 'en_transito', label: 'En TrÃ¡nsito' },
+            { value: 'en_transito', label: 'En Tránsito' },
             { value: 'en_riesgo', label: 'En Riesgo' },
             { value: 'retrasado', label: 'Retrasado' },
             { value: 'programado', label: 'Programado' },
@@ -316,7 +316,7 @@ export default function TorreControl(): ReactElement {
           <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
             <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
             <p style={{ fontSize: '14px', marginTop: '4px' }}>
-              {viajes.length > 0 ? 'No hay viajes que coincidan con los filtros' : 'Los datos se cargarÃ¡n cuando estÃ©n disponibles en el sistema'}
+              {viajes.length > 0 ? 'No hay viajes que coincidan con los filtros' : 'Los datos se cargarán cuando estén disponibles en el sistema'}
             </p>
           </div>
         ) : (
