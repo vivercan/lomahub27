@@ -81,7 +81,7 @@ interface Briefing {
 
 const formatSpanishDate = (dateString: string): string => {
   const date = new Date(dateString);
-  const days = ['Domingo', 'Lunes', 'Martes', 'MiÃ©rcoles', 'Jueves', 'Viernes', 'SÃ¡bado'];
+  const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
   const months = [
     'Enero',
     'Febrero',
@@ -129,13 +129,13 @@ const getPriorityColor = (prioridad: string): string => {
 const getPriorityBadgeEmoji = (prioridad: string): string => {
   switch (prioridad) {
     case 'alta':
-      return 'ð´';
+      return '🔴';
     case 'media':
-      return 'ð¡';
+      return '🟡';
     case 'baja':
-      return 'ð¢';
+      return '🟢';
     default:
-      return 'âª';
+      return '⚪';
   }
 };
 
@@ -175,7 +175,7 @@ const MetricCard: React.FC<{ label: string; value: number | undefined; format?: 
   value,
   format = 'number',
 }) => {
-  let displayValue = 'â';
+  let displayValue = '—';
   if (value !== undefined && value !== null) {
     if (format === 'currency') {
       displayValue = formatCurrency(value);
@@ -348,7 +348,7 @@ const PendienteCard: React.FC<{ pendiente: Pendiente; index: number }> = ({ pend
           {pendiente.descripcion && (
             <div style={{ marginBottom: '20px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.50)', marginBottom: '8px', textTransform: 'uppercase' }}>
-                DescripciÃ³n
+                Descripción
               </div>
               <div style={{ fontSize: '14px', color: 'rgba(15, 23, 42, 0.75)', lineHeight: '1.6' }}>
                 {pendiente.descripcion}
@@ -359,7 +359,7 @@ const PendienteCard: React.FC<{ pendiente: Pendiente; index: number }> = ({ pend
           {pendiente.accion_sugerida && (
             <div style={{ marginBottom: '20px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.50)', marginBottom: '8px', textTransform: 'uppercase' }}>
-                AcciÃ³n Sugerida
+                Acción Sugerida
               </div>
               <div style={{ fontSize: '14px', color: 'rgba(15, 23, 42, 0.75)', lineHeight: '1.6' }}>
                 {pendiente.accion_sugerida}
@@ -500,7 +500,7 @@ const TimelineSection: React.FC<{ timeline: TimelineEntry[] }> = ({ timeline }) 
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <Clock size={20} style={{ color: 'rgba(15, 23, 42, 0.55)' }} />
-          <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.87)' }}>Cronograma del DÃ­a</div>
+          <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.87)' }}>Cronograma del Día</div>
         </div>
         {isExpanded ? (
           <ChevronUp size={24} style={{ color: 'rgba(15, 23, 42, 0.35)' }} />
@@ -598,7 +598,7 @@ const CierreDiaSection: React.FC<{ cierreDia: CierreDia }> = ({ cierreDia }) => 
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <CheckCircle2 size={20} style={{ color: '#22c55e' }} />
-              <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.87)' }}>Lo que se logrÃ³ hoy</div>
+              <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.87)' }}>Lo que se logró hoy</div>
             </div>
             {expandedLogros ? (
               <ChevronUp size={24} style={{ color: 'rgba(15, 23, 42, 0.35)' }} />
@@ -618,7 +618,7 @@ const CierreDiaSection: React.FC<{ cierreDia: CierreDia }> = ({ cierreDia }) => 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {cierreDia.logros?.map((logro, index) => (
                   <div key={index} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                    <span style={{ fontSize: '18px', marginTop: '2px', flexShrink: 0 }}>â</span>
+                    <span style={{ fontSize: '18px', marginTop: '2px', flexShrink: 0 }}>✓</span>
                     <div style={{ fontSize: '14px', color: 'rgba(15, 23, 42, 0.75)', lineHeight: '1.6' }}>
                       {logro}
                     </div>
@@ -653,7 +653,7 @@ const CierreDiaSection: React.FC<{ cierreDia: CierreDia }> = ({ cierreDia }) => 
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <AlertTriangle size={20} style={{ color: '#f97316' }} />
-              <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.87)' }}>Pendiente para maÃ±ana</div>
+              <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.87)' }}>Pendiente para mañana</div>
             </div>
             {expandedPendientes ? (
               <ChevronUp size={24} style={{ color: 'rgba(15, 23, 42, 0.35)' }} />
@@ -673,7 +673,7 @@ const CierreDiaSection: React.FC<{ cierreDia: CierreDia }> = ({ cierreDia }) => 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {cierreDia.pendientes_manana?.map((pendiente, index) => (
                   <div key={index} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                    <span style={{ fontSize: '18px', marginTop: '2px', flexShrink: 0 }}>â</span>
+                    <span style={{ fontSize: '18px', marginTop: '2px', flexShrink: 0 }}>◆</span>
                     <div style={{ fontSize: '14px', color: 'rgba(15, 23, 42, 0.75)', lineHeight: '1.6' }}>
                       {pendiente}
                     </div>
@@ -700,7 +700,7 @@ const BriefingChiefOfStaff: React.FC = () => {
   useEffect(() => {
     const fetchBriefing = async () => {
       if (!id || !token) {
-        setError('ParÃ¡metros invÃ¡lidos. Se requiere ID y token.');
+        setError('Parámetros inválidos. Se requiere ID y token.');
         setLoading(false);
         return;
       }
@@ -714,7 +714,7 @@ const BriefingChiefOfStaff: React.FC = () => {
           .single();
 
         if (fetchError) {
-          setError('Briefing no encontrado o token invÃ¡lido.');
+          setError('Briefing no encontrado o token inválido.');
           setLoading(false);
           return;
         }
@@ -728,7 +728,7 @@ const BriefingChiefOfStaff: React.FC = () => {
         setBriefing(data as Briefing);
         setLoading(false);
       } catch (err) {
-        setError('Error al cargar el briefing. Intenta mÃ¡s tarde.');
+        setError('Error al cargar el briefing. Intenta más tarde.');
         setLoading(false);
       }
     };
@@ -749,7 +749,7 @@ const BriefingChiefOfStaff: React.FC = () => {
     return (priorityOrder[a.prioridad] ?? 3) - (priorityOrder[b.prioridad] ?? 3);
   });
 
-  const briefingType = briefing.tipo === 'morning' ? 'Briefing Matutino' : 'Cierre del DÃ­a';
+  const briefingType = briefing.tipo === 'morning' ? 'Briefing Matutino' : 'Cierre del Día';
 
   return (
     <ModuleLayout titulo="Briefing Chief of Staff">
@@ -834,7 +834,7 @@ const BriefingChiefOfStaff: React.FC = () => {
 
         <div style={{ marginBottom: '24px' }}>
           <div style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(15, 23, 42, 0.50)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            MÃ©tricas Clave
+            Métricas Clave
           </div>
           <div
             style={{
@@ -847,8 +847,8 @@ const BriefingChiefOfStaff: React.FC = () => {
             <MetricCard label="Cotizaciones Enviadas" value={briefing.metricas?.cotizaciones_enviadas} />
             <MetricCard label="Leads Nuevos" value={briefing.metricas?.leads_nuevos} />
             <MetricCard label="Leads Activos" value={briefing.metricas?.leads_activos} />
-            <MetricCard label="Viajes en TrÃ¡nsito" value={briefing.metricas?.viajes_en_transito} />
-            <MetricCard label="UtilizaciÃ³n Flota" value={briefing.metricas?.utilizacion_flota_pct} format="percentage" />
+            <MetricCard label="Viajes en Tránsito" value={briefing.metricas?.viajes_en_transito} />
+            <MetricCard label="Utilización Flota" value={briefing.metricas?.utilizacion_flota_pct} format="percentage" />
             <MetricCard label="Cartera Vencida" value={briefing.metricas?.cartera_vencida} format="currency" />
             <MetricCard label="Incidencias Abiertas" value={briefing.metricas?.incidencias_abiertas} />
             <MetricCard label="Mensajes WhatsApp" value={briefing.metricas?.whatsapp_mensajes} />
@@ -918,7 +918,7 @@ const BriefingChiefOfStaff: React.FC = () => {
               color: 'rgba(15, 23, 42, 0.35)',
             }}
           >
-            AI Chief of Staff â¢ LomaHUB27 â¢ TROB
+            AI Chief of Staff • LomaHUB27 • TROB
           </div>
         </div>
       </div>
