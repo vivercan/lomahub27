@@ -56,7 +56,7 @@ Deno.serve(async (_req) => {
           `<tr><td style="padding:6px 12px;border-bottom:1px solid #eee">${l.empresa}</td><td style="padding:6px 12px;border-bottom:1px solid #eee">${l.ejecutivo_anterior}</td><td style="padding:6px 12px;border-bottom:1px solid #eee">${l.dias}d</td></tr>`
         ).join('')
 
-        await fetch('https://api.resend.com/emails', {
+        const resEmail = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -66,6 +66,10 @@ Deno.serve(async (_req) => {
             html: `<h2>Leads liberados por inactividad (>${diasMax} dias)</h2><table style="border-collapse:collapse;width:100%"><tr style="background:#0B1220;color:white"><th style="padding:8px 12px;text-align:left">Lead</th><th style="padding:8px 12px;text-align:left">Ejecutivo</th><th style="padding:8px 12px;text-align:left">Dias</th></tr>${rows}</table><p style="color:#666;font-size:13px">Disponibles para reasignacion.</p>`,
           }),
         })
+        if (!resEmail.ok) {
+          const errBody = await resEmail.text()
+          console.error('anti-acaparamiento Resend error:', resEmail.status, errBody)
+        }
       }
     }
 
