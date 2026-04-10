@@ -29,7 +29,7 @@ Deno.serve(async (_req) => {
       if (!cliente.contacto_email) continue
       try {
         if (RESEND_API_KEY) {
-          await fetch('https://api.resend.com/emails', {
+          const resEmail = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -39,6 +39,10 @@ Deno.serve(async (_req) => {
               html: `<div style="font-family:Montserrat,sans-serif;max-width:600px;margin:0 auto;padding:40px 20px"><h1 style="color:#E8611A">¡Feliz Cumpleaños! 🎉</h1><p>Estimado(a) <strong>${cliente.contacto_nombre}</strong>,</p><p>En nombre de todo el equipo de TROB / WExpress, queremos desearle un muy feliz cumpleaños. Agradecemos su confianza.</p><p style="color:#666;margin-top:30px">Con los mejores deseos,<br/><strong>Equipo LomaHUB27</strong></p></div>`,
             }),
           })
+          if (!resEmail.ok) {
+            const errBody = await resEmail.text()
+            console.error('felicitaciones-cumpleanos Resend error:', resEmail.status, errBody)
+          }
         }
         enviados.push(cliente.contacto_nombre || cliente.razon_social)
       } catch (e) {
@@ -51,7 +55,7 @@ Deno.serve(async (_req) => {
       .from('usuarios_autorizados').select('email, nombre').in('rol', ['cs', 'admin', 'superadmin'])
 
     if (enviados.length > 0 && RESEND_API_KEY && csTeam?.length) {
-      await fetch('https://api.resend.com/emails', {
+      const resEmail = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -61,6 +65,10 @@ Deno.serve(async (_req) => {
           html: `<h2>Clientes que cumplen años hoy (${dia}/${mes}):</h2><ul>${enviados.map(n => `<li>${n}</li>`).join('')}</ul><p>Se les envió felicitación automática.</p>`,
         }),
       })
+      if (!resEmail.ok) {
+        const errBody = await resEmail.text()
+        console.error('felicitaciones-cumpleanos Resend error:', resEmail.status, errBody)
+      }
     }
 
     await supabase.from('logs_sistema').insert({
