@@ -24,12 +24,12 @@ interface DocumentActivity {
 }
 
 const DOCUMENT_TYPES = [
-  { tipo: 'CSF', label: 'Constancia de Situación Fiscal', required: true },
-  { tipo: 'INE', label: 'Identificación (INE)', required: true },
+  { tipo: 'CSF', label: 'Constancia de SituaciÃ³n Fiscal', required: true },
+  { tipo: 'INE', label: 'IdentificaciÃ³n (INE)', required: true },
   { tipo: 'Acta', label: 'Acta Constitutiva', required: true },
   { tipo: 'Poder', label: 'Poder Notarial', required: true },
   { tipo: 'Comprobante', label: 'Comprobante de Domicilio', required: true },
-  { tipo: 'Caratula', label: 'Carátula Bancaria', required: true },
+  { tipo: 'Caratula', label: 'CarÃ¡tula Bancaria', required: true },
 ]
 
 const STATUS_CONFIG = {
@@ -37,31 +37,31 @@ const STATUS_CONFIG = {
     label: 'Pendiente',
     color: tokens.textSecondary,
     bgColor: '#2A2A36',
-    icon: '⏳',
+    icon: 'â³',
   },
   subido: {
     label: 'Subido',
     color: tokens.primary,
     bgColor: 'rgba(59, 108, 231, 0.1)',
-    icon: '📤',
+    icon: 'ð¤',
   },
   en_revision: {
-    label: 'En Revisión',
+    label: 'En RevisiÃ³n',
     color: tokens.yellow,
     bgColor: 'rgba(184, 134, 11, 0.1)',
-    icon: '👁️',
+    icon: 'ðï¸',
   },
   aprobado: {
     label: 'Aprobado',
     color: tokens.green,
     bgColor: 'rgba(13, 150, 104, 0.1)',
-    icon: '✓',
+    icon: 'â',
   },
   rechazado: {
     label: 'Rechazado',
     color: tokens.red,
     bgColor: 'rgba(197, 48, 48, 0.1)',
-    icon: '✕',
+    icon: 'â',
   },
 }
 
@@ -114,8 +114,7 @@ export default function PortalDocumentosStatus() {
       )
       .subscribe()
 
-    return (
-    <ModuleLayout titulo="Portal de Documentos" subtitulo="Documentos del cliente">) => {
+    return () => {
       subscription.unsubscribe()
     }
   }, [clienteId])
@@ -282,7 +281,7 @@ export default function PortalDocumentosStatus() {
         }}
       >
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>â³</div>
           <div>Cargando documentos...</div>
         </div>
       </div>
@@ -412,7 +411,7 @@ export default function PortalDocumentosStatus() {
               fontSize: '0.95rem',
             }}
           >
-            ✓ {success}
+            â {success}
           </div>
         )}
 
@@ -486,7 +485,7 @@ export default function PortalDocumentosStatus() {
                       {config.label}
                     </div>
                     <span style={{ color: tokens.textSecondary, fontSize: '1.2rem' }}>
-                      {isExpanded ? '▼' : '▶'}
+                      {isExpanded ? 'â¼' : 'â¶'}
                     </span>
                   </div>
                 </div>
@@ -550,7 +549,7 @@ export default function PortalDocumentosStatus() {
                                 e.currentTarget.style.color = tokens.textPrimary
                               }}
                             >
-                              📁 Seleccionar archivo
+                              ð Seleccionar archivo
                             </label>
 
                             <button
@@ -583,9 +582,9 @@ export default function PortalDocumentosStatus() {
                               }}
                               onMouseLeave={(e) => {
                                 e.currentTarget.style.opacity = '1'
-                              }}
+                               }}
                             >
-                              {uploadingDocType === docDef.tipo ? '⏳ Subiendo...' : '✓ Subir'}
+                              {uploadingDocType === docDef.tipo ? 'â³ Subiendo...' : 'â Subir'}
                             </button>
                           </div>
                         )}
@@ -624,7 +623,7 @@ export default function PortalDocumentosStatus() {
                         }}
                       >
                         <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.red }}>
-                          ⚠️ Motivo del rechazo
+                          â ï¸ Motivo del rechazo
                         </p>
                         <p style={{ margin: 0, color: tokens.textPrimary, fontSize: '0.95rem' }}>
                           {docStatus.razon_rechazo}
@@ -643,7 +642,7 @@ export default function PortalDocumentosStatus() {
                         }}
                       >
                         <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.textPrimary }}>
-                          📄 Archivo actual
+                          ð Archivo actual
                         </p>
                         <p style={{ margin: 0, color: tokens.textSecondary, fontSize: '0.9rem' }}>
                           {docStatus.nombre_archivo}
@@ -655,7 +654,7 @@ export default function PortalDocumentosStatus() {
                     {docActivities.length > 0 && (
                       <div style={{ marginTop: '1.5rem' }}>
                         <p style={{ margin: '0 0 1rem 0', fontWeight: 500, color: tokens.textPrimary }}>
-                          ⏱️ Historial
+                          â±ï¸ Historial
                         </p>
                         <div
                           style={{
@@ -666,10 +665,10 @@ export default function PortalDocumentosStatus() {
                         >
                           {docActivities.map((activity, idx) => {
                             const actConfig = {
-                              subido: { icon: '📤', label: 'Archivo subido' },
-                              revisado: { icon: '👁️', label: 'En revisión' },
-                              aprobado: { icon: '✓', label: 'Aprobado' },
-                              rechazado: { icon: '✕', label: 'Rechazado' },
+                              subido: { icon: 'ð¤', label: 'Archivo subido' },
+                              revisado: { icon: 'ðï¸', label: 'En revisiÃ³n' },
+                              aprobado: { icon: 'â', label: 'Aprobado' },
+                              rechazado: { icon: 'â', label: 'Rechazado' },
                             }
                             const actCfg = actConfig[activity.tipo]
 
@@ -680,7 +679,7 @@ export default function PortalDocumentosStatus() {
                                 </p>
                                 <p style={{ margin: '0.25rem 0 0 0', color: tokens.textSecondary, fontSize: '0.8rem' }}>
                                   {activity.fecha}
-                                  {activity.revisado_por && ` • Revisado por: ${activity.revisado_por}`}
+                                  {activity.revisado_por && ` â¢ Revisado por: ${activity.revisado_por}`}
                                 </p>
                               </div>
                             )
@@ -688,88 +687,4 @@ export default function PortalDocumentosStatus() {
                         </div>
                       </div>
                     )}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-
-        {/* Help Footer */}
-        <div
-          style={{
-            backgroundColor: tokens.bgCard,
-            border: `1px solid ${tokens.border}`,
-            borderRadius: '8px',
-            padding: '1.5rem',
-            color: tokens.textSecondary,
-            fontSize: '0.9rem',
-            marginTop: '2rem',
-          }}
-        >
-          <p style={{ margin: '0 0 0.75rem 0', fontWeight: 500 }}>
-            💡 ¿Necesitas ayuda?
-          </p>
-          <ul
-            style={{
-              margin: 0,
-              paddingLeft: '1.25rem',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.5rem',
-            }}
-          >
-            <li>Todos los documentos son requeridos para completar el onboarding</li>
-            <li>Los archivos aceptados son: PDF, JPG, PNG, WebP (máximo 10MB)</li>
-            <li>Si tu documento es rechazado, revisa el motivo y vuelve a subirlo</li>
-            <li>El proceso de revisión puede tomar hasta 48 horas</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    </ModuleLayout>
-  )
-}
-
-/*
-SQL Migration for documentos_cliente table:
-
-CREATE TABLE documentos_cliente (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  cliente_id UUID NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
-  tipo_documento TEXT NOT NULL CHECK (tipo_documento IN ('CSF', 'INE', 'Acta', 'Poder', 'Comprobante', 'Caratula')),
-  nombre_archivo TEXT NOT NULL,
-  storage_path TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pendiente' CHECK (status IN ('pendiente', 'subido', 'en_revision', 'aprobado', 'rechazado')),
-  razon_rechazo TEXT,
-  revisado_por TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  UNIQUE(cliente_id, tipo_documento)
-);
-
-CREATE INDEX idx_documentos_cliente_id ON documentos_cliente(cliente_id);
-CREATE INDEX idx_documentos_status ON documentos_cliente(status);
-CREATE INDEX idx_documentos_created_at ON documentos_cliente(created_at);
-
--- Enable RLS
-ALTER TABLE documentos_cliente ENABLE ROW LEVEL SECURITY;
-
--- RLS Policy: Clientes can view and modify their own documents
-CREATE POLICY "Clients can view own documents" ON documentos_cliente
-  FOR SELECT USING (cliente_id = auth.uid());
-
-CREATE POLICY "Clients can upload documents" ON documentos_cliente
-  FOR INSERT WITH CHECK (cliente_id = auth.uid());
-
-CREATE POLICY "Clients can update own documents" ON documentos_cliente
-  FOR UPDATE USING (cliente_id = auth.uid());
-
--- Admin policy: Admins can view, update status
-CREATE POLICY "Admins can manage documents" ON documentos_cliente
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM usuarios WHERE id = auth.uid() AND rol = 'admin'
-    )
-  );
-*/
+ÂöFcà¢Ð¢ÂöFcà¢¢ÒÐ¢ÂöFcà ¢²ò¢VÇfö÷FW"¢÷Ð¢ÆF`¢7GÆS×·°¢&6¶w&÷VæD6öÆ÷#¢Fö¶Vç2æ&t6&BÀ¢&÷&FW#¢6öÆBG·Fö¶Vç2æ&÷&FW'ÖÀ¢&÷&FW%&FW3¢srÀ¢FFæs¢sãW&VÒrÀ¢6öÆ÷#¢Fö¶Vç2çFWE6V6öæF'À¢föçE6¦S¢sã&VÒrÀ¢Ö&våF÷¢s'&VÒrÀ¢×Ð¢à¢Ç7GÆS×·²Ö&vã¢sãsW&VÒrÂföçEvVvC¢S×Óà¢	ù*+ôæV6W6F2VFð¢Â÷à¢ÇVÀ¢7GÆS×·°¢Ö&vã¢À¢FFætÆVgC¢sã#W&VÒrÀ¢F7Æ¢vfÆWrÀ¢fÆWF&V7Föã¢v6öÇVÖârÀ¢v¢sãW&VÒrÀ¢×Ð¢à¢ÆÆåFöF÷2Æ÷2Fö7VÖVçF÷26öâ&WVW&F÷2&6ö×ÆWF"VÂöæ&ö&FæsÂöÆà¢ÆÆäÆ÷2&6f÷26WFF÷26öã¢DbÂ¥rÂärÂvV%Ü:ÖòÔ"ÂöÆà¢ÆÆå6GRFö7VÖVçFòW2&V6¦FòÂ&Wf6VÂÖ÷FfògVVÇfR7V&&ÆóÂöÆà¢ÆÆäVÂ&ö6W6òFR&Wf6;6âVVFRFöÖ"7FC÷&3ÂöÆà¢Â÷VÃà¢ÂöFcà¢ÂöFcà¢ÂöFcà¢§Ð ¢ò ¥5ÂÖw&Föâf÷"Fö7VÖVçF÷5ö6ÆVçFRF&ÆS  ¤5$TDRD$ÄRFö7VÖVçF÷5ö6ÆVçFR¢BUTB$Ô%´UDTdTÅBvVå÷&æFöÕ÷WVBÀ¢6ÆVçFUöBUTBäõBåTÄÂ$TdU$Tä4U26ÆVçFW2BôâDTÄUDR444DRÀ¢FõöFö7VÖVçFòDUBäõBåTÄÂ4T4²FõöFö7VÖVçFòât54brÂtäRrÂt7FrÂuöFW"rÂt6ö×&ö&çFRrÂt6&GVÆrÀ¢æöÖ'&Uö&6fòDUBäõBåTÄÂÀ¢7F÷&vU÷FDUBäõBåTÄÂÀ¢7FGW2DUBäõBåTÄÂDTdTÅBwVæFVçFRr4T4²7FGW2âwVæFVçFRrÂw7V&FòrÂvVå÷&Wf6öârÂv&ö&FòrÂw&V6¦FòrÀ¢&¦öå÷&V6¦òDUBÀ¢&Wf6Fõ÷÷"DUBÀ¢7&VFVEöBDÔU5DÕtDDÔR¤ôäRDTdTÅBæ÷rÀ¢WFFVEöBDÔU5DÕtDDÔR¤ôäRDTdTÅBæ÷rÀ¢TäTR6ÆVçFUöBÂFõöFö7VÖVçFò¢° ¤5$TDRäDUGöFö7VÖVçF÷5ö6ÆVçFUöBôâFö7VÖVçF÷5ö6ÆVçFR6ÆVçFUöB°¤5$TDRäDUGöFö7VÖVçF÷5÷7FGW2ôâFö7VÖVçF÷5ö6ÆVçFR7FGW2°¤5$TDRäDUGöFö7VÖVçF÷5ö7&VFVEöBôâFö7VÖVçF÷5ö6ÆVçFR7&VFVEöB° ¢ÒÒVæ&ÆR$Å0¤ÅDU"D$ÄRFö7VÖVçF÷5ö6ÆVçFRTä$ÄR$õrÄUdTÂ4T5U$E° ¢ÒÒ$Å2öÆ7¢6ÆVçFW26âfWræBÖöFgFV"÷vâFö7VÖVçG0¤5$TDRôÄ5$6ÆVçG26âfWr÷vâFö7VÖVçG2"ôâFö7VÖVçF÷5ö6ÆVçFP¢dõ"4TÄT5BU4är6ÆVçFUöBÒWFçVB° ¤5$TDRôÄ5$6ÆVçG26âWÆöBFö7VÖVçG2"ôâFö7VÖVçF÷5ö6ÆVçFP¢dõ"å4U%BtD4T4²6ÆVçFUöBÒWFçVB° ¤5$TDRôÄ5$6ÆVçG26âWFFR÷vâFö7VÖVçG2"ôâFö7VÖVçF÷5ö6ÆVçFP¢dõ"UDDRU4är6ÆVçFUöBÒWFçVB° ¢ÒÒFÖâöÆ7¢FÖç26âfWrÂWFFR7FGW0¤5$TDRôÄ5$FÖç26âÖævRFö7VÖVçG2"ôâFö7VÖVçF÷5ö6ÆVçFP¢dõ"ÄÂU4är¢U5E2¢4TÄT5Be$ôÒW7V&÷2tU$RBÒWFçVBäB&öÂÒvFÖâp¢¢°¢¢ð
