@@ -5,12 +5,12 @@ import { supabase } from '../../lib/supabase'
 import { Loader2 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   COMERCIAL â Landing Page (alineada al dashboard principal)
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+   COMERCIAL Ã¢ÂÂ Landing Page (alineada al dashboard principal)
    3 cards reales: Oportunidades, Cotizaciones, Programa Semanal
    Iconos Hugeicons watermark anclados bottom-right (mismo patron
    que HomeDashboard / card Configuracion validado por JJ)
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 
 const D = {
   bg: '#E8EBF0',
@@ -23,7 +23,7 @@ const D = {
   subSize: '12px',
 } as const
 
-// ICON SYSTEM â Hugeicons via Iconify CDN (mismo patron HomeDashboard)
+// ICON SYSTEM Ã¢ÂÂ Hugeicons via Iconify CDN (mismo patron HomeDashboard)
 const ICO_OPACITY = 0.22
 const ico = (path: string, style: React.CSSProperties) => (
   <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
@@ -59,8 +59,7 @@ export default function DashboardVentas() {
 
   const fetchKpis = useCallback(async () => {
     try {
-          try {
-    const [leads, cots, prog] = await Promise.all([
+      const [leads, cots, prog] = await Promise.all([
         supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null).not('estado', 'in', '("Cerrado Ganado","Cerrado Perdido")'),
         supabase.from('cotizaciones').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('estado', 'pendiente'),
         supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null).gte('created_at', new Date(Date.now() - 7 * 86400000).toISOString()),
@@ -70,9 +69,10 @@ export default function DashboardVentas() {
         cotizaciones: cots.count ?? 0,
         programa: prog.count ?? 0,
       })
-    } finally { setLoading(false) }
     } catch (e) {
       console.error('KPI fetch error:', e)
+    } finally {
+      setLoading(false)
     }
   }, [])
 
@@ -94,6 +94,14 @@ export default function DashboardVentas() {
     transform: isH ? 'translateY(-3px)' : 'none',
     boxShadow: isH ? '0 6px 20px rgba(0,0,0,0.25)' : '0 2px 8px rgba(0,0,0,0.15)',
   })
+
+  if (loading) return (
+    <ModuleLayout titulo="Comercial" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+        <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: '#1E66F5' }} />
+      </div>
+    </ModuleLayout>
+  )
 
   return (
     <ModuleLayout titulo="Comercial" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
@@ -135,12 +143,4 @@ export default function DashboardVentas() {
       </div>
     </ModuleLayout>
   )
-}  if (loading) return (
-    <ModuleLayout titulo="Comercial" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-        <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: '#1E66F5' }} />
-      </div>
-    </ModuleLayout>
-  )
-
-
+}
