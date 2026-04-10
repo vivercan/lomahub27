@@ -1,5 +1,5 @@
-// Rentabilidad.tsx â V2 â Real financial data from viajes_anodos + tarifas
-// Calculates estimated revenue per tracto using km Ã tarifa lookup
+// Rentabilidad.tsx — V2 — Real financial data from viajes_anodos + tarifas
+// Calculates estimated revenue per tracto using km × tarifa lookup
 // Source: viajes_anodos (ANODOS sync), formatos_venta (km/equipo), tarifas_mx/tarifas_usa
 import { useState, useEffect } from 'react'
 import { DollarSign, TrendingUp, TrendingDown, Truck, RefreshCw, Download } from 'lucide-react'
@@ -14,7 +14,7 @@ import { Badge } from '../../components/ui/Badge'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 
-/* âââ Types âââââââââââââââââââââââââââââââââââââââ */
+/* ─── Types ─────────────────────────────────────── */
 
 interface TarifaMX {
   rango_km_min: number
@@ -52,7 +52,7 @@ interface Resumen {
   kmTotal: number
 }
 
-/* âââ Helpers âââââââââââââââââââââââââââââââââââââ */
+/* ─── Helpers ───────────────────────────────────── */
 
 function getMargenColor(pct: number): string {
   if (pct >= 25) return tokens.colors.green
@@ -98,7 +98,7 @@ function lookupTarifaUSA(km: number, equipo: string, tarifas: TarifaUSA[]): numb
   return fallback ? millas * fallback.tarifa_por_milla : 0
 }
 
-/* âââ Component âââââââââââââââââââââââââââââââââââ */
+/* ─── Component ─────────────────────────────────── */
 
 export default function Rentabilidad() {
   const [loading, setLoading] = useState(false)
@@ -303,7 +303,7 @@ export default function Rentabilidad() {
     (t) => !empresa || t.empresa === empresa
   )
 
-  /* âââ Table Columns âââââââââââââââââââââââââââââ */
+  /* ─── Table Columns ───────────────────────────── */
 
   const columns: Column<TractoDetalle>[] = [
     {
@@ -332,7 +332,7 @@ export default function Rentabilidad() {
       key: 'empresa',
       label: 'Empresa',
       render: (row) => (
-        <Badge color="blue">{row.empresa || 'â'}</Badge>
+        <Badge color="blue">{row.empresa || '—'}</Badge>
       ),
     },
     {
@@ -389,7 +389,7 @@ export default function Rentabilidad() {
     },
     {
       key: 'utilizacion',
-      label: 'UtilizaciÃ³n',
+      label: 'Utilización',
       align: 'center',
       render: (row) => {
         const pct = row.utilizacion
@@ -416,16 +416,16 @@ export default function Rentabilidad() {
       label: 'Moneda',
       align: 'center',
       render: (row) => (
-        <span style={{ color: tokens.colors.textMuted, fontSize: '0.75rem' }}>{row.monedaMix || 'â'}</span>
+        <span style={{ color: tokens.colors.textMuted, fontSize: '0.75rem' }}>{row.monedaMix || '—'}</span>
       ),
     },
   ]
 
-  /* âââ Export CSV âââââââââââââââââââââââââââââââââ */
+  /* ─── Export CSV ───────────────────────────────── */
 
   const handleExportCSV = () => {
     if (!filteredDetalle.length) return
-    const header = 'Tracto,Empresa,Viajes,Km,Ingreso,Costo,Margen,%Margen,UtilizaciÃ³n,Moneda\n'
+    const header = 'Tracto,Empresa,Viajes,Km,Ingreso,Costo,Margen,%Margen,Utilización,Moneda\n'
     const rows = filteredDetalle.map((r) =>
       `${r.tracto},${r.empresa},${r.viajes},${r.kmTotal},${r.ingresoEstimado},${r.costoEstimado},${r.margen},${r.margenPct},${r.utilizacion.toFixed(1)},${r.monedaMix}`
     ).join('\n')
@@ -436,12 +436,12 @@ export default function Rentabilidad() {
     link.click()
   }
 
-  /* âââ Render ââââââââââââââââââââââââââââââââââââ */
+  /* ─── Render ──────────────────────────────────── */
 
   return (
     <ModuleLayout
       titulo="Rentabilidad por Tracto"
-      subtitulo="Ingreso estimado, costo y margen por unidad â datos ANODOS en tiempo real"
+      subtitulo="Ingreso estimado, costo y margen por unidad — datos ANODOS en tiempo real"
       acciones={
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={handleExportCSV} disabled={!filteredDetalle.length}>
@@ -459,7 +459,7 @@ export default function Rentabilidad() {
       <div className="flex flex-wrap gap-4 mb-6 items-end">
         <div>
           <label className="text-xs block mb-1" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-            PerÃ­odo inicio
+            Período inicio
           </label>
           <input
             type="date"
@@ -476,7 +476,7 @@ export default function Rentabilidad() {
         </div>
         <div>
           <label className="text-xs block mb-1" style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-            PerÃ­odo fin
+            Período fin
           </label>
           <input
             type="date"
@@ -541,7 +541,7 @@ export default function Rentabilidad() {
           columns={columns}
           data={filteredDetalle}
           loading={loading}
-          emptyMessage="No hay viajes con tracto asignado en este perÃ­odo"
+          emptyMessage="No hay viajes con tracto asignado en este período"
         />
       </Card>
     </ModuleLayout>
