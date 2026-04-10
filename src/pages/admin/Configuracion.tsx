@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import {
+import { tokens } from '../../lib/tokens'
   Users, BookOpen, SlidersHorizontal, Plug, ShieldCheck
 } from 'lucide-react'
 
@@ -12,8 +13,8 @@ import {
 
 const DASH = {
   bg: '#F3F4F8',
-  fontFamily: "'Montserrat', sans-serif",
-  fontBody: "'Montserrat', sans-serif",
+  fontFamily: tokens.fonts.heading,
+  fontBody: tokens.fonts.body,
   cardBg: 'linear-gradient(180deg, #FFFFFF 0%, #F6F7FA 100%)',
   cardBorder: '1px solid #CDD5E1',
   cardRadius: '20px',
@@ -140,7 +141,7 @@ export default function Configuracion() {
   return (
     <ModuleLayout titulo="Configuración" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=${tokens.fonts.heading}:wght@400;500;600;700;800&display=swap');
       `}</style>
 
       <div style={{
