@@ -27,7 +27,7 @@ import {
   FileCheck,
 } from 'lucide-react'
 
-/* âââ types âââ */
+/* ─── types ─── */
 interface AltaCliente {
   id: string
   token: string
@@ -69,7 +69,7 @@ const ESTADOS: { key: Estado; label: string; color: string; bg: string; icon: Re
   { key: 'RECHAZADA', label: 'Rechazada', color: tokens.colors.red, bg: tokens.colors.redBg, icon: <XCircle size={14} /> },
 ]
 
-/* âââ component âââ */
+/* ─── component ─── */
 export default function AltaClienteWorkflow(): ReactElement {
   const { user } = useAuthContext()
   const [records, setRecords] = useState<AltaCliente[]>([])
@@ -96,7 +96,7 @@ export default function AltaClienteWorkflow(): ReactElement {
     } finally { setLoading(false) }
   }
 
-  /* âââ stats âââ */
+  /* ─── stats ─── */
   const stats = {
     total: records.length,
     enviada: records.filter(r => r.estado === 'ENVIADA').length,
@@ -107,7 +107,7 @@ export default function AltaClienteWorkflow(): ReactElement {
     rechazada: records.filter(r => r.estado === 'RECHAZADA').length,
   }
 
-  /* âââ filter âââ */
+  /* ─── filter ─── */
   const filtered = records.filter(r => {
     if (filtroEstado !== 'todos' && r.estado !== filtroEstado) return false
     if (searchQ) {
@@ -120,7 +120,7 @@ export default function AltaClienteWorkflow(): ReactElement {
     return true
   })
 
-  /* âââ state transition âââ */
+  /* ─── state transition ─── */
   async function transitionState(id: string, newEstado: Estado, notas?: string) {
     setTransitioning(id)
     try {
@@ -134,7 +134,7 @@ export default function AltaClienteWorkflow(): ReactElement {
     } finally { setTransitioning(null) }
   }
 
-  /* âââ doc checker âââ */
+  /* ─── doc checker ─── */
   const docStatus = (url: string | null, valid: boolean | null, label: string) => (
     <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing.xs, padding: `${tokens.spacing.xs} 0` }}>
       {url ? (
@@ -151,7 +151,7 @@ export default function AltaClienteWorkflow(): ReactElement {
     </div>
   )
 
-  /* âââ get next actions based on state âââ */
+  /* ─── get next actions based on state ─── */
   function getActions(r: AltaCliente) {
     const isTransitioning = transitioning === r.id
     const btnStyle = (color: string, bg: string): React.CSSProperties => ({
@@ -178,7 +178,7 @@ export default function AltaClienteWorkflow(): ReactElement {
           <div style={{ display: 'flex', gap: tokens.spacing.sm }}>
             <button style={btnStyle(tokens.colors.green, tokens.colors.greenBg)}
               onClick={() => transitionState(r.id, 'PENDIENTE_CXC')} disabled={isTransitioning}>
-              <CheckCircle2 size={14} /> Aprobar â CxC
+              <CheckCircle2 size={14} /> Aprobar → CxC
             </button>
             <button style={btnStyle(tokens.colors.red, tokens.colors.redBg)}
               onClick={() => setShowRejectModal(r.id)} disabled={isTransitioning}>
@@ -191,7 +191,7 @@ export default function AltaClienteWorkflow(): ReactElement {
           <div style={{ display: 'flex', gap: tokens.spacing.sm }}>
             <button style={btnStyle('#8B5CF6', '#EDE9FE')}
               onClick={() => transitionState(r.id, 'PENDIENTE_CONFIRMACION')} disabled={isTransitioning}>
-              <CheckCircle2 size={14} /> Aprobar â ConfirmaciÃ³n
+              <CheckCircle2 size={14} /> Aprobar → Confirmación
             </button>
             <button style={btnStyle(tokens.colors.red, tokens.colors.redBg)}
               onClick={() => setShowRejectModal(r.id)} disabled={isTransitioning}>
@@ -217,7 +217,7 @@ export default function AltaClienteWorkflow(): ReactElement {
     }
   }
 
-  /* âââ estado badge âââ */
+  /* ─── estado badge ─── */
   function estadoBadge(estado: Estado) {
     const cfg = ESTADOS.find(e => e.key === estado) || ESTADOS[0]
     return (
@@ -232,7 +232,7 @@ export default function AltaClienteWorkflow(): ReactElement {
   }
 
   return (
-    <ModuleLayout titulo="Alta de Clientes â Workflow" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
+    <ModuleLayout titulo="Alta de Clientes — Workflow" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
       <div style={{ padding: tokens.spacing.lg, minHeight: '100vh', background: tokens.colors.bgMain }}>
         {/* KPIs */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
@@ -275,7 +275,7 @@ export default function AltaClienteWorkflow(): ReactElement {
             <Search size={16} color={tokens.colors.textMuted} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
             <input
               type="text" value={searchQ} onChange={e => setSearchQ(e.target.value)}
-              placeholder="RazÃ³n social, RFC..."
+              placeholder="Razón social, RFC..."
               style={{
                 width: '100%', background: tokens.colors.bgCard, color: tokens.colors.textPrimary,
                 border: `1px solid ${tokens.colors.border}`, borderRadius: tokens.radius.md,
@@ -313,14 +313,14 @@ export default function AltaClienteWorkflow(): ReactElement {
                 Sin solicitudes de alta
               </p>
               <p style={{ fontSize: '14px', color: tokens.colors.textMuted, marginTop: tokens.spacing.xs }}>
-                Las solicitudes aparecerÃ¡n aquÃ­ conforme los clientes envÃ­en sus datos
+                Las solicitudes aparecerán aquí conforme los clientes envíen sus datos
               </p>
             </div>
           ) : (
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ background: tokens.colors.bgHover }}>
-                  {['', 'RazÃ³n Social', 'RFC', 'Estado', 'Documentos', 'Firma', 'Fecha', 'Acciones'].map(h => (
+                  {['', 'Razón Social', 'RFC', 'Estado', 'Documentos', 'Firma', 'Fecha', 'Acciones'].map(h => (
                     <th key={h} style={thStyle}>{h}</th>
                   ))}
                 </tr>
@@ -341,10 +341,10 @@ export default function AltaClienteWorkflow(): ReactElement {
                         <td style={tdStyle}>{isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}</td>
                         <td style={tdStyle}>
                           <span style={{ fontWeight: 600, color: tokens.colors.textPrimary }}>
-                            {r.razon_social || 'â'}
+                            {r.razon_social || '—'}
                           </span>
                         </td>
-                        <td style={tdStyle}><span style={{ fontSize: '13px', fontFamily: 'monospace' }}>{r.rfc || 'â'}</span></td>
+                        <td style={tdStyle}><span style={{ fontSize: '13px', fontFamily: 'monospace' }}>{r.rfc || '—'}</span></td>
                         <td style={tdStyle}>{estadoBadge(r.estado)}</td>
                         <td style={tdStyle}>
                           <span style={{
@@ -383,10 +383,10 @@ export default function AltaClienteWorkflow(): ReactElement {
                               <div>
                                 <p style={sectionTitle}>Datos de la Empresa</p>
                                 <div style={detailGrid}>
-                                  <div><strong>RazÃ³n Social:</strong> {r.razon_social || 'â'}</div>
-                                  <div><strong>RFC:</strong> {r.rfc || 'â'}</div>
-                                  <div><strong>DirecciÃ³n Fiscal:</strong> {r.direccion_fiscal || 'â'}</div>
-                                  <div><strong>RÃ©gimen Fiscal:</strong> {r.regimen_fiscal || 'â'}</div>
+                                  <div><strong>Razón Social:</strong> {r.razon_social || '—'}</div>
+                                  <div><strong>RFC:</strong> {r.rfc || '—'}</div>
+                                  <div><strong>Dirección Fiscal:</strong> {r.direccion_fiscal || '—'}</div>
+                                  <div><strong>Régimen Fiscal:</strong> {r.regimen_fiscal || '—'}</div>
                                 </div>
                               </div>
 
@@ -396,7 +396,7 @@ export default function AltaClienteWorkflow(): ReactElement {
                                 {docStatus(r.constancia_fiscal_url, r.constancia_fiscal_valida, 'Constancia Fiscal')}
                                 {docStatus(r.ine_url, r.ine_valida, 'INE Representante')}
                                 {docStatus(r.acta_constitutiva_url, r.acta_valida, 'Acta Constitutiva')}
-                                {docStatus(r.caratula_bancaria_url, r.caratula_valida, 'CarÃ¡tula Bancaria')}
+                                {docStatus(r.caratula_bancaria_url, r.caratula_valida, 'Carátula Bancaria')}
                               </div>
 
                               {/* Col 3: Firma + notas */}
@@ -405,9 +405,9 @@ export default function AltaClienteWorkflow(): ReactElement {
                                 {r.firma_hash ? (
                                   <div style={detailGrid}>
                                     <div><strong>Hash SHA-256:</strong> <span style={{ fontFamily: 'monospace', fontSize: '11px', wordBreak: 'break-all' }}>{r.firma_hash}</span></div>
-                                    <div><strong>IP:</strong> {r.firma_ip || 'â'}</div>
-                                    <div><strong>Fecha:</strong> {r.firma_timestamp ? new Date(r.firma_timestamp).toLocaleString('es-MX') : 'â'}</div>
-                                    <div><strong>User Agent:</strong> <span style={{ fontSize: '11px' }}>{r.firma_user_agent || 'â'}</span></div>
+                                    <div><strong>IP:</strong> {r.firma_ip || '—'}</div>
+                                    <div><strong>Fecha:</strong> {r.firma_timestamp ? new Date(r.firma_timestamp).toLocaleString('es-MX') : '—'}</div>
+                                    <div><strong>User Agent:</strong> <span style={{ fontSize: '11px' }}>{r.firma_user_agent || '—'}</span></div>
                                   </div>
                                 ) : (
                                   <p style={{ fontSize: '13px', color: tokens.colors.textMuted }}>Firma digital pendiente</p>
@@ -427,7 +427,7 @@ export default function AltaClienteWorkflow(): ReactElement {
                                     Token: <span style={{ fontFamily: 'monospace' }}>{r.token}</span>
                                   </p>
                                   <p style={{ fontSize: '11px', color: tokens.colors.textMuted }}>
-                                    Ãltima actualizaciÃ³n: {new Date(r.updated_at).toLocaleString('es-MX')}
+                                    Última actualización: {new Date(r.updated_at).toLocaleString('es-MX')}
                                   </p>
                                 </div>
                               </div>
@@ -458,7 +458,7 @@ export default function AltaClienteWorkflow(): ReactElement {
                 Rechazar Solicitud
               </h3>
               <p style={{ fontSize: '14px', color: tokens.colors.textSecondary, marginBottom: tokens.spacing.md }}>
-                Ingresa el motivo del rechazo. El solicitante recibirÃ¡ esta informaciÃ³n.
+                Ingresa el motivo del rechazo. El solicitante recibirá esta información.
               </p>
               <textarea
                 value={rejectNotes}
@@ -511,7 +511,7 @@ export default function AltaClienteWorkflow(): ReactElement {
   )
 }
 
-/* âââ styles âââ */
+/* ─── styles ─── */
 const thStyle: React.CSSProperties = {
   padding: `${tokens.spacing.sm} ${tokens.spacing.md}`, textAlign: 'left',
   fontSize: '12px', fontWeight: 600, color: tokens.colors.textMuted,
