@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Upload, MapPin, Globe, AlertTriangle, Plus, X, Calculator, FileText, ChevronDown } from 'lucide-react'
+import { Upload, MapPin, Globe, AlertTriangle, Plus, X, Calculator, FileText, ChevronDown , Loader2 } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
 import { Button } from '../../components/ui/Button'
@@ -77,6 +77,7 @@ export default function NuevaCotizacion() {
   const [tarifasUSA, setTarifasUSA] = useState<TarifaUSA[]>([])
   const [cruces, setCruces] = useState<Cruce[]>([])
   const [accesoriales, setAccesoriales] = useState<Accesorial[]>([])
+  const [loading, setLoading] = useState(true)
 
   /* form */
   const [cliente, setCliente] = useState('')
@@ -102,6 +103,7 @@ export default function NuevaCotizacion() {
   /* ── Fetch catalogs on mount ── */
   useEffect(() => {
     async function load() {
+            try {
       const [rCli, rMX, rUSA, rCr, rAcc] = await Promise.all([
         supabase.from('clientes').select('id, razon_social').order('razon_social'),
         supabase.from('tarifas_mx').select('*').eq('activo', true).order('rango_km_min'),
@@ -114,6 +116,7 @@ export default function NuevaCotizacion() {
       if (rUSA.data) setTarifasUSA(rUSA.data as TarifaUSA[])
       if (rCr.data) setCruces(rCr.data as Cruce[])
       if (rAcc.data) setAccesoriales(rAcc.data as Accesorial[])
+      } finally { setLoading(false) }
     }
     load()
   }, [])
@@ -216,6 +219,14 @@ export default function NuevaCotizacion() {
   const showMX = tipoOp && needsTramoMX(op)
   const showCruce = tipoOp && needsCruce(op)
   const showUSA = tipoOp && needsTramoUSA(op)
+
+  if (loading) return (
+    <ModuleLayout titulo="Nueva Cotización" subtitulo="Cotizador Cross-Border">
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+        <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: '#1E66F5' }} />
+      </div>
+    </ModuleLayout>
+  )
 
   return (
     <ModuleLayout titulo="Nueva Cotización" subtitulo="Cotizador cross-border V28">
