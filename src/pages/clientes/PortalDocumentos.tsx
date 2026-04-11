@@ -24,12 +24,12 @@ interface DocumentActivity {
 }
 
 const DOCUMENT_TYPES = [
-  { tipo: 'CSF', label: 'Constancia de SituaciÃ³n Fiscal', required: true },
-  { tipo: 'INE', label: 'IdentificaciÃ³n (INE)', required: true },
+  { tipo: 'CSF', label: 'Constancia de Situación Fiscal', required: true },
+  { tipo: 'INE', label: 'Identificación (INE)', required: true },
   { tipo: 'Acta', label: 'Acta Constitutiva', required: true },
   { tipo: 'Poder', label: 'Poder Notarial', required: true },
   { tipo: 'Comprobante', label: 'Comprobante de Domicilio', required: true },
-  { tipo: 'Caratula', label: 'CarÃ¡tula Bancaria', required: true },
+  { tipo: 'Caratula', label: 'Carátula Bancaria', required: true },
 ]
 
 const STATUS_CONFIG = {
@@ -37,31 +37,31 @@ const STATUS_CONFIG = {
     label: 'Pendiente',
     color: tokens.textSecondary,
     bgColor: '#2A2A36',
-    icon: 'â³',
+    icon: '⏳',
   },
   subido: {
     label: 'Subido',
     color: tokens.primary,
     bgColor: 'rgba(59, 108, 231, 0.1)',
-    icon: 'ð¤',
+    icon: '📤',
   },
   en_revision: {
-    label: 'En RevisiÃ³n',
+    label: 'En Revisión',
     color: tokens.yellow,
     bgColor: 'rgba(184, 134, 11, 0.1)',
-    icon: 'ðï¸',
+    icon: '👁️',
   },
   aprobado: {
     label: 'Aprobado',
     color: tokens.green,
     bgColor: 'rgba(13, 150, 104, 0.1)',
-    icon: 'â',
+    icon: '✓',
   },
   rechazado: {
     label: 'Rechazado',
     color: tokens.red,
     bgColor: 'rgba(197, 48, 48, 0.1)',
-    icon: 'â',
+    icon: '✕',
   },
 }
 
@@ -281,7 +281,7 @@ export default function PortalDocumentosStatus() {
         }}
       >
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>â³</div>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
           <div>Cargando documentos...</div>
         </div>
       </div>
@@ -295,107 +295,480 @@ export default function PortalDocumentosStatus() {
       style={{
         width: '100vw',
         height: '100vh',
-        backgroundColor:ÚÙ[ËÓXZ[ÛÛÜÚÙ[Ë^[X\KÛ[Z[N	Ó[ÛÙ\]Ø[Ë\Ù\YËÝ\ÝÎ	ÚY[Ë\Ü^N	Ù^	Ë^\XÝ[Û	ØÛÛ[[Ë_B[ÏH\ÈËÊXY\
-ßB]Ý[O^ÞÂXÚÙÜÝ[ÛÛÜÚÙ[ËÐØ\Ü\ÝÛN\ÛÛY	ÝÚÙ[ËÜ\XY[Î	Ì[IËZ[ZYÚ	Ù]XÛÛ[	Ë_BHÝ[O^ÞÈX\Ú[	Ì\[H	ËÛÚ^N	Ì[IËÛÙZYÚ
-_OÜ[HØÝ[Y[ÜÂÚOÝ[O^ÞÈX\Ú[ÛÛÜÚÙ[Ë^ÙXÛÛ\KÛÚ^N	ÌM\[IÈ_OÛØ\[È\HÛÛXQ[\\Ø_BÜÙ]ËÊXZ[ÛÛ[
-ßB]Ý[O^ÞÂ^KÝ\ÝÖN	Ø]]ÉËY[Î	Ì[IË\Ü^N	Ù^	Ë^\XÝ[Û	ØÛÛ[[ËØ\	Ì[IË_BËÊÙÜ\ÜÈÙXÝ[Û
-ßB]Ý[O^ÞÂXÚÙÜÝ[ÛÛÜÚÙ[ËÐØ\Ü\\ÛÛY	ÝÚÙ[ËÜ\XÜ\Y]\Î	Î	ËY[Î	ÌK\[IË_B]Ý[O^ÞÂ\Ü^N	Ù^	Ë\ÝYPÛÛ[	ÜÜXÙKX]ÙY[Ë[YÛ][\Î	ØÙ[\ËX\Ú[ÝÛN	Ì\[IË_BÝ[O^ÞÈX\Ú[ÛÚ^N	ÌK[IËÛÙZYÚ
-_OÙÜ\ÛÈHÛØ\[ÂÚÜ[Ý[O^ÞÈÛÛÜÚÙ[Ë^ÙXÛÛ\KÛÚ^N	Ì\[IÈ_OÙØÝ[Y[ÜË[\
-
-HOÝ]\ÈOOH	Ø\ØYÉÊK[ÝKÞÑÐÕSQSÕTTË[Ý^ÉÈ	ßB\ØYÜÂÜÜ[Ù]ËÊÙÜ\ÜÈ\
-ßB]Ý[O^ÞÂÚY	ÌL	IËZYÚ	ÌL	ËXÚÙÜÝ[ÛÛÜÚÙ[ËÜ\Ü\Y]\Î	Í	ËÝ\ÝÎ	ÚY[ËX\Ú[ÝÛN	Ì\[IË_B]Ý[O^ÞÂZYÚ	ÌL	IËÚY	ØÛÛ\][Û\Ù[YÙ_IXXÚÙÜÝ[ÛÛÜÚÙ[ËÜY[[Ú][Û	ÝÚYÜÈX\ÙIË_BÏÙ]]Ý[O^ÞÈ^[YÛ	ØÙ[\ËÛÛÜÚÙ[Ë^ÙXÛÛ\KÛÚ^N	Ì\[IÈ_OØÛÛ\][Û\Ù[YÙ_IHÛÛ\]YÂÙ]Ù]ËÊ[\È
-ßBÙ\Ü	
-]Ý[O^ÞÂXÚÙÜÝ[ÛÛÜ	ÜØJNMË
-
-JIËÜ\\ÛÛY	ÝÚÙ[ËYXÜ\Y]\Î	Î	ËY[Î	Ì\[IËÛÛÜÚÙ[ËYÛÚ^N	ÌM\[IË_BÙ\ÜBÙ]
-_BÜÝXØÙ\ÜÈ	
-]Ý[O^ÞÂXÚÙÜÝ[ÛÛÜ	ÜØJLËMLL
-JIËÜ\\ÛÛY	ÝÚÙ[ËÜY[XÜ\Y]\Î	Î	ËY[Î	Ì\[IËÛÛÜÚÙ[ËÜY[ÛÚ^N	ÌM\[IË_B8§$ÈÜÝXØÙ\ÜßBÙ]
-_BËÊØÝ[Y[È\Ý
-ßB]Ý[O^ÞÈ\Ü^N	Ù^	Ë^\XÝ[Û	ØÛÛ[[ËØ\	Ì\[IÈ_OÑÐÕSQSÕTTËX\
+        backgroundColor: tokens.bgMain,
+        color: tokens.textPrimary,
+        fontFamily: 'Montserrat, sans-serif',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+      lang="es"
+    >
+      {/* Header */}
+      <div
+        style={{
+          backgroundColor: tokens.bgCard,
+          borderBottom: `1px solid ${tokens.border}`,
+          padding: '2rem',
+          minHeight: 'fit-content',
+        }}
+      >
+        <h1 style={{ margin: '0 0 0.5rem 0', fontSize: '2rem', fontWeight: 600 }}>
+          Portal de Documentos
+        </h1>
+        <p style={{ margin: 0, color: tokens.textSecondary, fontSize: '0.95rem' }}>
+          Onboarding para {nombreEmpresa}
+        </p>
+      </div>
 
-ØÑYHOÂÛÛÝØÔÝ]\ÈHÙ]ØÝ[Y[ÔÝ]\ÊØÑY\ÊBÛÛÝÝ]\ÈHØÔÝ]\ÏËÝ]\È	Ü[Y[IÂÛÛÝÛÛYÈHÕUT×ÐÓÓQÖÜÝ]\×BÛÛÝ\Ñ^[YH^[YØÈOOHØÑY\ÂÛÛÝØÐXÝ]]Y\ÈHØÔÝ]\ÈÈXÝ]]Y\ÖÙØÔÝ]\ËYH×H×B]\
-]Ù^O^ÙØÑY\ßBÝ[O^ÞÂXÚÙÜÝ[ÛÛÜÚÙ[ËÐØ\Ü\\ÛÛY	ÝÚÙ[ËÜ\XÜ\Y]\Î	Î	ËÝ\ÝÎ	ÚY[Ë[Ú][Û	Ø[ÈX\ÙIË_BËÊØÝ[Y[XY\
-ßB]ÛÛXÚÏ^Ê
-HOÙ]^[YØÊ\Ñ^[YÈ[ØÑY\ÊBBÝ[O^ÞÂY[Î	ÌK\[IË\Ü^N	Ù^	Ë[YÛ][\Î	ØÙ[\Ë\ÝYPÛÛ[	ÜÜXÙKX]ÙY[ËÝ\ÛÜ	ÜÚ[\ËXÚÙÜÝ[ÛÛÜÚÙ[ËÐØ\Ü\ÝÛN\Ñ^[YÈ\ÛÛY	ÝÚÙ[ËÜ\X	ÛÛIË_B]Ý[O^ÞÈ^H_OÈÝ[O^ÞÈX\Ú[	Ì\[H	ËÛÚ^N	Ì\[IËÛÙZYÚ
-_OÙØÑYX[BÚÏÝ[O^ÞÈX\Ú[ÛÛÜÚÙ[Ë^ÙXÛÛ\KÛÚ^N	Ì
-\[IÈ_OÙØÑY\]Z\Y	Ü[ØÝ[Y[È\]Y\YÏÜÜ[BÜÙ]ËÊÝ]\ÈYÙH
-ßB]Ý[O^ÞÂ\Ü^N	Ù^	Ë[YÛ][\Î	ØÙ[\ËØ\	ÌÍ\[IËX\Ú[Y	Ì\[IË_B]Ý[O^ÞÂXÚÙÜÝ[ÛÛÜÛÛYËÐÛÛÜÛÛÜÛÛYËÛÛÜY[Î	Ì\[H\[IËÜ\Y]\Î	Í	ËÛÚ^N	Ì
-\[IËÛÙZYÚ
-L\Ü^N	Ù^	Ë[YÛ][\Î	ØÙ[\ËØ\	Ì\[IË_BÜ[ØÛÛYËXÛÛOÜÜ[ØÛÛYËX[BÙ]Ü[Ý[O^ÞÈÛÛÜÚÙ[Ë^ÙXÛÛ\KÛÚ^N	ÌK[IÈ_OÚ\Ñ^[YÈ	ø¥¯	È	ø¥­ßBÜÜ[Ù]Ù]ËÊØÝ[Y[]Z[È
-^[Y
-H
-ßBÚ\Ñ^[Y	
-]Ý[O^ÞÂY[Î	ÌK\[IËÜ\Ü\ÛÛY	ÝÚÙ[ËÜ\XXÚÙÜÝ[ÛÛÜØJ
-NKLÌKX_BËÊ[H\ØYÙXÝ[Û
-ßBÊÝ]\ÈOOH	Ü[Y[IÈÝ]\ÈOOH	ÜÝXYÉÈÝ]\ÈOOH	ÜXÚ^YÉÊH	
-]Ý[O^ÞÈX\Ú[ÝÛN	ÌK\[IÈ_OX[Ý[O^ÞÂ\Ü^N	ØØÚÉËX\Ú[ÝÛN	ÌÍ\[IËÛÙZYÚ
-LÛÛÜÚÙ[Ë^[X\K_BÙ[XØÚ[ÛH[\Ú]ÂÛX[Ý\ØY[ÑØÕ\HOOHØÑY\È	
-]Ý[O^ÞÂ\Ü^N	Ù^	ËØ\	ÌÍ\[IËX\Ú[ÝÛN	ÌÍ\[IË_B[]\OH[HY^Ø[KIÙØÑY\ßXBÛÚ[ÙO^Ú[Q[TÙ[XÝBÝ[O^ÞÈ\Ü^N	ÛÛIÈ_BXØÙ\HËYËËÙXÏX[[Ü^Ø[KIÙØÑY\ßXBÝ[O^ÞÂ^KY[Î	ÌÍ\[H\[IËXÚÙÜÝ[ÛÛÜÚÙ[ËÜ\Ü\Y]\Î	Í	ËÝ\ÛÜ	ÜÚ[\Ë^[YÛ	ØÙ[\ËÛÙZYÚ
-L[Ú][Û	Ø[ÈX\ÙIË_BÛ[Ý\ÙQ[\^ÊJHOÂKÝ\[\Ù]Ý[KXÚÙÜÝ[ÛÛÜHÚÙ[Ë[X\BKÝ\[\Ù]Ý[KÛÛÜH	ÝÚ]IÂ_BÛ[Ý\ÙSX]O^ÊJHOÂKÝ\[\Ù]Ý[KXÚÙÜÝ[ÛÛÜHÚÙ[ËÜ\KÝ\[\Ù]Ý[KÛÛÜHÚÙ[Ë^[X\B_B<'äàHÙ[XØÚ[Û\\Ú]ÂÛX[]ÛÛÛXÚÏ^Ê
-HO[U\ØY
-ØÑY\Ê_B\ØXY^È\Ù[XÝY[H\ØY[ÑØÕ\HOOH[BÝ[O^ÞÂY[Î	ÌÍ\[HK\[IËXÚÙÜÝ[ÛÛÜÙ[XÝY[H	\ØY[ÑØÕ\HOOH[ÈÚÙ[ËÜY[ÚÙ[ËÜ\ÛÛÜÙ[XÝY[H	\ØY[ÑØÕ\HOOH[È	ÝÚ]IÂÚÙ[Ë^ÙXÛÛ\KÜ\	ÛÛIËÜ\Y]\Î	Í	ËÝ\ÛÜÙ[XÝY[H	\ØY[ÑØÕ\HOOH[È	ÜÚ[\Â	ÛÝX[ÝÙY	ËÛÙZYÚ
-LÛ[Z[N	Ó[ÛÙ\]Ø[Ë\Ù\YË[Ú][Û	Ø[ÈX\ÙIË_BÛ[Ý\ÙQ[\^ÊJHOÂY
-Ù[XÝY[H	\ØY[ÑØÕ\HOOH[
-HÂKÝ\[\Ù]Ý[KÜXÚ]HH	ÌIÂB_BÛ[Ý\ÙSX]O^ÊJHOÂKÝ\[\Ù]Ý[KÜXÚ]HH	ÌIÂ_BÝ\ØY[ÑØÕ\HOOHØÑY\ÈÈ	ø£ìÈÝXY[ËÈ	ø§$ÈÝX\ßBØ]ÛÙ]
-_BÝ\ØY[ÑØÕ\HOOHØÑY\È	
-]Ý[O^ÞÂY[Î	Ì\[IËXÚÙÜÝ[ÛÛÜÚÙ[ËÜ\Ü\Y]\Î	Í	Ë^[YÛ	ØÙ[\ËÛÛÜÚÙ[Ë^ÙXÛÛ\K_BÝXY[È\Ú]ËÙ]
-_BÜÙ[XÝY[H	\ØY[ÑØÕ\HOOHØÑY\È	
-Ý[O^ÞÈX\Ú[	Ì\[H	ËÛÛÜÚÙ[Ë^ÙXÛÛ\KÛÚ^N	Ì
-\[IÈ_O\Ú]ÈÙ[XØÚ[ÛYÎÜÙ[XÝY[K[Y_BÜ
-_BÙ]
-_BËÊZXÝ[ÛX\ÛÛ
-ßBÜÝ]\ÈOOH	ÜXÚ^YÉÈ	ØÔÝ]\ÏË^ÛÜXÚ^È	
-]Ý[O^ÞÂXÚÙÜÝ[ÛÛÜ	ÜØJNMË
-
-JIËÜ\\ÛÛY	ÝÚÙ[ËYXÜ\Y]\Î	Í	ËY[Î	Ì\[IËX\Ú[ÝÛN	Ì\[IË_BÝ[O^ÞÈX\Ú[	Ì\[H	ËÛÙZYÚ
-LÛÛÜÚÙ[ËY_O8¦¨;î#È[Ý]È[XÚ^ÂÜÝ[O^ÞÈX\Ú[ÛÛÜÚÙ[Ë^[X\KÛÚ^N	ÌM\[IÈ_OÙØÔÝ]\Ë^ÛÜXÚ^ßBÜÙ]
-_BËÊÝ\[[H[È
-ßBÙØÔÝ]\È	
-]Ý[O^ÞÂXÚÙÜÝ[ÛÛÜÚÙ[ËÜ\Ü\Y]\Î	Í	ËY[Î	Ì\[IËX\Ú[ÝÛN	Ì\[IË_BÝ[O^ÞÈX\Ú[	Ì\[H	ËÛÙZYÚ
-LÛÛÜÚÙ[Ë^[X\H_O<'äá\Ú]ÈXÝX[ÜÝ[O^ÞÈX\Ú[ÛÛÜÚÙ[Ë^ÙXÛÛ\KÛÚ^N	Ì\[IÈ_OÙØÔÝ]\ËÛXWØ\Ú]ßBÜÙ]
-_BËÊ[Y[[H
-ßBÙØÐXÝ]]Y\Ë[Ý	
-]Ý[O^ÞÈX\Ú[Ü	ÌK\[IÈ_OÝ[O^ÞÈX\Ú[	Ì\[H	ËÛÙZYÚ
-LÛÛÜÚÙ[Ë^[X\H_O8£ì{î#È\ÝÜX[Ü]Ý[O^ÞÂ\Ü^N	Ù^	Ë^\XÝ[Û	ØÛÛ[[ËØ\	ÌÍ\[IË_BÙØÐXÝ]]Y\ËX\
+      {/* Main Content */}
+      <div
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '2rem',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '2rem',
+        }}
+      >
+        {/* Progress Section */}
+        <div
+          style={{
+            backgroundColor: tokens.bgCard,
+            border: `1px solid ${tokens.border}`,
+            borderRadius: '8px',
+            padding: '1.5rem',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1rem',
+            }}
+          >
+            <h2 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 600 }}>
+              Progreso de Onboarding
+            </h2>
+            <span style={{ color: tokens.textSecondary, fontSize: '0.9rem' }}>
+              {documentos.filter((d) => d.status === 'aprobado').length}/{DOCUMENT_TYPES.length}{' '}
+              aprobados
+            </span>
+          </div>
 
-XÝ]]KY
-HOÂÛÛÝXÝÛÛYÈHÂÝXYÎÈXÛÛ	ü'äé	ËX[	Ð\Ú]ÈÝXYÉÈK]\ØYÎÈXÛÛ	ü'ä`{î#ÉËX[	Ñ[]\ÚpìÛÈK\ØYÎÈXÛÛ	ø§$ÉËX[	Ð\ØYÉÈKXÚ^YÎÈXÛÛ	ø§%IËX[	ÔXÚ^YÉÈKBÛÛÝXÝÙÈHXÝÛÛYÖØXÝ]]K\×B]\
-]Ù^O^ÚYHÝ[O^ÞÈÛÚ^N	Ì
-\[IÈ_OÝ[O^ÞÈX\Ú[ÛÛÜÚÙ[Ë^[X\H_OØXÝÙËXÛÛHØXÝÙËX[BÜÝ[O^ÞÈX\Ú[	Ì\[H	ËÛÛÜÚÙ[Ë^ÙXÛÛ\KÛÚ^N	Ì[IÈ_OØXÝ]]KXÚ_BØXÝ]]K]\ØY×ÜÜ	8 (]\ØYÈÜ	ØXÝ]]K]\ØY×ÜÜXBÜÙ]
-BJ_BÙ]Ù]
-_BÙ]
-_BÙ]
-BJ_BÙ]ËÊ[ÛÝ\
-ßB]Ý[O^ÞÂXÚÙÜÝ[ÛÛÜÚÙ[ËÐØ\Ü\\ÛÛY	ÝÚÙ[ËÜ\XÜ\Y]\Î	Î	ËY[Î	ÌK\[IËÛÛÜÚÙ[Ë^ÙXÛÛ\KÛÚ^N	Ì\[IËX\Ú[Ü	Ì[IË_BÝ[O^ÞÈX\Ú[	ÌÍ\[H	ËÛÙZYÚ
-L_O<'ä¨H0¯ÓXÙ\Ú]\È^]YOÂÜ[Ý[O^ÞÂX\Ú[Y[ÓY	ÌK\[IË\Ü^N	Ù^	Ë^\XÝ[Û	ØÛÛ[[ËØ\	Ì\[IË_BOÙÜÈÜÈØÝ[Y[ÜÈÛÛ\]Y\YÜÈ\HÛÛ\]\[ÛØ\[ÏÛOOÜÈ\Ú]ÜÈXÙ\YÜÈÛÛËËÙX
-pè^[[ÈLPOÛOOÚHHØÝ[Y[È\ÈXÚ^YË]\ØH[[Ý]ÈHY[HHÝX\ÏÛOO[ØÙ\ÛÈH]\ÚpìÛYYHÛX\\ÝH
-Ü\ÏÛOÝ[Ù]Ù]Ù]
-BBÊÔSZYÜ][ÛÜØÝ[Y[Ü×ØÛY[HXNÔPUHPHØÝ[Y[Ü×ØÛY[H
-YURQSPTHÑVHQUSÙ[Ü[ÛWÝ]ZY
+          {/* Progress Bar */}
+          <div
+            style={{
+              width: '100%',
+              height: '12px',
+              backgroundColor: tokens.border,
+              borderRadius: '6px',
+              overflow: 'hidden',
+              marginBottom: '1rem',
+            }}
+          >
+            <div
+              style={{
+                height: '100%',
+                width: `${completionPercentage}%`,
+                backgroundColor: tokens.green,
+                transition: 'width 0.3s ease',
+              }}
+            />
+          </div>
 
-KÛY[WÚYURQÕSQTSÑTÈÛY[\ÊY
-HÓSUHÐTÐÐQK\×ÙØÝ[Y[ÈVÕSÒPÒÈ
-\×ÙØÝ[Y[ÈS
-	ÐÔÑË	ÒSIË	ÐXÝIË	ÔÙ\Ë	ÐÛÛ\Ø[IË	ÐØ\][IÊJKÛXWØ\Ú]ÈVÕSÝÜYÙWÜ]VÕSÝ]\ÈVÕSQUS	Ü[Y[IÈÒPÒÈ
-Ý]\ÈS
-	Ü[Y[IË	ÜÝXYÉË	Ù[Ü]\Ú[ÛË	Ø\ØYÉË	ÜXÚ^YÉÊJK^ÛÜXÚ^ÈV]\ØY×ÜÜVÜX]YØ]SQTÕSTÒUSQHÓHQUSÝÊ
-K\]YØ]SQTÕSTÒUSQHÓHQUSÝÊ
-KSTUQJÛY[WÚY\×ÙØÝ[Y[ÊBNÂÔPUHSVYÙØÝ[Y[Ü×ØÛY[WÚYÓØÝ[Y[Ü×ØÛY[JÛY[WÚY
-NÂÔPUHSVYÙØÝ[Y[Ü×ÜÝ]\ÈÓØÝ[Y[Ü×ØÛY[JÝ]\ÊNÂÔPUHSVYÙØÝ[Y[Ü×ØÜX]YØ]ÓØÝ[Y[Ü×ØÛY[JÜX]YØ]
-NÂKH[XHÂSTPHØÝ[Y[Ü×ØÛY[HSPHÕÈUSÑPÕTUNÂKHÈÛXÞNÛY[\ÈØ[Y]È[[ÙYHZ\ÝÛØÝ[Y[ÂÔPUHÓPÖHÛY[ÈØ[Y]ÈÝÛØÝ[Y[ÈÓØÝ[Y[Ü×ØÛY[BÔÑSPÕTÒSÈ
-ÛY[WÚYH]]ZY
+          <div style={{ textAlign: 'center', color: tokens.textSecondary, fontSize: '0.9rem' }}>
+            {completionPercentage}% completado
+          </div>
+        </div>
 
-JNÂÔPUHÓPÖHÙ²Â$âôJ¹ÔCÙ×ØÝ[Y[ÈÓØÝ[Y[Ü×ØÛY[BÔSÑTÒUÒPÒÈ
-ÛY[WÚYH]]ZY
+        {/* Alerts */}
+        {error && (
+          <div
+            style={{
+              backgroundColor: 'rgba(197, 48, 48, 0.1)',
+              border: `1px solid ${tokens.red}`,
+              borderRadius: '8px',
+              padding: '1rem',
+              color: tokens.red,
+              fontSize: '0.95rem',
+            }}
+          >
+            {error}
+          </div>
+        )}
 
-JNÂÔPUHÓPÖHÛY[ÈØ[\]HÝÛØÝ[Y[ÈÓØÝ[Y[Ü×ØÛY[BÔTUHTÒSÈ
-ÛY[WÚYH]]ZY
+        {success && (
+          <div
+            style={{
+              backgroundColor: 'rgba(13, 150, 104, 0.1)',
+              border: `1px solid ${tokens.green}`,
+              borderRadius: '8px',
+              padding: '1rem',
+              color: tokens.green,
+              fontSize: '0.95rem',
+            }}
+          >
+            ✓ {success}
+          </div>
+        )}
 
-JNÂKHYZ[ÛXÞNYZ[ÈØ[Y]Ë\]HÝ]\ÂÔPUHÓPÖHYZ[ÈØ[X[YÙHØÝ[Y[ÈÓØÝ[Y[Ü×ØÛY[BÔSTÒSÈ
-VTÕÈ
-ÑSPÕHÓH\ÝX\[ÜÈÒTHYH]]ZY
+        {/* Documents List */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {DOCUMENT_TYPES.map((docDef) => {
+            const docStatus = getDocumentoStatus(docDef.tipo)
+            const status = docStatus?.status || 'pendiente'
+            const config = STATUS_CONFIG[status]
+            const isExpanded = expandedDoc === docDef.tipo
+            const docActivities = docStatus ? activities[docStatus.id] || [] : []
 
-HSÛH	ØYZ[Â
-B
-NÂÂ
+            return (
+              <div
+                key={docDef.tipo}
+                style={{
+                  backgroundColor: tokens.bgCard,
+                  border: `1px solid ${tokens.border}`,
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {/* Document Header */}
+                <div
+                  onClick={() =>
+                    setExpandedDoc(isExpanded ? null : docDef.tipo)
+                  }
+                  style={{
+                    padding: '1.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    backgroundColor: tokens.bgCard,
+                    borderBottom: isExpanded ? `1px solid ${tokens.border}` : 'none',
+                  }}
+                >
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ margin: '0 0 0.25rem 0', fontSize: '1rem', fontWeight: 600 }}>
+                      {docDef.label}
+                    </h3>
+                    <p style={{ margin: 0, color: tokens.textSecondary, fontSize: '0.85rem' }}>
+                      {docDef.required && <span>* Documento requerido</span>}
+                    </p>
+                  </div>
+
+                  {/* Status Badge */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      marginLeft: '1rem',
+                    }}
+                  >
+                    <div
+                      style={{
+                        backgroundColor: config.bgColor,
+                        color: config.color,
+                        padding: '0.5rem 1rem',
+                        borderRadius: '6px',
+                        fontSize: '0.85rem',
+                        fontWeight: 500,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                      }}
+                    >
+                      <span>{config.icon}</span>
+                      {config.label}
+                    </div>
+                    <span style={{ color: tokens.textSecondary, fontSize: '1.2rem' }}>
+                      {isExpanded ? '▼' : '▶'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Document Details (Expanded) */}
+                {isExpanded && (
+                  <div
+                    style={{
+                      padding: '1.5rem',
+                      borderTop: `1px solid ${tokens.border}`,
+                      backgroundColor: `rgba(59, 108, 231, 0.02)`,
+                    }}
+                  >
+                    {/* File Upload Section */}
+                    {(status === 'pendiente' || status === 'subido' || status === 'rechazado') && (
+                      <div style={{ marginBottom: '1.5rem' }}>
+                        <label
+                          style={{
+                            display: 'block',
+                            marginBottom: '0.75rem',
+                            fontWeight: 500,
+                            color: tokens.textPrimary,
+                          }}
+                        >
+                          Selecciona un archivo
+                        </label>
+
+                        {uploadingDocType !== docDef.tipo && (
+                          <div
+                            style={{
+                              display: 'flex',
+                              gap: '0.75rem',
+                              marginBottom: '0.75rem',
+                            }}
+                          >
+                            <input
+                              type="file"
+                              id={`file-${docDef.tipo}`}
+                              onChange={handleFileSelect}
+                              style={{ display: 'none' }}
+                              accept=".pdf,.jpg,.jpeg,.png,.webp"
+                            />
+                            <label
+                              htmlFor={`file-${docDef.tipo}`}
+                              style={{
+                                flex: 1,
+                                padding: '0.75rem 1rem',
+                                backgroundColor: tokens.border,
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                                fontWeight: 500,
+                                transition: 'all 0.2s ease',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = tokens.primary
+                                e.currentTarget.style.color = 'white'
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = tokens.border
+                                e.currentTarget.style.color = tokens.textPrimary
+                              }}
+                            >
+                              📁 Seleccionar archivo
+                            </label>
+
+                            <button
+                              onClick={() => handleUpload(docDef.tipo)}
+                              disabled={!selectedFile || uploadingDocType !== null}
+                              style={{
+                                padding: '0.75rem 1.5rem',
+                                backgroundColor:
+                                  selectedFile && uploadingDocType === null
+                                    ? tokens.green
+                                    : tokens.border,
+                                color:
+                                  selectedFile && uploadingDocType === null
+                                    ? 'white'
+                                    : tokens.textSecondary,
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor:
+                                  selectedFile && uploadingDocType === null
+                                    ? 'pointer'
+                                    : 'not-allowed',
+                                fontWeight: 500,
+                                fontFamily: 'Montserrat, sans-serif',
+                                transition: 'all 0.2s ease',
+                              }}
+                              onMouseEnter={(e) => {
+
+                                                          if (selectedFile && uploadingDocType === null) {
+                                  e.currentTarget.style.opacity = '0.9'
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.opacity = '1'
+                              }}
+                            >
+                              {uploadingDocType === docDef.tipo ? '⏳ Subiendo...' : '✓ Subir'}
+                            </button>
+                          </div>
+                        )}
+
+                        {uploadingDocType === docDef.tipo && (
+                          <div
+                            style={{
+                              padding: '1rem',
+                              backgroundColor: tokens.border,
+                              borderRadius: '6px',
+                              textAlign: 'center',
+                              color: tokens.textSecondary,
+                            }}
+                          >
+                            Subiendo archivo...
+                          </div>
+                        )}
+
+                        {selectedFile && uploadingDocType !== docDef.tipo && (
+                          <p style={{ margin: '0.5rem 0 0 0', color: tokens.textSecondary, fontSize: '0.85rem' }}>
+                            Archivo seleccionado: {selectedFile.name}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Rejection Reason */}
+                    {status === 'rechazado' && docStatus?.razon_rechazo && (
+                      <div
+                        style={{
+                          backgroundColor: 'rgba(197, 48, 48, 0.1)',
+                          border: `1px solid ${tokens.red}`,
+                          borderRadius: '6px',
+                          padding: '1rem',
+                          marginBottom: '1rem',
+                        }}
+                      >
+                        <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.red }}>
+                          ⚠️ Motivo del rechazo
+                        </p>
+                        <p style={{ margin: 0, color: tokens.textPrimary, fontSize: '0.95rem' }}>
+                          {docStatus.razon_rechazo}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Current File Info */}
+                    {docStatus && (
+                      <div
+                        style={{
+                          backgroundColor: tokens.border,
+                          borderRadius: '6px',
+                          padding: '1rem',
+                          marginBottom: '1rem',
+                        }}
+                      >
+                        <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.textPrimary }}>
+                          📄 Archivo actual
+                        </p>
+                        <p style={{ margin: 0, color: tokens.textSecondary, fontSize: '0.9rem' }}>
+                          {docStatus.nombre_archivo}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Timeline */}
+                    {docActivities.length > 0 && (
+                      <div style={{ marginTop: '1.5rem' }}>
+                        <p style={{ margin: '0 0 1rem 0', fontWeight: 500, color: tokens.textPrimary }}>
+                          ⏱️ Historial
+                        </p>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '0.75rem',
+                          }}
+                        >
+                          {docActivities.map((activity, idx) => {
+                            const actConfig = {
+                              subido: { icon: '📤', label: 'Archivo subido' },
+                              revisado: { icon: '👁️', label: 'En revisión' },
+                              aprobado: { icon: '✓', label: 'Aprobado' },
+                              rechazado: { icon: '✕', label: 'Rechazado' },
+                            }
+                            const actCfg = actConfig[activity.tipo]
+
+                            return (
+                              <div key={idx} style={{ fontSize: '0.85rem' }}>
+                                <p style={{ margin: 0, color: tokens.textPrimary }}>
+                                  {actCfg.icon} {actCfg.label}
+                                </p>
+                                <p style={{ margin: '0.25rem 0 0 0', color: tokens.textSecondary, fontSize: '0.8rem' }}>
+                                  {activity.fecha}
+                                  {activity.revisado_por && ` • Revisado por: ${activity.revisado_por}`}
+                                </p>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Help Footer */}
+        <div
+          style={{
+            backgroundColor: tokens.bgCard,
+            border: `1px solid ${tokens.border}`,
+            borderRadius: '8px',
+            padding: '1.5rem',
+            color: tokens.textSecondary,
+            fontSize: '0.9rem',
+            marginTop: '2rem',
+          }}
+        >
+          <p style={{ margin: '0 0 0.75rem 0', fontWeight: 500 }}>
+            💡 ¿Necesitas ayuda?
+          </p>
+          <ul
+            style={{
+              margin: 0,
+              paddingLeft: '1.25rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.5rem',
+            }}
+          >
+            <li>Todos los documentos son requeridos para completar el onboarding</li>
+            <li>Los archivos aceptados son: PDF, JPG, PNG, WebP (máximo 10MB)</li>
+            <li>Si tu documento es rechazado, revisa el motivo y vuelve a subirlo</li>
+            <li>El proceso de revisión puede tomar hasta 48 horas</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/*
+SQL Migration for documentos_cliente table:
+
+CREATE TABLE documentos_cliente (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  cliente_id UUID NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
+  tipo_documento TEXT NOT NULL CHECK (tipo_documento IN ('CSF', 'INE', 'Acta', 'Poder', 'Comprobante', 'Caratula')),
+  nombre_archivo TEXT NOT NULL,
+  storage_path TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pendiente' CHECK (status IN ('pendiente', 'subido', 'en_revision', 'aprobado', 'rechazado')),
+  razon_rechazo TEXT,
+  revisado_por TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  UNIQUE(cliente_id, tipo_documento)
+);
+
+CREATE INDEX idx_documentos_cliente_id ON documentos_cliente(cliente_id);
+CREATE INDEX idx_documentos_status ON documentos_cliente(status);
+CREATE INDEX idx_documentos_created_at ON documentos_cliente(created_at);
+
+-- Enable RLS
+ALTER TABLE documentos_cliente ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policy: Clientes can view and modify their own documents
+CREATE POLICY "Clients can view own documents" ON documentos_cliente
+  FOR SELECT USING (cliente_id = auth.uid());
+
+CREATE POLICY "Clients can upload documents" ON documentos_cliente
+  FOR INSERT WITH CHECK (cliente_id = auth.uid());
+
+CREATE POLICY "Clients can update own documents" ON documentos_cliente
+  FOR UPDATE USING (cliente_id = auth.uid());
+
+-- Admin policy: Admins can view, update status
+CREATE POLICY "Admins can manage documents" ON documentos_cliente
+  FOR ALL USING (
+    EXISTS (
+      SELECT 1 FROM usuarios WHERE id = auth.uid() AND rol = 'admin'
+    )
+  );
+*/
