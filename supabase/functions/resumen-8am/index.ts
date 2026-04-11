@@ -1,4 +1,4 @@
-// Resumen 8AM â Genera briefing operativo diario
+// Resumen 8AM — Genera briefing operativo diario
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const supabase = createClient(
@@ -38,12 +38,12 @@ Deno.serve(async (_req) => {
     if (tractosError) console.error('resumen-8am: Error fetching tractos:', tractosError)
 
     const briefing = [
-      `RESUMEN OPERATIVO â ${new Date().toLocaleDateString('es-MX')}`,
+      `RESUMEN OPERATIVO — ${new Date().toLocaleDateString('es-MX')}`,
       '',
       `FLOTA`,
-      `â¢ Viajes en trÃ¡nsito: ${enTransito}`,
-      `â¢ Retrasados: ${retrasados}`,
-      `â¢ Programados hoy: ${programados}`,
+      `• Viajes en tránsito: ${enTransito}`,
+      `• Retrasados: ${retrasados}`,
+      `• Programados hoy: ${programados}`,
       '',
       `CAJAS SIN PLAN: ${cajasSinPlan?.length || 0}`,
       `TRACTOS DISPONIBLES: ${tractosOciosos?.length || 0}`,
