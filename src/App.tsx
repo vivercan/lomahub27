@@ -64,6 +64,7 @@ import Analisis8020 from './pages/inteligencia/Analisis8020'
 
 // Admin
 import Configuracion from './pages/admin/Configuracion'
+import UsuariosPermisos from './pages/admin/UsuariosPermisos'
 import FunnelVentas from './pages/ventas/FunnelVentas'
 import TicketsQuejas from './pages/servicio/TicketsQuejas'
 import ProgramacionIMPEX from './pages/operaciones/ProgramacionIMPEX'
@@ -478,7 +479,7 @@ function App() {
           {/* ——— Config sub-routes ——— */}
           <Route path="/admin/configuracion/usuarios" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
-              <Configuracion />
+              <UsuariosPermisos />
             </ProtectedRoute>
           } />
           <Route path="/admin/configuracion/catalogos" element={
