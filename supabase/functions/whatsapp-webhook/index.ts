@@ -1,4 +1,4 @@
-// WhatsApp Webhook â Recibe mensajes de WhatsApp Business API
+// WhatsApp Webhook — Recibe mensajes de WhatsApp Business API
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const supabase = createClient(
@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
     }
 
     if (!autorizado) {
-      await enviarMensaje(numeroOrigen, 'Este nÃºmero no estÃ¡ habilitado para consultas. Contacta a tu ejecutivo de cuenta.')
+      await enviarMensaje(numeroOrigen, 'Este número no está habilitado para consultas. Contacta a tu ejecutivo de cuenta.')
       return new Response('OK', { status: 200 })
     }
 
@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
       if (economicoMatch) {
         await responderEstatus(numeroOrigen, economicoMatch[0])
       } else {
-        await enviarMensaje(numeroOrigen, 'Para consultar el estatus de tu carga, envÃ­a el nÃºmero econÃ³mico. Ejemplo: "estatus 8451"')
+        await enviarMensaje(numeroOrigen, 'Para consultar el estatus de tu carga, envía el número económico. Ejemplo: "estatus 8451"')
       }
     } else if (textoLower.includes('supervisor') || textoLower.includes('humano') || textoLower.includes('ejecutivo')) {
       const { error: escError } = await supabase.from('whatsapp_mensajes').insert({
@@ -83,9 +83,9 @@ Deno.serve(async (req) => {
       })
       if (escError) console.error('whatsapp-webhook: Failed to log escalamiento:', escError)
 
-      await enviarMensaje(numeroOrigen, 'Entendido. Te conectarÃ© con un ejecutivo en breve.')
+      await enviarMensaje(numeroOrigen, 'Entendido. Te conectaré con un ejecutivo en breve.')
     } else {
-      await enviarMensaje(numeroOrigen, `Hola ${autorizado.nombre_contacto}! Puedes consultar:\nâ¢ Estatus de carga: envÃ­a el nÃºmero econÃ³mico\nâ¢ Hablar con ejecutivo: escribe "ejecutivo"`)
+      await enviarMensaje(numeroOrigen, `Hola ${autorizado.nombre_contacto}! Puedes consultar:\n• Estatus de carga: envía el número económico\n• Hablar con ejecutivo: escribe "ejecutivo"`)
     }
 
     return new Response('OK', { status: 200 })
@@ -110,22 +110,22 @@ async function responderEstatus(numero: string, economico: string) {
     }
 
     if (!gps) {
-      await enviarMensaje(numero, `No encontrÃ© la unidad ${economico}. Verifica el nÃºmero.`)
+      await enviarMensaje(numero, `No encontré la unidad ${economico}. Verifica el número.`)
       return
     }
 
-    const ubicacion = gps.ubicacion || gps.municipio_geo || 'UbicaciÃ³n desconocida'
+    const ubicacion = gps.ubicacion || gps.municipio_geo || 'Ubicación desconocida'
     const velocidad = gps.velocidad ?? 'N/A'
     const estatus = gps.estatus || 'Desconocido'
     const tiempoActualizacion = gps.ultima_actualizacion
       ? new Date(gps.ultima_actualizacion).toLocaleTimeString('es-MX')
       : 'N/A'
 
-    const msg = `â¢ Unidad: ${economico}\nâ¢ UbicaciÃ³n: ${ubicacion}\nâ¢ Velocidad: ${velocidad} km/h\nâ¢ Estado: ${estatus}\nâ¢ Actualizado: ${tiempoActualizacion}`
+    const msg = `• Unidad: ${economico}\n• Ubicación: ${ubicacion}\n• Velocidad: ${velocidad} km/h\n• Estado: ${estatus}\n• Actualizado: ${tiempoActualizacion}`
     await enviarMensaje(numero, msg)
   } catch (error) {
     console.error('whatsapp-webhook responderEstatus error:', error)
-    await enviarMensaje(numero, 'Error interno al procesar tu consulta. Intenta mÃ¡s tarde.')
+    await enviarMensaje(numero, 'Error interno al procesar tu consulta. Intenta más tarde.')
   }
 }
 
@@ -147,7 +147,7 @@ async function enviarMensaje(to: string, body: string) {
 
     if (!response.ok) {
       const responseBody = await response.text()
-      console.error(`whatsapp-webhook: WhatsApp send failed for ${to}: ${response.status} â ${responseBody}`)
+      console.error(`whatsapp-webhook: WhatsApp send failed for ${to}: ${response.status} — ${responseBody}`)
     }
 
     // Log outgoing message
