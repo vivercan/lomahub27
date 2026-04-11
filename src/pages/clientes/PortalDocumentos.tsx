@@ -291,6 +291,7 @@ export default function PortalDocumentosStatus() {
   const completionPercentage = getCompletionPercentage()
 
   return (
+    <ModuleLayout titulo="Portal de Documentos" subtitulo="Documentos del cliente">
     <div
       style={{
         width: '100vw',
@@ -576,8 +577,7 @@ export default function PortalDocumentosStatus() {
                                 transition: 'all 0.2s ease',
                               }}
                               onMouseEnter={(e) => {
-
-                                                          if (selectedFile && uploadingDocType === null) {
+                                if (selectedFile && uploadingDocType === null) {
                                   e.currentTarget.style.opacity = '0.9'
                                 }
                               }}
@@ -727,6 +727,7 @@ export default function PortalDocumentosStatus() {
         </div>
       </div>
     </div>
+    </ModuleLayout>
   )
 }
 
