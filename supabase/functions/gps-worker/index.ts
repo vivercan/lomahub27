@@ -1,4 +1,4 @@
-// GPS Worker â V38 â PRODUCTION (Batch optimized)
+// GPS Worker — V38 — PRODUCTION (Batch optimized)
 // WideTech SOAP: HistoyDataLastLocationByUser (sLogin, sPassword)
 // Namespace: http://shareservice.co/
 // Response: <Plate id="X" MobileID="Y"><hst><DateTimeGPS/><Latitude/><Longitude/><Speed/><Location/></hst></Plate>
@@ -110,12 +110,12 @@ Deno.serve(async (_req) => {
       velocidad: unit.speed
     }))
 
-    // BATCH UPSERT â one call for all tracking records
+    // BATCH UPSERT — one call for all tracking records
     const { error: trackError, count: trackCount } = await supabase
       .from('gps_tracking')
       .upsert(trackingRows, { onConflict: 'economico', count: 'exact' })
 
-    // BATCH INSERT historial â in chunks of 500 to avoid payload limits
+    // BATCH INSERT historial — in chunks of 500 to avoid payload limits
     let historialInserted = 0
     for (let i = 0; i < historialRows.length; i += 500) {
       const chunk = historialRows.slice(i, i + 500)
@@ -123,7 +123,7 @@ Deno.serve(async (_req) => {
       if (!hError) historialInserted += chunk.length
     }
 
-    // Detect stopped units (quick â runs a single query)
+    // Detect stopped units (quick — runs a single query)
     await detectarUnidadesDetenidas()
 
     return json({
@@ -241,7 +241,7 @@ async function detectarUnidadesDetenidas() {
     viaje_id: v.id,
     tracto_id: v.tracto_id,
     tipo: 'unidad_detenida',
-    descripcion: `Unidad sin movimiento por mÃ¡s de ${umbral} minutos`,
+    descripcion: `Unidad sin movimiento por más de ${umbral} minutos`,
     estado: 'abierta'
   }))
 
