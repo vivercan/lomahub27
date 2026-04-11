@@ -84,7 +84,7 @@ export default function PortalDocumentosStatus() {
     fetchDocumentos()
   }, [clienteId])
 
-  // Real-tim subscription to documentos_cliente table
+  // Real-time subscription to documentos_cliente table
   useEffect(() => {
     if (!clienteId) return
 
@@ -633,4 +633,142 @@ export default function PortalDocumentosStatus() {
                     )}
 
                     {/* Current File Info */}
-                    {docStat
+                    {docStatus && (
+                      <div
+                        style={{
+                          backgroundColor: tokens.border,
+                          borderRadius: '6px',
+                          padding: '1rem',
+                          marginBottom: '1rem',
+                        }}
+                      >
+                        <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.textPrimary }}>
+                          📄 Archivo actual
+                        </p>
+                        <p style={{ margin: 0, color: tokens.textSecondary, fontSize: '0.9rem' }}>
+                          {docStatus.nombre_archivo}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Timeline */}
+                    {docActivities.length > 0 && (
+                      <div style={{ marginTop: '1.5rem' }}>
+                        <p style={{ margin: '0 0 1rem 0', fontWeight: 500, color: tokens.textPrimary }}>
+                          ⏱️ Historial
+                        </p>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '0.75rem',
+                          }}
+                        >
+                          {docActivities.map((activity, idx) => {
+                            const actConfig = {
+                              subido: { icon: '📤', label: 'Archivo subido' },
+                              revisado: { icon: '👁️', label: 'En revisión' },
+                              aprobado: { icon: '✓', label: 'Aprobado' },
+                              rechazado: { icon: '✕', label: 'Rechazado' },
+                            }
+                            const actCfg = actConfig[activity.tipo]
+
+                            return (
+                              <div key={idx} style={{ fontSize: '0.85rem' }}>
+                                <p style={{ margin: 0, color: tokens.textPrimary }}>
+                                  {actCfg.icon} {actCfg.label}
+                                </p>
+                                <p style={{ margin: '0.25rem 0 0 0', color: tokens.textSecondary, fontSize: '0.8rem' }}>
+                                  {activity.fecha}
+                                  {activity.revisado_por && ` • Revisado por: ${activity.revisado_por}`}
+                                </p>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Help Footer */}
+        <div
+          style={{
+            backgroundColor: tokens.bgCard,
+            border: `1px solid ${tokens.border}`,
+            borderRadius: '8px',
+            padding: '1.5rem',
+            color: tokens.textSecondary,
+            fontSize: '0.9rem',
+            marginTop: '2rem',
+          }}
+        >
+          <p style={{ margin: '0 0 0.75rem 0', fontWeight: 500 }}>
+            💡 ¿Necesitas ayuda?
+          </p>
+          <ul
+            style={{
+              margin: 0,
+              paddingLeft: '1.25rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.5rem',
+            }}
+          >
+            <li>Todos los documentos son requeridos para completar el onboarding</li>
+            <li>Los archivos aceptados son: PDF, JPG, PNG, WebP (máximo 10MB)</li>
+            <li>Si tu documento es rechazado, revisa el motivo y vuelve a subirlo</li>
+            <li>El proceso de revisión puede tomar hasta 48 horas</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/*
+SQL Migration for documentos_cliente table:
+
+CREATE TABLE documentos_cliente (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  cliente_id UUID NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
+  tipo_documento TEXT NOT NULL CHECK (tipo_documento IN ('CSF', 'INE', 'Acta', 'Poder', 'Comprobante', 'Caratula')),
+  nombre_archivo TEXT NOT NULL,
+  storage_path TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pendiente' CHECK (status IN ('pendiente', 'subido', 'en_revision', 'aprobado', 'rechazado')),
+  razon_rechazo TEXT,
+  revisado_por TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  UNIQUE(cliente_id, tipo_documento)
+);
+
+CREATE INDEX idx_documentos_cliente_id ON documentos_cliente(cliente_id);
+CREATE INDEX idx_documentos_status ON documentos_cliente(status);
+CREATE INDEX idx_documentos_created_at ON documentos_cliente(created_at);
+
+-- Enable RLS
+ALTER TABLE documentos_cliente ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policy: Clientes can view and modify their own documents
+CREATE POLICY "Clients can view own documents" ON documentos_cliente
+  FOR SELECT USING (cliente_id = auth.uid());
+
+CREATE POLICY "Clients can upload documents" ON documentos_cliente
+  FOR INSERT WITH CHECK (cliente_id = auth.uid());
+
+CREATE POLICY "Clients can update own documents" ON documentos_cliente
+  FOR UPDATE USING (cliente_id = auth.uid());
+
+-- Admin policy: Admins can view, update status
+CREATE POLICY "Admins can manage documents" ON documentos_cliente
+  FOR ALL USING (
+    EXISTS (
+      SELECT 1 FROM usuarios WHERE id = auth.uid() AND rol = 'admin'
+    )
+  );
+*/
