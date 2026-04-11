@@ -24,12 +24,12 @@ interface DocumentActivity {
 }
 
 const DOCUMENT_TYPES = [
-  { tipo: 'CSF', label: 'Constancia de SituaciÃÂÃÂÃÂÃÂ³n Fiscal', required: true },
-  { tipo: 'INE', label: 'IdentificaciÃÂÃÂÃÂÃÂ³n (INE)', required: true },
+  { tipo: 'CSF', label: 'Constancia de SituaciÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³n Fiscal', required: true },
+  { tipo: 'INE', label: 'IdentificaciÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³n (INE)', required: true },
   { tipo: 'Acta', label: 'Acta Constitutiva', required: true },
   { tipo: 'Poder', label: 'Poder Notarial', required: true },
   { tipo: 'Comprobante', label: 'Comprobante de Domicilio', required: true },
-  { tipo: 'Caratula', label: 'CarÃÂÃÂÃÂÃÂ¡tula Bancaria', required: true },
+  { tipo: 'Caratula', label: 'CarÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¡tula Bancaria', required: true },
 ]
 
 const STATUS_CONFIG = {
@@ -37,31 +37,31 @@ const STATUS_CONFIG = {
     label: 'Pendiente',
     color: tokens.textSecondary,
     bgColor: '#2A2A36',
-    icon: 'ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ³',
+    icon: 'ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³',
   },
   subido: {
     label: 'Subido',
     color: tokens.primary,
     bgColor: 'rgba(59, 108, 231, 0.1)',
-    icon: 'ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ¤',
+    icon: 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤',
   },
   en_revision: {
-    label: 'En RevisiÃÂÃÂÃÂÃÂ³n',
+    label: 'En RevisiÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³n',
     color: tokens.yellow,
     bgColor: 'rgba(184, 134, 11, 0.1)',
-    icon: 'ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¸ÃÂÃÂ',
+    icon: 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ',
   },
   aprobado: {
     label: 'Aprobado',
     color: tokens.green,
     bgColor: 'rgba(13, 150, 104, 0.1)',
-    icon: 'ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ',
+    icon: 'ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ',
   },
   rechazado: {
     label: 'Rechazado',
     color: tokens.red,
     bgColor: 'rgba(197, 48, 48, 0.1)',
-    icon: 'ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ',
+    icon: 'ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ',
   },
 }
 
@@ -281,7 +281,7 @@ export default function PortalDocumentosStatus() {
         }}
       >
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ³</div>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³</div>
           <div>Cargando documentos...</div>
         </div>
       </div>
@@ -411,7 +411,7 @@ export default function PortalDocumentosStatus() {
               fontSize: '0.95rem',
             }}
           >
-            ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ {success}
+            ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ {success}
           </div>
         )}
 
@@ -485,7 +485,7 @@ export default function PortalDocumentosStatus() {
                       {config.label}
                     </div>
                     <span style={{ color: tokens.textSecondary, fontSize: '1.2rem' }}>
-                      {isExpanded ? 'ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¼' : 'ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¶'}
+                      {isExpanded ? 'ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼' : 'ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¶'}
                     </span>
                   </div>
                 </div>
@@ -549,7 +549,7 @@ export default function PortalDocumentosStatus() {
                                 e.currentTarget.style.color = tokens.textPrimary
                               }}
                             >
-                              ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ Seleccionar archivo
+                              ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Seleccionar archivo
                             </label>
 
                             <button
@@ -585,7 +585,7 @@ export default function PortalDocumentosStatus() {
                                 e.currentTarget.style.opacity = '1'
                               }}
                             >
-                              {uploadingDocType === docDef.tipo ? 'ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ³ Subiendo...' : 'ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ Subir'}
+                              {uploadingDocType === docDef.tipo ? 'ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³ Subiendo...' : 'ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Subir'}
                             </button>
                           </div>
                         )}
@@ -624,7 +624,7 @@ export default function PortalDocumentosStatus() {
                         }}
                       >
                         <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.red }}>
-                          ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ ÃÂÃÂ¯ÃÂÃÂ¸ÃÂÃÂ Motivo del rechazo
+                          ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂ¯ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ Motivo del rechazo
                         </p>
                         <p style={{ margin: 0, color: tokens.textPrimary, fontSize: '0.95rem' }}>
                           {docStatus.razon_rechazo}
@@ -643,7 +643,7 @@ export default function PortalDocumentosStatus() {
                         }}
                       >
                         <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.textPrimary }}>
-                          ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ Archivo actual
+                          ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Archivo actual
                         </p>
                         <p style={{ margin: 0, color: tokens.textSecondary, fontSize: '0.9rem' }}>
                           {docStatus.nombre_archivo}
@@ -655,7 +655,7 @@ export default function PortalDocumentosStatus() {
                     {docActivities.length > 0 && (
                       <div style={{ marginTop: '1.5rem' }}>
                         <p style={{ margin: '0 0 1rem 0', fontWeight: 500, color: tokens.textPrimary }}>
-                          ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ±ÃÂÃÂ¯ÃÂÃÂ¸ÃÂÃÂ Historial
+                          ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ±ÃÂÃÂÃÂÃÂ¯ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ Historial
                         </p>
                         <div
                           style={{
@@ -666,10 +666,10 @@ export default function PortalDocumentosStatus() {
                         >
                           {docActivities.map((activity, idx) => {
                             const actConfig = {
-                              subido: { icon: 'ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ¤', label: 'Archivo subido' },
-                              revisado: { icon: 'ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¸ÃÂÃÂ', label: 'En revisiÃÂÃÂÃÂÃÂ³n' },
-                              aprobado: { icon: 'ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ', label: 'Aprobado' },
-                              rechazado: { icon: 'ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ', label: 'Rechazado' },
+                              subido: { icon: 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¤', label: 'Archivo subido' },
+                              revisado: { icon: 'ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ', label: 'En revisiÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³n' },
+                              aprobado: { icon: 'ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ', label: 'Aprobado' },
+                              rechazado: { icon: 'ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ', label: 'Rechazado' },
                             }
                             const actCfg = actConfig[activity.tipo]
 
@@ -680,7 +680,7 @@ export default function PortalDocumentosStatus() {
                                 </p>
                                 <p style={{ margin: '0.25rem 0 0 0', color: tokens.textSecondary, fontSize: '0.8rem' }}>
                                   {activity.fecha}
-                                  {activity.revisado_por && ` ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¢ Revisado por: ${activity.revisado_por}`}
+                                  {activity.revisado_por && ` ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ Revisado por: ${activity.revisado_por}`}
                                 </p>
                               </div>
                             )
@@ -708,7 +708,7 @@ export default function PortalDocumentosStatus() {
           }}
         >
           <p style={{ margin: '0 0 0.75rem 0', fontWeight: 500 }}>
-            ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ¡ ÃÂÃÂÃÂÃÂ¿Necesitas ayuda?
+            ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¡ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¿Necesitas ayuda?
           </p>
           <ul
             style={{
@@ -720,9 +720,9 @@ export default function PortalDocumentosStatus() {
             }}
           >
             <li>Todos los documentos son requeridos para completar el onboarding</li>
-            <li>Los archivos aceptados son: PDF, JPG, PNG, WebP (mÃÂÃÂÃÂÃÂ¡ximo 10MB)</li>
+            <li>Los archivos aceptados son: PDF, JPG, PNG, WebP (mÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¡ximo 10MB)</li>
             <li>Si tu documento es rechazado, revisa el motivo y vuelve a subirlo</li>
-            <li>El proceso de revisiÃÂÃÂÃÂÃÂ³n puede tomar hasta 48 horas</li>
+            <li>El proceso de revisiÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³n puede tomar hasta 48 horas</li>
           </ul>
         </div>
       </div>
