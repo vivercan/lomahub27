@@ -7,10 +7,10 @@ import {
   ToggleLeft, ToggleRight
 } from 'lucide-react'
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   USUARIOS & PERMISOS â Panel de Control de Accesos
+/* ═══════════════════════════════════════════════════════════════
+   USUARIOS & PERMISOS — Panel de Control de Accesos
    Tree-based module/submodule permissions + last access
-   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════════════════ */
 
 interface SubModulo {
   id: string
@@ -27,19 +27,19 @@ interface Modulo {
 
 const MODULOS: Modulo[] = [
   {
-    id: 'comercial', label: 'Comercial', icon: 'ð¼',
+    id: 'comercial', label: 'Comercial', icon: '💼',
     submodulos: [
       { id: 'dashboard_ventas', label: 'Dashboard Ventas', ruta: '/ventas' },
       { id: 'leads', label: 'Panel de Oportunidades', ruta: '/ventas/leads' },
       { id: 'nuevo_lead', label: 'Nuevo Lead', ruta: '/ventas/nuevo-lead' },
       { id: 'programa_semanal', label: 'Programa Semanal', ruta: '/ventas/programa-semanal' },
-      { id: 'prospeccion', label: 'ProspecciÃ³n Externa', ruta: '/ventas/prospeccion-externa' },
+      { id: 'prospeccion', label: 'Prospección Externa', ruta: '/ventas/prospeccion-externa' },
       { id: 'cotizador', label: 'Cotizador', ruta: '/cotizador' },
       { id: 'comisiones', label: 'Comisiones', ruta: '/ventas/comisiones' },
     ],
   },
   {
-    id: 'operaciones', label: 'Operaciones', icon: 'ð',
+    id: 'operaciones', label: 'Operaciones', icon: '🚛',
     submodulos: [
       { id: 'torre_control', label: 'Torre de Control', ruta: '/operaciones/torre-control' },
       { id: 'despachos', label: 'Despachos', ruta: '/operaciones/despachos' },
@@ -54,26 +54,26 @@ const MODULOS: Modulo[] = [
     ],
   },
   {
-    id: 'servicio', label: 'Servicio a Clientes', icon: 'ð§',
+    id: 'servicio', label: 'Servicio a Clientes', icon: '🎧',
     submodulos: [
       { id: 'dashboard_cs', label: 'Dashboard CS', ruta: '/servicio/dashboard' },
       { id: 'whatsapp', label: 'WhatsApp', ruta: '/servicio/whatsapp' },
-      { id: 'metricas', label: 'MÃ©tricas', ruta: '/servicio/metricas' },
+      { id: 'metricas', label: 'Métricas', ruta: '/servicio/metricas' },
       { id: 'tickets', label: 'Tickets', ruta: '/servicio/tickets' },
     ],
   },
   {
-    id: 'clientes', label: 'Clientes', icon: 'ð¥',
+    id: 'clientes', label: 'Clientes', icon: '👥',
     submodulos: [
       { id: 'alta_cliente', label: 'Alta de Cliente', ruta: '/clientes/alta' },
-      { id: 'ficha_cliente', label: 'Ficha 360Â°', ruta: '/clientes/ficha' },
+      { id: 'ficha_cliente', label: 'Ficha 360°', ruta: '/clientes/ficha' },
       { id: 'portal_docs', label: 'Portal Documentos', ruta: '/clientes/portal-documentos' },
       { id: 'corporativos', label: 'Corporativos', ruta: '/clientes/corporativos' },
-      { id: 'radiografia', label: 'RadiografÃ­a Financiera', ruta: '/clientes/radiografia' },
+      { id: 'radiografia', label: 'Radiografía Financiera', ruta: '/clientes/radiografia' },
     ],
   },
   {
-    id: 'cobranza', label: 'Cobranza', icon: 'ð°',
+    id: 'cobranza', label: 'Cobranza', icon: '💰',
     submodulos: [
       { id: 'cartera', label: 'Cartera', ruta: '/cxc/cartera' },
       { id: 'aging', label: 'Aging Report', ruta: '/cxc/aging' },
@@ -81,7 +81,7 @@ const MODULOS: Modulo[] = [
     ],
   },
   {
-    id: 'comunicaciones', label: 'Comunicaciones', icon: 'ð¡',
+    id: 'comunicaciones', label: 'Comunicaciones', icon: '📡',
     submodulos: [
       { id: 'chief_of_staff', label: 'Chief of Staff', ruta: '/comunicaciones/chief-of-staff' },
       { id: 'correos', label: 'Correos Automatizados', ruta: '/comunicaciones/correos' },
@@ -89,21 +89,21 @@ const MODULOS: Modulo[] = [
     ],
   },
   {
-    id: 'inteligencia', label: 'Inteligencia', icon: 'ð',
+    id: 'inteligencia', label: 'Inteligencia', icon: '📊',
     submodulos: [
-      { id: 'analisis_8020', label: 'AnÃ¡lisis 80/20', ruta: '/inteligencia/8020' },
+      { id: 'analisis_8020', label: 'Análisis 80/20', ruta: '/inteligencia/8020' },
       { id: 'presupuesto', label: 'Presupuesto Mensual', ruta: '/inteligencia/presupuesto' },
       { id: 'rankings', label: 'Rankings', ruta: '/inteligencia/rankings' },
     ],
   },
   {
-    id: 'configuracion', label: 'ConfiguraciÃ³n', icon: 'âï¸',
+    id: 'configuracion', label: 'Configuración', icon: '⚙️',
     submodulos: [
       { id: 'usuarios', label: 'Usuarios', ruta: '/admin/configuracion/usuarios' },
-      { id: 'catalogos', label: 'CatÃ¡logos', ruta: '/admin/configuracion/catalogos' },
-      { id: 'parametros', label: 'ParÃ¡metros', ruta: '/admin/configuracion/parametros' },
+      { id: 'catalogos', label: 'Catálogos', ruta: '/admin/configuracion/catalogos' },
+      { id: 'parametros', label: 'Parámetros', ruta: '/admin/configuracion/parametros' },
       { id: 'integraciones_cfg', label: 'Integraciones', ruta: '/admin/configuracion/integraciones' },
-      { id: 'auditoria', label: 'AuditorÃ­a', ruta: '/admin/configuracion/auditoria' },
+      { id: 'auditoria', label: 'Auditoría', ruta: '/admin/configuracion/auditoria' },
     ],
   },
 ]
@@ -298,7 +298,7 @@ export default function UsuariosPermisos() {
 
   if (loading) {
     return (
-      <ModuleLayout titulo="Usuarios y Permisos" moduloPadre={{ nombre: 'ConfiguraciÃ³n', ruta: '/admin/configuracion' }}>
+      <ModuleLayout titulo="Usuarios y Permisos" moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}>
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           height: 'calc(100vh - 140px)', fontFamily: 'Montserrat, sans-serif',
@@ -311,12 +311,12 @@ export default function UsuariosPermisos() {
   }
 
   return (
-    <ModuleLayout titulo="Usuarios y Permisos" moduloPadre={{ nombre: 'ConfiguraciÃ³n', ruta: '/admin/configuracion' }}>
+    <ModuleLayout titulo="Usuarios y Permisos" moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}>
       <div style={{
         display: 'flex', height: 'calc(100vh - 140px)', fontFamily: 'Montserrat, sans-serif',
         background: '#F3F4F8', overflow: 'hidden',
       }}>
-        {/* Left Panel â User List */}
+        {/* Left Panel — User List */}
         <div style={{
           width: '320px', minWidth: '320px', background: '#FFFFFF',
           borderRight: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column',
@@ -383,7 +383,7 @@ export default function UsuariosPermisos() {
           </div>
         </div>
 
-        {/* Right Panel â Permissions Tree */}
+        {/* Right Panel — Permissions Tree */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {/* Header */}
           <div style={{
@@ -393,11 +393,11 @@ export default function UsuariosPermisos() {
             <div>
               <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#0F172A' }}>
                 <Shield size={18} style={{ marginRight: '8px', verticalAlign: 'text-bottom' }} />
-                Permisos de MÃ³dulos
+                Permisos de Módulos
               </div>
               {selectedUserData && (
                 <div style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '4px' }}>
-                  {selectedUserData.nombre || selectedUserData.email} â {selectedUserData.rol}
+                  {selectedUserData.nombre || selectedUserData.email} — {selectedUserData.rol}
                 </div>
               )}
             </div>
