@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Search, ChevronDown, Trash2, Filter, Download, Plus, MoreHorizontal,
+  Search, ChevronDown, ChevronLeft, ChevronRight, Trash2, Filter, Download, Plus, MoreHorizontal,
   Loader, Eye, Edit3, Zap, Upload, ArrowUpDown, X, RotateCcw, FileText, LayoutGrid, List
 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
@@ -877,7 +877,7 @@ export default function MisLeads() {
           <>
           {/* ââ TABLE ââ */}
       <div style={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
-      <div style={{ ...s.tableWrap, height: '100%', paddingBottom: '48px', scrollbarWidth: 'none' }}>
+      <div style={{ ...s.tableWrap, height: '100%', paddingBottom: '0px', scrollbarWidth: 'none', overflow: 'hidden' }}>
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px' }}>
             <Loader size={28} style={{ color: tokens.colors.textMuted, animation: 'spin 1s linear infinite' }} />
@@ -1114,16 +1114,16 @@ export default function MisLeads() {
                 <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={safeCurrentPage <= 1}
-                  style={{ padding: '4px 10px', fontSize: '14px', fontWeight: 700, border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage <= 1 ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage <= 1 ? tokens.colors.textMuted : '#F59E0B', cursor: safeCurrentPage <= 1 ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
-                >{'â'}</button>
+                  style={{ padding: '6px 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage <= 1 ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage <= 1 ? tokens.colors.textMuted : '#F59E0B', cursor: safeCurrentPage <= 1 ? 'default' : 'pointer' }}
+                ><ChevronLeft size={16} strokeWidth={2.5} /></button>
                 <span style={{ fontSize: '12px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
                   {safeCurrentPage} / {totalPages}
                 </span>
                 <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={safeCurrentPage >= totalPages}
-                  style={{ padding: '4px 10px', fontSize: '14px', fontWeight: 700, border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage >= totalPages ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage >= totalPages ? tokens.colors.textMuted : '#F59E0B', cursor: safeCurrentPage >= totalPages ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
-                >{'â'}</button>
+                  style={{ padding: '6px 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage >= totalPages ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage >= totalPages ? tokens.colors.textMuted : '#F59E0B', cursor: safeCurrentPage >= totalPages ? 'default' : 'pointer' }}
+                ><ChevronRight size={16} strokeWidth={2.5} /></button>
               </div>
             )}
             <span style={{ fontSize: '13px', fontWeight: 700, color: tokens.colors.primary, fontFamily: tokens.fonts.heading }}>
