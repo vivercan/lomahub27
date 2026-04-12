@@ -171,6 +171,7 @@ export default function HomeDashboard() {
           fontSize: '28px',
           fontWeight: 600,
           color: '#FFFFFF',
+          textAlign: 'left',
           lineHeight: 1,
           marginTop: '6px',
           position: 'relative',
@@ -183,6 +184,7 @@ export default function HomeDashboard() {
           fontSize: '9px',
           fontWeight: 400,
           color: 'rgba(255,255,255,0.7)',
+          textAlign: 'left', width: '100%',
           marginTop: '3px',
           position: 'relative',
           zIndex: 1,
@@ -229,6 +231,7 @@ export default function HomeDashboard() {
     </div>
   )
 }
+
 
 
 
