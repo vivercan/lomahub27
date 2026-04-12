@@ -50,7 +50,7 @@ const PIPELINE_STAGES = [
   { id: 'Nuevo', label: 'Nuevo', color: tokens.colors.blue },
   { id: 'Contactado', label: 'Contactado', color: tokens.colors.yellow },
   { id: 'Cotizado', label: 'Cotizado', color: tokens.colors.orange },
-  { id: 'Negociacion', label: 'Negociación', color: '#A855F7' },
+  { id: 'Negociacion', label: 'NegociaciÃ³n', color: '#A855F7' },
   { id: 'Cerrado Ganado', label: 'Cerrado Ganado', color: tokens.colors.green },
   { id: 'Cerrado Perdido', label: 'Cerrado Perdido', color: tokens.colors.red },
 ]
@@ -68,6 +68,8 @@ export default function MisLeads() {
   const [viewMode, setViewMode] = useState<'table' | 'kanban'>('table')
   const [ejecutivos, setEjecutivos] = useState<{ id: string; nombre: string }[]>([])
   const [showDeleted, setShowDeleted] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const ROWS_PER_PAGE = 13
     const [sortField, setSortField] = useState<string>('fecha_creacion')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
   const [actionsOpen, setActionsOpen] = useState<string | null>(null)
@@ -128,7 +130,7 @@ export default function MisLeads() {
   }
 
   const formatDate = (d: string): string => {
-    if (!d) return '—'
+    if (!d) return 'â'
     const date = new Date(d)
     return date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: '2-digit' })
   }
@@ -218,7 +220,7 @@ export default function MisLeads() {
 
           if (error) {
             console.error('Error invoking analysis function:', error)
-            alert('Error al analizar la cotización. Intenta de nuevo.')
+            alert('Error al analizar la cotizaciÃ³n. Intenta de nuevo.')
             setAnalyzing(false)
             setAnalyzingLead(null)
             return
@@ -229,7 +231,7 @@ export default function MisLeads() {
           }
         } catch (err) {
           console.error('Error calling analysis function:', err)
-          alert('Error al analizar la cotización.')
+          alert('Error al analizar la cotizaciÃ³n.')
           setAnalyzing(false)
           setAnalyzingLead(null)
         } finally {
@@ -338,6 +340,13 @@ export default function MisLeads() {
     if (aVal > bVal) return sortDir === 'asc' ? 1 : -1
     return 0
   })
+
+  // Pagination
+  const totalFiltered = filteredLeads.length
+  const totalPages = Math.ceil(totalFiltered / ROWS_PER_PAGE)
+  const safeCurrentPage = Math.min(currentPage, Math.max(1, totalPages))
+  const paginatedLeads = filteredLeads.slice((safeCurrentPage - 1) * ROWS_PER_PAGE, safeCurrentPage * ROWS_PER_PAGE)
+
   const totalActive = leads.filter(l => !l.eliminado).length
   const totalValue = leads.filter(l => !l.eliminado).reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0)
   const isSuperAdmin = user?.rol === 'superadmin'
@@ -737,7 +746,7 @@ export default function MisLeads() {
   return (
     <ModuleLayout
         titulo="Panel de Oportunidades"
-        subtitulo={`${totalActive} oportunidades activas • ${formatCurrency(totalValue)} en pipeline`}
+        subtitulo={`${totalActive} oportunidades activas â¢ ${formatCurrency(totalValue)} en pipeline`}
         acciones={
           <button
             style={s.addBtn}
@@ -758,7 +767,7 @@ export default function MisLeads() {
         onChange={handleFileSelected}
       />
 
-      {/* ── TOOLBAR ── */}
+      {/* ââ TOOLBAR ââ */}
       <div style={s.toolbar}>
         {/* Search */}
         <div style={s.searchBox}>
@@ -767,7 +776,7 @@ export default function MisLeads() {
             style={s.searchInput}
             placeholder="Buscar empresa, contacto, ciudad..."
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1) }}
           />
           {searchTerm && (
             <button
@@ -820,7 +829,7 @@ export default function MisLeads() {
         {isSuperAdmin && (
           <button
             style={showDeleted ? s.toolbarBtnActive : s.toolbarBtn}
-            onClick={() => setShowDeleted(!showDeleted)}
+            onClick={() => { setShowDeleted(!showDeleted); setCurrentPage(1) }}
             onMouseEnter={e => {
               if (!showDeleted) (e.currentTarget as HTMLButtonElement).style.background = `${tokens.colors.bgHover}`
             }}
@@ -866,7 +875,7 @@ export default function MisLeads() {
 
       {viewMode === 'table' ? (
           <>
-          {/* ── TABLE ── */}
+          {/* ââ TABLE ââ */}
       <div style={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
       <div style={{ ...s.tableWrap, height: '100%', paddingBottom: '48px', scrollbarWidth: 'none' }}>
         {loading ? (
@@ -920,8 +929,9 @@ export default function MisLeads() {
               </tr>
             </thead>
             <tbody>
-              {filteredLeads.map((lead, idx) => {
+              {paginatedLeads.map((lead, idx) => {
                 const stage = STAGE_MAP[lead.estado] || { label: lead.estado, color: tokens.colors.gray }
+                const rowNum = (safeCurrentPage - 1) * ROWS_PER_PAGE + idx + 1
                 return (
                   <tr
                     key={lead.id}
@@ -929,13 +939,13 @@ export default function MisLeads() {
                     onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = tokens.colors.bgHover }}
                     onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = 'transparent' }}
                   >
-                    <td style={{ ...s.tdMuted, textAlign: 'center' as const, width: '50px' }}>{idx + 1}</td>
+                    <td style={{ ...s.tdMuted, textAlign: 'center' as const, width: '50px' }}>{rowNum}</td>
                     <td style={s.td}>
                       <div
                         style={{ fontWeight: 600, color: tokens.colors.textPrimary, cursor: 'pointer' }}
                         onClick={() => navigate(`/ventas/leads/${lead.id}`)}
                       >
-                        {lead.empresa || '—'}
+                        {lead.empresa || 'â'}
                       </div>
                       {lead.ciudad && (
                         <div style={{ fontSize: '11px', color: tokens.colors.textMuted, marginTop: '2px' }}>{lead.ciudad}</div>
@@ -948,28 +958,28 @@ export default function MisLeads() {
                       </span>
                     </td>
                     <td style={s.td}>
-                      <div style={{ color: tokens.colors.textPrimary }}>{lead.contacto || '—'}</div>
+                      <div style={{ color: tokens.colors.textPrimary }}>{lead.contacto || 'â'}</div>
                       {lead.telefono && (
                         <div style={{ fontSize: '11px', color: tokens.colors.textMuted, marginTop: '1px' }}>{lead.telefono}</div>
                       )}
                     </td>
-                    <td style={s.tdMuted}>{lead.tipo_carga || '—'}</td>
-                    <td style={s.tdMuted}>{lead.email || '—'}</td>
-                    <td style={s.tdMuted}>{lead.tipo_viaje || '—'}</td>
+                    <td style={s.tdMuted}>{lead.tipo_carga || 'â'}</td>
+                    <td style={s.tdMuted}>{lead.email || 'â'}</td>
+                    <td style={s.tdMuted}>{lead.tipo_viaje || 'â'}</td>
                     <td style={{ ...s.td, fontWeight: 600, color: tokens.colors.green }}>
                       {formatCurrency(lead.proyectado_usd || lead.valor_estimado || 0)}
                     </td>
                     <td style={s.tdMuted}>
                       <div style={{ maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {lead.ejecutivo_nombre || '—'}
+                        {lead.ejecutivo_nombre || 'â'}
                       </div>
                     </td>
                     <td style={s.tdMuted}>{formatDate(lead.fecha_creacion)}</td>
-              <td style={s.td}>{lead.updated_at ? formatDate(lead.updated_at) : '—'}</td>
+              <td style={s.td}>{lead.updated_at ? formatDate(lead.updated_at) : 'â'}</td>
                     <td style={{ ...s.td, textAlign: 'center' as const, width: '50px' }}>
                       <button
                         style={{ ...s.actionBtn, color: lead.cotizacion_url ? tokens.colors.green : tokens.colors.textMuted }}
-                        title={lead.cotizacion_url ? 'Cotización adjunta — clic para reemplazar' : 'Adjuntar Cotización PDF'}
+                        title={lead.cotizacion_url ? 'CotizaciÃ³n adjunta â clic para reemplazar' : 'Adjuntar CotizaciÃ³n PDF'}
                         onClick={e => { e.stopPropagation(); handleAttachQuotation(lead) }}
                       >
                         <FileText size={15} />
@@ -1000,14 +1010,14 @@ export default function MisLeads() {
                             </button>
                             <button
                               style={{ ...s.actionBtn, color: tokens.colors.primary }}
-                              title="Adjuntar Cotización PDF"
+                              title="Adjuntar CotizaciÃ³n PDF"
                               onClick={() => handleAttachQuotation(lead)}
                             >
                               <Upload size={15} />
                             </button>
                             <button
                               style={s.actionBtn}
-                              title="Más acciones"
+                              title="MÃ¡s acciones"
                               onClick={e => { e.stopPropagation(); setActionsOpen(actionsOpen === lead.id ? null : lead.id) }}
                               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
                               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
@@ -1035,7 +1045,7 @@ export default function MisLeads() {
                             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
                           >
                             <Upload size={13} style={{ color: tokens.colors.primary }} />
-                            <span style={{ color: tokens.colors.primary }}>Adjuntar Cotización</span>
+                            <span style={{ color: tokens.colors.primary }}>Adjuntar CotizaciÃ³n</span>
                           </button>
                           <button
                             style={s.actionsMenuItem}
@@ -1060,7 +1070,7 @@ export default function MisLeads() {
       </div>
           </>
         ) : (
-          /* ── KANBAN VIEW ── */
+          /* ââ KANBAN VIEW ââ */
           <div style={{ display: 'flex', gap: '12px', height: 'calc(100vh - 280px)', overflowX: 'auto', scrollbarWidth: 'none', padding: '4px 0' }}>
             {PIPELINE_STAGES.map(stage => {
               const stageLeads = filteredLeads.filter(l => l.estado === stage.id)
@@ -1096,17 +1106,34 @@ export default function MisLeads() {
           </div>
         )}
 
-      {/* ── FOOTER ── */}
-      <div style={s.footer}>
-            <span style={s.footerText}>{filteredLeads.length} oportunidades</span>
+      {/* ââ FOOTER ââ */}
+      <div style={{ ...s.footer, justifyContent: 'space-between' }}>
+            <span style={s.footerText}>{totalFiltered} oportunidades</span>
+            {totalPages > 1 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={safeCurrentPage <= 1}
+                  style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage <= 1 ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage <= 1 ? tokens.colors.textMuted : tokens.colors.textPrimary, cursor: safeCurrentPage <= 1 ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
+                >{'â'}</button>
+                <span style={{ fontSize: '12px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
+                  {safeCurrentPage} / {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={safeCurrentPage >= totalPages}
+                  style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage >= totalPages ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage >= totalPages ? tokens.colors.textMuted : tokens.colors.textPrimary, cursor: safeCurrentPage >= totalPages ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
+                >{'â'}</button>
+              </div>
+            )}
             <span style={{ fontSize: '13px', fontWeight: 700, color: tokens.colors.primary, fontFamily: tokens.fonts.heading }}>
               Pipeline: {filteredLeads.reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })} MXN
             </span>
           </div>
 
-      {/* ── FUNNEL MODAL ── */}
+      {/* ââ FUNNEL MODAL ââ */}
 
-      {/* ── QUOTATION ANALYSIS MODAL ── */}
+      {/* ââ QUOTATION ANALYSIS MODAL ââ */}
       {(analyzingLead && (analyzing || analysisResult)) && (
         <div
           style={s.analysisOverlay}
@@ -1116,14 +1143,14 @@ export default function MisLeads() {
             {analyzing ? (
               <div style={s.loadingBox}>
                 <Loader size={32} style={{ color: tokens.colors.primary, animation: 'spin 1s linear infinite' }} />
-                <span style={s.loadingText}>Analizando cotización con IA...</span>
+                <span style={s.loadingText}>Analizando cotizaciÃ³n con IA...</span>
               </div>
             ) : analysisResult ? (
               <>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <div>
                     <div style={s.analysisTitle}>
-                      Análisis de Cotización
+                      AnÃ¡lisis de CotizaciÃ³n
                     </div>
                     <div style={{ fontSize: '12px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
                       {analyzingLead.empresa}
@@ -1152,7 +1179,7 @@ export default function MisLeads() {
                   </div>
                   <div style={s.analysisField}>
                     <span style={s.analysisLabel}>Vigencia</span>
-                    <span style={s.analysisValue}>{analysisResult.vigencia || '—'}</span>
+                    <span style={s.analysisValue}>{analysisResult.vigencia || 'â'}</span>
                   </div>
                   <div style={s.analysisField}>
                     <span style={s.analysisLabel}>Etapa Sugerida</span>
@@ -1169,7 +1196,7 @@ export default function MisLeads() {
 
                 {/* Confidence */}
                 <div style={{ marginBottom: '20px' }}>
-                  <div style={s.analysisLabel}>Confianza del Análisis</div>
+                  <div style={s.analysisLabel}>Confianza del AnÃ¡lisis</div>
                   <div style={s.progressBar}>
                     <div style={s.progressFill(analysisResult.confianza)} />
                   </div>
@@ -1178,7 +1205,7 @@ export default function MisLeads() {
 
                 {/* Resumen / Notas */}
                 <div style={s.analysisNotesBox}>
-                  <div style={s.analysisNotesLabel}>Resumen & Análisis</div>
+                  <div style={s.analysisNotesLabel}>Resumen & AnÃ¡lisis</div>
                   <div style={s.analysisNotesText}>{analysisResult.resumen}</div>
                 </div>
 
