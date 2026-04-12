@@ -69,7 +69,7 @@ export default function MisLeads() {
   const [ejecutivos, setEjecutivos] = useState<{ id: string; nombre: string }[]>([])
   const [showDeleted, setShowDeleted] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const ROWS_PER_PAGE = 13
+  const ROWS_PER_PAGE = 11
     const [sortField, setSortField] = useState<string>('fecha_creacion')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
   const [actionsOpen, setActionsOpen] = useState<string | null>(null)
@@ -1066,7 +1066,6 @@ export default function MisLeads() {
           </table>
         )}
       </div>
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "60px", background: `linear-gradient(transparent, ${tokens.colors.bgMain})`, pointerEvents: "none", zIndex: 2 }} />
       </div>
           </>
         ) : (
