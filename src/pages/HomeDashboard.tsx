@@ -16,6 +16,7 @@ interface CardConfig {
   kpiLabel: string
   statusDot: 'green' | 'yellow' | 'red' | 'gray'
   statusText: string
+  iconOpacity: number
 }
 
 const DOT_COLORS: Record<string, string> = {
@@ -86,18 +87,18 @@ export default function HomeDashboard() {
   }, [fetchKpis])
 
   const mainCards: CardConfig[] = [
-    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#2563EB', iconFile: 'oportunidades.svg', kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#0D9488', iconFile: 'comercial.svg', kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 subm\u00f3dulos' },
-    { id: 'servicio-clientes', label: 'Servicio a\nClientes', route: '/servicio/dashboard', bgColor: '#16A34A', iconFile: 'servicio-al-cliente.svg', kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 subm\u00f3dulos' },
-    { id: 'despacho', label: 'Despacho\nInteligente', route: '/operaciones/torre-control', bgColor: '#15803D', iconFile: 'Despacho inteligente.svg', kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes' },
-    { id: 'ventas', label: 'Ventas', route: '/ventas/mis-leads', bgColor: '#EA580C', iconFile: 'Ventas.svg', kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo' },
-    { id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva', bgColor: '#D97706', iconFile: 'cotizacionea.svg', kpiValue: '\u2014', kpiLabel: 'pendientes', statusDot: 'gray', statusText: 'Disponible' },
-    { id: 'plantillas', label: 'Plantillas', route: '/documentos', bgColor: '#7C3AED', iconFile: 'plantillas.svg', kpiValue: '\u2014', kpiLabel: 'plantillas', statusDot: 'gray', statusText: 'Disponible' },
+    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#2563EB', iconFile: 'oportunidades.svg', iconOpacity: 0.07, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#0D9488', iconFile: 'comercial.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 subm\u00f3dulos' },
+    { id: 'servicio-clientes', label: 'Servicio a\nClientes', route: '/servicio/dashboard', bgColor: '#16A34A', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.07, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 subm\u00f3dulos' },
+    { id: 'despacho', label: 'Despacho\nInteligente', route: '/operaciones/torre-control', bgColor: '#15803D', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.07, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes' },
+    { id: 'ventas', label: 'Ventas', route: '/ventas/mis-leads', bgColor: '#EA580C', iconFile: 'Ventas.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo' },
+    { id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva', bgColor: '#D97706', iconFile: 'cotizacionea.svg', iconOpacity: 0.07, kpiValue: '\u2014', kpiLabel: 'pendientes', statusDot: 'gray', statusText: 'Disponible' },
+    { id: 'plantillas', label: 'Plantillas', route: '/documentos', bgColor: '#7C3AED', iconFile: 'plantillas.svg', iconOpacity: 0.25, kpiValue: '\u2014', kpiLabel: 'plantillas', statusDot: 'gray', statusText: 'Disponible' },
   ]
 
   const row2Cards: CardConfig[] = [
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/correos', bgColor: '#DB2777', iconFile: 'comunicaciones.svg', kpiValue: '3', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo' },
-    { id: 'config', label: 'Configuraci\u00f3n', route: '/admin/configuracion', bgColor: '#6366F1', iconFile: 'configuracion.svg', kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/correos', bgColor: '#DB2777', iconFile: 'comunicaciones.svg', iconOpacity: 0.25, kpiValue: '3', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo' },
+    { id: 'config', label: 'Configuraci\u00f3n', route: '/admin/configuracion', bgColor: '#6366F1', iconFile: 'configuracion.svg', iconOpacity: 0.07, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema' },
   ]
 
   const getCardStyle = (isHovered: boolean, bgColor: string): React.CSSProperties => ({
@@ -146,7 +147,7 @@ export default function HomeDashboard() {
             height: '70%',
             objectFit: 'contain',
             pointerEvents: 'none',
-            opacity: 0.25,
+            opacity: card.iconOpacity,
             filter: 'brightness(0) invert(1)',
             transition: 'transform 0.5s cubic-bezier(0.23,1,0.32,1)',
             transform: isHovered ? 'translate(3px,-3px) scale(1.05)' : 'translate(0,0) scale(1)',
@@ -228,3 +229,5 @@ export default function HomeDashboard() {
     </div>
   )
 }
+
+
