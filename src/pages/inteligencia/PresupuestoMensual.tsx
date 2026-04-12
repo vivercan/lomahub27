@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import {
   DollarSign, TrendingUp, TrendingDown, AlertTriangle, RefreshCw,
-  Download, Target, BarChart3
+  Download, Target, BarChart3, Award
 } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
