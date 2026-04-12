@@ -93,11 +93,11 @@ export default function HomeDashboard() {
     { id: 'despacho', label: 'Despacho\nInteligente', route: '/operaciones/torre-control', bgColor: '#15803D', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.07, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/mis-leads', bgColor: '#EA580C', iconFile: 'Ventas.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo' },
     { id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva', bgColor: '#D97706', iconFile: 'cotizacionea.svg', iconOpacity: 0.07, kpiValue: '\u2014', kpiLabel: 'pendientes', statusDot: 'gray', statusText: 'Disponible' },
-    { id: 'plantillas', label: 'Plantillas', route: '/documentos', bgColor: '#7C3AED', iconFile: 'plantillas.svg', iconOpacity: 0.25, kpiValue: '\u2014', kpiLabel: 'plantillas', statusDot: 'gray', statusText: 'Disponible' },
+    { id: 'plantillas', label: 'Plantillas', route: '/documentos', bgColor: '#7C3AED', iconFile: 'plantillas.svg', iconOpacity: 0.35, kpiValue: '\u2014', kpiLabel: 'plantillas', statusDot: 'gray', statusText: 'Disponible' },
   ]
 
   const row2Cards: CardConfig[] = [
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/correos', bgColor: '#DB2777', iconFile: 'comunicaciones.svg', iconOpacity: 0.25, kpiValue: '3', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/correos', bgColor: '#DB2777', iconFile: 'comunicaciones.svg', iconOpacity: 0.35, kpiValue: '3', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo' },
     { id: 'config', label: 'Configuraci\u00f3n', route: '/admin/configuracion', bgColor: '#6366F1', iconFile: 'configuracion.svg', iconOpacity: 0.07, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema' },
   ]
 
@@ -229,5 +229,6 @@ export default function HomeDashboard() {
     </div>
   )
 }
+
 
 
