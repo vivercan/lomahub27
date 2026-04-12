@@ -1,7 +1,6 @@
 /* ===== HomeDashboard V27h — Custom SVG icons 18% opacity ===== */
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabaseClient';
 
 /* ── tipos ─────────────────────────────────────────────── */
 interface CardConfig {
@@ -135,3 +134,4 @@ export default function HomeDashboard() {
     </div>
   );
 }
+
