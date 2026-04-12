@@ -68,8 +68,6 @@ export default function MisLeads() {
   const [viewMode, setViewMode] = useState<'table' | 'kanban'>('table')
   const [ejecutivos, setEjecutivos] = useState<{ id: string; nombre: string }[]>([])
   const [showDeleted, setShowDeleted] = useState(false)
-  const [currentPage, setCurrentPage] = useState(1)
-  const ROWS_PER_PAGE = 12
     const [sortField, setSortField] = useState<string>('fecha_creacion')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
   const [actionsOpen, setActionsOpen] = useState<string | null>(null)
@@ -340,13 +338,6 @@ export default function MisLeads() {
     if (aVal > bVal) return sortDir === 'asc' ? 1 : -1
     return 0
   })
-
-  // Pagination
-  const totalFiltered = filteredLeads.length
-  const totalPages = Math.ceil(totalFiltered / ROWS_PER_PAGE)
-  const safeCurrentPage = Math.min(currentPage, Math.max(1, totalPages))
-  const paginatedLeads = filteredLeads.slice((safeCurrentPage - 1) * ROWS_PER_PAGE, safeCurrentPage * ROWS_PER_PAGE)
-
   const totalActive = leads.filter(l => !l.eliminado).length
   const totalValue = leads.filter(l => !l.eliminado).reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0)
   const isSuperAdmin = user?.rol === 'superadmin'
@@ -776,7 +767,7 @@ export default function MisLeads() {
             style={s.searchInput}
             placeholder="Buscar empresa, contacto, ciudad..."
             value={searchTerm}
-            onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1) }}
+            onChange={e => setSearchTerm(e.target.value)}
           />
           {searchTerm && (
             <button
@@ -829,7 +820,7 @@ export default function MisLeads() {
         {isSuperAdmin && (
           <button
             style={showDeleted ? s.toolbarBtnActive : s.toolbarBtn}
-            onClick={() => { setShowDeleted(!showDeleted); setCurrentPage(1) }}
+            onClick={() => setShowDeleted(!showDeleted)}
             onMouseEnter={e => {
               if (!showDeleted) (e.currentTarget as HTMLButtonElement).style.background = `${tokens.colors.bgHover}`
             }}
@@ -876,7 +867,8 @@ export default function MisLeads() {
       {viewMode === 'table' ? (
           <>
           {/* ── TABLE ── */}
-      <div style={s.tableWrap}>
+      <div style={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
+      <div style={{ ...s.tableWrap, height: '100%', paddingBottom: '48px', scrollbarWidth: 'none' }}>
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px' }}>
             <Loader size={28} style={{ color: tokens.colors.textMuted, animation: 'spin 1s linear infinite' }} />
@@ -927,9 +919,8 @@ export default function MisLeads() {
               </tr>
             </thead>
             <tbody>
-              {paginatedLeads.map((lead, idx) => {
+              {filteredLeads.map((lead, idx) => {
                 const stage = STAGE_MAP[lead.estado] || { label: lead.estado, color: tokens.colors.gray }
-                const rowNum = (safeCurrentPage - 1) * ROWS_PER_PAGE + idx + 1
                 return (
                   <tr
                     key={lead.id}
@@ -937,7 +928,7 @@ export default function MisLeads() {
                     onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = tokens.colors.bgHover }}
                     onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = 'transparent' }}
                   >
-                    <td style={{ ...s.tdMuted, textAlign: 'center' as const, width: '50px' }}>{rowNum}</td>
+                    <td style={{ ...s.tdMuted, textAlign: 'center' as const, width: '50px' }}>{idx + 1}</td>
                     <td style={s.td}>
                       <div
                         style={{ fontWeight: 600, color: tokens.colors.textPrimary, cursor: 'pointer' }}
@@ -1055,6 +1046,8 @@ export default function MisLeads() {
           </table>
         )}
       </div>
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "60px", background: `linear-gradient(transparent, ${tokens.colors.bgMain})`, pointerEvents: "none", zIndex: 2 }} />
+      </div>
           </>
         ) : (
           /* ── KANBAN VIEW ── */
@@ -1094,25 +1087,8 @@ export default function MisLeads() {
         )}
 
       {/* ── FOOTER ── */}
-      <div style={{ ...s.footer, justifyContent: 'space-between' }}>
-            <span style={s.footerText}>{totalFiltered} oportunidades</span>
-            {totalPages > 1 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <button
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  disabled={safeCurrentPage <= 1}
-                  style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage <= 1 ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage <= 1 ? tokens.colors.textMuted : tokens.colors.textPrimary, cursor: safeCurrentPage <= 1 ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
-                >{'←'}</button>
-                <span style={{ fontSize: '12px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
-                  {safeCurrentPage} / {totalPages}
-                </span>
-                <button
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={safeCurrentPage >= totalPages}
-                  style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage >= totalPages ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage >= totalPages ? tokens.colors.textMuted : tokens.colors.textPrimary, cursor: safeCurrentPage >= totalPages ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
-                >{'→'}</button>
-              </div>
-            )}
+      <div style={s.footer}>
+            <span style={s.footerText}>{filteredLeads.length} oportunidades</span>
             <span style={{ fontSize: '13px', fontWeight: 700, color: tokens.colors.primary, fontFamily: tokens.fonts.heading }}>
               Pipeline: {filteredLeads.reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })} MXN
             </span>
