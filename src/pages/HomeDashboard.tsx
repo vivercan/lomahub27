@@ -112,7 +112,7 @@ export default function HomeDashboard() {
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'flex-start',
     transition: 'transform 0.25s ease, box-shadow 0.25s ease',
     transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
@@ -160,7 +160,7 @@ export default function HomeDashboard() {
           color: '#FFFFFF',
           lineHeight: 1.2,
           marginBottom: 'auto',
-          whiteSpace: 'pre-line',
+          whiteSpace: 'nowrap', textAlign: 'center',
           position: 'relative',
           zIndex: 1,
         }}>
@@ -229,6 +229,7 @@ export default function HomeDashboard() {
     </div>
   )
 }
+
 
 
 
