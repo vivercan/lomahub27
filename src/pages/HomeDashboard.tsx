@@ -1,24 +1,16 @@
 // ——————————————————————————————————————————————————————————————————————————————
-// | BLINDAJE DASHBOARD V27f — ARCHIVO PROTEGIDO                               |
-// |                                                                            |
-// | ESTILO: M1 REFINADO + ICONOS PREMIUM WHITE-STROKE  | Aprobado JJ Abr/2026 |
-// | • 9 cards (7+2): solid vivid colors + single white-stroke icon per card    |
-// | • Icon principal: rgba(255,255,255,0.12) | Secondary: rgba(255,255,255,0.08)|
-// | • Hover: movimiento sutil de icono                                         |
-// | • Fila 1: 7 cards | Fila 2: Comunicaciones + Config a la derecha           |
-// | • Sin barra KPIs — eliminada por JJ 3/Abr/2026                            |
+// | BLINDAJE DASHBOARD V27g — CLEAN TEXT ONLY                                  |
+// | • 9 cards: solid vivid colors + text/numbers only                          |
+// | • White dot top-right preserved                                            |
+// | • All background icons REMOVED — clean minimalist                          |
+// | • Aprobado JJ Abr/2026                                                     |
 // ——————————————————————————————————————————————————————————————————————————————
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import AppHeader from '../components/layout/AppHeader'
 import { useAuthContext } from '../hooks/AuthContext'
-import { CARD_ICON_POS, CARD_ICON_P, CARD_ICON_S } from '../lib/cardIconStyle'
-// (Lucide removed — using Hugeicons via Iconify CDN as watermark composition)
 
-// ============================================================================
-// TYPES
-// ============================================================================
 interface CardConfig {
   id: string
   label: string
@@ -27,12 +19,8 @@ interface CardConfig {
   kpiLabel: string
   statusDot: 'green' | 'yellow' | 'red' | 'gray'
   statusText: string
-  icon: React.ReactNode
 }
 
-// ============================================================================
-// M1 REFINADO — VISUAL CONSTANTS
-// ============================================================================
 const DASH = {
   bg: '#E8EBF0',
   fontFamily: "'Montserrat', sans-serif",
@@ -49,17 +37,8 @@ const DASH = {
   kpiWeight: 600,
   subSize: '9px',
   subWeight: 400,
-  dotSize: '6px',
 } as const
 
-const DOT_COLORS: Record<string, string> = {
-  green: '#10B981',
-  yellow: '#F59E0B',
-  red: '#EF4444',
-  gray: '#CBD5E1',
-}
-
-// Color solido vívido por modulo — fondo completo de cada card
 const CARD_BG: Record<string, string> = {
   'oportunidades': '#2563EB',
   'comercial':     '#0891B2',
@@ -72,40 +51,6 @@ const CARD_BG: Record<string, string> = {
   'config':        '#6366F1',
 }
 
-// ============================================================================
-// ICON SYSTEM — Hugeicons premium line family via Iconify CDN
-// Replicates the validated Configuracion card watermark composition pattern.
-// Each card = 1 dominant icon (oversized, anchored bottom-right, bleeds off corner)
-//             + 1 satellite (mid-card, smaller)
-//             + 1 accent (overlapping bottom-right of dominant)
-// All white-stroke at opacity 0.22 — recortado naturalmente por overflow:hidden del card.
-// ============================================================================
-const ICO_OPACITY = 0.22
-const ico = (path: string, style: React.CSSProperties) => (
-  <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
-)
-
-const compose = (main: string, sat: string, accent: string) => () => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    {ico(sat,    { position: 'absolute', right: '46%', bottom: '40%', width: '24%', height: '24%' })}
-    {ico(accent, { position: 'absolute', right: '-2%',  bottom: '-4%',  width: '38%', height: '38%' })}
-    {ico(main,   { position: 'absolute', right: '-18%', bottom: '-26%', width: '88%', height: '120%' })}
-  </div>
-)
-
-const IconOportunidades  = compose('hugeicons:filter',                'hugeicons:search-01',         'hugeicons:arrow-up-right-01')
-const IconComercial      = compose('hugeicons:briefcase-01',          'hugeicons:chart-line-data-01','hugeicons:handshake-01')
-const IconServicio       = compose('hugeicons:bubble-chat',           'hugeicons:headset',           'hugeicons:star')
-const IconDespacho       = compose('hugeicons:truck',                 'hugeicons:route-01',          'hugeicons:time-04')
-const IconVentas         = compose('hugeicons:chart-line-data-01',    'hugeicons:dollar-circle',     'hugeicons:target-02')
-const IconCotizaciones   = compose('hugeicons:invoice-03',            'hugeicons:calculator-01',     'hugeicons:checkmark-circle-01')
-const IconPlantillas     = compose('hugeicons:file-01',               'hugeicons:edit-01',           'hugeicons:layout-01')
-const IconComunicaciones = compose('hugeicons:radio-01',              'hugeicons:message-01',        'hugeicons:notification-01')
-const IconConfig         = compose('hugeicons:settings-01',           'hugeicons:star',              'hugeicons:refresh')
-
-// ============================================================================
-// COMPONENT
-// ============================================================================
 export default function HomeDashboard() {
   const navigate = useNavigate()
   const { user, logout } = useAuthContext()
@@ -114,10 +59,7 @@ export default function HomeDashboard() {
   const formatName = (email?: string) => {
     if (!email) return 'Usuario'
     const name = email.split('@')[0]
-    return name
-      .split('.')
-      .map((p: string) => p.charAt(0).toUpperCase() + p.slice(1))
-      .join(' ')
+    return name.split('.').map((p: string) => p.charAt(0).toUpperCase() + p.slice(1)).join(' ')
   }
 
   const handleLogout = async () => {
@@ -125,30 +67,16 @@ export default function HomeDashboard() {
     navigate('/login')
   }
 
-  // KPI state
   const [kpis, setKpis] = useState({
-    leadsActivos: 0,
-    viajesActivos: 0,
-    clientes: 0,
-    segmentosDedicados: 0,
-    cuentasCxc: 0,
-    unidadesGps: 0,
-    alertasHoy: 0,
-    formatosActivos: 0,
-    leadsPipeline: 0,
-    tractosTotal: 0,
-    cajasTotal: 0,
+    leadsActivos: 0, viajesActivos: 0, clientes: 0, segmentosDedicados: 0,
+    cuentasCxc: 0, unidadesGps: 0, alertasHoy: 0, formatosActivos: 0,
+    leadsPipeline: 0, tractosTotal: 0, cajasTotal: 0,
   })
   const [kpisLoaded, setKpisLoaded] = useState(false)
 
   const fetchKpis = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      console.warn('[KPI] No active session — redirecting to login')
-      navigate('/login')
-      return
-    }
-
+    if (!session) { navigate('/login'); return }
     const sc = async (table: string, fn?: (q: any) => any): Promise<number> => {
       try {
         const base = supabase.from(table).select('*', { count: 'exact', head: true })
@@ -157,11 +85,7 @@ export default function HomeDashboard() {
         return count ?? 0
       } catch (e) { console.warn(`[KPI] ${table} exception:`, e); return 0 }
     }
-
-    const [
-      leads, viajes, clientes, dedicados, cxc, gps,
-      formatosActivos, viajesRiesgo, notifUnread, tractos, cajas,
-    ] = await Promise.all([
+    const [leads, viajes, clientes, dedicados, cxc, gps, formatosActivos, viajesRiesgo, notifUnread, tractos, cajas] = await Promise.all([
       sc('leads', q => q.is('deleted_at', null)),
       sc('viajes', q => q.in('estado', ['asignado', 'en_transito', 'en_curso', 'programado'])),
       sc('clientes', q => q.is('deleted_at', null)),
@@ -174,92 +98,26 @@ export default function HomeDashboard() {
       sc('tractos', q => q.eq('activo', true)),
       sc('cajas', q => q.eq('activo', true)),
     ])
-
-    setKpis({
-      leadsActivos: leads,
-      viajesActivos: viajes,
-      clientes,
-      segmentosDedicados: dedicados,
-      cuentasCxc: cxc,
-      unidadesGps: gps,
-      alertasHoy: viajesRiesgo + notifUnread,
-      formatosActivos,
-      leadsPipeline: leads,
-      tractosTotal: tractos,
-      cajasTotal: cajas,
-    })
+    setKpis({ leadsActivos: leads, viajesActivos: viajes, clientes, segmentosDedicados: dedicados, cuentasCxc: cxc, unidadesGps: gps, alertasHoy: viajesRiesgo + notifUnread, formatosActivos, leadsPipeline: leads, tractosTotal: tractos, cajasTotal: cajas })
     setKpisLoaded(true)
   }, [navigate])
 
-  useEffect(() => {
-    fetchKpis()
-    const interval = setInterval(fetchKpis, 60000)
-    return () => clearInterval(interval)
-  }, [fetchKpis])
+  useEffect(() => { fetchKpis(); const i = setInterval(fetchKpis, 60000); return () => clearInterval(i) }, [fetchKpis])
 
-  // ——— 9 CARD DEFINITIONS ———————————————————————
   const mainCards: CardConfig[] = [
-    {
-      id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads',
-      kpiValue: kpis.leadsActivos, kpiLabel: 'leads',
-      statusDot: 'green', statusText: 'Pipeline activo',
-      icon: <IconOportunidades />,
-    },
-    {
-      id: 'comercial', label: 'Comercial', route: '/ventas/dashboard',
-      kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos',
-      statusDot: 'green', statusText: '11 submodulos',
-      icon: <IconComercial />,
-    },
-    {
-      id: 'servicio-clientes', label: 'Servicio a Clientes', route: '/servicio/dashboard',
-      kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes',
-      statusDot: 'green', statusText: '3 submodulos',
-      icon: <IconServicio />,
-    },
-    {
-      id: 'despacho', label: 'Despacho Inteligente', route: '/operaciones/torre-control',
-      kpiValue: kpis.viajesActivos, kpiLabel: 'viajes',
-      statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray',
-      statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes',
-      icon: <IconDespacho />,
-    },
-    {
-      id: 'ventas', label: 'Ventas', route: '/ventas/mis-leads',
-      kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos',
-      statusDot: 'green', statusText: 'Pipeline activo',
-      icon: <IconVentas />,
-    },
-    {
-      id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva',
-      kpiValue: '\u2014', kpiLabel: 'pendientes',
-      statusDot: 'gray', statusText: 'Disponible',
-      icon: <IconCotizaciones />,
-    },
-    {
-      id: 'plantillas', label: 'Plantillas', route: '/documentos',
-      kpiValue: '\u2014', kpiLabel: 'plantillas',
-      statusDot: 'gray', statusText: 'Disponible',
-      icon: <IconPlantillas />,
-    },
+    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submodulos' },
+    { id: 'servicio-clientes', label: 'Servicio a Clientes', route: '/servicio/dashboard', kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submodulos' },
+    { id: 'despacho', label: 'Despacho Inteligente', route: '/operaciones/torre-control', kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes' },
+    { id: 'ventas', label: 'Ventas', route: '/ventas/mis-leads', kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo' },
+    { id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva', kpiValue: '\u2014', kpiLabel: 'pendientes', statusDot: 'gray', statusText: 'Disponible' },
+    { id: 'plantillas', label: 'Plantillas', route: '/documentos', kpiValue: '\u2014', kpiLabel: 'plantillas', statusDot: 'gray', statusText: 'Disponible' },
   ]
-
   const row2Cards: CardConfig[] = [
-    {
-      id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/correos',
-      kpiValue: '3', kpiLabel: 'canales',
-      statusDot: 'green', statusText: 'Activo',
-      icon: <IconComunicaciones />,
-    },
-    {
-      id: 'config', label: 'Configuracion', route: '/admin/configuracion',
-      kpiValue: '', kpiLabel: '',
-      statusDot: 'gray', statusText: '',
-      icon: <IconConfig />,
-    },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/correos', kpiValue: '3', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo' },
+    { id: 'config', label: 'Configuracion', route: '/admin/configuracion', kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: '' },
   ]
 
-  // ——— CARD STYLE ————————————————————————————————
   const getCardStyle = (isHovered: boolean, cardId?: string): React.CSSProperties => ({
     aspectRatio: '1 / 0.75',
     borderRadius: DASH.cardRadius,
@@ -278,130 +136,27 @@ export default function HomeDashboard() {
     boxShadow: isHovered ? DASH.cardHoverShadow : DASH.cardShadow,
   })
 
-  // ——— RENDER CARD ————————————————————————————————
   const renderCard = (card: CardConfig) => {
     const isHovered = hoveredCard === card.id
     return (
-      <div
-        key={card.id}
-        onClick={() => navigate(card.route)}
-        onMouseEnter={() => setHoveredCard(card.id)}
-        onMouseLeave={() => setHoveredCard(null)}
-        style={getCardStyle(isHovered, card.id)}
-      >
-        {/* Single icon layer — moves on hover */}
-        <div style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px',
-          transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
-          transform: isHovered ? 'translate(4px, -4px) scale(1.05)' : 'translate(0,0) scale(1)',
-        }}>
-          {card.icon}
-        </div>
-
-        {/* Status dot — unificado blanco sutil (Opción B) */}
-        <div style={{
-          position: 'absolute', top: '14px', right: '14px',
-          width: '6px', height: '6px', borderRadius: '50%',
-          backgroundColor: 'rgba(255,255,255,0.35)',
-        }} />
-
-        {/* Module name */}
-        <div style={{
-          fontFamily: DASH.fontFamily,
-          fontSize: DASH.titleSize,
-          fontWeight: DASH.titleWeight,
-          color: '#FFFFFF',
-          lineHeight: 1.2,
-          marginBottom: 'auto',
-          position: 'relative',
-          zIndex: 1,
-        }}>
-          {card.label}
-        </div>
-
-        {/* KPI */}
-        <div style={{
-          fontFamily: DASH.fontFamily,
-          fontSize: DASH.kpiSize,
-          fontWeight: DASH.kpiWeight,
-          color: '#FFFFFF',
-          lineHeight: 1,
-          marginTop: '6px',
-          position: 'relative',
-          zIndex: 1,
-        }}>
-          {!kpisLoaded && typeof card.kpiValue === 'number' ? '...' : card.kpiValue}
-        </div>
-
-        {/* Subtitle */}
-        <div style={{
-          fontFamily: DASH.fontBody,
-          fontSize: DASH.subSize,
-          fontWeight: DASH.subWeight,
-          color: 'rgba(255,255,255,0.7)',
-          marginTop: '3px',
-          position: 'relative',
-          zIndex: 1,
-        }}>
-          {card.statusText}
-        </div>
+      <div key={card.id} onClick={() => navigate(card.route)} onMouseEnter={() => setHoveredCard(card.id)} onMouseLeave={() => setHoveredCard(null)} style={getCardStyle(isHovered, card.id)}>
+        <div style={{ position: 'absolute', top: '14px', right: '14px', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.35)' }} />
+        <div style={{ fontFamily: DASH.fontFamily, fontSize: DASH.titleSize, fontWeight: DASH.titleWeight, color: '#FFFFFF', lineHeight: 1.2, marginBottom: 'auto', position: 'relative', zIndex: 1 }}>{card.label}</div>
+        <div style={{ fontFamily: DASH.fontFamily, fontSize: DASH.kpiSize, fontWeight: DASH.kpiWeight, color: '#FFFFFF', lineHeight: 1, marginTop: '6px', position: 'relative', zIndex: 1 }}>{!kpisLoaded && typeof card.kpiValue === 'number' ? '...' : card.kpiValue}</div>
+        <div style={{ fontFamily: DASH.fontBody, fontSize: DASH.subSize, fontWeight: DASH.subWeight, color: 'rgba(255,255,255,0.7)', marginTop: '3px', position: 'relative', zIndex: 1 }}>{card.statusText}</div>
       </div>
     )
   }
 
-  // ——— RENDER ————————————————————————————————————
   return (
-    <div style={{
-      height: '100vh',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      backgroundColor: DASH.bg,
-      fontFamily: DASH.fontFamily,
-      color: '#1E293B',
-    }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
-      `}</style>
-
-      {/* Zona 1 — AppHeader */}
-      <AppHeader
-        onLogout={handleLogout}
-        userName={formatName(user?.email)}
-        userRole={user?.rol || 'admin'}
-        userEmail={user?.email}
-      />
-
-      {/* Zona 2 — Grid de Cards */}
-      <div style={{
-        flex: '1 1 auto',
-        padding: DASH.gridPadding,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: DASH.gridGap,
-        overflow: 'hidden',
-      }}>
-        {/* Fila 1: 7 cards principales */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(7, 1fr)',
-          gap: DASH.gridGap,
-        }}>
-          {mainCards.map(renderCard)}
-        </div>
-
-        {/* Fila 2: Comunicaciones + Config alineados a la derecha */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(7, 1fr)',
-          gap: DASH.gridGap,
-        }}>
-          <div style={{ gridColumn: '6 / 7' }}>
-            {renderCard(row2Cards[0])}
-          </div>
-          <div style={{ gridColumn: '7 / 8' }}>
-            {renderCard(row2Cards[1])}
-          </div>
+    <div style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', backgroundColor: DASH.bg, fontFamily: DASH.fontFamily, color: '#1E293B' }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');`}</style>
+      <AppHeader onLogout={handleLogout} userName={formatName(user?.email)} userRole={user?.rol || 'admin'} userEmail={user?.email} />
+      <div style={{ flex: '1 1 auto', padding: DASH.gridPadding, display: 'flex', flexDirection: 'column', gap: DASH.gridGap, overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: DASH.gridGap }}>{mainCards.map(renderCard)}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: DASH.gridGap }}>
+          <div style={{ gridColumn: '6 / 7' }}>{renderCard(row2Cards[0])}</div>
+          <div style={{ gridColumn: '7 / 8' }}>{renderCard(row2Cards[1])}</div>
         </div>
       </div>
     </div>
