@@ -106,14 +106,14 @@ export default function MisLeads() {
       const { data, error } = await query
       if (error) { console.error('Error fetching leads:', error); setLeads([]); return }
       setLeads(data || [])
-      const uniqueEjecutivos = Array.from(
-        new Map(
-          (data || [])
-            .filter((l: Lead) => l.ejecutivo_id && l.ejecutivo_nombre)
-            .map((l: Lead) => [l.ejecutivo_id, { id: l.ejecutivo_id, nombre: l.ejecutivo_nombre }])
-        ).values()
-      )
-      setEjecutivos(uniqueEjecutivos)
+      // Fetch vendedores desde usuarios_autorizados
+      const { data: usuariosData } = await supabase
+        .from('usuarios_autorizados')
+        .select('id, nombre, rol')
+        .eq('activo', true)
+        .in('rol', ['ventas', 'superadmin'])
+        .order('nombre', { ascending: true })
+      setEjecutivos((usuariosData || []).map((u: any) => ({ id: u.id, nombre: u.nombre })))
     } catch (err) {
       console.error('Unexpected error:', err)
       setLeads([])
