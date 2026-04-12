@@ -69,7 +69,9 @@ export default function MisLeads() {
   const [ejecutivos, setEjecutivos] = useState<{ id: string; nombre: string }[]>([])
   const [showDeleted, setShowDeleted] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const ROWS_PER_PAGE = 11
+  const [rowsPerPage, setRowsPerPage] = useState(11)
+  const ROW_HEIGHT = 56
+  const tableContainerRef = useRef<HTMLDivElement>(null)
     const [sortField, setSortField] = useState<string>('fecha_creacion')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
   const [actionsOpen, setActionsOpen] = useState<string | null>(null)
@@ -97,6 +99,22 @@ export default function MisLeads() {
   useEffect(() => {
     fetchLeads()
   }, [user?.id])
+
+  // Dynamic rows per page calculation
+  useEffect(() => {
+    const calcRows = () => {
+      const el = tableContainerRef.current
+      if (!el) return
+      const containerH = el.clientHeight
+      const theadH = 40
+      const available = containerH - theadH
+      const rows = Math.max(1, Math.floor(available / ROW_HEIGHT))
+      setRowsPerPage(rows)
+    }
+    calcRows()
+    window.addEventListener('resize', calcRows)
+    return () => window.removeEventListener('resize', calcRows)
+  }, [loading])
 
   const fetchLeads = async () => {
     try {
@@ -343,9 +361,9 @@ export default function MisLeads() {
 
   // Pagination
   const totalFiltered = filteredLeads.length
-  const totalPages = Math.ceil(totalFiltered / ROWS_PER_PAGE)
+  const totalPages = Math.ceil(totalFiltered / rowsPerPage)
   const safeCurrentPage = Math.min(currentPage, Math.max(1, totalPages))
-  const paginatedLeads = filteredLeads.slice((safeCurrentPage - 1) * ROWS_PER_PAGE, safeCurrentPage * ROWS_PER_PAGE)
+  const paginatedLeads = filteredLeads.slice((safeCurrentPage - 1) * rowsPerPage, safeCurrentPage * rowsPerPage)
 
   const totalActive = leads.filter(l => !l.eliminado).length
   const totalValue = leads.filter(l => !l.eliminado).reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0)
@@ -521,6 +539,7 @@ export default function MisLeads() {
     row: {
       transition: 'background 0.15s',
       cursor: 'pointer',
+      height: '56px',
     },
     stageBadge: (color: string) => ({
       display: 'inline-flex',
@@ -876,7 +895,7 @@ export default function MisLeads() {
       {viewMode === 'table' ? (
           <>
           {/* ââ TABLE ââ */}
-      <div style={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
+      <div ref={tableContainerRef} style={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
       <div style={{ ...s.tableWrap, height: '100%', paddingBottom: '0px', scrollbarWidth: 'none', overflow: 'hidden' }}>
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px' }}>
@@ -931,7 +950,7 @@ export default function MisLeads() {
             <tbody>
               {paginatedLeads.map((lead, idx) => {
                 const stage = STAGE_MAP[lead.estado] || { label: lead.estado, color: tokens.colors.gray }
-                const rowNum = (safeCurrentPage - 1) * ROWS_PER_PAGE + idx + 1
+                const rowNum = (safeCurrentPage - 1) * rowsPerPage + idx + 1
                 return (
                   <tr
                     key={lead.id}
