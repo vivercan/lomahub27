@@ -321,7 +321,7 @@ export default function MisLeads() {
     )
   }
   if (filteredEjecutivo.length > 0) {
-    filteredLeads = filteredLeads.filter(l => filteredEjecutivo.includes(l.ejecutivo_id))
+    filteredLeads = filteredLeads.filter(l => filteredEjecutivo.includes(l.ejecutivo_nombre))
   }
 
   // Sort
@@ -784,7 +784,7 @@ export default function MisLeads() {
             style={{ ...s.selectDropdown, textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
             onClick={() => setShowEjDropdown(!showEjDropdown)}
           >
-            <span>{filteredEjecutivo.length === 0 ? 'Todos los vendedores' : filteredEjecutivo.length === 1 ? ejecutivos.find(e => e.id === filteredEjecutivo[0])?.nombre || '1 vendedor' : filteredEjecutivo.length + ' vendedores'}</span>
+            <span>{filteredEjecutivo.length === 0 ? 'Todos los vendedores' : filteredEjecutivo.length === 1 ? filteredEjecutivo[0] || '1 vendedor' : filteredEjecutivo.length + ' vendedores'}</span>
             <ChevronDown size={14} style={{ color: tokens.colors.textMuted }} />
           </button>
           {showEjDropdown && (
@@ -800,10 +800,10 @@ export default function MisLeads() {
                 >
                   <input
                     type="checkbox"
-                    checked={filteredEjecutivo.includes(ej.id)}
+                    checked={filteredEjecutivo.includes(ej.nombre)}
                     onChange={() => {
                       setFilteredEjecutivo(prev =>
-                        prev.includes(ej.id) ? prev.filter(id => id !== ej.id) : [...prev, ej.id]
+                        prev.includes(ej.nombre) ? prev.filter(n => n !== ej.nombre) : [...prev, ej.nombre]
                       )
                     }}
                     style={{ accentColor: tokens.colors.primary }}
@@ -1212,5 +1212,6 @@ export default function MisLeads() {
     </ModuleLayout>
   )
 }
+
 
 
