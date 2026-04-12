@@ -831,7 +831,7 @@ export default function MisLeads() {
             style={showDeleted ? s.toolbarBtnActive : s.toolbarBtn}
             onClick={() => { setShowDeleted(!showDeleted); setCurrentPage(1) }}
             onMouseEnter={e => {
-              if (!showDeleted) (e.currentTarget as HTMLButtonElement).style.background = ${tokens.colors.bgHover}
+              if (!showDeleted) (e.currentTarget as HTMLButtonElement).style.background = `${tokens.colors.bgHover}`
             }}
             onMouseLeave={e => {
               if (!showDeleted) (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover
