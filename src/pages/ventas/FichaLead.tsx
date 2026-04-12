@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Phone, Mail, MapPin, Building2, TrendingUp, User, Calendar, ArrowLeft, Plus, FileText, UserCheck, Edit3, Truck, DollarSign, Target, MessageSquare } from 'lucide-react'
+import { Phone, Mail, MapPin, Building2, TrendingUp, User, Calendar, ArrowLeft, Plus, FileText, UserCheck, Edit3, Truck, DollarSign, Target, MessageSquare, Upload, Loader, X } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
@@ -31,6 +31,9 @@ interface Lead {
   eliminado?: boolean
 }
 
+      {/* Hidden file input */}
+      <input ref={fileInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={handleFileSelected} />
+
 const PIPELINE_STAGES = [
   { id: 'Nuevo', label: 'Nuevo', color: tokens.colors.blue },
   { id: 'Contactado', label: 'Contactado', color: tokens.colors.yellow },
@@ -57,6 +60,8 @@ export default function FichaLead() {
   const [lead, setLead] = useState<Lead | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [converting, setConverting] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const fetchLead = async () => {
@@ -87,6 +92,57 @@ export default function FichaLead() {
     fetchLead()
   }, [id])
 
+  const handleConvertToClient = async () => {
+    if (!lead || converting) return
+    if (!confirm('¿Convertir este lead a Cliente (Cerrado Ganado)?')) return
+    try {
+      setConverting(true)
+      const { error } = await supabase
+        .from('leads')
+        .update({ estado: 'Cerrado Ganado', fecha_ultimo_mov: new Date().toISOString() })
+        .eq('id', lead.id)
+      if (error) throw error
+      setLead({ ...lead, estado: 'Cerrado Ganado', fecha_ultimo_mov: new Date().toISOString() })
+    } catch (err) {
+      console.error('Error converting lead:', err)
+      alert('Error al convertir el lead.')
+    } finally {
+      setConverting(false)
+    }
+  }
+
+  const handleWhatsApp = () => {
+    if (!lead?.telefono) { alert('Este lead no tiene teléfono registrado.'); return }
+    const phone = lead.telefono.replace(/\\D/g, '')
+    const msg = encodeURIComponent(`Hola, me comunico de parte de LOMA respecto a ${lead.empresa || 'su empresa'}.`)
+    window.open(`https://wa.me/${phone}?text=${msg}`, '_blank')
+  }
+
+  const handleAttachQuotation = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileSelected = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file || !lead) return
+    if (file.type !== 'application/pdf') { alert('Por favor selecciona un archivo PDF'); return }
+    try {
+      const reader = new FileReader()
+      reader.onload = async (e) => {
+        const base64Content = (e.target?.result as string)?.split(',')[1] || ''
+        try {
+          const { data, error } = await supabase.functions.invoke('analisis-cotizacion', {
+            body: { file_base64: base64Content, filename: file.name, lead_id: lead.id, lead_empresa: lead.empresa }
+          })
+          if (error) { console.error(error); alert('Error al analizar la cotización.'); return }
+          if (data) { alert(`Cotización analizada: ${data.resumen || 'OK'}`); }
+        } catch (err) { console.error(err); alert('Error al analizar la cotización.') }
+      }
+      reader.readAsDataURL(file)
+    } catch (err) { console.error(err); alert('Error al leer el archivo.') }
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
   const currentStageIdx = lead ? PIPELINE_STAGES.findIndex(s => s.id === lead.estado) : -1
 
   const s = {
@@ -96,8 +152,8 @@ export default function FichaLead() {
       gap: '6px',
       padding: '6px 12px',
       borderRadius: tokens.radius.md,
-      border: '1px solid #D97706',
-      background: '#F59E0B',
+      border: '1px solid #CC3700',
+      background: '#FF4500',
       color: '#FFFFFF',
       fontSize: '13px',
       fontWeight: 600,
@@ -237,8 +293,8 @@ export default function FichaLead() {
         <button
           style={s.backBtn}
           onClick={() => navigate('/ventas/mis-leads')}
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#D97706' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#F59E0B' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#CC3700' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FF4500' }}
         >
           <ArrowLeft size={14} /> Volver
         </button>

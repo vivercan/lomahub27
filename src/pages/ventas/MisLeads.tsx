@@ -915,6 +915,7 @@ export default function MisLeads() {
                   </span>
                 </th>
                 <th style={s.th}>ACTUALIZADO</th>
+                <th style={{ ...s.th, width: '50px', textAlign: 'center' as const }}>COT.</th>
                 <th style={{ ...s.th, width: '80px', textAlign: 'center' as const }}>ACCIONES</th>
               </tr>
             </thead>
@@ -965,6 +966,15 @@ export default function MisLeads() {
                     </td>
                     <td style={s.tdMuted}>{formatDate(lead.fecha_creacion)}</td>
               <td style={s.td}>{lead.updated_at ? formatDate(lead.updated_at) : '—'}</td>
+                    <td style={{ ...s.td, textAlign: 'center' as const, width: '50px' }}>
+                      <button
+                        style={{ ...s.actionBtn, color: lead.cotizacion_url ? tokens.colors.green : tokens.colors.textMuted }}
+                        title={lead.cotizacion_url ? 'Cotización adjunta — clic para reemplazar' : 'Adjuntar Cotización PDF'}
+                        onClick={e => { e.stopPropagation(); handleAttachQuotation(lead) }}
+                      >
+                        <FileText size={15} />
+                      </button>
+                    </td>
                     <td style={{ ...s.td, textAlign: 'center' as const, width: '80px', position: 'relative' as const }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
                         {showDeleted ? (
