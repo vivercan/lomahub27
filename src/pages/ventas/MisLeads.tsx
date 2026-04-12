@@ -68,6 +68,8 @@ export default function MisLeads() {
   const [viewMode, setViewMode] = useState<'table' | 'kanban'>('table')
   const [ejecutivos, setEjecutivos] = useState<{ id: string; nombre: string }[]>([])
   const [showDeleted, setShowDeleted] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const ROWS_PER_PAGE = 12
     const [sortField, setSortField] = useState<string>('fecha_creacion')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
   const [actionsOpen, setActionsOpen] = useState<string | null>(null)
@@ -338,10 +340,18 @@ export default function MisLeads() {
     if (aVal > bVal) return sortDir === 'asc' ? 1 : -1
     return 0
   })
+
+  // Pagination
+  const totalFiltered = filteredLeads.length
+  const totalPages = Math.ceil(totalFiltered / ROWS_PER_PAGE)
+  const safeCurrentPage = Math.min(currentPage, Math.max(1, totalPages))
+  const paginatedLeads = filteredLeads.slice((safeCurrentPage - 1) * ROWS_PER_PAGE, safeCurrentPage * ROWS_PER_PAGE)
+
   const totalActive = leads.filter(l => !l.eliminado).length
   const totalValue = leads.filter(l => !l.eliminado).reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0)
 
   // Styles
+  const isSuperAdmin = user?.rol === `'superadmin`'
   const s = {
     page: {
       display: 'flex',
@@ -779,8 +789,8 @@ export default function MisLeads() {
         </div>
 
         {/* Vendedores dropdown */}
-        <div style={{ position: 'relative' }}>
-          <button
+        {/* Vendedores dropdown - solo superadmin */}
+        {isSuperAdmin && <div style={{ position: `'relative`' }}>
             style={{ ...s.selectDropdown, textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
             onClick={() => setShowEjDropdown(!showEjDropdown)}
           >
@@ -814,22 +824,24 @@ export default function MisLeads() {
             </div>
           )}
         </div>
-
+        </div>}
         {/* Ver eliminados */}
-        <button
-          style={showDeleted ? s.toolbarBtnActive : s.toolbarBtn}
-          onClick={() => setShowDeleted(!showDeleted)}
-          onMouseEnter={e => {
-            if (!showDeleted) (e.currentTarget as HTMLButtonElement).style.background = `${tokens.colors.bgHover}`
-          }}
-          onMouseLeave={e => {
-            if (!showDeleted) (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover
-          }}
-        >
-          <Trash2 size={14} />
-          Ver eliminados
-        </button>
-
+        {/* Ver eliminados - solo superadmin */}
+        {isSuperAdmin && (
+          <button
+            style={showDeleted ? s.toolbarBtnActive : s.toolbarBtn}
+            onClick={() => { setShowDeleted(!showDeleted); setCurrentPage(1) }}
+            onMouseEnter={e => {
+              if (!showDeleted) (e.currentTarget as HTMLButtonElement).style.background = `"${tokens.colors.bgHover}`"
+            }}
+            onMouseLeave={e => {
+              if (!showDeleted) (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover
+            }}
+          >
+            <Trash2 size={14} />
+            Ver eliminados
+          </button>
+        )}
         {/* Funnel */}
         <button
           style={s.toolbarBtn}
@@ -918,8 +930,9 @@ export default function MisLeads() {
               {filteredLeads.map((lead, idx) => {
                 const stage = STAGE_MAP[lead.estado] || { label: lead.estado, color: tokens.colors.gray }
                 return (
-                  <tr
+              {paginatedLeads.map((lead, idx) => {
                     key={lead.id}
+                const rowNum = (safeCurrentPage - 1) * ROWS_PER_PAGE + idx + 1
                     style={s.row}
                     onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = tokens.colors.bgHover }}
                     onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = 'transparent' }}
@@ -1083,8 +1096,25 @@ export default function MisLeads() {
       {/* ── FOOTER ── */}
       <div style={s.footer}>
             <span style={s.footerText}>{filteredLeads.length} oportunidades</span>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: tokens.colors.primary, fontFamily: tokens.fonts.heading }}>
-              Pipeline: {filteredLeads.reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })} MXN
+      <div style={{ ...s.footer, justifyContent: `'space-between`' }}>
+            <span style={s.footerText}>{totalFiltered} oportunidades</span>
+            {totalPages > 1 && (
+              <div style={{ display: `'flex`', alignItems: `'center`', gap: `'6px`' }}>
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={safeCurrentPage <= 1}
+                  style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage <= 1 ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage <= 1 ? tokens.colors.textMuted : tokens.colors.textPrimary, cursor: safeCurrentPage <= 1 ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
+                >{'\u2190'}</button>
+                <span style={{ fontSize: '12px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
+                  {safeCurrentPage} / {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={safeCurrentPage >= totalPages}
+                  style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage >= totalPages ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage >= totalPages ? tokens.colors.textMuted : tokens.colors.textPrimary, cursor: safeCurrentPage >= totalPages ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
+                >{'\u2192'}</button>
+              </div>
+            )}
             </span>
           </div>
 
