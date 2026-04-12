@@ -16,7 +16,6 @@ interface ModuleLayoutProps {
 export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadre }: ModuleLayoutProps) {
   const navigate = useNavigate()
   const { user, logout } = useAuthContext()
-
   const formatName = (email?: string) => {
     if (!email) return 'Usuario'
     const name = email.split('@')[0]
@@ -25,7 +24,6 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
       .map((p: string) => p.charAt(0).toUpperCase() + p.slice(1))
       .join(' ')
   }
-
   const handleLogout = async () => {
     await logout()
     navigate('/login')
@@ -40,20 +38,18 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
       background: tokens.colors.bgMain,
       fontFamily: tokens.fonts.body
     }}>
-      {/* AppHeader */}
       <AppHeader
         onLogout={handleLogout}
         userName={formatName(user?.email)}
         userRole={user?.rol || 'admin'}
         userEmail={user?.email}
       />
-
-      {/* Breadcrumb Bar */}
+      {/* Breadcrumb + titulo + subtitulo + acciones — todo en una línea */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '12px 24px 0 24px',
+        padding: '12px 24px',
         flexShrink: 0
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -78,7 +74,6 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
             <ArrowLeft size={14} />
             <span>Dashboard</span>
           </button>
-
           {moduloPadre && moduloPadre.ruta !== '/dashboard' && (
             <>
               <ChevronRight size={14} style={{ color: tokens.colors.textMuted, margin: '0 2px' }} />
@@ -104,15 +99,29 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
               </button>
             </>
           )}
-
           <ChevronRight size={14} style={{ color: tokens.colors.textMuted, margin: '0 2px' }} />
-          <span style={{ color: tokens.colors.textPrimary, fontSize: '16px', fontWeight: 700, fontFamily: tokens.fonts.heading }}>{titulo}</span>
-          {subtitulo && (<span style={{ color: tokens.colors.textMuted, fontSize: '13px', fontWeight: 400, marginLeft: '12px', fontFamily: tokens.fonts.body }}>{subtitulo}</span>)}
+          <span style={{
+            color: tokens.colors.textPrimary,
+            fontSize: '16px',
+            fontWeight: 700,
+            fontFamily: tokens.fonts.heading
+          }}>
+            {titulo}
           </span>
+          {subtitulo && (
+            <span style={{
+              color: tokens.colors.textMuted,
+              fontSize: '13px',
+              fontWeight: 400,
+              marginLeft: '12px',
+              fontFamily: tokens.fonts.body
+            }}>
+              {subtitulo}
+            </span>
+          )}
         </div>
         {acciones && <div style={{ display: 'flex', gap: '8px' }}>{acciones}</div>}
       </div>
-
       {/* Content */}
       <div style={{
         flex: 1,
@@ -125,5 +134,3 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
     </div>
   )
 }
-
-
