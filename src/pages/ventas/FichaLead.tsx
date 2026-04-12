@@ -31,14 +31,11 @@ interface Lead {
   eliminado?: boolean
 }
 
-      {/* Hidden file input */}
-      <input ref={fileInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={handleFileSelected} />
-
 const PIPELINE_STAGES = [
   { id: 'Nuevo', label: 'Nuevo', color: tokens.colors.blue },
   { id: 'Contactado', label: 'Contactado', color: tokens.colors.yellow },
   { id: 'Cotizado', label: 'Cotizado', color: tokens.colors.orange },
-  { id: 'Negociacion', label: 'Negociación', color: '#A855F7' },
+  { id: 'Negociacion', label: 'NegociaciÃ³n', color: '#A855F7' },
   { id: 'Cerrado Ganado', label: 'Cerrado Ganado', color: tokens.colors.green },
   { id: 'Cerrado Perdido', label: 'Cerrado Perdido', color: tokens.colors.red },
 ]
@@ -94,7 +91,7 @@ export default function FichaLead() {
 
   const handleConvertToClient = async () => {
     if (!lead || converting) return
-    if (!confirm('¿Convertir este lead a Cliente (Cerrado Ganado)?')) return
+    if (!confirm('Â¿Convertir este lead a Cliente (Cerrado Ganado)?')) return
     try {
       setConverting(true)
       const { error } = await supabase
@@ -112,8 +109,8 @@ export default function FichaLead() {
   }
 
   const handleWhatsApp = () => {
-    if (!lead?.telefono) { alert('Este lead no tiene teléfono registrado.'); return }
-    const phone = lead.telefono.replace(/\\D/g, '')
+    if (!lead?.telefono) { alert('Este lead no tiene telÃ©fono registrado.'); return }
+    const phone = lead.telefono.replace(/\D/g, '')
     const msg = encodeURIComponent(`Hola, me comunico de parte de LOMA respecto a ${lead.empresa || 'su empresa'}.`)
     window.open(`https://wa.me/${phone}?text=${msg}`, '_blank')
   }
@@ -134,9 +131,9 @@ export default function FichaLead() {
           const { data, error } = await supabase.functions.invoke('analisis-cotizacion', {
             body: { file_base64: base64Content, filename: file.name, lead_id: lead.id, lead_empresa: lead.empresa }
           })
-          if (error) { console.error(error); alert('Error al analizar la cotización.'); return }
-          if (data) { alert(`Cotización analizada: ${data.resumen || 'OK'}`); }
-        } catch (err) { console.error(err); alert('Error al analizar la cotización.') }
+          if (error) { console.error(error); alert('Error al analizar la cotizaciÃ³n.'); return }
+          if (data) { alert(`CotizaciÃ³n analizada: ${data.resumen || 'OK'}`); }
+        } catch (err) { console.error(err); alert('Error al analizar la cotizaciÃ³n.') }
       }
       reader.readAsDataURL(file)
     } catch (err) { console.error(err); alert('Error al leer el archivo.') }
@@ -275,7 +272,7 @@ export default function FichaLead() {
       <ModuleLayout titulo="Lead">
         <div style={{ textAlign: 'center', padding: '60px', color: tokens.colors.textMuted }}>
           <p style={{ fontSize: '18px', fontWeight: 500, margin: 0, fontFamily: tokens.fonts.heading }}>Lead no encontrado</p>
-          <p style={{ fontSize: '14px', marginTop: '8px', fontFamily: tokens.fonts.body }}>No hay información disponible para este lead</p>
+          <p style={{ fontSize: '14px', marginTop: '8px', fontFamily: tokens.fonts.body }}>No hay informaciÃ³n disponible para este lead</p>
           <button style={{ ...s.actionBtn, marginTop: '16px', display: 'inline-flex' }} onClick={() => navigate('/ventas/mis-leads')}>
             <ArrowLeft size={14} /> Volver al Panel
           </button>
@@ -288,7 +285,7 @@ export default function FichaLead() {
 
   return (
     <ModuleLayout
-      titulo={`Lead — ${lead.empresa}`}
+      titulo={`Lead â ${lead.empresa}`}
       acciones={
         <button
           style={s.backBtn}
@@ -301,7 +298,10 @@ export default function FichaLead() {
       }
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%', overflow: 'hidden' }}>
-        {/* ââ PIPELINE ââ */}
+      {/* Hidden file input for cotizaciÃ³n PDF */}
+      <input ref={fileInputRef} type="file" accept=".pdf" style={{ display: 'none' }} onChange={handleFileSelected} />
+
+        {/* Ã¢ÂÂÃ¢ÂÂ PIPELINE Ã¢ÂÂÃ¢ÂÂ */}
         <div style={s.card}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {PIPELINE_STAGES.map((stage, idx) => {
@@ -326,7 +326,7 @@ export default function FichaLead() {
           </div>
         </div>
 
-        {/* ââ BODY: 2 columns ââ */}
+        {/* Ã¢ÂÂÃ¢ÂÂ BODY: 2 columns Ã¢ÂÂÃ¢ÂÂ */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px', flex: 1, minHeight: 0, overflow: 'auto' }}>
 
           {/* LEFT: Info del lead */}
@@ -353,7 +353,7 @@ export default function FichaLead() {
                   <div style={s.infoRow}>
                     <Phone size={15} style={{ color: tokens.colors.primary, flexShrink: 0 }} />
                     <div>
-                      <p style={s.label}>Teléfono</p>
+                      <p style={s.label}>TelÃ©fono</p>
                       <p style={s.value}>{lead.telefono}</p>
                     </div>
                   </div>
@@ -381,7 +381,7 @@ export default function FichaLead() {
 
             {/* Info comercial */}
             <div style={s.card}>
-              <p style={s.sectionTitle}>Información Comercial</p>
+              <p style={s.sectionTitle}>InformaciÃ³n Comercial</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {lead.ruta_interes && (
                   <div style={s.infoRow}>
@@ -473,7 +473,7 @@ export default function FichaLead() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Calendar size={15} style={{ color: tokens.colors.yellow }} />
                   <div>
-                    <p style={s.label}>Último Movimiento</p>
+                    <p style={s.label}>Ãltimo Movimiento</p>
                     <p style={s.value}>{formatDate(lead.fecha_ultimo_mov)}</p>
                   </div>
                 </div>
@@ -499,19 +499,23 @@ export default function FichaLead() {
 
             {/* Acciones */}
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <button style={s.primaryBtn}>
+              <button style={s.primaryBtn} onClick={() => alert('MÃ³dulo de actividades prÃ³ximamente')}>
                 <Plus size={14} /> Registrar Actividad
               </button>
-              <button style={s.actionBtn}>
-                <FileText size={14} /> Crear Cotización
+              <button style={s.actionBtn} onClick={handleAttachQuotation}>
+                <Upload size={14} /> Crear CotizaciÃ³n
               </button>
-              <button style={s.actionBtn}>
-                <UserCheck size={14} /> Convertir a Cliente
+              <button
+                style={{ ...s.actionBtn, ...(converting ? { opacity: 0.6, cursor: 'wait' } : {}) }}
+                onClick={handleConvertToClient}
+                disabled={converting}
+              >
+                <UserCheck size={14} /> {converting ? 'Convirtiendo...' : 'Convertir a Cliente'}
               </button>
-              <button style={s.actionBtn}>
+              <button style={s.actionBtn} onClick={() => navigate(`/ventas/leads/${id}/editar`)}>
                 <Edit3 size={14} /> Editar Lead
               </button>
-              <button style={s.actionBtn}>
+              <button style={s.actionBtn} onClick={handleWhatsApp}>
                 <MessageSquare size={14} /> WhatsApp
               </button>
             </div>
