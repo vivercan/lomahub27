@@ -478,7 +478,6 @@ export default function MisLeads() {
     },
     table: {
       width: '100%',
-      height: '100%',
       borderCollapse: 'collapse' as const,
       minWidth: '1100px',
     },
