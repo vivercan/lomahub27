@@ -109,11 +109,11 @@ export default function MisLeads() {
       // Fetch vendedores desde usuarios_autorizados
       const { data: usuariosData } = await supabase
         .from('usuarios_autorizados')
-        .select('id, nombre, rol')
+        .select('id, nombre, email, rol')
         .eq('activo', true)
         .in('rol', ['ventas', 'superadmin'])
         .order('nombre', { ascending: true })
-      setEjecutivos((usuariosData || []).map((u: any) => ({ id: u.id, nombre: u.nombre })))
+      setEjecutivos((usuariosData || []).map((u: any) => ({ id: u.id, nombre: u.nombre && u.nombre.trim() ? u.nombre : (u.email ? u.email.split('@')[0].split(/[._-]/).map((w: string) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') : 'Sin nombre') })))
     } catch (err) {
       console.error('Unexpected error:', err)
       setLeads([])
