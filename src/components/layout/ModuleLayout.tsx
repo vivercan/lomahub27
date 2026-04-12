@@ -146,3 +146,4 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
     </div>
   )
 }
+
