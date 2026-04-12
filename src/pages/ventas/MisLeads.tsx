@@ -766,7 +766,7 @@ export default function MisLeads() {
             style={s.searchInput}
             placeholder="Buscar empresa, contacto, ciudad..."
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1) }}
           />
           {searchTerm && (
             <button
@@ -924,7 +924,7 @@ export default function MisLeads() {
                     onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = tokens.colors.bgHover }}
                     onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = 'transparent' }}
                   >
-                    <td style={{ ...s.tdMuted, textAlign: 'center' as const, width: '50px' }}>{idx + 1}</td>
+                    <td style={{ ...s.tdMuted, textAlign: 'center' as const, width: '50px' }}>{rowNum}</td>
                     <td style={s.td}>
                       <div
                         style={{ fontWeight: 600, color: tokens.colors.textPrimary, cursor: 'pointer' }}
