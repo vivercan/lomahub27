@@ -125,9 +125,11 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
       {/* Content */}
       <div style={{
         flex: 1,
-        overflow: 'auto',
+        overflow: 'hidden',
         padding: '0 24px 24px',
-        scrollbarWidth: 'none'
+        scrollbarWidth: 'none',
+        display: 'flex',
+        flexDirection: 'column' as const
       }}>
         {children}
       </div>
