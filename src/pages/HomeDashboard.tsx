@@ -213,7 +213,7 @@ export default function HomeDashboard() {
       />
       <div style={{
         flex: '1 1 auto',
-        padding: '16px 28px',
+        padding: '26px 28px',
         display: 'flex',
         flexDirection: 'column',
         gap: '14px',
@@ -230,6 +230,7 @@ export default function HomeDashboard() {
     </div>
   )
 }
+
 
 
 
