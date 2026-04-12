@@ -106,25 +106,12 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
           )}
 
           <ChevronRight size={14} style={{ color: tokens.colors.textMuted, margin: '0 2px' }} />
-          <span style={{
-            color: tokens.colors.textPrimary,
-            fontSize: '13px',
-            fontWeight: 600,
-            fontFamily: tokens.fonts.heading
-          }}>
-            {titulo}
+          <span style={{ color: tokens.colors.textPrimary, fontSize: '16px', fontWeight: 700, fontFamily: tokens.fonts.heading }}>{titulo}</span>
+          {subtitulo && (<span style={{ color: tokens.colors.textMuted, fontSize: '13px', fontWeight: 400, marginLeft: '12px', fontFamily: tokens.fonts.body }}>{subtitulo}</span>)}
           </span>
         </div>
         {acciones && <div style={{ display: 'flex', gap: '8px' }}>{acciones}</div>}
       </div>
-      {/* Subtitulo compacto */}
-      {subtitulo && (
-        <div style={{ padding: '4px 24px 8px', flexShrink: 0 }}>
-          <p style={{ margin: 0, fontSize: '13px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
-            {subtitulo}
-          </p>
-        </div>
-      )}
 
       {/* Content */}
       <div style={{
@@ -138,4 +125,5 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
     </div>
   )
 }
+
 
