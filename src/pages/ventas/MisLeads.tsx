@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Search, ChevronDown, Trash2, Filter, Download, Plus, MoreHorizontal,
-  Loader, ExternalLink, Edit3, Zap, Upload, ArrowUpDown, X, RotateCcw, FileText, LayoutGrid, List
+  Loader, Eye, Edit3, Zap, Upload, ArrowUpDown, X, RotateCcw, FileText, LayoutGrid, List
 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
@@ -1000,20 +1000,20 @@ export default function MisLeads() {
                         ) : (
                           <>
                             <button
-                              style={s.actionBtn}
+                              style={{ ...s.actionBtn, color: '#2563EB' }}
                               title="Ver ficha"
                               onClick={e => { e.stopPropagation(); navigate(`/ventas/leads/${lead.id}`) }}
                               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
                               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
                             >
-                              <ExternalLink size={14} />
+                              <Eye size={15} />
                             </button>
                             <button
-                              style={{ ...s.actionBtn, color: tokens.colors.primary }}
+                              style={{ ...s.actionBtn, color: '#DC2626' }}
                               title="Adjuntar CotizaciÃ³n PDF"
                               onClick={() => handleAttachQuotation(lead)}
                             >
-                              <Upload size={15} />
+                              <FileText size={15} />
                             </button>
                             <button
                               style={s.actionBtn}
@@ -1036,7 +1036,7 @@ export default function MisLeads() {
                             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
                             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
                           >
-                            <ExternalLink size={13} /> Ver Ficha
+                            <Eye size={13} style={{ color: '#2563EB' }} /> <span style={{ color: '#2563EB' }}>Ver Ficha</span>
                           </button>
                           <button
                             style={s.actionsMenuItem}
@@ -1044,8 +1044,8 @@ export default function MisLeads() {
                             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
                             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
                           >
-                            <Upload size={13} style={{ color: tokens.colors.primary }} />
-                            <span style={{ color: tokens.colors.primary }}>Adjuntar CotizaciÃ³n</span>
+                            <FileText size={13} style={{ color: '#DC2626' }} />
+                            <span style={{ color: '#DC2626' }}>Adjuntar CotizaciÃ³n</span>
                           </button>
                           <button
                             style={s.actionsMenuItem}
@@ -1114,7 +1114,7 @@ export default function MisLeads() {
                 <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={safeCurrentPage <= 1}
-                  style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage <= 1 ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage <= 1 ? tokens.colors.textMuted : tokens.colors.textPrimary, cursor: safeCurrentPage <= 1 ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
+                  style={{ padding: '4px 10px', fontSize: '14px', fontWeight: 700, border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage <= 1 ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage <= 1 ? tokens.colors.textMuted : '#F59E0B', cursor: safeCurrentPage <= 1 ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
                 >{'â'}</button>
                 <span style={{ fontSize: '12px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
                   {safeCurrentPage} / {totalPages}
@@ -1122,7 +1122,7 @@ export default function MisLeads() {
                 <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={safeCurrentPage >= totalPages}
-                  style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage >= totalPages ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage >= totalPages ? tokens.colors.textMuted : tokens.colors.textPrimary, cursor: safeCurrentPage >= totalPages ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
+                  style={{ padding: '4px 10px', fontSize: '14px', fontWeight: 700, border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage >= totalPages ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage >= totalPages ? tokens.colors.textMuted : '#F59E0B', cursor: safeCurrentPage >= totalPages ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
                 >{'â'}</button>
               </div>
             )}
