@@ -117,22 +117,14 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
         </div>
         {acciones && <div style={{ display: 'flex', gap: '8px' }}>{acciones}</div>}
       </div>
-
-      {/* Title area */}
-      <div style={{ padding: '8px 24px 12px', flexShrink: 0 }}>
-        <h1 style={{
-          margin: 0,
-          fontSize: '22px',
-          fontWeight: 700,
-          color: tokens.colors.textPrimary,
-          fontFamily: tokens.fonts.heading
-        }}>{titulo}</h1>
-        {subtitulo && (
-          <p style={{ margin: '4px 0 0', fontSize: '13px', color: tokens.colors.textSecondary }}>
+      {/* Subtitulo compacto */}
+      {subtitulo && (
+        <div style={{ padding: '4px 24px 8px', flexShrink: 0 }}>
+          <p style={{ margin: 0, fontSize: '13px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
             {subtitulo}
           </p>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Content */}
       <div style={{
