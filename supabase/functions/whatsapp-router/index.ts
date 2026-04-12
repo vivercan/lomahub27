@@ -144,9 +144,9 @@ function extractPhoneNumber(payload: WebhookPayload): string | null {
 
 // Validate Meta webhook signature
 function validateWebhookToken(token: string | null): boolean {
-  const expectedToken = Deno.env.get("WHATSAPP_VERIFY_TOKEN");
+  const expectedToken = Deno.env.get("WHATSAPP_WEBHOOK_VERIFY_TOKEN");
   if (!expectedToken) {
-    console.warn("WHATSAPP_VERIFY_TOKEN not set - webhook validation disabled");
+    console.warn("WHATSAPP_WEBHOOK_VERIFY_TOKEN not set - webhook validation disabled");
     return true;
   }
   return token === expectedToken;
