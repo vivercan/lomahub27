@@ -350,8 +350,8 @@ export default function MisLeads() {
   const totalActive = leads.filter(l => !l.eliminado).length
   const totalValue = leads.filter(l => !l.eliminado).reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0)
 
+  const isSuperAdmin = user?.rol === 'superadmin'
   // Styles
-  const isSuperAdmin = user?.rol === `'superadmin`'
   const s = {
     page: {
       display: 'flex',
@@ -583,8 +583,25 @@ export default function MisLeads() {
       cursor: 'pointer',
     },
     footer: {
-      display: 'flex',
-      alignItems: 'center',
+      <div style={{ ...s.footer, justifyContent: 'space-between' }}>
+            <span style={s.footerText}>{totalFiltered} oportunidades</span>
+            {totalPages > 1 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={safeCurrentPage <= 1}
+                  style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage <= 1 ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage <= 1 ? tokens.colors.textMuted : tokens.colors.textPrimary, cursor: safeCurrentPage <= 1 ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
+                >{${'\\u2190'}}</button>
+                <span style={{ fontSize: '12px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
+                  {safeCurrentPage} / {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={safeCurrentPage >= totalPages}
+                  style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage >= totalPages ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage >= totalPages ? tokens.colors.textMuted : tokens.colors.textPrimary, cursor: safeCurrentPage >= totalPages ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
+                >{${'\\u2192'}}</button>
+              </div>
+            )}
       justifyContent: 'space-between',
       padding: '10px 24px',
       borderTop: `1px solid ${tokens.colors.border}`,
@@ -777,7 +794,7 @@ export default function MisLeads() {
             placeholder="Buscar empresa, contacto, ciudad..."
             value={searchTerm}
             onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1) }}
-          />
+            onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1) }}
           {searchTerm && (
             <button
               style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
@@ -789,9 +806,9 @@ export default function MisLeads() {
         </div>
 
         {/* Vendedores dropdown */}
+        <div style={{ position: 'relative' }}>
         {/* Vendedores dropdown - solo superadmin */}
-        {isSuperAdmin && <div style={{ position: `'relative`' }}>
-            style={{ ...s.selectDropdown, textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+        {isSuperAdmin && <div style={{ position: 'relative' }}>
             onClick={() => setShowEjDropdown(!showEjDropdown)}
           >
             <span>{filteredEjecutivo.length === 0 ? 'Todos los vendedores' : filteredEjecutivo.length === 1 ? filteredEjecutivo[0] || '1 vendedor' : filteredEjecutivo.length + ' vendedores'}</span>
@@ -824,15 +841,16 @@ export default function MisLeads() {
             </div>
           )}
         </div>
+
         </div>}
-        {/* Ver eliminados */}
+        <button
         {/* Ver eliminados - solo superadmin */}
         {isSuperAdmin && (
           <button
             style={showDeleted ? s.toolbarBtnActive : s.toolbarBtn}
             onClick={() => { setShowDeleted(!showDeleted); setCurrentPage(1) }}
             onMouseEnter={e => {
-              if (!showDeleted) (e.currentTarget as HTMLButtonElement).style.background = `"${tokens.colors.bgHover}`"
+              if (!showDeleted) (e.currentTarget as HTMLButtonElement).style.background = `${tokens.colors.bgHover}`
             }}
             onMouseLeave={e => {
               if (!showDeleted) (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover
@@ -842,7 +860,6 @@ export default function MisLeads() {
             Ver eliminados
           </button>
         )}
-        {/* Funnel */}
         <button
           style={s.toolbarBtn}
           onClick={() => navigate('/ventas/funnel')}
@@ -927,12 +944,12 @@ export default function MisLeads() {
               </tr>
             </thead>
             <tbody>
-              {filteredLeads.map((lead, idx) => {
-                const stage = STAGE_MAP[lead.estado] || { label: lead.estado, color: tokens.colors.gray }
-                return (
               {paginatedLeads.map((lead, idx) => {
-                    key={lead.id}
+                const stage = STAGE_MAP[lead.estado] || { label: lead.estado, color: tokens.colors.gray }
                 const rowNum = (safeCurrentPage - 1) * ROWS_PER_PAGE + idx + 1
+                return (
+                  <tr
+                    key={lead.id}
                     style={s.row}
                     onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = tokens.colors.bgHover }}
                     onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = 'transparent' }}
@@ -1096,25 +1113,8 @@ export default function MisLeads() {
       {/* ── FOOTER ── */}
       <div style={s.footer}>
             <span style={s.footerText}>{filteredLeads.length} oportunidades</span>
-      <div style={{ ...s.footer, justifyContent: `'space-between`' }}>
-            <span style={s.footerText}>{totalFiltered} oportunidades</span>
-            {totalPages > 1 && (
-              <div style={{ display: `'flex`', alignItems: `'center`', gap: `'6px`' }}>
-                <button
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  disabled={safeCurrentPage <= 1}
-                  style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage <= 1 ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage <= 1 ? tokens.colors.textMuted : tokens.colors.textPrimary, cursor: safeCurrentPage <= 1 ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
-                >{'\u2190'}</button>
-                <span style={{ fontSize: '12px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
-                  {safeCurrentPage} / {totalPages}
-                </span>
-                <button
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={safeCurrentPage >= totalPages}
-                  style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid ' + tokens.colors.border, borderRadius: '6px', background: safeCurrentPage >= totalPages ? 'transparent' : tokens.colors.bgCard, color: safeCurrentPage >= totalPages ? tokens.colors.textMuted : tokens.colors.textPrimary, cursor: safeCurrentPage >= totalPages ? 'default' : 'pointer', fontFamily: tokens.fonts.body }}
-                >{'\u2192'}</button>
-              </div>
-            )}
+            <span style={{ fontSize: '13px', fontWeight: 700, color: tokens.colors.primary, fontFamily: tokens.fonts.heading }}>
+              Pipeline: {filteredLeads.reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })} MXN
             </span>
           </div>
 
