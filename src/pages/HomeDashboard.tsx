@@ -1,4 +1,5 @@
-// HomeDashboard V27i - Solid colors, no icons, original layout
+// HomeDashboard V27j - Solo cards modificados: iconos SVG blancos
+// AppHeader, banner, layout 7+2, KPIs, rutas = INTACTO
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -10,6 +11,7 @@ interface CardConfig {
   label: string
   route: string
   bgColor: string
+  iconFile: string
   kpiValue: number | string
   kpiLabel: string
   statusDot: 'green' | 'yellow' | 'red' | 'gray'
@@ -84,18 +86,18 @@ export default function HomeDashboard() {
   }, [fetchKpis])
 
   const mainCards: CardConfig[] = [
-    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#2563EB', kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#0D9488', kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 subm\u00f3dulos' },
-    { id: 'servicio-clientes', label: 'Servicio a\nClientes', route: '/servicio/dashboard', bgColor: '#16A34A', kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 subm\u00f3dulos' },
-    { id: 'despacho', label: 'Despacho\nInteligente', route: '/operaciones/torre-control', bgColor: '#15803D', kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes' },
-    { id: 'ventas', label: 'Ventas', route: '/ventas/mis-leads', bgColor: '#EA580C', kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo' },
-    { id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva', bgColor: '#D97706', kpiValue: '\u2014', kpiLabel: 'pendientes', statusDot: 'gray', statusText: 'Disponible' },
-    { id: 'plantillas', label: 'Plantillas', route: '/documentos', bgColor: '#7C3AED', kpiValue: '\u2014', kpiLabel: 'plantillas', statusDot: 'gray', statusText: 'Disponible' },
+    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#2563EB', iconFile: 'oportunidades.svg', kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#0D9488', iconFile: 'comercial.svg', kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 subm\u00f3dulos' },
+    { id: 'servicio-clientes', label: 'Servicio a\nClientes', route: '/servicio/dashboard', bgColor: '#16A34A', iconFile: 'servicio-al-cliente.svg', kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 subm\u00f3dulos' },
+    { id: 'despacho', label: 'Despacho\nInteligente', route: '/operaciones/torre-control', bgColor: '#15803D', iconFile: 'Despacho inteligente.svg', kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes' },
+    { id: 'ventas', label: 'Ventas', route: '/ventas/mis-leads', bgColor: '#EA580C', iconFile: 'Ventas.svg', kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo' },
+    { id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva', bgColor: '#D97706', iconFile: 'cotizacionea.svg', kpiValue: '\u2014', kpiLabel: 'pendientes', statusDot: 'gray', statusText: 'Disponible' },
+    { id: 'plantillas', label: 'Plantillas', route: '/documentos', bgColor: '#7C3AED', iconFile: 'plantillas.svg', kpiValue: '\u2014', kpiLabel: 'plantillas', statusDot: 'gray', statusText: 'Disponible' },
   ]
 
   const row2Cards: CardConfig[] = [
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/correos', bgColor: '#DB2777', kpiValue: '3', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo' },
-    { id: 'config', label: 'Configuraci\u00f3n', route: '/admin/configuracion', bgColor: '#6366F1', kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/correos', bgColor: '#DB2777', iconFile: 'comunicaciones.svg', kpiValue: '3', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo' },
+    { id: 'config', label: 'Configuraci\u00f3n', route: '/admin/configuracion', bgColor: '#6366F1', iconFile: 'configuracion.svg', kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema' },
   ]
 
   const getCardStyle = (isHovered: boolean, bgColor: string): React.CSSProperties => ({
@@ -133,6 +135,23 @@ export default function HomeDashboard() {
           width: '6px', height: '6px', borderRadius: '50%',
           backgroundColor: DOT_COLORS[card.statusDot] || DOT_COLORS.gray,
         }} />
+        <img
+          src={`/icons/dashboard/${card.iconFile}`}
+          alt=""
+          style={{
+            position: 'absolute',
+            right: '-5%',
+            bottom: '-8%',
+            width: '70%',
+            height: '70%',
+            objectFit: 'contain',
+            pointerEvents: 'none',
+            opacity: 0.25,
+            filter: 'brightness(0) invert(1)',
+            transition: 'transform 0.5s cubic-bezier(0.23,1,0.32,1)',
+            transform: isHovered ? 'translate(3px,-3px) scale(1.05)' : 'translate(0,0) scale(1)',
+          }}
+        />
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '20px',
@@ -141,6 +160,8 @@ export default function HomeDashboard() {
           lineHeight: 1.2,
           marginBottom: 'auto',
           whiteSpace: 'pre-line',
+          position: 'relative',
+          zIndex: 1,
         }}>
           {card.label}
         </div>
@@ -151,6 +172,8 @@ export default function HomeDashboard() {
           color: '#FFFFFF',
           lineHeight: 1,
           marginTop: '6px',
+          position: 'relative',
+          zIndex: 1,
         }}>
           {card.kpiValue}
         </div>
@@ -160,6 +183,8 @@ export default function HomeDashboard() {
           fontWeight: 400,
           color: 'rgba(255,255,255,0.7)',
           marginTop: '3px',
+          position: 'relative',
+          zIndex: 1,
         }}>
           {card.statusText}
         </div>
