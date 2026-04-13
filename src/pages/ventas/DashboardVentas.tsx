@@ -2,14 +2,13 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
-// Loader2 removed — cards render instantly, KPIs load in background
 import { tokens } from '../../lib/tokens'
 
 /* ———————————————————————————————————————————————————————————————
-   COMERCIAL — Landing Page (alineada al dashboard principal)
-   3 cards reales: Oportunidades, Cotizaciones, Programa Semanal
-   Iconos Hugeicons watermark anclados bottom-right (mismo patron
-   que HomeDashboard / card Configuracion validado por JJ)
+   COMERCIAL — Landing Page (15 cards)
+   Cotizador, Mis Cotizaciones, Programa Semanal, Alta de Clientes,
+   Workflow Alta, Portal Docs, Firma Digital, Prospección,
+   Inteligencia, Presupuesto, Pareto, CXC x3, Chief of Staff
    ——————————————————————————————————————————————————————————————— */
 
 const D = {
@@ -23,7 +22,6 @@ const D = {
   subSize: '9px',
 } as const
 
-// ICON SYSTEM — Hugeicons via Iconify CDN (mismo patron HomeDashboard)
 const ICO_OPACITY = 0.20
 const ico = (path: string, style: React.CSSProperties) => (
   <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
@@ -34,9 +32,21 @@ const compose = (main: string) => () => (
   </div>
 )
 
-const IconOportunidades = compose('hugeicons:filter')
-const IconCotizaciones  = compose('hugeicons:invoice-03')
-const IconPrograma      = compose('hugeicons:calendar-03')
+const IconCotizador       = compose('hugeicons:invoice-03')
+const IconMisCotizaciones = compose('hugeicons:file-management')
+const IconPrograma        = compose('hugeicons:calendar-03')
+const IconAltaClientes    = compose('hugeicons:user-add-01')
+const IconWorkflowAlta    = compose('hugeicons:workflow-square-06')
+const IconPortalDocs      = compose('hugeicons:folder-upload')
+const IconFirmaDigital    = compose('hugeicons:signature')
+const IconProspeccion     = compose('hugeicons:search-visual')
+const IconInteligencia    = compose('hugeicons:analytics-01')
+const IconPresupuesto     = compose('hugeicons:money-bag-02')
+const IconPareto          = compose('hugeicons:chart-bar-line')
+const IconCXCCartera      = compose('hugeicons:wallet-02')
+const IconCXCAging        = compose('hugeicons:clock-01')
+const IconCXCAcciones     = compose('hugeicons:alert-circle')
+const IconChiefOfStaff    = compose('hugeicons:artificial-intelligence-04')
 
 interface LandingCard {
   id: string; label: string; route: string; kpiLabel: string;
@@ -44,25 +54,45 @@ interface LandingCard {
 }
 
 const CARDS: LandingCard[] = [
-  { id: 'cotizaciones',  label: 'Cotizaciones',     route: '/cotizador/nueva',          kpiLabel: 'Pendientes',      icon: <IconCotizaciones />,  accent: '#D97706' },
-  { id: 'programa',      label: 'Programa Semanal', route: '/ventas/programa-semanal',  kpiLabel: 'Esta semana',     icon: <IconPrograma />,      accent: '#0891B2' },
+  { id: 'cotizador',       label: 'Cotizador',            route: '/cotizador/nueva',            kpiLabel: 'Pendientes',       icon: <IconCotizador />,       accent: '#D97706' },
+  { id: 'mis_cotizaciones', label: 'Mis Cotizaciones',    route: '/cotizador/mis-cotizaciones',  kpiLabel: 'Total',            icon: <IconMisCotizaciones />, accent: '#B45309' },
+  { id: 'programa',        label: 'Programa Semanal',     route: '/ventas/programa-semanal',     kpiLabel: 'Esta semana',      icon: <IconPrograma />,        accent: '#0891B2' },
+  { id: 'alta_clientes',   label: 'Alta de Clientes',     route: '/clientes/alta',               kpiLabel: 'Formulario',       icon: <IconAltaClientes />,    accent: '#2563EB' },
+  { id: 'workflow_alta',   label: 'Workflow Alta',         route: '/clientes/workflow-alta',       kpiLabel: 'En proceso',       icon: <IconWorkflowAlta />,    accent: '#7C3AED' },
+  { id: 'portal_docs',     label: 'Portal Documentos',    route: '/clientes/corporativos',        kpiLabel: 'Clientes',         icon: <IconPortalDocs />,      accent: '#059669' },
+  { id: 'firma_digital',   label: 'Firma Digital',        route: '/cotizador/firma-digital',      kpiLabel: 'Pendientes',       icon: <IconFirmaDigital />,    accent: '#DC2626' },
+  { id: 'prospeccion',     label: 'Prospección',          route: '/ventas/prospeccion',            kpiLabel: 'Prospectos',       icon: <IconProspeccion />,     accent: '#0D9488' },
+  { id: 'inteligencia',    label: 'Inteligencia',         route: '/inteligencia',                 kpiLabel: 'Rankings',         icon: <IconInteligencia />,    accent: '#6366F1' },
+  { id: 'presupuesto',     label: 'Presupuesto',          route: '/inteligencia/presupuesto',     kpiLabel: 'Mensual',          icon: <IconPresupuesto />,     accent: '#15803D' },
+  { id: 'pareto',          label: 'Análisis 80/20',       route: '/inteligencia/pareto',          kpiLabel: 'Pareto',           icon: <IconPareto />,          accent: '#EA580C' },
+  { id: 'cxc_cartera',     label: 'CXC Cartera',          route: '/cxc/cartera',                  kpiLabel: 'Cuentas',          icon: <IconCXCCartera />,      accent: '#1D4ED8' },
+  { id: 'cxc_aging',       label: 'CXC Aging',            route: '/cxc/aging',                    kpiLabel: 'Reporte',          icon: <IconCXCAging />,        accent: '#9333EA' },
+  { id: 'cxc_acciones',    label: 'Acciones Cobro',       route: '/cxc/acciones',                 kpiLabel: 'Pendientes',       icon: <IconCXCAcciones />,     accent: '#BE123C' },
+  { id: 'chief_of_staff',  label: 'Chief of Staff',       route: '/comunicaciones/chief-of-staff', kpiLabel: 'AI Briefing',     icon: <IconChiefOfStaff />,    accent: '#DB2777' },
 ]
 
 export default function DashboardVentas() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
-  const [kpis, setKpis] = useState<Record<string, number>>({ cotizaciones: 0, programa: 0 })
+  const [kpis, setKpis] = useState<Record<string, number>>({})
   const [loading, setLoading] = useState(true)
 
   const fetchKpis = useCallback(async () => {
     try {
-      const [cots, prog] = await Promise.all([
+      const [cots, prog, leads, altas, cxcCuentas] = await Promise.all([
         supabase.from('cotizaciones').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('estado', 'pendiente'),
         supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null).gte('created_at', new Date(Date.now() - 7 * 86400000).toISOString()),
+        supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null),
+        supabase.from('alta_clientes').select('*', { count: 'exact', head: true }).not('estado', 'eq', 'COMPLETADA'),
+        supabase.from('cxc_cartera').select('*', { count: 'exact', head: true }),
       ])
       setKpis({
-        cotizaciones: cots.count ?? 0,
+        cotizador: cots.count ?? 0,
+        mis_cotizaciones: cots.count ?? 0,
         programa: prog.count ?? 0,
+        alta_clientes: leads.count ?? 0,
+        workflow_alta: altas.count ?? 0,
+        cxc_cartera: cxcCuentas.count ?? 0,
       })
     } catch (e) {
       console.error('KPI fetch error:', e)

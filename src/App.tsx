@@ -84,6 +84,8 @@ import CatalogosTab from './pages/admin/CatalogosTab'
 import ProgramacionDedicados from './pages/operaciones/ProgramacionDedicados'
 import ConfigIntegraciones from './pages/admin/ConfigIntegraciones'
 import DocumentosCompania from './pages/admin/DocumentosCompania'
+import DashboardOperaciones from './pages/operaciones/DashboardOperaciones'
+import DashboardComunicaciones from './pages/comunicaciones/DashboardComunicaciones'
 
 function App() {
   return (
@@ -223,6 +225,21 @@ function App() {
               <DashboardCS />
             </ProtectedRoute>
           } />
+
+          {/* --- Operaciones Dashboard --- */}
+          <Route path="/operaciones/dashboard" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops', 'direccion']}>
+              <DashboardOperaciones />
+            </ProtectedRoute>
+          } />
+
+          {/* --- Comunicaciones Dashboard --- */}
+          <Route path="/comunicaciones/dashboard" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'supervisor_cs', 'direccion']}>
+              <DashboardComunicaciones />
+            </ProtectedRoute>
+          } />
+
 
           {/* ––– 11. Despachos ––– */}
           <Route path="/operaciones/despachos" element={

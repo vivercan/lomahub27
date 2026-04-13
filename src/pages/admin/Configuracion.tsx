@@ -138,6 +138,7 @@ const CARDS: ConfigCard[] = [
   { id: 'auditoria', label: 'Auditoría', route: '/admin/configuracion/auditoria', subtitle: 'Actividad del sistema', dot: 'red', accent: '#DC2626', geo: <GeoAuditoria /> },
   { id: 'plantillas', label: 'Plantillas', route: '/admin/configuracion/plantillas', subtitle: 'Formatos y templates', dot: 'purple', accent: '#7C3AED', geo: <GeoPlantillas /> },
   { id: 'documentos', label: 'Documentos', route: '/admin/configuracion/documentos', subtitle: 'Acta constitutiva y legales', dot: 'green', accent: '#0891B2', geo: <GeoDocumentos /> },
+  { id: 'cerebro', label: 'Cerebro Tarifario', route: '/pricing/cerebro-tarifario', subtitle: 'Tarifas y pricing', dot: 'yellow', accent: '#EA580C', geo: <GeoParametros /> },
 ]
 
 /* –– Component –– */

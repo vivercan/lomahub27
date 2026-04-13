@@ -149,7 +149,7 @@ export default function MisLeads() {
   }
 
   const formatDate = (d: string): string => {
-    if (!d) return 'â'
+    if (!d) return '—'
     const date = new Date(d)
     return date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: '2-digit' })
   }
@@ -789,7 +789,7 @@ export default function MisLeads() {
         onChange={handleFileSelected}
       />
 
-      {/* ââ TOOLBAR ââ */}
+      {/* —— TOOLBAR —— */}
       <div style={s.toolbar}>
         {/* Search */}
         <div style={s.searchBox}>
@@ -984,19 +984,19 @@ export default function MisLeads() {
                     <td style={{ ...s.td, height: `${ROW_HEIGHT}px`, padding: '6px 14px', verticalAlign: 'middle' as const }}>
                       <div style={{ color: tokens.colors.textPrimary }}>{lead.contacto || '—'}</div>
                     </td>
-                    <td style={s.tdMuted}>{lead.tipo_carga || 'â'}</td>
-                    <td style={s.tdMuted}>{lead.email || 'â'}</td>
-                    <td style={s.tdMuted}>{lead.tipo_viaje || 'â'}</td>
+                    <td style={s.tdMuted}>{lead.tipo_carga || '—'}</td>
+                    <td style={s.tdMuted}>{lead.email || '—'}</td>
+                    <td style={s.tdMuted}>{lead.tipo_viaje || '—'}</td>
                     <td style={{ ...s.td, fontWeight: 600, color: tokens.colors.green }}>
                       {formatCurrency(lead.proyectado_usd || lead.valor_estimado || 0)}
                     </td>
                     <td style={s.tdMuted}>
                       <div style={{ maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {lead.ejecutivo_nombre || 'â'}
+                        {lead.ejecutivo_nombre || '—'}
                       </div>
                     </td>
                     <td style={s.tdMuted}>{formatDate(lead.fecha_creacion)}</td>
-              <td style={s.td}>{lead.updated_at ? formatDate(lead.updated_at) : 'â'}</td>
+              <td style={s.td}>{lead.updated_at ? formatDate(lead.updated_at) : '—'}</td>
                     <td style={{ ...s.td, textAlign: 'center' as const, width: '50px' }}>
                       <button
                         style={{ ...s.actionBtn, color: lead.cotizacion_url ? tokens.colors.green : tokens.colors.textMuted }}
@@ -1090,7 +1090,7 @@ export default function MisLeads() {
       </div>
           </>
         ) : (
-          /* ââ KANBAN VIEW ââ */
+          /* —— KANBAN VIEW —— */
           <div style={{ display: 'flex', gap: '12px', height: 'calc(100vh - 280px)', overflowX: 'auto', scrollbarWidth: 'none', padding: '4px 0' }}>
             {PIPELINE_STAGES.map(stage => {
               const stageLeads = filteredLeads.filter(l => l.estado === stage.id) /* Use all filteredLeads, not paginatedLeads, for kanban */
@@ -1151,9 +1151,9 @@ export default function MisLeads() {
             </span>
           </div>
 
-      {/* ââ FUNNEL MODAL ââ */}
+      {/* —— FUNNEL MODAL —— */}
 
-      {/* ââ QUOTATION ANALYSIS MODAL ââ */}
+      {/* —— QUOTATION ANALYSIS MODAL —— */}
       {(analyzingLead && (analyzing || analysisResult)) && (
         <div
           style={s.analysisOverlay}
@@ -1199,7 +1199,7 @@ export default function MisLeads() {
                   </div>
                   <div style={s.analysisField}>
                     <span style={s.analysisLabel}>Vigencia</span>
-                    <span style={s.analysisValue}>{analysisResult.vigencia || 'â'}</span>
+                    <span style={s.analysisValue}>{analysisResult.vigencia || '—'}</span>
                   </div>
                   <div style={s.analysisField}>
                     <span style={s.analysisLabel}>Etapa Sugerida</span>

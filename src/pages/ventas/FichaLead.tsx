@@ -390,7 +390,7 @@ export default function FichaLead() {
 
   return (
     <ModuleLayout
-      titulo={`Lead â ${lead.empresa}`}
+      titulo={`Lead — ${lead.empresa}`}
       acciones={
         <button
           style={s.backBtn}

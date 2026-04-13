@@ -41,6 +41,9 @@ const IconTickets = compose('hugeicons:ticket-01')
 const IconClientes = compose('hugeicons:user-multiple')
 const IconImpo = compose('hugeicons:package-moving')
 const IconExpo = compose('hugeicons:package-delivered')
+const IconDespachoIA = compose('hugeicons:satellite-02')
+const IconMetricas = compose('hugeicons:chart-bar-line')
+const IconActividades = compose('hugeicons:task-01')
 
 /* —— Card Config —— */
 interface LandingCard {
@@ -57,6 +60,9 @@ const CARDS: LandingCard[] = [
   { id: 'clientes', label: 'Clientes Activos', route: '/clientes/corporativos', kpiLabel: 'Clientes', icon: <IconClientes />, accent: '#059669' },
   { id: 'impo', label: 'Importación', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO (30d)', icon: <IconImpo />, accent: '#7C3AED' },
   { id: 'expo', label: 'Exportación', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO (30d)', icon: <IconExpo />, accent: '#D97706' },
+  { id: 'despacho_ia', label: 'Despacho IA', route: '/operaciones/torre-control', kpiLabel: 'Viajes activos', icon: <IconDespachoIA />, accent: '#15803D' },
+  { id: 'metricas', label: 'Métricas Servicio', route: '/servicio/metricas', kpiLabel: 'Dashboard', icon: <IconMetricas />, accent: '#6366F1' },
+  { id: 'actividades', label: 'Actividades', route: '/actividades', kpiLabel: 'Pendientes', icon: <IconActividades />, accent: '#0891B2' },
 ]
 
 /* —— Helper: count viajes_anodos by tipo with pagination —— */
