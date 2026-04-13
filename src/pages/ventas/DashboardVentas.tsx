@@ -53,20 +53,23 @@ interface LandingCard {
   icon: React.ReactNode; accent: string
 }
 
+/* Cards ocultados (parte del flujo Alta de Clientes, no módulos independientes):
+   - Workflow Alta (/clientes/workflow-alta) — paso interno del flujo
+   - Portal Documentos (/clientes/corporativos) — cliente sube docs por correo
+   - Firma Digital (/cotizador/firma-digital) — paso final firma electrónica
+   - Prospección (/ventas/prospeccion) — desconectado temporalmente
+   - CXC Aging (/cxc/aging) — parte del flujo de asignación CXC
+   Documentados en Notion P37. Rutas siguen activas en App.tsx */
+
 const CARDS: LandingCard[] = [
   { id: 'cotizador',       label: 'Cotizador',            route: '/cotizador/nueva',            kpiLabel: 'Pendientes',       icon: <IconCotizador />,       accent: '#D97706' },
   { id: 'mis_cotizaciones', label: 'Mis Cotizaciones',    route: '/cotizador/mis-cotizaciones',  kpiLabel: 'Total',            icon: <IconMisCotizaciones />, accent: '#B45309' },
   { id: 'programa',        label: 'Programa Semanal',     route: '/ventas/programa-semanal',     kpiLabel: 'Esta semana',      icon: <IconPrograma />,        accent: '#0891B2' },
   { id: 'alta_clientes',   label: 'Alta de Clientes',     route: '/clientes/alta',               kpiLabel: 'Formulario',       icon: <IconAltaClientes />,    accent: '#2563EB' },
-  { id: 'workflow_alta',   label: 'Workflow Alta',         route: '/clientes/workflow-alta',       kpiLabel: 'En proceso',       icon: <IconWorkflowAlta />,    accent: '#7C3AED' },
-  { id: 'portal_docs',     label: 'Portal Documentos',    route: '/clientes/corporativos',        kpiLabel: 'Clientes',         icon: <IconPortalDocs />,      accent: '#059669' },
-  { id: 'firma_digital',   label: 'Firma Digital',        route: '/cotizador/firma-digital',      kpiLabel: 'Pendientes',       icon: <IconFirmaDigital />,    accent: '#DC2626' },
-  { id: 'prospeccion',     label: 'Prospección',          route: '/ventas/prospeccion',            kpiLabel: 'Prospectos',       icon: <IconProspeccion />,     accent: '#0D9488' },
   { id: 'inteligencia',    label: 'Inteligencia',         route: '/inteligencia',                 kpiLabel: 'Rankings',         icon: <IconInteligencia />,    accent: '#6366F1' },
   { id: 'presupuesto',     label: 'Presupuesto',          route: '/inteligencia/presupuesto',     kpiLabel: 'Mensual',          icon: <IconPresupuesto />,     accent: '#15803D' },
   { id: 'pareto',          label: 'Análisis 80/20',       route: '/inteligencia/pareto',          kpiLabel: 'Pareto',           icon: <IconPareto />,          accent: '#EA580C' },
   { id: 'cxc_cartera',     label: 'CXC Cartera',          route: '/cxc/cartera',                  kpiLabel: 'Cuentas',          icon: <IconCXCCartera />,      accent: '#1D4ED8' },
-  { id: 'cxc_aging',       label: 'CXC Aging',            route: '/cxc/aging',                    kpiLabel: 'Reporte',          icon: <IconCXCAging />,        accent: '#9333EA' },
   { id: 'cxc_acciones',    label: 'Acciones Cobro',       route: '/cxc/acciones',                 kpiLabel: 'Pendientes',       icon: <IconCXCAcciones />,     accent: '#BE123C' },
   { id: 'chief_of_staff',  label: 'Chief of Staff',       route: '/comunicaciones/chief-of-staff', kpiLabel: 'AI Briefing',     icon: <IconChiefOfStaff />,    accent: '#DB2777' },
 ]
