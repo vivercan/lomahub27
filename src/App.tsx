@@ -31,6 +31,7 @@ import FichaCliente from './pages/clientes/FichaCliente'
 import RadiografiaFinanciera from './pages/clientes/RadiografiaFinanciera'
 import CorporativosClientes from './pages/clientes/CorporativosClientes'
 import AltaClienteWorkflow from './pages/clientes/AltaClienteWorkflow'
+import PortalAltaPublico from './pages/clientes/PortalAltaPublico'
 
 // Operaciones
 import Despachos from './pages/operaciones/Despachos'
@@ -96,6 +97,9 @@ function App() {
           {/* ––– Public ––– */}
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
+
+          {/* ––– Portal Público Alta de Clientes (sin login, acceso por token) ––– */}
+          <Route path="/alta/portal/:token" element={<PortalAltaPublico />} />
 
           {/* ––– 02. War Room ––– */}
           <Route path="/war-room" element={

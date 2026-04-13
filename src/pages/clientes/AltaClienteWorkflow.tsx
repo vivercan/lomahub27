@@ -17,15 +17,26 @@ import {
   ChevronRight,
   UserCheck,
   Shield,
-  Upload,
   Eye,
   RefreshCw,
   ArrowRight,
   Ban,
-  Users,
   Building2,
   FileCheck,
+  Send,
+  CreditCard,
+  User,
 } from 'lucide-react'
+
+/* ─────────────────────────────────────────────────────────────
+   ALTA DE CLIENTES — Workflow Dashboard (F01)
+   5-state workflow: ENVIADA → PENDIENTE_CSR → PENDIENTE_CXC →
+   PENDIENTE_CONFIRMACION → COMPLETADA (or RECHAZADA)
+
+   CSR Catalog: Eli Pasillas (eli@trob.com.mx), Liz Garcia (liz@trob.com.mx)
+   CXC Catalog: 7 executives (loaded from params or hardcoded)
+   juan.viveros@trob.com.mx ALWAYS in CC for all emails
+   ───────────────────────────────────────────────────────────── */
 
 /* ─── types ─── */
 interface AltaCliente {
@@ -38,6 +49,8 @@ interface AltaCliente {
   rfc: string | null
   direccion_fiscal: string | null
   regimen_fiscal: string | null
+  contacto_nombre: string | null
+  contacto_email: string | null
   constancia_fiscal_url: string | null
   constancia_fiscal_valida: boolean | null
   ine_url: string | null
@@ -48,11 +61,15 @@ interface AltaCliente {
   caratula_valida: boolean | null
   csr_asignada: string | null
   cxc_asignado: string | null
+  dias_credito: number | null
   vendedor_id: string | null
+  vendedor_nombre: string | null
+  vendedor_email: string | null
   firma_ip: string | null
   firma_hash: string | null
   firma_timestamp: string | null
   firma_user_agent: string | null
+  firmante_nombre: string | null
   notas_rechazo: string | null
   created_at: string
   updated_at: string
@@ -69,6 +86,26 @@ const ESTADOS: { key: Estado; label: string; color: string; bg: string; icon: Re
   { key: 'RECHAZADA', label: 'Rechazada', color: tokens.colors.red, bg: tokens.colors.redBg, icon: <XCircle size={14} /> },
 ]
 
+/* ─── Catalogs ─── */
+const CSR_CATALOG = [
+  { nombre: 'Eli Pasillas', email: 'eli@trob.com.mx' },
+  { nombre: 'Liz Garcia', email: 'liz@trob.com.mx' },
+]
+
+const CXC_CATALOG = [
+  { nombre: 'Martha Lopez', email: 'martha.lopez@trob.com.mx' },
+  { nombre: 'Carlos Mendez', email: 'carlos.mendez@trob.com.mx' },
+  { nombre: 'Ana Torres', email: 'ana.torres@trob.com.mx' },
+  { nombre: 'Roberto Garza', email: 'roberto.garza@trob.com.mx' },
+  { nombre: 'Lucia Ramos', email: 'lucia.ramos@trob.com.mx' },
+  { nombre: 'Eduardo Solis', email: 'eduardo.solis@trob.com.mx' },
+  { nombre: 'Patricia Vega', email: 'patricia.vega@trob.com.mx' },
+]
+
+const DIAS_CREDITO_OPTIONS = [0, 7, 15, 30, 45, 60, 90]
+
+const CC_ALWAYS = 'juan.viveros@trob.com.mx'
+
 /* ─── component ─── */
 export default function AltaClienteWorkflow(): ReactElement {
   const { user } = useAuthContext()
@@ -80,6 +117,13 @@ export default function AltaClienteWorkflow(): ReactElement {
   const [transitioning, setTransitioning] = useState<string | null>(null)
   const [rejectNotes, setRejectNotes] = useState('')
   const [showRejectModal, setShowRejectModal] = useState<string | null>(null)
+
+  // Assignment modals
+  const [showCSRModal, setShowCSRModal] = useState<string | null>(null)
+  const [selectedCSR, setSelectedCSR] = useState('')
+  const [showCXCModal, setShowCXCModal] = useState<string | null>(null)
+  const [selectedCXC, setSelectedCXC] = useState('')
+  const [selectedDiasCredito, setSelectedDiasCredito] = useState(30)
 
   useEffect(() => { fetchData() }, [])
 
@@ -112,26 +156,140 @@ export default function AltaClienteWorkflow(): ReactElement {
     if (filtroEstado !== 'todos' && r.estado !== filtroEstado) return false
     if (searchQ) {
       const q = searchQ.toLowerCase()
-      if (
-        !(r.razon_social || '').toLowerCase().includes(q) &&
-        !(r.rfc || '').toLowerCase().includes(q)
-      ) return false
+      if (!(r.razon_social || '').toLowerCase().includes(q) && !(r.rfc || '').toLowerCase().includes(q)) return false
     }
     return true
   })
 
-  /* ─── state transition ─── */
-  async function transitionState(id: string, newEstado: Estado, notas?: string) {
+  /* ─── state transition with email ─── */
+  async function transitionState(id: string, newEstado: Estado, extraUpdates?: Record<string, unknown>, notas?: string) {
     setTransitioning(id)
     try {
-      const updates: Record<string, unknown> = { estado: newEstado, updated_at: new Date().toISOString() }
+      const updates: Record<string, unknown> = { estado: newEstado, updated_at: new Date().toISOString(), ...extraUpdates }
       if (notas) updates.notas_rechazo = notas
+
       const { error } = await supabase.from('alta_clientes').update(updates).eq('id', id)
       if (error) { console.error('transition error:', error); return }
+
+      const record = records.find(r => r.id === id)
       setRecords(prev => prev.map(r => r.id === id ? { ...r, ...updates } as AltaCliente : r))
+
+      // Send email notifications based on new state
+      if (record) {
+        await sendTransitionEmail(record, newEstado, extraUpdates)
+      }
+
       setShowRejectModal(null)
+      setShowCSRModal(null)
+      setShowCXCModal(null)
       setRejectNotes('')
     } finally { setTransitioning(null) }
+  }
+
+  /* ─── email sender ─── */
+  async function sendTransitionEmail(record: AltaCliente, newEstado: Estado, extras?: Record<string, unknown>) {
+    const razon = record.razon_social || 'Sin nombre'
+
+    try {
+      switch (newEstado) {
+        case 'PENDIENTE_CSR': {
+          // Notify CS admin team
+          await supabase.functions.invoke('enviar-correo', {
+            body: {
+              to: CSR_CATALOG.map(c => c.email),
+              cc: [CC_ALWAYS],
+              subject: `Nueva Alta Pendiente CSR — ${razon}`,
+              html: buildWorkflowEmailHTML(razon, 'Pendiente Asignación CSR', 'Se han recibido los documentos del cliente. Favor de revisar y asignar ejecutivo de servicio.'),
+              tipo: 'alta_pendiente_csr',
+            },
+          })
+          break
+        }
+        case 'PENDIENTE_CXC': {
+          // Notify CXC team
+          const csrNombre = (extras?.csr_asignada as string) || 'Sin asignar'
+          await supabase.functions.invoke('enviar-correo', {
+            body: {
+              to: CXC_CATALOG.slice(0, 3).map(c => c.email),
+              cc: [CC_ALWAYS],
+              subject: `Alta Pendiente CxC — ${razon} | CSR: ${csrNombre}`,
+              html: buildWorkflowEmailHTML(razon, 'Pendiente Asignación CxC', `CSR asignada: ${csrNombre}. Favor de asignar ejecutivo de cobranza y días de crédito.`),
+              tipo: 'alta_pendiente_cxc',
+            },
+          })
+          break
+        }
+        case 'PENDIENTE_CONFIRMACION': {
+          // Notify pricing/admin for final confirmation
+          const cxcNombre = (extras?.cxc_asignado as string) || 'Sin asignar'
+          const dias = (extras?.dias_credito as number) || 0
+          await supabase.functions.invoke('enviar-correo', {
+            body: {
+              to: [CC_ALWAYS],
+              subject: `Alta Pendiente Confirmación — ${razon} | ${dias} días crédito`,
+              html: buildWorkflowEmailHTML(razon, 'Pendiente Confirmación Final', `CxC asignado: ${cxcNombre}. Días de crédito: ${dias}. Favor de confirmar alta.`),
+              tipo: 'alta_pendiente_confirmacion',
+            },
+          })
+          break
+        }
+        case 'COMPLETADA': {
+          // Notify everyone: vendedor, CSR, CXC, client
+          const allRecipients = [CC_ALWAYS]
+          if (record.vendedor_email) allRecipients.push(record.vendedor_email)
+          if (record.contacto_email) allRecipients.push(record.contacto_email)
+          // Add CSR email
+          const csrEntry = CSR_CATALOG.find(c => c.nombre === record.csr_asignada)
+          if (csrEntry) allRecipients.push(csrEntry.email)
+          // Add CXC email
+          const cxcEntry = CXC_CATALOG.find(c => c.nombre === record.cxc_asignado)
+          if (cxcEntry) allRecipients.push(cxcEntry.email)
+
+          await supabase.functions.invoke('enviar-correo', {
+            body: {
+              to: [...new Set(allRecipients)],
+              subject: `Alta Completada — ${razon} | TROB Logistics`,
+              html: buildWorkflowEmailHTML(razon, 'Alta Completada', `La empresa ${razon} ha sido dada de alta exitosamente en el sistema. CSR: ${record.csr_asignada || 'N/A'}, CxC: ${record.cxc_asignado || 'N/A'}.`),
+              tipo: 'alta_completada',
+            },
+          })
+          break
+        }
+        case 'RECHAZADA': {
+          // Notify vendedor and client
+          const recipients = [CC_ALWAYS]
+          if (record.vendedor_email) recipients.push(record.vendedor_email)
+          if (record.contacto_email) recipients.push(record.contacto_email)
+
+          await supabase.functions.invoke('enviar-correo', {
+            body: {
+              to: [...new Set(recipients)],
+              subject: `Alta Rechazada — ${razon}`,
+              html: buildWorkflowEmailHTML(razon, 'Alta Rechazada', `La solicitud de alta ha sido rechazada. Motivo: ${record.notas_rechazo || 'No especificado'}.`),
+              tipo: 'alta_rechazada',
+            },
+          })
+          break
+        }
+      }
+    } catch (e) {
+      console.error('Email notification error:', e)
+    }
+  }
+
+  /* ─── CSR assignment handler ─── */
+  function handleAssignCSR() {
+    if (!showCSRModal || !selectedCSR) return
+    transitionState(showCSRModal, 'PENDIENTE_CXC', { csr_asignada: selectedCSR })
+  }
+
+  /* ─── CXC assignment handler ─── */
+  function handleAssignCXC() {
+    if (!showCXCModal || !selectedCXC) return
+    transitionState(showCXCModal, 'PENDIENTE_CONFIRMACION', {
+      cxc_asignado: selectedCXC,
+      dias_credito: selectedDiasCredito,
+    })
   }
 
   /* ─── doc checker ─── */
@@ -141,10 +299,10 @@ export default function AltaClienteWorkflow(): ReactElement {
         valid === true ? <CheckCircle2 size={14} color={tokens.colors.green} />
           : valid === false ? <XCircle size={14} color={tokens.colors.red} />
           : <Clock size={14} color={tokens.colors.yellow} />
-      ) : <AlertTriangle size={14} color={tokens.colors.gray} />}
+      ) : <AlertTriangle size={14} color={tokens.colors.textMuted} />}
       <span style={{ fontSize: '13px', color: url ? tokens.colors.textPrimary : tokens.colors.textMuted }}>{label}</span>
       {url && (
-        <a href={url} target="_blank" rel="noreferrer" style={{ marginLeft: 'auto', color: tokens.colors.blue, fontSize: '12px' }}>
+        <a href={url} target="_blank" rel="noreferrer" style={{ marginLeft: 'auto', color: tokens.colors.blue, fontSize: '12px', display: 'flex', alignItems: 'center', gap: 4 }}>
           <Eye size={12} /> Ver
         </a>
       )}
@@ -169,7 +327,7 @@ export default function AltaClienteWorkflow(): ReactElement {
           <div style={{ display: 'flex', gap: tokens.spacing.sm }}>
             <button style={btnStyle(tokens.colors.blue, tokens.colors.blueBg)}
               onClick={() => transitionState(r.id, 'PENDIENTE_CSR')} disabled={isTransitioning}>
-              <ArrowRight size={14} /> Asignar a CSR
+              <ArrowRight size={14} /> Docs Recibidos
             </button>
           </div>
         )
@@ -177,8 +335,8 @@ export default function AltaClienteWorkflow(): ReactElement {
         return (
           <div style={{ display: 'flex', gap: tokens.spacing.sm }}>
             <button style={btnStyle(tokens.colors.green, tokens.colors.greenBg)}
-              onClick={() => transitionState(r.id, 'PENDIENTE_CXC')} disabled={isTransitioning}>
-              <CheckCircle2 size={14} /> Aprobar → CxC
+              onClick={() => { setSelectedCSR(''); setShowCSRModal(r.id) }} disabled={isTransitioning}>
+              <UserCheck size={14} /> Asignar CSR
             </button>
             <button style={btnStyle(tokens.colors.red, tokens.colors.redBg)}
               onClick={() => setShowRejectModal(r.id)} disabled={isTransitioning}>
@@ -190,8 +348,8 @@ export default function AltaClienteWorkflow(): ReactElement {
         return (
           <div style={{ display: 'flex', gap: tokens.spacing.sm }}>
             <button style={btnStyle('#8B5CF6', '#EDE9FE')}
-              onClick={() => transitionState(r.id, 'PENDIENTE_CONFIRMACION')} disabled={isTransitioning}>
-              <CheckCircle2 size={14} /> Aprobar → Confirmación
+              onClick={() => { setSelectedCXC(''); setSelectedDiasCredito(30); setShowCXCModal(r.id) }} disabled={isTransitioning}>
+              <CreditCard size={14} /> Asignar CxC
             </button>
             <button style={btnStyle(tokens.colors.red, tokens.colors.redBg)}
               onClick={() => setShowRejectModal(r.id)} disabled={isTransitioning}>
@@ -232,7 +390,7 @@ export default function AltaClienteWorkflow(): ReactElement {
   }
 
   return (
-    <ModuleLayout titulo="Alta de Clientes — Workflow" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
+    <ModuleLayout titulo="Alta de Clientes \u2014 Workflow" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
       <div style={{ padding: tokens.spacing.lg, minHeight: '100vh', background: tokens.colors.bgMain }}>
         {/* KPIs */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
@@ -305,6 +463,7 @@ export default function AltaClienteWorkflow(): ReactElement {
             <div style={{ padding: tokens.spacing.xxl, textAlign: 'center', color: tokens.colors.textMuted }}>
               <RefreshCw size={24} style={{ animation: 'spin 1s linear infinite' }} />
               <p style={{ marginTop: tokens.spacing.sm }}>Cargando solicitudes...</p>
+              <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
             </div>
           ) : filtered.length === 0 ? (
             <div style={{ padding: tokens.spacing.xxl, textAlign: 'center' }}>
@@ -320,7 +479,7 @@ export default function AltaClienteWorkflow(): ReactElement {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ background: tokens.colors.bgHover }}>
-                  {['', 'Razón Social', 'RFC', 'Estado', 'Documentos', 'Firma', 'Fecha', 'Acciones'].map(h => (
+                  {['', 'Razón Social', 'RFC', 'Estado', 'Docs', 'Firma', 'CSR / CxC', 'Fecha', 'Acciones'].map(h => (
                     <th key={h} style={thStyle}>{h}</th>
                   ))}
                 </tr>
@@ -340,30 +499,43 @@ export default function AltaClienteWorkflow(): ReactElement {
                       >
                         <td style={tdStyle}>{isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}</td>
                         <td style={tdStyle}>
-                          <span style={{ fontWeight: 600, color: tokens.colors.textPrimary }}>
-                            {r.razon_social || '—'}
-                          </span>
+                          <span style={{ fontWeight: 600, color: tokens.colors.textPrimary }}>{r.razon_social || '\u2014'}</span>
+                          {r.contacto_nombre && <span style={{ display: 'block', fontSize: '11px', color: tokens.colors.textMuted }}>{r.contacto_nombre}</span>}
                         </td>
-                        <td style={tdStyle}><span style={{ fontSize: '13px', fontFamily: 'monospace' }}>{r.rfc || '—'}</span></td>
+                        <td style={tdStyle}><span style={{ fontSize: '13px', fontFamily: 'monospace' }}>{r.rfc || '\u2014'}</span></td>
                         <td style={tdStyle}>{estadoBadge(r.estado)}</td>
                         <td style={tdStyle}>
                           <span style={{
                             fontSize: '12px', fontWeight: 600,
-                            color: docsCount === 4 && docsValid === 4 ? tokens.colors.green
-                              : docsCount > 0 ? tokens.colors.yellow : tokens.colors.textMuted,
+                            color: docsCount === 4 ? tokens.colors.green : docsCount > 0 ? tokens.colors.yellow : tokens.colors.textMuted,
                           }}>
                             <FileCheck size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
-                            {docsValid}/{docsCount} de 4
+                            {docsCount}/4
                           </span>
                         </td>
                         <td style={tdStyle}>
                           {hasFirma ? (
                             <span style={{ fontSize: '12px', color: tokens.colors.green }}>
-                              <CheckCircle2 size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Firmado
+                              <CheckCircle2 size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Si
                             </span>
                           ) : (
-                            <span style={{ fontSize: '12px', color: tokens.colors.textMuted }}>Pendiente</span>
+                            <span style={{ fontSize: '12px', color: tokens.colors.textMuted }}>No</span>
                           )}
+                        </td>
+                        <td style={tdStyle}>
+                          <div style={{ fontSize: '11px', lineHeight: 1.5 }}>
+                            {r.csr_asignada ? (
+                              <span style={{ color: tokens.colors.green }}><User size={10} style={{ verticalAlign: 'middle' }} /> {r.csr_asignada}</span>
+                            ) : (
+                              <span style={{ color: tokens.colors.textMuted }}>\u2014</span>
+                            )}
+                            {r.cxc_asignado && (
+                              <span style={{ display: 'block', color: tokens.colors.blue }}>
+                                <CreditCard size={10} style={{ verticalAlign: 'middle' }} /> {r.cxc_asignado}
+                                {r.dias_credito != null && ` (${r.dias_credito}d)`}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td style={tdStyle}>
                           <span style={{ fontSize: '12px', color: tokens.colors.textMuted }}>
@@ -377,16 +549,26 @@ export default function AltaClienteWorkflow(): ReactElement {
 
                       {isOpen && (
                         <tr key={`${r.id}-detail`}>
-                          <td colSpan={8} style={{ padding: tokens.spacing.md, background: tokens.colors.bgHover }}>
+                          <td colSpan={9} style={{ padding: tokens.spacing.md, background: tokens.colors.bgHover }}>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: tokens.spacing.lg }}>
                               {/* Col 1: Datos empresa */}
                               <div>
                                 <p style={sectionTitle}>Datos de la Empresa</p>
                                 <div style={detailGrid}>
-                                  <div><strong>Razón Social:</strong> {r.razon_social || '—'}</div>
-                                  <div><strong>RFC:</strong> {r.rfc || '—'}</div>
-                                  <div><strong>Dirección Fiscal:</strong> {r.direccion_fiscal || '—'}</div>
-                                  <div><strong>Régimen Fiscal:</strong> {r.regimen_fiscal || '—'}</div>
+                                  <div><strong>Razón Social:</strong> {r.razon_social || '\u2014'}</div>
+                                  <div><strong>RFC:</strong> {r.rfc || '\u2014'}</div>
+                                  <div><strong>Dirección Fiscal:</strong> {r.direccion_fiscal || '\u2014'}</div>
+                                  <div><strong>Régimen Fiscal:</strong> {r.regimen_fiscal || '\u2014'}</div>
+                                  <div><strong>Contacto:</strong> {r.contacto_nombre || '\u2014'}</div>
+                                  <div><strong>Email:</strong> {r.contacto_email || '\u2014'}</div>
+                                  <div><strong>Vendedor:</strong> {r.vendedor_nombre || '\u2014'}</div>
+                                </div>
+
+                                <p style={{ ...sectionTitle, marginTop: tokens.spacing.md }}>Asignaciones</p>
+                                <div style={detailGrid}>
+                                  <div><strong>CSR:</strong> {r.csr_asignada || 'Sin asignar'}</div>
+                                  <div><strong>CxC:</strong> {r.cxc_asignado || 'Sin asignar'}</div>
+                                  <div><strong>Días Crédito:</strong> {r.dias_credito != null ? r.dias_credito : 'N/A'}</div>
                                 </div>
                               </div>
 
@@ -397,6 +579,18 @@ export default function AltaClienteWorkflow(): ReactElement {
                                 {docStatus(r.ine_url, r.ine_valida, 'INE Representante')}
                                 {docStatus(r.acta_constitutiva_url, r.acta_valida, 'Acta Constitutiva')}
                                 {docStatus(r.caratula_bancaria_url, r.caratula_valida, 'Carátula Bancaria')}
+
+                                {/* Portal link */}
+                                <div style={{ marginTop: tokens.spacing.md }}>
+                                  <a
+                                    href={`${window.location.origin}/alta/portal/${r.token}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    style={{ fontSize: '12px', color: tokens.colors.blue, textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}
+                                  >
+                                    <Send size={12} /> Enlace del portal público
+                                  </a>
+                                </div>
                               </div>
 
                               {/* Col 3: Firma + notas */}
@@ -404,10 +598,11 @@ export default function AltaClienteWorkflow(): ReactElement {
                                 <p style={sectionTitle}>Firma Digital</p>
                                 {r.firma_hash ? (
                                   <div style={detailGrid}>
+                                    <div><strong>Firmante:</strong> {r.firmante_nombre || '\u2014'}</div>
                                     <div><strong>Hash SHA-256:</strong> <span style={{ fontFamily: 'monospace', fontSize: '11px', wordBreak: 'break-all' }}>{r.firma_hash}</span></div>
-                                    <div><strong>IP:</strong> {r.firma_ip || '—'}</div>
-                                    <div><strong>Fecha:</strong> {r.firma_timestamp ? new Date(r.firma_timestamp).toLocaleString('es-MX') : '—'}</div>
-                                    <div><strong>User Agent:</strong> <span style={{ fontSize: '11px' }}>{r.firma_user_agent || '—'}</span></div>
+                                    <div><strong>IP:</strong> {r.firma_ip || '\u2014'}</div>
+                                    <div><strong>Fecha:</strong> {r.firma_timestamp ? new Date(r.firma_timestamp).toLocaleString('es-MX') : '\u2014'}</div>
+                                    <div><strong>User Agent:</strong> <span style={{ fontSize: '11px' }}>{r.firma_user_agent || '\u2014'}</span></div>
                                   </div>
                                 ) : (
                                   <p style={{ fontSize: '13px', color: tokens.colors.textMuted }}>Firma digital pendiente</p>
@@ -443,17 +638,115 @@ export default function AltaClienteWorkflow(): ReactElement {
           )}
         </Card>
 
-        {/* Reject Modal */}
+        {/* ─── CSR Assignment Modal ─── */}
+        {showCSRModal && (
+          <div style={modalOverlay} onClick={() => setShowCSRModal(null)}>
+            <div style={modalCard} onClick={e => e.stopPropagation()}>
+              <h3 style={{ fontFamily: tokens.fonts.heading, fontSize: '18px', fontWeight: 700, color: tokens.colors.textPrimary, marginBottom: tokens.spacing.md }}>
+                <UserCheck size={20} style={{ verticalAlign: 'middle', marginRight: 8, color: tokens.colors.green }} />
+                Asignar Ejecutivo CSR
+              </h3>
+              <p style={{ fontSize: '14px', color: tokens.colors.textSecondary, marginBottom: tokens.spacing.md }}>
+                Selecciona la ejecutiva de Servicio a Clientes que atenderá este alta.
+              </p>
+              <div style={{ display: 'grid', gap: tokens.spacing.sm, marginBottom: tokens.spacing.lg }}>
+                {CSR_CATALOG.map(csr => (
+                  <label key={csr.email} style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '12px 16px', borderRadius: tokens.radius.md, cursor: 'pointer',
+                    border: `1px solid ${selectedCSR === csr.nombre ? tokens.colors.green : tokens.colors.border}`,
+                    background: selectedCSR === csr.nombre ? tokens.colors.greenBg : 'transparent',
+                    transition: 'all 0.2s',
+                  }}>
+                    <input type="radio" name="csr" value={csr.nombre} checked={selectedCSR === csr.nombre}
+                      onChange={() => setSelectedCSR(csr.nombre)} style={{ accentColor: tokens.colors.green }} />
+                    <div>
+                      <p style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: tokens.colors.textPrimary }}>{csr.nombre}</p>
+                      <p style={{ margin: 0, fontSize: '12px', color: tokens.colors.textMuted }}>{csr.email}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+              <div style={{ display: 'flex', gap: tokens.spacing.sm, justifyContent: 'flex-end' }}>
+                <button onClick={() => setShowCSRModal(null)} style={cancelBtnStyle}>Cancelar</button>
+                <button onClick={handleAssignCSR} disabled={!selectedCSR || !!transitioning} style={{
+                  ...confirmBtnStyle, background: selectedCSR ? tokens.colors.green : tokens.colors.textMuted,
+                  cursor: selectedCSR ? 'pointer' : 'not-allowed', opacity: selectedCSR ? 1 : 0.5,
+                }}>
+                  <UserCheck size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />
+                  Asignar CSR
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─── CXC Assignment Modal ─── */}
+        {showCXCModal && (
+          <div style={modalOverlay} onClick={() => setShowCXCModal(null)}>
+            <div style={{ ...modalCard, maxHeight: '85vh', overflow: 'auto' }} onClick={e => e.stopPropagation()}>
+              <h3 style={{ fontFamily: tokens.fonts.heading, fontSize: '18px', fontWeight: 700, color: tokens.colors.textPrimary, marginBottom: tokens.spacing.md }}>
+                <CreditCard size={20} style={{ verticalAlign: 'middle', marginRight: 8, color: '#8B5CF6' }} />
+                Asignar Ejecutivo CxC y Crédito
+              </h3>
+
+              <p style={{ fontSize: '13px', fontWeight: 600, color: tokens.colors.textSecondary, marginBottom: tokens.spacing.sm, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Ejecutivo de Cobranza
+              </p>
+              <div style={{ display: 'grid', gap: tokens.spacing.xs, marginBottom: tokens.spacing.lg, maxHeight: 220, overflow: 'auto' }}>
+                {CXC_CATALOG.map(cxc => (
+                  <label key={cxc.email} style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '10px 14px', borderRadius: tokens.radius.md, cursor: 'pointer',
+                    border: `1px solid ${selectedCXC === cxc.nombre ? '#8B5CF6' : tokens.colors.border}`,
+                    background: selectedCXC === cxc.nombre ? '#EDE9FE' : 'transparent',
+                    transition: 'all 0.2s',
+                  }}>
+                    <input type="radio" name="cxc" value={cxc.nombre} checked={selectedCXC === cxc.nombre}
+                      onChange={() => setSelectedCXC(cxc.nombre)} style={{ accentColor: '#8B5CF6' }} />
+                    <div>
+                      <p style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: tokens.colors.textPrimary }}>{cxc.nombre}</p>
+                      <p style={{ margin: 0, fontSize: '11px', color: tokens.colors.textMuted }}>{cxc.email}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+
+              <p style={{ fontSize: '13px', fontWeight: 600, color: tokens.colors.textSecondary, marginBottom: tokens.spacing.sm, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Días de Crédito
+              </p>
+              <div style={{ display: 'flex', gap: tokens.spacing.sm, flexWrap: 'wrap', marginBottom: tokens.spacing.lg }}>
+                {DIAS_CREDITO_OPTIONS.map(d => (
+                  <button key={d} onClick={() => setSelectedDiasCredito(d)} style={{
+                    padding: '8px 16px', fontSize: '13px', fontWeight: 600,
+                    borderRadius: tokens.radius.md, cursor: 'pointer',
+                    color: selectedDiasCredito === d ? '#fff' : tokens.colors.textSecondary,
+                    background: selectedDiasCredito === d ? '#8B5CF6' : 'transparent',
+                    border: `1px solid ${selectedDiasCredito === d ? '#8B5CF6' : tokens.colors.border}`,
+                  }}>
+                    {d === 0 ? 'Contado' : `${d} días`}
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ display: 'flex', gap: tokens.spacing.sm, justifyContent: 'flex-end' }}>
+                <button onClick={() => setShowCXCModal(null)} style={cancelBtnStyle}>Cancelar</button>
+                <button onClick={handleAssignCXC} disabled={!selectedCXC || !!transitioning} style={{
+                  ...confirmBtnStyle, background: selectedCXC ? '#8B5CF6' : tokens.colors.textMuted,
+                  cursor: selectedCXC ? 'pointer' : 'not-allowed', opacity: selectedCXC ? 1 : 0.5,
+                }}>
+                  <CreditCard size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />
+                  Asignar CxC ({selectedDiasCredito === 0 ? 'Contado' : `${selectedDiasCredito}d`})
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─── Reject Modal ─── */}
         {showRejectModal && (
-          <div style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999,
-          }} onClick={() => setShowRejectModal(null)}>
-            <div style={{
-              background: tokens.colors.bgCard, borderRadius: tokens.radius.lg,
-              padding: tokens.spacing.xl, width: 480, maxWidth: '90vw',
-              border: `1px solid ${tokens.colors.border}`,
-            }} onClick={e => e.stopPropagation()}>
+          <div style={modalOverlay} onClick={() => setShowRejectModal(null)}>
+            <div style={modalCard} onClick={e => e.stopPropagation()}>
               <h3 style={{ fontFamily: tokens.fonts.heading, fontSize: '18px', fontWeight: 700, color: tokens.colors.textPrimary, marginBottom: tokens.spacing.md }}>
                 Rechazar Solicitud
               </h3>
@@ -473,30 +766,18 @@ export default function AltaClienteWorkflow(): ReactElement {
                 }}
               />
               <div style={{ display: 'flex', gap: tokens.spacing.sm, justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => { setShowRejectModal(null); setRejectNotes('') }}
-                  style={{
-                    padding: `${tokens.spacing.sm} ${tokens.spacing.lg}`,
-                    background: 'transparent', color: tokens.colors.textSecondary,
-                    border: `1px solid ${tokens.colors.border}`, borderRadius: tokens.radius.md,
-                    fontFamily: tokens.fonts.body, fontSize: '14px', cursor: 'pointer',
-                  }}
-                >
+                <button onClick={() => { setShowRejectModal(null); setRejectNotes('') }} style={cancelBtnStyle}>
                   Cancelar
                 </button>
                 <button
                   onClick={() => {
                     if (!rejectNotes.trim()) return
-                    transitionState(showRejectModal, 'RECHAZADA', rejectNotes.trim())
+                    transitionState(showRejectModal, 'RECHAZADA', undefined, rejectNotes.trim())
                   }}
                   disabled={!rejectNotes.trim() || transitioning === showRejectModal}
                   style={{
-                    padding: `${tokens.spacing.sm} ${tokens.spacing.lg}`,
-                    background: tokens.colors.red, color: '#fff',
-                    border: 'none', borderRadius: tokens.radius.md,
-                    fontFamily: tokens.fonts.body, fontSize: '14px', fontWeight: 600,
-                    cursor: rejectNotes.trim() ? 'pointer' : 'not-allowed',
-                    opacity: rejectNotes.trim() ? 1 : 0.5,
+                    ...confirmBtnStyle, background: rejectNotes.trim() ? tokens.colors.red : tokens.colors.textMuted,
+                    cursor: rejectNotes.trim() ? 'pointer' : 'not-allowed', opacity: rejectNotes.trim() ? 1 : 0.5,
                   }}
                 >
                   <Ban size={14} style={{ verticalAlign: 'middle', marginRight: '6px' }} />
@@ -532,4 +813,54 @@ const sectionTitle: React.CSSProperties = {
 }
 const detailGrid: React.CSSProperties = {
   fontSize: '13px', color: tokens.colors.textSecondary, lineHeight: 1.8,
+}
+const modalOverlay: React.CSSProperties = {
+  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+  display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999,
+}
+const modalCard: React.CSSProperties = {
+  background: tokens.colors.bgCard, borderRadius: tokens.radius.lg,
+  padding: tokens.spacing.xl, width: 520, maxWidth: '90vw',
+  border: `1px solid ${tokens.colors.border}`, boxShadow: '0 24px 64px rgba(0,0,0,0.15)',
+}
+const cancelBtnStyle: React.CSSProperties = {
+  padding: `${tokens.spacing.sm} ${tokens.spacing.lg}`,
+  background: 'transparent', color: tokens.colors.textSecondary,
+  border: `1px solid ${tokens.colors.border}`, borderRadius: tokens.radius.md,
+  fontFamily: tokens.fonts.body, fontSize: '14px', cursor: 'pointer',
+}
+const confirmBtnStyle: React.CSSProperties = {
+  padding: `${tokens.spacing.sm} ${tokens.spacing.lg}`,
+  color: '#fff', border: 'none', borderRadius: tokens.radius.md,
+  fontFamily: tokens.fonts.body, fontSize: '14px', fontWeight: 600,
+}
+
+/* ── Workflow notification email HTML ── */
+function buildWorkflowEmailHTML(razonSocial: string, statusLabel: string, message: string): string {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#F7F8FA;font-family:'Montserrat',Helvetica,Arial,sans-serif;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F7F8FA;">
+<tr><td align="center" style="padding:32px 16px;">
+<table role="presentation" width="520" cellpadding="0" cellspacing="0" style="background:#FFFFFF;border-radius:12px;border:1px solid rgba(15,23,42,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+<tr><td style="padding:24px 32px;border-bottom:1px solid rgba(15,23,42,0.06);">
+<span style="font-size:18px;font-weight:800;color:#0F172A;">LomaHUB27</span>
+<span style="font-size:10px;color:#94A3B8;margin-left:8px;text-transform:uppercase;">Alta de Cliente</span>
+</td></tr>
+<tr><td style="padding:24px 32px;">
+<div style="display:inline-block;padding:4px 12px;border-radius:6px;background:#3B6CE710;font-size:12px;font-weight:600;color:#3B6CE7;margin-bottom:12px;">${statusLabel}</div>
+<h2 style="margin:0 0 12px;font-size:18px;font-weight:700;color:#0F172A;">${razonSocial}</h2>
+<p style="margin:0;font-size:14px;color:#64748B;line-height:1.6;">${message}</p>
+<p style="margin:16px 0 0;font-size:13px;">
+<a href="https://v2.jjcrm27.com/clientes/workflow-alta" style="display:inline-block;padding:10px 24px;background:#3B6CE7;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:13px;">Ver en LomaHUB27</a>
+</p>
+</td></tr>
+<tr><td style="padding:16px 32px;border-top:1px solid rgba(15,23,42,0.06);">
+<p style="margin:0;font-size:11px;color:#94A3B8;text-align:center;">TROB Logistics &middot; Transporte de carga nacional e internacional</p>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body></html>`
 }
