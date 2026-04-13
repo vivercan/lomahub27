@@ -43,7 +43,7 @@ const geoStyle: React.CSSProperties = {
 
 const GeoUsuarios = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
       <circle cx="100" cy="45" r="22" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
       <circle cx="130" cy="65" r="18" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
       <circle cx="75" cy="70" r="16" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
@@ -54,7 +54,7 @@ const GeoUsuarios = () => (
 
 const GeoCatalogos = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
       <rect x="65" y="25" width="60" height="45" rx="4" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
       <rect x="80" y="40" width="60" height="45" rx="4" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
       <line x1="75" y1="42" x2="115" y2="42" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
@@ -65,7 +65,7 @@ const GeoCatalogos = () => (
 
 const GeoParametros = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
       <line x1="70" y1="40" x2="160" y2="40" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
       <circle cx="110" cy="40" r="6" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
       <line x1="70" y1="65" x2="160" y2="65" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
@@ -78,7 +78,7 @@ const GeoParametros = () => (
 
 const GeoIntegraciones = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
       <circle cx="90" cy="55" r="18" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
       <circle cx="140" cy="55" r="18" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
       <line x1="108" y1="55" x2="122" y2="55" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeDasharray="4 3" />
@@ -89,7 +89,7 @@ const GeoIntegraciones = () => (
 
 const GeoAuditoria = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
       <path d="M100,25 L130,45 L120,80 L80,80 L70,45 Z" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
       <path d="M90,55 L100,65 L120,45" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
@@ -98,7 +98,7 @@ const GeoAuditoria = () => (
 
 const GeoPlantillas = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
       <rect x="60" y="30" width="50" height="70" rx="3" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
       <rect x="78" y="40" width="50" height="70" rx="3" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
       <line x1="70" y1="48" x2="100" y2="48" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
@@ -110,7 +110,7 @@ const GeoPlantillas = () => (
 
 const GeoDocumentos = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-10px', bottom: '-10px', width: '65%', height: '75%', opacity: 0.25 }}>
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
       <path d="M75,35 L75,95 Q75,105 85,105 L130,105 Q140,105 140,95 L140,50 L120,30 Q115,30 110,30 L85,30 Q75,30 75,35 Z" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
       <line x1="85" y1="50" x2="130" y2="50" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
       <line x1="85" y1="60" x2="130" y2="60" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />

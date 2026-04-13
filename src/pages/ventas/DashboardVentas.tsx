@@ -24,15 +24,15 @@ const D = {
 } as const
 
 // ICON SYSTEM — Hugeicons via Iconify CDN (mismo patron HomeDashboard)
-const ICO_OPACITY = 0.25
+const ICO_OPACITY = 0.20
 const ico = (path: string, style: React.CSSProperties) => (
   <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
 )
 const compose = (main: string, sat: string, accent: string) => () => (
   <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    {ico(sat,    { position: 'absolute', right: '46%', bottom: '40%', width: '24%', height: '24%' })}
-    {ico(accent, { position: 'absolute', right: '-2%',  bottom: '-4%',  width: '38%', height: '38%' })}
-    {ico(main,   { position: 'absolute', right: '-18%', bottom: '-26%', width: '88%', height: '120%' })}
+    {ico(sat,    { position: 'absolute', right: '8%',  bottom: '38%', width: '19%', height: '19%' })}
+    {ico(accent, { position: 'absolute', right: '2%',  bottom: '4%',  width: '30%', height: '30%' })}
+    {ico(main,   { position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' })}
   </div>
 )
 
