@@ -92,11 +92,8 @@ export default function HomeDashboard() {
     { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#16A34A', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.07, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 subm\u00f3dulos' },
     { id: 'despacho', label: 'Despacho IA', route: '/operaciones/torre-control', bgColor: '#15803D', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.07, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#EA580C', iconFile: 'Ventas.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo' },
-  ]
-
-  const row2Cards: CardConfig[] = [
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/correos', bgColor: '#DB2777', iconFile: 'comunicaciones.svg', iconOpacity: 0.25, kpiValue: '3', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo' },
-    { id: 'config', label: 'Configuraci\u00f3n', route: '/admin/configuracion', bgColor: '#6366F1', iconFile: 'configuracion.svg', iconOpacity: 0.07, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema' },
+    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#6366F1', iconFile: 'configuracion.svg', iconOpacity: 0.07, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema' },
   ]
 
   const getCardStyle = (isHovered: boolean, bgColor: string): React.CSSProperties => ({
@@ -219,10 +216,6 @@ export default function HomeDashboard() {
       }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
           {mainCards.map(renderCard)}
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
-          <div style={{ gridColumn: '6 / 7' }}>{renderCard(row2Cards[0])}</div>
-          <div style={{ gridColumn: '7 / 8' }}>{renderCard(row2Cards[1])}</div>
         </div>
       </div>
     </div>
