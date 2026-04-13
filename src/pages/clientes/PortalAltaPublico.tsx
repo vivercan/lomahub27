@@ -65,6 +65,7 @@ export default function PortalAltaPublico() {
   const [step, setStep] = useState(1)
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState('')
+  const [csrEmails, setCsrEmails] = useState<string[]>(['claudia.verde@trob.com.mx'])
 
   // Step 1
   const [tipoEmpresa, setTipoEmpresa] = useState<'MEXICANA' | 'USA_CANADA' | ''>('')
@@ -118,6 +119,14 @@ export default function PortalAltaPublico() {
   }, [token])
 
   useEffect(() => { fetchAlta() }, [fetchAlta])
+
+  // Load CSR emails from DB for notification
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.from('catalogo_csr').select('email').eq('activo', true)
+      if (data && data.length > 0) setCsrEmails(['claudia.verde@trob.com.mx', ...data.map(c => c.email)])
+    })()
+  }, [])
 
   // Auto-save on step change
   const saveProgress = async () => {
@@ -186,7 +195,7 @@ export default function PortalAltaPublico() {
         const reviewUrl = `${window.location.origin}/alta/review/${alta.admin_token || alta.token}`
         await supabase.functions.invoke('enviar-correo', {
           body: {
-            to: ['claudia.verde@trob.com.mx', 'eli@trob.com.mx', 'liz@trob.com.mx'],
+            to: csrEmails,
             cc: ['juan.viveros@trob.com.mx'],
             subject: `Alta Completada por Cliente — ${alta.razon_social || empresa.razon_social} | Asignar CSR`,
             html: buildAdminEmailHTML(alta.razon_social || empresa.razon_social || 'Sin nombre',

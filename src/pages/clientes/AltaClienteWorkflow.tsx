@@ -86,21 +86,8 @@ const ESTADOS: { key: Estado; label: string; color: string; bg: string; icon: Re
   { key: 'RECHAZADA', label: 'Rechazada', color: tokens.colors.red, bg: tokens.colors.redBg, icon: <XCircle size={14} /> },
 ]
 
-/* ─── Catalogs ─── */
-const CSR_CATALOG = [
-  { nombre: 'Eli Pasillas', email: 'eli@trob.com.mx' },
-  { nombre: 'Liz Garcia', email: 'liz@trob.com.mx' },
-]
-
-const CXC_CATALOG = [
-  { nombre: 'Martha Lopez', email: 'martha.lopez@trob.com.mx' },
-  { nombre: 'Carlos Mendez', email: 'carlos.mendez@trob.com.mx' },
-  { nombre: 'Ana Torres', email: 'ana.torres@trob.com.mx' },
-  { nombre: 'Roberto Garza', email: 'roberto.garza@trob.com.mx' },
-  { nombre: 'Lucia Ramos', email: 'lucia.ramos@trob.com.mx' },
-  { nombre: 'Eduardo Solis', email: 'eduardo.solis@trob.com.mx' },
-  { nombre: 'Patricia Vega', email: 'patricia.vega@trob.com.mx' },
-]
+/* ─── Catalogs — loaded from DB ─── */
+interface CatalogEntry { nombre: string; email: string; clientes_asignados?: number }
 
 const DIAS_CREDITO_OPTIONS = [0, 7, 15, 30, 45, 60, 90]
 
@@ -118,6 +105,10 @@ export default function AltaClienteWorkflow(): ReactElement {
   const [rejectNotes, setRejectNotes] = useState('')
   const [showRejectModal, setShowRejectModal] = useState<string | null>(null)
 
+  // Catalogs from DB
+  const [csrCatalog, setCsrCatalog] = useState<CatalogEntry[]>([])
+  const [cxcCatalog, setCxcCatalog] = useState<CatalogEntry[]>([])
+
   // Assignment modals
   const [showCSRModal, setShowCSRModal] = useState<string | null>(null)
   const [selectedCSR, setSelectedCSR] = useState('')
@@ -125,7 +116,16 @@ export default function AltaClienteWorkflow(): ReactElement {
   const [selectedCXC, setSelectedCXC] = useState('')
   const [selectedDiasCredito, setSelectedDiasCredito] = useState(30)
 
-  useEffect(() => { fetchData() }, [])
+  useEffect(() => {
+    fetchData()
+    // Load catalogs from DB
+    ;(async () => {
+      const { data: csrs } = await supabase.from('catalogo_csr').select('nombre, email, clientes_asignados').eq('activo', true).order('nombre')
+      if (csrs) setCsrCatalog(csrs)
+      const { data: cxcs } = await supabase.from('catalogo_cxc').select('nombre, email, clientes_asignados').eq('activo', true).order('nombre')
+      if (cxcs) setCxcCatalog(cxcs)
+    })()
+  }, [])
 
   async function fetchData() {
     setLoading(true)
@@ -196,7 +196,7 @@ export default function AltaClienteWorkflow(): ReactElement {
           // Notify CS admin team
           await supabase.functions.invoke('enviar-correo', {
             body: {
-              to: CSR_CATALOG.map(c => c.email),
+              to: csrCatalog.map(c => c.email),
               cc: [CC_ALWAYS],
               subject: `Nueva Alta Pendiente CSR — ${razon}`,
               html: buildWorkflowEmailHTML(razon, 'Pendiente Asignación CSR', 'Se han recibido los documentos del cliente. Favor de revisar y asignar ejecutivo de servicio.'),
@@ -210,7 +210,7 @@ export default function AltaClienteWorkflow(): ReactElement {
           const csrNombre = (extras?.csr_asignada as string) || 'Sin asignar'
           await supabase.functions.invoke('enviar-correo', {
             body: {
-              to: CXC_CATALOG.slice(0, 3).map(c => c.email),
+              to: cxcCatalog.slice(0, 3).map(c => c.email),
               cc: [CC_ALWAYS],
               subject: `Alta Pendiente CxC — ${razon} | CSR: ${csrNombre}`,
               html: buildWorkflowEmailHTML(razon, 'Pendiente Asignación CxC', `CSR asignada: ${csrNombre}. Favor de asignar ejecutivo de cobranza y días de crédito.`),
@@ -239,10 +239,10 @@ export default function AltaClienteWorkflow(): ReactElement {
           if (record.vendedor_email) allRecipients.push(record.vendedor_email)
           if (record.contacto_email) allRecipients.push(record.contacto_email)
           // Add CSR email
-          const csrEntry = CSR_CATALOG.find(c => c.nombre === record.csr_asignada)
+          const csrEntry = csrCatalog.find(c => c.nombre === record.csr_asignada)
           if (csrEntry) allRecipients.push(csrEntry.email)
           // Add CXC email
-          const cxcEntry = CXC_CATALOG.find(c => c.nombre === record.cxc_asignado)
+          const cxcEntry = cxcCatalog.find(c => c.nombre === record.cxc_asignado)
           if (cxcEntry) allRecipients.push(cxcEntry.email)
 
           await supabase.functions.invoke('enviar-correo', {
@@ -650,7 +650,7 @@ export default function AltaClienteWorkflow(): ReactElement {
                 Selecciona la ejecutiva de Servicio a Clientes que atenderá este alta.
               </p>
               <div style={{ display: 'grid', gap: tokens.spacing.sm, marginBottom: tokens.spacing.lg }}>
-                {CSR_CATALOG.map(csr => (
+                {csrCatalog.map(csr => (
                   <label key={csr.email} style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '12px 16px', borderRadius: tokens.radius.md, cursor: 'pointer',
@@ -694,7 +694,7 @@ export default function AltaClienteWorkflow(): ReactElement {
                 Ejecutivo de Cobranza
               </p>
               <div style={{ display: 'grid', gap: tokens.spacing.xs, marginBottom: tokens.spacing.lg, maxHeight: 220, overflow: 'auto' }}>
-                {CXC_CATALOG.map(cxc => (
+                {cxcCatalog.map(cxc => (
                   <label key={cxc.email} style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '10px 14px', borderRadius: tokens.radius.md, cursor: 'pointer',

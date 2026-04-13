@@ -19,20 +19,7 @@ const C = {
   text: '#0F172A', textSec: '#64748B', textMuted: '#94A3B8', radius: '12px',
 }
 
-const CSR_CATALOG = [
-  { nombre: 'Eli Pasillas', email: 'eli@trob.com.mx', clientes: 65 },
-  { nombre: 'Liz Garcia', email: 'liz@trob.com.mx', clientes: 58 },
-]
-
-const CXC_CATALOG = [
-  { nombre: 'Martha Lopez', email: 'martha.lopez@trob.com.mx' },
-  { nombre: 'Carlos Mendez', email: 'carlos.mendez@trob.com.mx' },
-  { nombre: 'Ana Torres', email: 'ana.torres@trob.com.mx' },
-  { nombre: 'Roberto Garza', email: 'roberto.garza@trob.com.mx' },
-  { nombre: 'Lucia Ramos', email: 'lucia.ramos@trob.com.mx' },
-  { nombre: 'Eduardo Solis', email: 'eduardo.solis@trob.com.mx' },
-  { nombre: 'Patricia Vega', email: 'patricia.vega@trob.com.mx' },
-]
+interface CatalogEntry { nombre: string; email: string; clientes_asignados?: number }
 
 const DIAS_OPTIONS = [0, 7, 15, 30, 45, 60, 90]
 const CC_ALWAYS = 'juan.viveros@trob.com.mx'
@@ -60,6 +47,9 @@ export default function PortalAltaReview() {
   const [acting, setActing] = useState(false)
   const [actionDone, setActionDone] = useState('')
 
+  // Catalogs from DB
+  const [csrCatalog, setCsrCatalog] = useState<CatalogEntry[]>([])
+  const [cxcCatalog, setCxcCatalog] = useState<CatalogEntry[]>([])
   // CSR assignment
   const [selectedCSR, setSelectedCSR] = useState('')
   // CXC assignment
@@ -70,6 +60,16 @@ export default function PortalAltaReview() {
   // Reject
   const [showReject, setShowReject] = useState(false)
   const [rejectNotes, setRejectNotes] = useState('')
+
+  // Fetch catalogs from DB
+  useEffect(() => {
+    (async () => {
+      const { data: csrs } = await supabase.from('catalogo_csr').select('nombre, email, clientes_asignados').eq('activo', true).order('nombre')
+      if (csrs) setCsrCatalog(csrs)
+      const { data: cxcs } = await supabase.from('catalogo_cxc').select('nombre, email, clientes_asignados').eq('activo', true).order('nombre')
+      if (cxcs) setCxcCatalog(cxcs)
+    })()
+  }, [])
 
   const fetchAlta = useCallback(async () => {
     if (!adminToken) { setError('Token inválido'); setLoading(false); return }
@@ -97,13 +97,14 @@ export default function PortalAltaReview() {
   const handleAssignCSR = async () => {
     if (!alta || !selectedCSR) return
     setActing(true)
-    const csrEntry = CSR_CATALOG.find(c => c.nombre === selectedCSR)
+    const csrEntry = csrCatalog.find(c => c.nombre === selectedCSR)
     await supabase.from('alta_clientes').update({ csr_asignada: selectedCSR, estado: 'PENDIENTE_CXC', updated_at: new Date().toISOString() }).eq('id', alta.id)
 
     // Email to CXC team
     const reviewUrl = `${window.location.origin}/alta/review/${adminToken}`
+    const cxcEmails = cxcCatalog.slice(0, 3).map(c => c.email)
     await sendEmail(
-      CXC_CATALOG.slice(0, 3).map(c => c.email),
+      cxcEmails.length > 0 ? cxcEmails : [CC_ALWAYS],
       `Alta Pendiente CxC — ${alta.razon_social} | CSR: ${selectedCSR}`,
       `Se ha asignado CSR: ${selectedCSR} (${csrEntry?.email}). Favor de asignar ejecutivo de cobranza y condiciones de crédito.`,
       reviewUrl,
@@ -146,9 +147,9 @@ export default function PortalAltaReview() {
     const all = new Set([CC_ALWAYS])
     if (alta.vendedor_email) all.add(alta.vendedor_email)
     if (alta.contacto_email) all.add(alta.contacto_email)
-    const csrEntry = CSR_CATALOG.find(c => c.nombre === alta.csr_asignada)
+    const csrEntry = csrCatalog.find(c => c.nombre === alta.csr_asignada)
     if (csrEntry) all.add(csrEntry.email)
-    const cxcEntry = CXC_CATALOG.find(c => c.nombre === alta.cxc_asignado)
+    const cxcEntry = cxcCatalog.find(c => c.nombre === alta.cxc_asignado)
     if (cxcEntry) all.add(cxcEntry.email)
 
     await sendEmail(
@@ -283,14 +284,14 @@ export default function PortalAltaReview() {
                 <h3 style={{ margin: '0 0 4px', fontSize: 16, fontWeight: 700, color: C.text }}><UserCheck size={20} style={{ verticalAlign: 'middle', marginRight: 8, color: C.green }} />Asignar Ejecutivo CSR</h3>
                 <p style={{ margin: '0 0 16px', fontSize: 13, color: C.textSec }}>Selecciona la ejecutiva de Servicio a Clientes para este alta.</p>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
-                  {CSR_CATALOG.map(csr => (
+                  {csrCatalog.map(csr => (
                     <label key={csr.email} onClick={() => setSelectedCSR(csr.nombre)} style={{
                       display: 'flex', alignItems: 'center', gap: 12, padding: 16, borderRadius: 10, cursor: 'pointer',
                       border: `2px solid ${selectedCSR === csr.nombre ? C.green : C.border}`,
                       background: selectedCSR === csr.nombre ? C.greenBg : 'transparent',
                     }}>
                       <input type="radio" checked={selectedCSR === csr.nombre} readOnly style={{ accentColor: C.green }} />
-                      <div><p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: C.text }}>{csr.nombre}</p><p style={{ margin: 0, fontSize: 12, color: C.textMuted }}>{csr.email} &middot; {csr.clientes} clientes</p></div>
+                      <div><p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: C.text }}>{csr.nombre}</p><p style={{ margin: 0, fontSize: 12, color: C.textMuted }}>{csr.email} &middot; {csr.clientes_asignados ?? 0} clientes</p></div>
                     </label>
                   ))}
                 </div>
@@ -309,7 +310,7 @@ export default function PortalAltaReview() {
 
                 <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase' }}>Ejecutivo de Cobranza</p>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 20 }}>
-                  {CXC_CATALOG.map(cxc => (
+                  {cxcCatalog.map(cxc => (
                     <label key={cxc.email} onClick={() => setSelectedCXC(cxc.nombre)} style={{
                       display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderRadius: 8, cursor: 'pointer', fontSize: 12,
                       border: `1px solid ${selectedCXC === cxc.nombre ? C.purple : C.border}`,
