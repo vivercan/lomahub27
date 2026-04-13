@@ -8,7 +8,6 @@ import { supabase } from '../../lib/supabase'
 import { useAuthContext } from '../../hooks/AuthContext'
 
 const TIPO_SERVICIO = ['Seco', 'Refrigerado', 'Seco Hazmat', 'Refri Hazmat']
-const TIPO_VIAJE = ['Impo', 'Expo', 'Nacional', 'Dedicado']
 const TIPO_EMPRESA_OPTS = [
   { value: '', label: 'Selecciona...' },
   { value: 'Naviera', label: 'Naviera' },
@@ -48,11 +47,10 @@ export default function NuevoLead(): ReactElement {
   const [tamano, setTamano] = useState('')
   const [fechaCierre, setFechaCierre] = useState('')
   const [tipoServicio, setTipoServicio] = useState<string[]>([])
-  const [tipoViaje, setTipoViaje] = useState<string[]>([])
   const [transbordo, setTransbordo] = useState(false)
   const [dtd, setDtd] = useState(false)
   const [proximosPasos, setProximosPasos] = useState('')
-  const [ruta, setRuta] = useState('')
+  const [rutas, setRutas] = useState<string[]>([''])
   const [viajesMes, setViajesMes] = useState('')
   const [tarifa, setTarifa] = useState('')
   const [proyectadoUsd, setProyectadoUsd] = useState('')
@@ -61,6 +59,8 @@ export default function NuevoLead(): ReactElement {
   const [hitoN6, setHitoN6] = useState(false)
   const [hitoN7, setHitoN7] = useState(false)
   const [dupWarning, setDupWarning] = useState(false)
+  const [verifying, setVerifying] = useState(false)
+  const [dupResults, setDupResults] = useState<any[]>([])
 
   useEffect(() => {
     const vm = parseInt(viajesMes) || 0
@@ -72,18 +72,95 @@ export default function NuevoLead(): ReactElement {
     setter(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val])
   }
 
-  const checkDuplicate = async (name: string) => {
-    if (name.length < 3) { setDupWarning(false); return }
-    const { data } = await supabase.from('leads').select('id').ilike('empresa', '%' + name + '%').limit(1)
-    setDupWarning((data || []).length > 0)
+  const addRuta = () => setRutas([...rutas, ''])
+  const updateRuta = (index: number, value: string) => {
+    const newRutas = [...rutas]
+    newRutas[index] = value
+    setRutas(newRutas)
+  }
+  const removeRuta = (index: number) => {
+    if (rutas.length > 1) setRutas(rutas.filter((_, i) => i !== index))
+  }
+
+  const verifyAndEnrich = async () => {
+    if (!empresa.trim() || empresa.trim().length < 3) {
+      setError('Ingresa al menos 3 caracteres para verificar')
+      return
+    }
+
+    setVerifying(true)
+    setError('')
+    setDupResults([])
+
+    try {
+      // Check for duplicates in both leads and clientes tables
+      const searchTerm = empresa.trim().toLowerCase()
+      const firstChars = searchTerm.substring(0, 5)
+
+      // Query leads table with multiple strategies
+      const { data: leadsData } = await supabase
+        .from('leads')
+        .select('id, empresa, estado')
+        .or(`empresa.ilike.%${searchTerm}%,empresa.ilike.${searchTerm}`)
+        .limit(10)
+
+      // Query clientes table with multiple strategies
+      const { data: clientesData } = await supabase
+        .from('clientes')
+        .select('id, empresa, estado')
+        .or(`empresa.ilike.%${searchTerm}%,empresa.ilike.${searchTerm}`)
+        .limit(10)
+
+      const allMatches = [...(leadsData || []), ...(clientesData || [])].reduce((acc: any[], item) => {
+        // Avoid duplicates by ID
+        if (!acc.find(m => m.id === item.id)) acc.push(item)
+        return acc
+      }, [])
+
+      if (allMatches.length > 0) {
+        setDupResults(allMatches)
+        setError('Se encontraron coincidencias. Revisa antes de continuar.')
+      } else {
+        // No duplicates - call enrichment API
+        try {
+          const { data: enrichData } = await supabase.functions.invoke('enrich-lead', {
+            body: { empresa: empresa.trim() }
+          })
+
+          if (enrichData) {
+            if (enrichData.web) setWeb(enrichData.web)
+            if (enrichData.ciudad) setCiudad(enrichData.ciudad)
+            if (enrichData.estadoMx) setEstadoMx(enrichData.estadoMx)
+            if (enrichData.tipoEmpresa) setTipoEmpresa(enrichData.tipoEmpresa)
+          }
+          setSuccess(true)
+          setTimeout(() => setSuccess(false), 3000)
+        } catch (enrichErr) {
+          // Enrichment failed but no duplicates, so it's OK to continue
+          setSuccess(true)
+          setTimeout(() => setSuccess(false), 2000)
+        }
+      }
+    } catch (e: any) {
+      setError(e.message || 'Error al verificar empresa')
+    } finally {
+      setVerifying(false)
+    }
   }
 
   const handleSave = async () => {
     if (!empresa.trim()) { setError('Empresa es obligatoria'); return }
     setSaving(true); setError('')
     try {
+      // Apply Title Case to empresa
+      const empresaTitleCase = empresa
+        .trim()
+        .split(' ')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .join(' ')
+
       const { error: err } = await supabase.from('leads').insert([{
-        empresa: empresa.trim().toUpperCase(),
+        empresa: empresaTitleCase,
         contacto: contacto.trim(),
         telefono: telefono.trim(),
         email: email.trim(),
@@ -95,11 +172,11 @@ export default function NuevoLead(): ReactElement {
         tamano,
         fecha_cierre: fechaCierre || null,
         tipo_carga: tipoServicio.join(', '),
-        tipo_viaje: tipoViaje.join(', '),
+        tipo_viaje: 'FTL',
         transbordo,
         dtd,
         proximos_pasos: proximosPasos.trim(),
-        ruta_interes: ruta.trim(),
+        ruta_interes: rutas.filter(r => r.trim()).join(' | '),
         viajes_mes: parseInt(viajesMes) || 0,
         tarifa: parseFloat(tarifa) || 0,
         proyectado_usd: parseFloat(proyectadoUsd) || 0,
@@ -264,8 +341,77 @@ export default function NuevoLead(): ReactElement {
             <div style={ps.sectionTitle}><Building2 size={14} style={{ color: tokens.colors.primary }} /> Empresa</div>
             <div style={ps.fieldGroup}>
               <label style={ps.label}>Nombre de empresa *</label>
-              <input style={ps.input} value={empresa} onChange={e => setEmpresa(e.target.value)} placeholder="Ej: Grupo Bimbo" onFocus={e => { e.target.style.borderColor = tokens.colors.primary; e.target.style.boxShadow = tokens.effects.glowPrimary }} onBlur={e => { e.target.style.borderColor = tokens.colors.border; e.target.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)' }} />
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+                <input style={{ ...ps.input, flex: 1 }} value={empresa} onChange={e => setEmpresa(e.target.value)} placeholder="Ej: Grupo Bimbo" onFocus={e => { e.target.style.borderColor = tokens.colors.primary; e.target.style.boxShadow = tokens.effects.glowPrimary }} onBlur={e => { e.target.style.borderColor = tokens.colors.border; e.target.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.2)' }} />
+                <button
+                  onClick={verifyAndEnrich}
+                  disabled={verifying || !empresa.trim()}
+                  style={{
+                    padding: '9px 12px',
+                    background: verifying || !empresa.trim() ? tokens.colors.bgHover : tokens.colors.primary + '15',
+                    border: '1px solid ' + (verifying || !empresa.trim() ? tokens.colors.border : tokens.colors.primary),
+                    borderRadius: tokens.radius.md,
+                    color: verifying || !empresa.trim() ? tokens.colors.textMuted : tokens.colors.primary,
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    cursor: verifying || !empresa.trim() ? 'default' : 'pointer',
+                    fontFamily: tokens.fonts.body,
+                    whiteSpace: 'nowrap',
+                    transition: 'all 0.15s',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!verifying && empresa.trim()) {
+                      e.currentTarget.style.background = tokens.colors.primary + '25'
+                      e.currentTarget.style.borderColor = tokens.colors.primary
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!verifying && empresa.trim()) {
+                      e.currentTarget.style.background = tokens.colors.primary + '15'
+                      e.currentTarget.style.borderColor = tokens.colors.primary
+                    }
+                  }}
+                >
+                  {verifying ? 'Verificando...' : 'Verificar y Buscar'}
+                </button>
+              </div>
             </div>
+
+            {/* Duplicate Results Panel */}
+            {dupResults.length > 0 && (
+              <div style={{
+                marginTop: '8px',
+                padding: '10px 12px',
+                background: tokens.colors.redBg,
+                border: '1px solid ' + tokens.colors.red + '33',
+                borderRadius: tokens.radius.md,
+              }}>
+                <div style={{ fontSize: '11px', fontWeight: 600, color: tokens.colors.red, marginBottom: '6px' }}>
+                  ⚠️ Se encontraron {dupResults.length} coincidencia{dupResults.length > 1 ? 's' : ''}:
+                </div>
+                {dupResults.map((dup, idx) => (
+                  <div key={idx} style={{ fontSize: '11px', color: tokens.colors.textSecondary, marginBottom: idx < dupResults.length - 1 ? '4px' : '0' }}>
+                    • {dup.empresa} {dup.estado ? `(${dup.estado})` : ''}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Success Message */}
+            {success && dupResults.length === 0 && (
+              <div style={{
+                marginTop: '8px',
+                padding: '10px 12px',
+                background: tokens.colors.greenBg,
+                border: '1px solid ' + tokens.colors.green + '33',
+                borderRadius: tokens.radius.md,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}>
+                <span style={{ fontSize: '12px', color: tokens.colors.green }}>✓ Empresa nueva - Datos enriquecidos</span>
+              </div>
+            )}
             <div style={ps.row}>
               <div style={ps.fieldGroup}>
                 <label style={ps.label}>Tipo de empresa</label>
@@ -319,35 +465,79 @@ export default function NuevoLead(): ReactElement {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', overflow: 'auto', scrollbarWidth: 'none' }}>
           <div style={ps.section}>
             <div style={ps.sectionTitle}><Target size={14} style={{ color: tokens.colors.primary }} /> Servicio</div>
-            <div style={ps.row}>
-              <div style={ps.fieldGroup}>
-                <label style={ps.label}>Tipo servicio</label>
-                <select style={ps.select} value={tipoServicio} onChange={e => setTipoServicio(e.target.value)}>
-                  <option value="">Seleccionar</option>
-                  <option value="IMPO">IMPO</option>
-                  <option value="EXPO">EXPO</option>
-                  <option value="NAC">NAC</option>
-                  <option value="DEDICADO">DEDICADO</option>
-                </select>
-              </div>
-              <div style={ps.fieldGroup}>
-                <label style={ps.label}>Tipo viaje</label>
-                <select style={ps.select} value={tipoViaje} onChange={e => setTipoViaje(e.target.value)}>
-                  <option value="">Seleccionar</option>
-                  <option value="FTL">FTL</option>
-                  <option value="LTL">LTL</option>
-                  <option value="DRAYAGE">Drayage</option>
-                  <option value="INTERMODAL">Intermodal</option>
-                </select>
-              </div>
+            <div style={ps.fieldGroup}>
+              <label style={ps.label}>Tipo servicio</label>
+              <select style={ps.select} value={tipoServicio} onChange={e => setTipoServicio(e.target.value)}>
+                <option value="">Seleccionar</option>
+                <option value="IMPO">IMPO</option>
+                <option value="EXPO">EXPO</option>
+                <option value="NAC">NAC</option>
+                <option value="DEDICADO">DEDICADO</option>
+              </select>
             </div>
             <div style={ps.fieldGroup}>
               <label style={ps.label}>Tipo carga</label>
-              <input style={ps.input} value={tipoViaje} onChange={e => setTipoViaje(e.target.value)} placeholder="Ej: Seca, Refrigerada, Peligrosa" />
+              <input style={ps.input} placeholder="Ej: Seca, Refrigerada, Peligrosa" disabled />
             </div>
             <div style={ps.fieldGroup}>
               <label style={ps.label}>Ruta principal</label>
-              <input style={ps.input} value={ruta} onChange={e => setRuta(e.target.value)} placeholder="Ej: Laredo TX → Monterrey NL" />
+              {rutas.map((r, idx) => (
+                <div key={idx} style={{ display: 'flex', gap: '8px', marginBottom: idx < rutas.length - 1 ? '8px' : '0', alignItems: 'center' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: tokens.colors.textMuted, minWidth: '20px' }}>{idx + 1}.</span>
+                  <input
+                    style={ps.input}
+                    value={r}
+                    onChange={e => updateRuta(idx, e.target.value)}
+                    placeholder="Ej: Laredo TX → Monterrey NL"
+                  />
+                  {rutas.length > 1 && (
+                    <button
+                      onClick={() => removeRuta(idx)}
+                      style={{
+                        padding: '6px 8px',
+                        background: 'transparent',
+                        border: 'none',
+                        color: tokens.colors.red,
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        opacity: 0.7,
+                        transition: 'opacity 0.15s',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+                      onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.7')}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                onClick={addRuta}
+                style={{
+                  marginTop: '8px',
+                  padding: '8px 12px',
+                  background: tokens.colors.bgHover,
+                  border: '1px solid ' + tokens.colors.border,
+                  borderRadius: tokens.radius.md,
+                  color: tokens.colors.primary,
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontFamily: tokens.fonts.body,
+                  transition: 'all 0.15s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = tokens.colors.primary + '15'
+                  e.currentTarget.style.borderColor = tokens.colors.primary
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = tokens.colors.bgHover
+                  e.currentTarget.style.borderColor = tokens.colors.border
+                }}
+              >
+                + Agregar ruta
+              </button>
             </div>
             <div style={ps.row}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>

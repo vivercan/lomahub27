@@ -15,7 +15,7 @@ import { Badge } from '../../components/ui/Badge'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 
-// âââ Types âââââââââââââââââââââââââââââââââââââââââââ
+// ––– Types –––––––––––––––––––––––––––––––––––––––––––
 interface MesData {
   mes: string
   label: string
@@ -82,7 +82,7 @@ interface RadiografiaResponse {
   mensaje?: string
 }
 
-// âââ Helpers âââââââââââââââââââââââââââââââââââââââââ
+// ––– Helpers –––––––––––––––––––––––––––––––––––––––––
 function formatCurrency(n: number): string {
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0 }).format(n)
 }
@@ -141,7 +141,7 @@ export default function RadiografiaFinanciera() {
     fetchData()
   }, [id])
 
-  // âââ Revenue chart (SVG) ââââââââââââââââââââââââââ
+  // ––– Revenue chart (SVG) ––––––––––––––––––––––––––
   function RevenueChart({ series }: { series: MesData[] }) {
     if (!series.length) return null
     const maxVal = Math.max(...series.map(s => Math.max(s.ingreso, s.presupuesto)), 1)
@@ -212,7 +212,7 @@ export default function RadiografiaFinanciera() {
     )
   }
 
-  // âââ Risk gauge SVG ââââââââââââââââââââââââââââââââ
+  // ––– Risk gauge SVG ––––––––––––––––––––––––––––––––
   function RiskGauge({ score, label }: { score: number; label: string }) {
     const angle = (score / 10) * 360
     const r = 50
@@ -255,7 +255,7 @@ export default function RadiografiaFinanciera() {
     )
   }
 
-  // âââ Top Routes table columns ââââââââââââââââââââââ
+  // ––– Top Routes table columns ––––––––––––––––––––––
   const rutasColumns: Column<RutaData>[] = [
     {
       key: 'ruta',
@@ -299,7 +299,7 @@ export default function RadiografiaFinanciera() {
     },
   ]
 
-  // âââ Monthly series table columns ââââââââââââââââââ
+  // ––– Monthly series table columns ––––––––––––––––––
   const mesColumns: Column<MesData>[] = [
     {
       key: 'label',
@@ -453,7 +453,7 @@ export default function RadiografiaFinanciera() {
               <div className="flex items-center gap-4 mt-2">
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded" style={{ background: tokens.colors.green }} />
-                  <span className="text-xs" style={{ color: tokens.colors.textMuted }}>Margen â¥20%</span>
+                  <span className="text-xs" style={{ color: tokens.colors.textMuted }}>Margen –≥20%</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded" style={{ background: tokens.colors.yellow }} />
@@ -516,7 +516,7 @@ export default function RadiografiaFinanciera() {
                       <span className="text-xs font-semibold" style={{ color: tokens.colors.textPrimary }}>Contrato Activo</span>
                     </div>
                     <span className="text-xs" style={{ color: tokens.colors.textMuted }}>
-                      {data.contrato.fechaInicio} â {data.contrato.fechaFin}
+                      {data.contrato.fechaInicio} – {data.contrato.fechaFin}
                     </span>
                   </div>
                 )}

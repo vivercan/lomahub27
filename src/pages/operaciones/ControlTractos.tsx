@@ -232,7 +232,7 @@ const ControlTractos: React.FC = () => {
   }
 
   const validateForm = (): string | null => {
-    if (!formData.numero_economico?.trim()) return 'El nÃºmero econÃ³mico es requerido'
+    if (!formData.numero_economico?.trim()) return 'El número económico es requerido'
     if (!formData.placas?.trim()) return 'Las placas son requeridas'
     if (!formData.marca?.trim()) return 'La marca es requerida'
     if (!formData.modelo?.trim()) return 'El modelo es requerido'
@@ -369,7 +369,7 @@ const ControlTractos: React.FC = () => {
       icon: <CheckCircle size={20} style={{ color: tokens.gray }} />,
     },
     {
-      label: 'Costo Ocioso del DÃ­a',
+      label: 'Costo Ocioso del Día',
       value: `$${summary.costOciosoTotal.toLocaleString('en-US', { maximumFractionDigits: 2 })}`,
       color: tokens.red,
       icon: <AlertCircle size={20} style={{ color: tokens.red }} />,
@@ -391,7 +391,7 @@ const ControlTractos: React.FC = () => {
           Control de Tractos
         </h1>
         <p style={{ fontSize: '0.95rem', color: tokens.textSecondary }}>
-          GestiÃ³n y monitoreo de tractocamiones de la flota
+          Gestión y monitoreo de tractocamiones de la flota
         </p>
       </div>
 
@@ -479,7 +479,7 @@ const ControlTractos: React.FC = () => {
             />
             <input
               type="text"
-              placeholder="Buscar por nÃºmero, placas u operador..."
+              placeholder="Buscar por número, placas u operador..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{
@@ -613,7 +613,7 @@ const ControlTractos: React.FC = () => {
                       onClick={() => handleSort('numero_economico')}
                       style={sortButtonStyle}
                     >
-                      NÃºmero EconÃ³mico
+                      Número Económico
                       <SortIcon column="numero_economico" />
                     </button>
                   </th>
@@ -746,7 +746,7 @@ const ControlTractos: React.FC = () => {
                           {tracto.viaje_actual}
                         </span>
                       ) : (
-                        <span style={{ fontSize: '0.85rem', color: tokens.textSecondary }}>â</span>
+                        <span style={{ fontSize: '0.85rem', color: tokens.textSecondary }}>–</span>
                       )}
                     </td>
                     <td style={cellStyle}>
@@ -755,7 +755,7 @@ const ControlTractos: React.FC = () => {
                           {tracto.operador_asignado}
                         </span>
                       ) : (
-                        <span style={{ fontSize: '0.85rem', color: tokens.textSecondary }}>â</span>
+                        <span style={{ fontSize: '0.85rem', color: tokens.textSecondary }}>–</span>
                       )}
                     </td>
                     <td style={cellStyle}>
@@ -1040,9 +1040,9 @@ const FormFields: React.FC<FormFieldsProps> = ({
         gap: '1.25rem',
       }}
     >
-      {/* NÃºmero EconÃ³mico */}
+      {/* Número Económico */}
       <div style={{ gridColumn: '1 / -1' }}>
-        <label style={labelStyle}>NÃºmero EconÃ³mico *</label>
+        <label style={labelStyle}>Número Económico *</label>
         <input
           type="text"
           value={formData.numero_economico || ''}

@@ -10,7 +10,7 @@ import { DataTable, type Column } from '../../components/ui/DataTable'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 
-/* ââ Interfaces ââ */
+/* –– Interfaces –– */
 interface TarifaMX {
   id: string
   rango_km_min: number
@@ -113,7 +113,7 @@ export default function CerebroTarifario() {
     setLoading(false)
   }
 
-  /* ââ KPIs ââ */
+  /* –– KPIs –– */
   const totalTarifas = tarifasMX.length + tarifasUSA.length
   const totalCruces = cruces.length
   const totalAccesoriales = accesoriales.length
@@ -121,13 +121,13 @@ export default function CerebroTarifario() {
     ? (tarifasMX.reduce((s, t) => s + t.tarifa_por_km, 0) / tarifasMX.length).toFixed(2)
     : '0'
 
-  /* ââ Columns MX ââ */
+  /* –– Columns MX –– */
   const colsMX: Column<TarifaMX>[] = [
     {
       key: 'rango', label: 'Rango KM', width: '180px',
       render: (r) => (
         <span style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body, fontSize: '13px', fontWeight: 600 }}>
-          {r.rango_km_min.toLocaleString()} — {r.rango_km_max >= 99000 ? 'â' : r.rango_km_max.toLocaleString()} km
+          {r.rango_km_min.toLocaleString()} — {r.rango_km_max >= 99000 ? '–' : r.rango_km_max.toLocaleString()} km
         </span>
       )
     },
@@ -153,13 +153,13 @@ export default function CerebroTarifario() {
     },
   ]
 
-  /* ââ Columns USA ââ */
+  /* –– Columns USA –– */
   const colsUSA: Column<TarifaUSA>[] = [
     {
       key: 'rango', label: 'Rango Millas', width: '180px',
       render: (r) => (
         <span style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body, fontSize: '13px', fontWeight: 600 }}>
-          {r.rango_millas_min.toLocaleString()} — {r.rango_millas_max >= 99000 ? 'â' : r.rango_millas_max.toLocaleString()} mi
+          {r.rango_millas_min.toLocaleString()} — {r.rango_millas_max >= 99000 ? '–' : r.rango_millas_max.toLocaleString()} mi
         </span>
       )
     },
@@ -185,7 +185,7 @@ export default function CerebroTarifario() {
     },
   ]
 
-  /* ââ Columns Cruces ââ */
+  /* –– Columns Cruces –– */
   const colsCruces: Column<Cruce>[] = [
     {
       key: 'nombre', label: 'Cruce', width: '160px',
@@ -196,13 +196,13 @@ export default function CerebroTarifario() {
       )
     },
     {
-      key: 'ruta', label: 'MX â USA',
+      key: 'ruta', label: 'MX – USA',
       render: (r) => (
         <div>
           <span style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body, fontSize: '13px' }}>
             {r.ciudad_mx}, {r.estado_mx}
           </span>
-          <span style={{ color: tokens.colors.textMuted, margin: '0 6px' }}>â</span>
+          <span style={{ color: tokens.colors.textMuted, margin: '0 6px' }}>–</span>
           <span style={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body, fontSize: '13px' }}>
             {r.ciudad_usa}, {r.estado_usa}
           </span>
@@ -231,7 +231,7 @@ export default function CerebroTarifario() {
     },
   ]
 
-  /* ââ Columns Accesoriales ââ */
+  /* –– Columns Accesoriales –– */
   const colsAcc: Column<Accesorial>[] = [
     {
       key: 'codigo', label: 'Código', width: '150px',
@@ -278,7 +278,7 @@ export default function CerebroTarifario() {
     },
   ]
 
-  /* ââ Filter by search ââ */
+  /* –– Filter by search –– */
   const q = busqueda.toLowerCase()
   const filteredMX = tarifasMX.filter(t => !q || (t.descripcion || '').toLowerCase().includes(q) || t.tipo_equipo.includes(q))
   const filteredUSA = tarifasUSA.filter(t => !q || (t.descripcion || '').toLowerCase().includes(q) || t.tipo_equipo.includes(q))

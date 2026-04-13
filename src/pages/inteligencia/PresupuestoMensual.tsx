@@ -1,4 +1,4 @@
-// PresupuestoMensual.tsx â V2 â Real revenue from viajes_anodos + tarifas
+// PresupuestoMensual.tsx – V2 – Real revenue from viajes_anodos + tarifas
 // Shows per-client monthly revenue with estimated income from ANODOS data
 import { useState, useEffect } from 'react'
 import {
@@ -18,7 +18,7 @@ import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 import type { SemaforoEstado } from '../../lib/tokens'
 
-/* âââ Types âââââââââââââââââââââââââââââââââââââââ */
+/* ––– Types ––––––––––––––––––––––––––––––––––––––– */
 
 interface TarifaMX { rango_km_min: number; rango_km_max: number; tarifa_por_km: number; tipo_equipo: string }
 interface TarifaUSA { rango_millas_min: number; rango_millas_max: number; tarifa_por_milla: number; tipo_equipo: string }
@@ -44,7 +44,7 @@ interface Resumen {
   clienteTop: string
 }
 
-/* âââ Helpers âââââââââââââââââââââââââââââââââââââ */
+/* ––– Helpers ––––––––––––––––––––––––––––––––––––– */
 
 function formatCurrency(n: number): string {
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0 }).format(n)
@@ -92,7 +92,7 @@ function lookupTarifaUSA(km: number, equipo: string, tarifas: TarifaUSA[]): numb
   return fallback ? millas * fallback.tarifa_por_milla : 0
 }
 
-/* âââ Component âââââââââââââââââââââââââââââââââââ */
+/* ––– Component ––––––––––––––––––––––––––––––––––– */
 
 export default function PresupuestoMensual() {
   const [loading, setLoading] = useState(false)
@@ -269,7 +269,7 @@ export default function PresupuestoMensual() {
         margenPct: Math.round(totalMargenPct * 10) / 10,
         totalViajes: allViajes.length,
         totalKm: totalKm,
-        clienteTop: detalleArr[0]?.cliente || 'â',
+        clienteTop: detalleArr[0]?.cliente || '–',
       })
       setDetalle(detalleArr)
     } catch (err) {
@@ -281,7 +281,7 @@ export default function PresupuestoMensual() {
 
   useEffect(() => { fetchData() }, [])
 
-  /* âââ Table columns âââââââââââââââââââââââââââââ */
+  /* ––– Table columns ––––––––––––––––––––––––––––– */
 
   const columns: Column<ClientePresupuesto>[] = [
     {
@@ -329,12 +329,12 @@ export default function PresupuestoMensual() {
       render: (row) => {
         if (row.tendencia === 'alza') return <TrendingUp size={16} style={{ color: tokens.colors.green }} />
         if (row.tendencia === 'baja') return <TrendingDown size={16} style={{ color: tokens.colors.red }} />
-        return <span style={{ color: tokens.colors.gray }}>â</span>
+        return <span style={{ color: tokens.colors.gray }}>–</span>
       },
     },
   ]
 
-  /* âââ CSV Export ââââââââââââââââââââââââââââââââ */
+  /* ––– CSV Export –––––––––––––––––––––––––––––––– */
 
   const handleExportCSV = () => {
     if (!detalle.length) return
@@ -349,12 +349,12 @@ export default function PresupuestoMensual() {
     link.click()
   }
 
-  /* âââ Render ââââââââââââââââââââââââââââââââââââ */
+  /* ––– Render –––––––––––––––––––––––––––––––––––– */
 
   return (
     <ModuleLayout
       titulo="Ingreso Mensual por Cliente"
-      subtitulo="Ingreso estimado, costo y margen por cliente â datos ANODOS en tiempo real"
+      subtitulo="Ingreso estimado, costo y margen por cliente – datos ANODOS en tiempo real"
       acciones={
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={handleExportCSV} disabled={!detalle.length}>

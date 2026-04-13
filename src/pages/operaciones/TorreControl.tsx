@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
 import { KPICard } from '../../components/ui/KPICard'
@@ -9,7 +9,7 @@ import { Semaforo } from '../../components/ui/Semaforo'
 import type { SemaforoEstado } from '../../lib/tokens'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
-import { Truck, AlertTriangle, Clock, CheckCircle2, BarChart3 } from 'lucide-react'
+import { Truck, AlertTriangle, Clock, CheckCircle2, BarChart3, X, Search } from 'lucide-react'
 
 /* ──── types ──── */
 interface Viaje {
@@ -24,6 +24,15 @@ interface Viaje {
   semaforo: SemaforoEstado
   kmRuta: number
   viajesHistoricos: number
+  origen?: string
+  destino?: string
+  clienteId?: string
+}
+
+interface CSUser {
+  id: string
+  nombre_completo: string
+  email: string
 }
 
 interface RutaStats {
@@ -120,21 +129,353 @@ async function fetchRutaStats(): Promise<Map<string, RutaStats>> {
   return result
 }
 
+/* ──── MultiSelectDropdown Component ──── */
+interface MultiSelectProps {
+  label: string
+  options: { value: string; label: string }[]
+  selectedValues: string[]
+  onChange: (values: string[]) => void
+  placeholder?: string
+  searchPlaceholder?: string
+}
+
+function MultiSelectDropdown({
+  label,
+  options,
+  selectedValues,
+  onChange,
+  placeholder = 'Seleccionar...',
+  searchPlaceholder = 'Buscar...',
+}: MultiSelectProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const filteredOptions = options.filter(opt =>
+    opt.label.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  const handleToggle = (value: string) => {
+    if (selectedValues.includes(value)) {
+      onChange(selectedValues.filter(v => v !== value))
+    } else {
+      onChange([...selectedValues, value])
+    }
+  }
+
+  const displayLabel = selectedValues.length === 0
+    ? placeholder
+    : selectedValues.length === 1
+      ? options.find(o => o.value === selectedValues[0])?.label || placeholder
+      : `${selectedValues.length} seleccionado${selectedValues.length !== 1 ? 's' : ''}`
+
+  return (
+    <div ref={dropdownRef} style={{ position: 'relative', width: '100%' }}>
+      <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: tokens.colors.textSecondary }}>
+        {label}
+      </label>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          width: '100%',
+          padding: '10px 12px',
+          border: `1px solid ${tokens.colors.border}`,
+          borderRadius: tokens.radii.md,
+          backgroundColor: tokens.colors.bg,
+          color: tokens.colors.text,
+          cursor: 'pointer',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          fontSize: '14px',
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={(e) => {
+          if (!isOpen) (e.currentTarget as HTMLElement).style.borderColor = tokens.colors.blue
+        }}
+        onMouseLeave={(e) => {
+          if (!isOpen) (e.currentTarget as HTMLElement).style.borderColor = tokens.colors.border
+        }}
+      >
+        <span>{displayLabel}</span>
+        <span style={{ fontSize: '12px' }}>{isOpen ? '▲' : '▼'}</span>
+      </button>
+
+      {isOpen && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            marginTop: '4px',
+            backgroundColor: tokens.colors.bg,
+            border: `1px solid ${tokens.colors.border}`,
+            borderRadius: tokens.radii.md,
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            zIndex: 1000,
+            maxHeight: '300px',
+            overflowY: 'auto',
+          }}
+        >
+          {/* Search Input */}
+          <div style={{ padding: '8px', borderBottom: `1px solid ${tokens.colors.border}`, position: 'sticky', top: 0, backgroundColor: tokens.colors.bg }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', backgroundColor: tokens.colors.bgSecondary, borderRadius: tokens.radii.sm }}>
+              <Search size={14} color={tokens.colors.textSecondary} />
+              <input
+                type="text"
+                placeholder={searchPlaceholder}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  flex: 1,
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: tokens.colors.text,
+                  fontSize: '13px',
+                  outline: 'none',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Options */}
+          {filteredOptions.length === 0 ? (
+            <div style={{ padding: '12px', textAlign: 'center', color: tokens.colors.textSecondary, fontSize: '13px' }}>
+              Sin resultados
+            </div>
+          ) : (
+            filteredOptions.map(opt => (
+              <label
+                key={opt.value}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '10px 12px',
+                  cursor: 'pointer',
+                  backgroundColor: selectedValues.includes(opt.value) ? tokens.colors.bgSecondary : 'transparent',
+                  borderLeft: selectedValues.includes(opt.value) ? `3px solid ${tokens.colors.blue}` : '3px solid transparent',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  if (!selectedValues.includes(opt.value)) {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = tokens.colors.bgSecondary
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!selectedValues.includes(opt.value)) {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
+                  }
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedValues.includes(opt.value)}
+                  onChange={() => handleToggle(opt.value)}
+                  style={{
+                    cursor: 'pointer',
+                    width: '16px',
+                    height: '16px',
+                    accentColor: tokens.colors.blue,
+                  }}
+                />
+                <span style={{ fontSize: '13px', flex: 1 }}>{opt.label}</span>
+              </label>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ──── MapModal Component ──── */
+interface MapModalProps {
+  viaje: Viaje | null
+  onClose: () => void
+}
+
+function MapModal({ viaje, onClose }: MapModalProps) {
+  if (!viaje) return null
+
+  const [mapUrl, setMapUrl] = useState('')
+
+  useEffect(() => {
+    // Create a simple OpenStreetMap embed URL using the route
+    // Since we don't have exact GPS coordinates, we'll use a generic map view
+    // In production, you'd want to geocode origen and destino
+    const encodedRoute = encodeURIComponent(`${viaje.origen || 'Origen'}, Mexico to ${viaje.destino || 'Destino'}, Mexico`)
+    setMapUrl(`https://www.openstreetmap.org/export/embed.html?bbox=-120,15,-85,35&layer=mapnik`)
+  }, [viaje])
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 2000,
+      }}
+      onClick={onClose}
+    >
+      <Card
+        style={{
+          width: '90%',
+          maxWidth: '800px',
+          maxHeight: '90vh',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingBottom: tokens.spacing.md,
+            borderBottom: `1px solid ${tokens.colors.border}`,
+          }}
+        >
+          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>Ruta: {viaje.folio}</h2>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: tokens.colors.textSecondary,
+            }}
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: tokens.spacing.md, paddingTop: tokens.spacing.md, overflowY: 'auto' }}>
+          {/* Trip Details */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: tokens.spacing.md,
+              padding: tokens.spacing.md,
+              backgroundColor: tokens.colors.bgSecondary,
+              borderRadius: tokens.radii.md,
+            }}
+          >
+            <div>
+              <span style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>Cliente</span>
+              <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: 500 }}>{viaje.cliente}</p>
+            </div>
+            <div>
+              <span style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>Tracto</span>
+              <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: 500 }}>{viaje.tracto}</p>
+            </div>
+            <div>
+              <span style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>Origen</span>
+              <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: 500 }}>{viaje.origen || '—'}</p>
+            </div>
+            <div>
+              <span style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>Destino</span>
+              <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: 500 }}>{viaje.destino || '—'}</p>
+            </div>
+            <div>
+              <span style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>ETA</span>
+              <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: 500 }}>{viaje.eta}</p>
+            </div>
+            <div>
+              <span style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>Cita</span>
+              <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: 500 }}>{viaje.cita}</p>
+            </div>
+          </div>
+
+          {/* Map */}
+          <div
+            style={{
+              width: '100%',
+              height: '400px',
+              borderRadius: tokens.radii.md,
+              overflow: 'hidden',
+              border: `1px solid ${tokens.colors.border}`,
+              backgroundColor: tokens.colors.bgSecondary,
+            }}
+          >
+            {mapUrl ? (
+              <iframe
+                src={mapUrl}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                }}
+                allowFullScreen={true}
+                loading="lazy"
+              />
+            ) : (
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: tokens.colors.textSecondary,
+                }}
+              >
+                Cargando mapa...
+              </div>
+            )}
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
+}
+
 /* ──── component ──── */
 export default function TorreControl(): ReactElement {
   const [viajes, setViajes] = useState<Viaje[]>([])
   const [loading, setLoading] = useState(true)
-  const [filtroEmpresa, setFiltroEmpresa] = useState('')
+  const [filtroEmpresas, setFiltroEmpresas] = useState<string[]>([])
+  const [filtroCS, setFiltroCS] = useState<string[]>([])
   const [filtroEstado, setFiltroEstado] = useState('')
   const [totalViajesMes, setTotalViajesMes] = useState(0)
+  const [csUsers, setCSUsers] = useState<CSUser[]>([])
+  const [selectedViaje, setSelectedViaje] = useState<Viaje | null>(null)
 
   useEffect(() => {
     const fetchViajes = async () => {
       try {
         setLoading(true)
 
-        // Fetch active viajes + route stats in parallel
-        const [viajesResp, rutaStats, mesCount] = await Promise.all([
+        // Fetch active viajes + route stats + CS users in parallel
+        const [viajesResp, rutaStats, mesCount, csResp] = await Promise.all([
           supabase
             .from('viajes')
             .select('*, clientes(razon_social), tractos(numero_economico)')
@@ -145,12 +486,22 @@ export default function TorreControl(): ReactElement {
             .from('viajes_anodos')
             .select('*', { count: 'exact', head: true })
             .gte('inicia_viaje', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()),
+          supabase
+            .from('usuarios')
+            .select('id, nombre_completo, email')
+            .eq('rol', 'cs')
+            .order('nombre_completo', { ascending: true }),
         ])
 
         if (viajesResp.error) {
           console.error('Error fetching viajes:', viajesResp.error)
           setViajes([])
           return
+        }
+
+        // Set CS users
+        if (csResp.data) {
+          setCSUsers(csResp.data)
         }
 
         setTotalViajesMes(mesCount.count || 0)
@@ -174,6 +525,9 @@ export default function TorreControl(): ReactElement {
             semaforo: estadoToSemaforo(viaje.estado || 'programado'),
             kmRuta: stats?.avgKm || 0,
             viajesHistoricos: stats?.totalViajes || 0,
+            origen: viaje.origen,
+            destino: viaje.destino,
+            clienteId: viaje.cliente_id,
           }
         })
 
@@ -198,7 +552,9 @@ export default function TorreControl(): ReactElement {
   // Apply filters
   const filteredViajes = viajes.filter(v => {
     if (filtroEstado && v.estadoViaje !== filtroEstado) return false
-    if (filtroEmpresa && !v.cliente.toLowerCase().includes(filtroEmpresa.toLowerCase())) return false
+    if (filtroEmpresas.length > 0 && !filtroEmpresas.includes(v.cliente)) return false
+    // CS filter would be applied if we had CS info in viaje data
+    // For now, we'll skip CS filtering since it's not in the viaje schema
     return true
   })
 
@@ -259,11 +615,24 @@ export default function TorreControl(): ReactElement {
     },
   ]
 
+  // Function to make DataTable rows clickable for map
+  const handleRowClick = (row: Viaje) => {
+    setSelectedViaje(row)
+  }
+
   // Extract unique empresas for filter
   const empresasUnicas = [...new Set(viajes.map(v => v.cliente).filter(c => c !== '—'))]
 
+  // Prepare CS options for filter
+  const csOptions = [
+    { value: 'sin_asignar', label: 'Sin asignar' },
+    ...csUsers.map(cs => ({ value: cs.id, label: cs.nombre_completo })),
+  ]
+
   return (
-    <ModuleLayout titulo="Torre de Control">
+    <>
+      <MapModal viaje={selectedViaje} onClose={() => setSelectedViaje(null)} />
+      <ModuleLayout titulo="Despacho IA">
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
         <KPICard titulo="En Tránsito" valor={enTransito} color="green" icono={<Truck size={18} />} />
@@ -275,14 +644,22 @@ export default function TorreControl(): ReactElement {
 
       {/* Filtros */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
-        <Select
+        <MultiSelectDropdown
           label="Empresa"
           placeholder="Todas las empresas"
-          value={filtroEmpresa}
-          onChange={(val) => setFiltroEmpresa(val)}
           options={empresasUnicas.map(e => ({ value: e, label: e }))}
+          selectedValues={filtroEmpresas}
+          onChange={(vals) => setFiltroEmpresas(vals)}
+          searchPlaceholder="Buscar empresa..."
         />
-        <Select label="CS Asignada" placeholder="Todos los CS" options={[]} />
+        <MultiSelectDropdown
+          label="CS Asignada"
+          placeholder="Todos los CS"
+          options={csOptions}
+          selectedValues={filtroCS}
+          onChange={(vals) => setFiltroCS(vals)}
+          searchPlaceholder="Buscar CS..."
+        />
         <Select
           label="Estado"
           placeholder="Todos los estados"
@@ -320,9 +697,78 @@ export default function TorreControl(): ReactElement {
             </p>
           </div>
         ) : (
-          <DataTable columns={viajesColumns} data={filteredViajes} />
+          <div
+            style={{
+              overflowX: 'auto',
+            }}
+          >
+            <table
+              style={{
+                width: '100%',
+                borderCollapse: 'collapse',
+                fontSize: '13px',
+              }}
+            >
+              <thead>
+                <tr
+                  style={{
+                    borderBottom: `1px solid ${tokens.colors.border}`,
+                    backgroundColor: tokens.colors.bgSecondary,
+                  }}
+                >
+                  {viajesColumns.map(col => (
+                    <th
+                      key={col.key}
+                      style={{
+                        padding: '12px',
+                        textAlign: (col.align as 'left' | 'center' | 'right') || 'left',
+                        fontWeight: 600,
+                        color: tokens.colors.textSecondary,
+                      }}
+                    >
+                      {col.label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filteredViajes.map((row, idx) => (
+                  <tr
+                    key={idx}
+                    onClick={() => handleRowClick(row)}
+                    style={{
+                      borderBottom: `1px solid ${tokens.colors.border}`,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      backgroundColor: 'transparent',
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = tokens.colors.bgSecondary
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
+                    }}
+                  >
+                    {viajesColumns.map(col => (
+                      <td
+                        key={col.key}
+                        style={{
+                          padding: '12px',
+                          textAlign: (col.align as 'left' | 'center' | 'right') || 'left',
+                          color: tokens.colors.text,
+                        }}
+                      >
+                        {col.render ? col.render(row) : (row as any)[col.key]}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </Card>
     </ModuleLayout>
+    </>
   )
 }

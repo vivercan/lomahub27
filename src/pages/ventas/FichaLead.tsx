@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Phone, Mail, MapPin, Building2, TrendingUp, User, Calendar, ArrowLeft, Plus, FileText, UserCheck, Edit3, Truck, DollarSign, Target, MessageSquare, Upload, Loader, X } from 'lucide-react'
+import { Phone, Mail, MapPin, Building2, TrendingUp, User, Calendar, ArrowLeft, Plus, FileText, UserCheck, Edit3, Truck, DollarSign, Target, MessageSquare, Upload, Loader, X, Clock, CheckCircle } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
+import { useAuthContext } from '../../hooks/AuthContext'
 
 interface Lead {
   id: string
@@ -31,6 +32,18 @@ interface Lead {
   eliminado?: boolean
 }
 
+interface Activity {
+  id: string
+  lead_id: string
+  tipo: string
+  fecha: string
+  descripcion: string
+  siguiente_paso: string
+  fecha_seguimiento: string | null
+  ejecutivo_id: string
+  ejecutivo_nombre: string
+  created_at?: string
+}
 const PIPELINE_STAGES = [
   { id: 'Nuevo', label: 'Nuevo', color: tokens.colors.blue },
   { id: 'Contactado', label: 'Contactado', color: tokens.colors.yellow },
@@ -54,11 +67,42 @@ const formatDate = (d: string): string => {
 export default function FichaLead() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { user } = useAuthContext()
   const [lead, setLead] = useState<Lead | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [converting, setConverting] = useState(false)
+  const [activities, setActivities] = useState<Activity[]>([])
+  const [loadingActivities, setLoadingActivities] = useState(false)
+  const [showActivityModal, setShowActivityModal] = useState(false)
+  const [activityType, setActivityType] = useState('Llamada')
+  const [activityDate, setActivityDate] = useState(new Date().toISOString().split('T')[0])
+  const [activityDescription, setActivityDescription] = useState('')
+  const [activityNextStep, setActivityNextStep] = useState('')
+  const [activityFollowupDate, setActivityFollowupDate] = useState('')
+  const [savingActivity, setSavingActivity] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const ACTIVITY_TYPES = ['Llamada', 'Email', 'Reunión', 'Visita', 'WhatsApp', 'Nota']
+
+  const getActivityIcon = (tipo: string) => {
+    switch (tipo) {
+      case 'Llamada':
+        return <Phone size={14} style={{ color: tokens.colors.primary }} />
+      case 'Email':
+        return <Mail size={14} style={{ color: tokens.colors.primary }} />
+      case 'Reunión':
+        return <Calendar size={14} style={{ color: tokens.colors.primary }} />
+      case 'Visita':
+        return <MapPin size={14} style={{ color: tokens.colors.primary }} />
+      case 'WhatsApp':
+        return <MessageSquare size={14} style={{ color: tokens.colors.primary }} />
+      case 'Nota':
+        return <FileText size={14} style={{ color: tokens.colors.primary }} />
+      default:
+        return <Clock size={14} style={{ color: tokens.colors.primary }} />
+    }
+  }
 
   useEffect(() => {
     const fetchLead = async () => {
@@ -78,6 +122,7 @@ export default function FichaLead() {
           setNotFound(true)
         } else {
           setLead(data)
+          fetchActivities(id)
         }
       } catch (err) {
         console.error('Error fetching lead:', err)
@@ -88,6 +133,66 @@ export default function FichaLead() {
     }
     fetchLead()
   }, [id])
+
+  const fetchActivities = async (leadId: string) => {
+    try {
+      setLoadingActivities(true)
+      const { data, error } = await supabase
+        .from('lead_activities')
+        .select('*')
+        .eq('lead_id', leadId)
+        .order('fecha', { ascending: false })
+
+      if (!error && data) {
+        setActivities(data as Activity[])
+      }
+    } catch (err) {
+      console.error('Error fetching activities:', err)
+    } finally {
+      setLoadingActivities(false)
+    }
+  }
+
+  const handleSaveActivity = async () => {
+    if (!lead || !activityType || !activityDescription.trim()) {
+      alert('Por favor completa los campos obligatorios')
+      return
+    }
+
+    try {
+      setSavingActivity(true)
+      const { error } = await supabase
+        .from('lead_activities')
+        .insert({
+          lead_id: lead.id,
+          tipo: activityType,
+          fecha: activityDate,
+          descripcion: activityDescription.trim(),
+          siguiente_paso: activityNextStep.trim(),
+          fecha_seguimiento: activityFollowupDate || null,
+          ejecutivo_id: user?.id || '',
+          ejecutivo_nombre: user?.email || 'Sin asignar',
+        })
+
+      if (error) throw error
+
+      // Reset form
+      setActivityType('Llamada')
+      setActivityDate(new Date().toISOString().split('T')[0])
+      setActivityDescription('')
+      setActivityNextStep('')
+      setActivityFollowupDate('')
+      setShowActivityModal(false)
+
+      // Refetch activities
+      await fetchActivities(lead.id)
+    } catch (err) {
+      console.error('Error saving activity:', err)
+      alert('Error al guardar la actividad')
+    } finally {
+      setSavingActivity(false)
+    }
+  }
 
   const handleConvertToClient = async () => {
     if (!lead || converting) return
@@ -109,7 +214,7 @@ export default function FichaLead() {
   }
 
   const handleWhatsApp = () => {
-    if (!lead?.telefono) { alert('Este lead no tiene telÃ©fono registrado.'); return }
+    if (!lead?.telefono) { alert('Este lead no tiene teléfono registrado.'); return }
     const phone = lead.telefono.replace(/\D/g, '')
     const msg = encodeURIComponent(`Hola, me comunico de parte de LOMA respecto a ${lead.empresa || 'su empresa'}.`)
     window.open(`https://wa.me/${phone}?text=${msg}`, '_blank')
@@ -298,10 +403,10 @@ export default function FichaLead() {
       }
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%', overflow: 'hidden' }}>
-      {/* Hidden file input for cotizaciÃ³n PDF */}
+      {/* Hidden file input for cotización PDF */}
       <input ref={fileInputRef} type="file" accept=".pdf" style={{ display: 'none' }} onChange={handleFileSelected} />
 
-        {/* Ã¢ÂÂÃ¢ÂÂ PIPELINE Ã¢ÂÂÃ¢ÂÂ */}
+        {/* –– PIPELINE –– */}
         <div style={s.card}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {PIPELINE_STAGES.map((stage, idx) => {
@@ -326,7 +431,7 @@ export default function FichaLead() {
           </div>
         </div>
 
-        {/* Ã¢ÂÂÃ¢ÂÂ BODY: 2 columns Ã¢ÂÂÃ¢ÂÂ */}
+        {/* –– BODY: 2 columns –– */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px', flex: 1, minHeight: 0, overflow: 'auto' }}>
 
           {/* LEFT: Info del lead */}
@@ -497,13 +602,67 @@ export default function FichaLead() {
               </p>
             </div>
 
+            {/* Historial de Actividades */}
+            <div style={s.card}>
+              <p style={s.sectionTitle}>Historial de Actividades</p>
+              {loadingActivities ? (
+                <div style={{ textAlign: 'center', padding: '20px', color: tokens.colors.textMuted }}>
+                  <Loader size={16} style={{ animation: 'spin 1s linear infinite', display: 'inline-block' }} />
+                </div>
+              ) : activities.length === 0 ? (
+                <p style={{ ...s.valueMuted, textAlign: 'center', padding: '16px 0' }}>
+                  No hay actividades registradas
+                </p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {activities.map((activity) => (
+                    <div key={activity.id} style={{
+                      padding: '12px',
+                      borderRadius: tokens.radius.md,
+                      border: `1px solid ${tokens.colors.border}`,
+                      background: tokens.colors.bgHover,
+                    }}>
+                      <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                        <div style={{ marginTop: '2px', flexShrink: 0 }}>
+                          {getActivityIcon(activity.tipo)}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                            <span style={{ fontSize: '12px', fontWeight: 600, color: tokens.colors.textPrimary }}>
+                              {activity.tipo}
+                            </span>
+                            <span style={{ fontSize: '10px', color: tokens.colors.textMuted }}>
+                              {formatDate(activity.fecha)}
+                            </span>
+                          </div>
+                          <p style={{ ...s.valueMuted, fontSize: '12px', margin: '4px 0' }}>
+                            {activity.descripcion}
+                          </p>
+                          {activity.siguiente_paso && (
+                            <p style={{ ...s.valueMuted, fontSize: '11px', margin: '4px 0', fontStyle: 'italic' }}>
+                              Siguiente: {activity.siguiente_paso}
+                            </p>
+                          )}
+                          {activity.fecha_seguimiento && (
+                            <p style={{ fontSize: '10px', color: tokens.colors.yellow, margin: '4px 0' }}>
+                              Seguimiento: {formatDate(activity.fecha_seguimiento)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Acciones */}
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <button style={s.primaryBtn} onClick={() => alert('MÃ³dulo de actividades prÃ³ximamente')}>
+              <button style={s.primaryBtn} onClick={() => setShowActivityModal(true)}>
                 <Plus size={14} /> Registrar Actividad
               </button>
               <button style={s.actionBtn} onClick={handleAttachQuotation}>
-                <Upload size={14} /> Crear CotizaciÃ³n
+                <Upload size={14} /> Subir Cotización
               </button>
               <button
                 style={{ ...s.actionBtn, ...(converting ? { opacity: 0.6, cursor: 'wait' } : {}) }}
@@ -522,6 +681,293 @@ export default function FichaLead() {
           </div>
         </div>
       </div>
+
+      {/* ACTIVITY MODAL */}
+      {showActivityModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 50,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'rgba(11, 18, 32, 0.82)',
+          backdropFilter: 'blur(4px)',
+        }} onClick={(e) => { if (e.target === e.currentTarget) setShowActivityModal(false) }}>
+          <div style={{
+            width: '90%',
+            maxWidth: '500px',
+            background: tokens.colors.bgCard,
+            border: '1px solid ' + tokens.colors.border,
+            borderRadius: tokens.radius.xl,
+            boxShadow: tokens.effects.cardShadow,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+          }}>
+            {/* Header */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '20px 24px',
+              borderBottom: '1px solid ' + tokens.colors.border,
+            }}>
+              <h2 style={{
+                margin: 0,
+                fontSize: '18px',
+                fontWeight: 700,
+                color: tokens.colors.textPrimary,
+                fontFamily: tokens.fonts.heading,
+              }}>
+                Registrar Actividad
+              </h2>
+              <button
+                onClick={() => setShowActivityModal(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  color: tokens.colors.textMuted,
+                }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div style={{
+              padding: '24px',
+              overflowY: 'auto',
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+            }}>
+              {/* Tipo de Actividad */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  color: tokens.colors.textSecondary,
+                  fontFamily: tokens.fonts.body,
+                  marginBottom: '6px',
+                  textTransform: 'uppercase' as const,
+                  letterSpacing: '0.05em',
+                }}>
+                  Tipo de Actividad
+                </label>
+                <select
+                  value={activityType}
+                  onChange={(e) => setActivityType(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    fontSize: '13px',
+                    background: tokens.colors.bgHover,
+                    border: '1px solid ' + tokens.colors.border,
+                    borderRadius: tokens.radius.md,
+                    color: tokens.colors.textPrimary,
+                    fontFamily: tokens.fonts.body,
+                    outline: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {ACTIVITY_TYPES.map((type) => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Fecha */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  color: tokens.colors.textSecondary,
+                  fontFamily: tokens.fonts.body,
+                  marginBottom: '6px',
+                  textTransform: 'uppercase' as const,
+                  letterSpacing: '0.05em',
+                }}>
+                  Fecha
+                </label>
+                <input
+                  type="date"
+                  value={activityDate}
+                  onChange={(e) => setActivityDate(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    fontSize: '13px',
+                    background: tokens.colors.bgHover,
+                    border: '1px solid ' + tokens.colors.border,
+                    borderRadius: tokens.radius.md,
+                    color: tokens.colors.textPrimary,
+                    fontFamily: tokens.fonts.body,
+                    outline: 'none',
+                  }}
+                />
+              </div>
+
+              {/* Descripción */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  color: tokens.colors.textSecondary,
+                  fontFamily: tokens.fonts.body,
+                  marginBottom: '6px',
+                  textTransform: 'uppercase' as const,
+                  letterSpacing: '0.05em',
+                }}>
+                  Descripción *
+                </label>
+                <textarea
+                  value={activityDescription}
+                  onChange={(e) => setActivityDescription(e.target.value)}
+                  placeholder="Detalles de la actividad..."
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    fontSize: '13px',
+                    background: tokens.colors.bgHover,
+                    border: '1px solid ' + tokens.colors.border,
+                    borderRadius: tokens.radius.md,
+                    color: tokens.colors.textPrimary,
+                    fontFamily: tokens.fonts.body,
+                    outline: 'none',
+                    resize: 'none' as const,
+                    minHeight: '80px',
+                  }}
+                />
+              </div>
+
+              {/* Siguiente Paso */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  color: tokens.colors.textSecondary,
+                  fontFamily: tokens.fonts.body,
+                  marginBottom: '6px',
+                  textTransform: 'uppercase' as const,
+                  letterSpacing: '0.05em',
+                }}>
+                  Siguiente Paso
+                </label>
+                <input
+                  type="text"
+                  value={activityNextStep}
+                  onChange={(e) => setActivityNextStep(e.target.value)}
+                  placeholder="Próxima acción a tomar..."
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    fontSize: '13px',
+                    background: tokens.colors.bgHover,
+                    border: '1px solid ' + tokens.colors.border,
+                    borderRadius: tokens.radius.md,
+                    color: tokens.colors.textPrimary,
+                    fontFamily: tokens.fonts.body,
+                    outline: 'none',
+                  }}
+                />
+              </div>
+
+              {/* Fecha de Seguimiento */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  color: tokens.colors.textSecondary,
+                  fontFamily: tokens.fonts.body,
+                  marginBottom: '6px',
+                  textTransform: 'uppercase' as const,
+                  letterSpacing: '0.05em',
+                }}>
+                  Fecha de Seguimiento (Opcional)
+                </label>
+                <input
+                  type="date"
+                  value={activityFollowupDate}
+                  onChange={(e) => setActivityFollowupDate(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    fontSize: '13px',
+                    background: tokens.colors.bgHover,
+                    border: '1px solid ' + tokens.colors.border,
+                    borderRadius: tokens.radius.md,
+                    color: tokens.colors.textPrimary,
+                    fontFamily: tokens.fonts.body,
+                    outline: 'none',
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              gap: '10px',
+              padding: '16px 24px',
+              borderTop: '1px solid ' + tokens.colors.border,
+            }}>
+              <button
+                onClick={() => setShowActivityModal(false)}
+                disabled={savingActivity}
+                style={{
+                  padding: '10px 24px',
+                  borderRadius: tokens.radius.md,
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  cursor: savingActivity ? 'wait' : 'pointer',
+                  fontFamily: tokens.fonts.body,
+                  background: 'transparent',
+                  color: tokens.colors.textSecondary,
+                  border: '1px solid ' + tokens.colors.border,
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSaveActivity}
+                disabled={savingActivity}
+                style={{
+                  padding: '10px 24px',
+                  borderRadius: tokens.radius.md,
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  cursor: savingActivity ? 'wait' : 'pointer',
+                  fontFamily: tokens.fonts.body,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: tokens.colors.primary,
+                  color: '#fff',
+                  border: 'none',
+                  boxShadow: tokens.effects.glowPrimary,
+                  opacity: savingActivity ? 0.6 : 1,
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                <CheckCircle size={14} />
+                {savingActivity ? 'Guardando...' : 'Guardar Actividad'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </ModuleLayout>
   )
 }

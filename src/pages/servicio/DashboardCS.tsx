@@ -13,19 +13,19 @@ Icono único white-stroke: principal 12% | secondary 8%
 —————————————————————————————————————————————————————————————— */
 
 const D = {
-  bg: '#F7F8FA',
+  bg: '#E8EBF0',
   font: tokens.fonts.heading,
   fontBody: tokens.fonts.body,
   cardRadius: '14px',
-  titleSize: '17px',
+  titleSize: '20px',
   titleWeight: 800,
-  kpiSize: '38px',
+  kpiSize: '28px',
   kpiWeight: 600,
-  subSize: '12px',
-  dotSize: '8px',
+  subSize: '9px',
+  dotSize: '6px',
 } as const
 
-const ICO_OPACITY = 0.22
+const ICO_OPACITY = 0.35
 
 const ico = (path: string, style: React.CSSProperties) => (
   <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
@@ -137,7 +137,7 @@ export default function DashboardCS() {
   }, [fetchKpis])
 
   const getCardStyle = (isH: boolean, accent: string): React.CSSProperties => ({
-    aspectRatio: '1 / 0.7',
+    aspectRatio: '1 / 0.75',
     borderRadius: D.cardRadius,
     padding: '22px',
     background: accent,
@@ -150,7 +150,7 @@ export default function DashboardCS() {
     justifyContent: 'space-between',
     transition: 'transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s cubic-bezier(0.23,1,0.32,1)',
     transform: isH ? 'translateY(-3px)' : 'none',
-    boxShadow: isH ? '0 6px 20px rgba(0,0,0,0.25)' : '0 2px 8px rgba(0,0,0,0.15)',
+    boxShadow: isH ? '0 6px 12px rgba(0,0,0,0.15), 0 12px 32px rgba(0,0,0,0.1)' : '0 2px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06)',
   })
 
   if (loading) return (
@@ -178,15 +178,15 @@ export default function DashboardCS() {
                 <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px', transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)', transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none' }}>
                   {card.icon}
                 </div>
-                <div style={{ position: 'absolute', top: 14, right: 14, width: 6, height: 6, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.35)' }} />
-                <div style={{ fontFamily: D.font, fontSize: D.titleSize, fontWeight: D.titleWeight, color: '#FFFFFF', lineHeight: 1.2, position: 'relative', zIndex: 1 }}>
+                <div style={{ position: 'absolute', top: 14, right: 14, width: D.dotSize, height: D.dotSize, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.35)' }} />
+                <div style={{ fontFamily: D.font, fontSize: D.titleSize, fontWeight: D.titleWeight, color: '#FFFFFF', lineHeight: 1.2, position: 'relative', zIndex: 1, textAlign: 'center' }}>
                   {card.label}
                 </div>
                 <div>
                   <div style={{ fontFamily: D.font, fontSize: D.kpiSize, fontWeight: D.kpiWeight, color: '#FFFFFF', lineHeight: 1, position: 'relative', zIndex: 1 }}>
                     {(kpis[card.id] ?? 0).toLocaleString()}
                   </div>
-                  <div style={{ fontFamily: D.fontBody, fontSize: D.subSize, color: 'rgba(255,255,255,0.8)', marginTop: 3, position: 'relative', zIndex: 1 }}>
+                  <div style={{ fontFamily: D.font, fontSize: D.subSize, color: 'rgba(255,255,255,0.7)', marginTop: 3, position: 'relative', zIndex: 1 }}>
                     {card.kpiLabel}
                   </div>
                 </div>

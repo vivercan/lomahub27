@@ -4,7 +4,7 @@ import { tokens } from '../../lib/tokens';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Save, Plus, Trash2, DollarSign, Truck, Ship, MapPin , Loader2 } from 'lucide-react';
 
-/* âââââââââ types âââââââââ */
+/* ––––––––– types ––––––––– */
 interface Tarifa {
   id?: string;
   categoria: string;
@@ -45,7 +45,7 @@ const DEFAULT_TARIFAS: Tarifa[] = [
   { categoria: 'exportacion', concepto: 'Certificado de origen', unidad: 'USD', valor: 0, moneda: 'USD', notas: '' },
 ];
 
-/* âââââââââ component âââââââââ */
+/* ––––––––– component ––––––––– */
 export default function ParametrosConfig() {
   const [tarifas, setTarifas] = useState<Tarifa[]>(DEFAULT_TARIFAS);
   const [saving, setSaving] = useState(false);
@@ -99,7 +99,7 @@ export default function ParametrosConfig() {
 
   const activeCat = CATEGORIAS.find(c => c.key === activeTab);
 
-  /* âââââââââ styles âââââââââ */
+  /* ––––––––– styles ––––––––– */
   const S = {
     container: {
       minHeight: '100vh',

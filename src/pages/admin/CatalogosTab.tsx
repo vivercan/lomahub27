@@ -21,7 +21,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 
-/* âââ Types ââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ––– Types –––––––––––––––––––––––––––––––––––––––––––––––– */
 
 interface ColumnDef {
   key: string;
@@ -49,7 +49,7 @@ interface Toast {
   message: string;
 }
 
-/* âââ Catalog Configurations âââââââââââââââââââââââââââââââ */
+/* ––– Catalog Configurations ––––––––––––––––––––––––––––––– */
 
 const CATALOGS: CatalogConfig[] = [
   {
@@ -147,7 +147,7 @@ const CATALOGS: CatalogConfig[] = [
   },
 ];
 
-/* âââ Styles (tokens-aligned, Montserrat headings) âââââââââ */
+/* ––– Styles (tokens-aligned, Montserrat headings) ––––––––– */
 
 const styles = {
   heading: { fontFamily: tokens.fonts.heading, fontWeight: 700 as const },
@@ -166,7 +166,7 @@ const styles = {
   yellow: '#B8860B',
 };
 
-/* âââ CatalogosTab Component âââââââââââââââââââââââââââââââ */
+/* ––– CatalogosTab Component ––––––––––––––––––––––––––––––– */
 
 export default function CatalogosTab() {
   const [selectedCatalog, setSelectedCatalog] = useState<string | null>(null);
@@ -183,13 +183,13 @@ export default function CatalogosTab() {
 
   const catalog = CATALOGS.find((c) => c.key === selectedCatalog);
 
-  /* ââ Toast ââ */
+  /* –– Toast –– */
   const showToast = useCallback((type: Toast['type'], message: string) => {
     setToast({ type, message });
     setTimeout(() => setToast(null), 3000);
   }, []);
 
-  /* ââ Load counts for all catalogs ââ */
+  /* –– Load counts for all catalogs –– */
   useEffect(() => {
     async function loadCounts() {
       const newCounts: Record<string, number> = {};
@@ -204,7 +204,7 @@ export default function CatalogosTab() {
     loadCounts();
   }, []);
 
-  /* ââ Load empresas for segmentos FK ââ */
+  /* –– Load empresas for segmentos FK –– */
   useEffect(() => {
     async function loadEmpresas() {
       const { data } = await supabase
@@ -217,7 +217,7 @@ export default function CatalogosTab() {
     loadEmpresas();
   }, []);
 
-  /* ââ Load records when catalog selected ââ */
+  /* –– Load records when catalog selected –– */
   useEffect(() => {
     if (!catalog) return;
     loadRecords();
@@ -263,7 +263,7 @@ export default function CatalogosTab() {
     }
   }
 
-  /* ââ CRUD Operations ââ */
+  /* –– CRUD Operations –– */
 
   async function handleSaveNew() {
     if (!catalog) return;
@@ -343,7 +343,7 @@ export default function CatalogosTab() {
     setIsAdding(true);
   }
 
-  /* ââ Filter records ââ */
+  /* –– Filter records –– */
   const filtered = records.filter((r) => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
@@ -352,7 +352,7 @@ export default function CatalogosTab() {
     );
   });
 
-  /* ââ Render cell value ââ */
+  /* –– Render cell value –– */
   function renderCellValue(col: ColumnDef, value: unknown): string {
     if (col.type === 'boolean') return value ? 'Sí' : 'No';
     if (col.key === 'empresa_id' && typeof value === 'string') {
@@ -363,7 +363,7 @@ export default function CatalogosTab() {
     return String(value);
   }
 
-  /* ââ Render form field ââ */
+  /* –– Render form field –– */
   function renderFormField(
     col: ColumnDef,
     formData: Record<string, unknown>,
@@ -449,9 +449,9 @@ export default function CatalogosTab() {
     );
   }
 
-  /* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  /* ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
      RENDER — Catalog Card Grid (when no catalog selected)
-     ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+     –––––––––––––––––––––––––––––––––––––––––––––––––––––––––– */
 
   if (!selectedCatalog) {
     return (
@@ -552,9 +552,9 @@ export default function CatalogosTab() {
     );
   }
 
-  /* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  /* ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
      RENDER — Table CRUD View (when catalog is selected)
-     ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+     –––––––––––––––––––––––––––––––––––––––––––––––––––––––––– */
 
   if (!catalog) return null;
   const Icon = catalog.icon;

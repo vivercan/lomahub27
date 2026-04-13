@@ -18,13 +18,13 @@ const D = {
   cardRadius: '14px',
   titleSize: '20px',
   titleWeight: 800,
-  kpiSize: '38px',
+  kpiSize: '28px',
   kpiWeight: 600,
-  subSize: '12px',
+  subSize: '9px',
 } as const
 
 // ICON SYSTEM — Hugeicons via Iconify CDN (mismo patron HomeDashboard)
-const ICO_OPACITY = 0.22
+const ICO_OPACITY = 0.35
 const ico = (path: string, style: React.CSSProperties) => (
   <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
 )
@@ -46,7 +46,6 @@ interface LandingCard {
 }
 
 const CARDS: LandingCard[] = [
-  { id: 'oportunidades', label: 'Oportunidades',    route: '/ventas/mis-leads',         kpiLabel: 'Pipeline activo', icon: <IconOportunidades />, accent: '#2563EB' },
   { id: 'cotizaciones',  label: 'Cotizaciones',     route: '/cotizador/nueva',          kpiLabel: 'Pendientes',      icon: <IconCotizaciones />,  accent: '#D97706' },
   { id: 'programa',      label: 'Programa Semanal', route: '/ventas/programa-semanal',  kpiLabel: 'Esta semana',     icon: <IconPrograma />,      accent: '#0891B2' },
 ]
@@ -54,18 +53,16 @@ const CARDS: LandingCard[] = [
 export default function DashboardVentas() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
-  const [kpis, setKpis] = useState<Record<string, number>>({ oportunidades: 0, cotizaciones: 0, programa: 0 })
+  const [kpis, setKpis] = useState<Record<string, number>>({ cotizaciones: 0, programa: 0 })
   const [loading, setLoading] = useState(true)
 
   const fetchKpis = useCallback(async () => {
     try {
-      const [leads, cots, prog] = await Promise.all([
-        supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null).not('estado', 'in', '("Cerrado Ganado","Cerrado Perdido")'),
+      const [cots, prog] = await Promise.all([
         supabase.from('cotizaciones').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('estado', 'pendiente'),
         supabase.from('leads').select('*', { count: 'exact', head: true }).is('deleted_at', null).gte('created_at', new Date(Date.now() - 7 * 86400000).toISOString()),
       ])
       setKpis({
-        oportunidades: leads.count ?? 0,
         cotizaciones: cots.count ?? 0,
         programa: prog.count ?? 0,
       })
@@ -92,7 +89,7 @@ export default function DashboardVentas() {
     justifyContent: 'space-between',
     transition: 'transform 0.25s ease, box-shadow 0.25s ease',
     transform: isH ? 'translateY(-3px)' : 'none',
-    boxShadow: isH ? '0 6px 20px rgba(0,0,0,0.25)' : '0 2px 8px rgba(0,0,0,0.15)',
+    boxShadow: isH ? '0 6px 12px rgba(0,0,0,0.15), 0 12px 32px rgba(0,0,0,0.1)' : '0 2px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06)',
   })
 
   if (loading) return (
@@ -106,7 +103,7 @@ export default function DashboardVentas() {
   return (
     <ModuleLayout titulo="Comercial" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', maxWidth: '1100px', margin: '0 auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', maxWidth: '1100px', margin: '0 auto' }}>
           {CARDS.map(card => {
             const isH = hovered === card.id
             return (
@@ -125,14 +122,14 @@ export default function DashboardVentas() {
                   {card.icon}
                 </div>
                 <div style={{ position: 'absolute', top: 14, right: 14, width: 6, height: 6, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.35)' }} />
-                <div style={{ fontFamily: D.font, fontSize: D.titleSize, fontWeight: D.titleWeight, color: '#FFFFFF', lineHeight: 1.2, position: 'relative', zIndex: 1 }}>
+                <div style={{ fontFamily: D.font, fontSize: D.titleSize, fontWeight: D.titleWeight, color: '#FFFFFF', lineHeight: 1.2, position: 'relative', zIndex: 1, textAlign: 'center' }}>
                   {card.label}
                 </div>
                 <div>
                   <div style={{ fontFamily: D.font, fontSize: D.kpiSize, fontWeight: D.kpiWeight, color: '#FFFFFF', lineHeight: 1, position: 'relative', zIndex: 1 }}>
                     {(kpis[card.id] ?? 0).toLocaleString()}
                   </div>
-                  <div style={{ fontFamily: D.font, fontSize: D.subSize, color: 'rgba(255,255,255,0.8)', marginTop: 3, position: 'relative', zIndex: 1 }}>
+                  <div style={{ fontFamily: D.font, fontSize: D.subSize, color: 'rgba(255,255,255,0.7)', marginTop: 3, position: 'relative', zIndex: 1 }}>
                     {card.kpiLabel}
                   </div>
                 </div>

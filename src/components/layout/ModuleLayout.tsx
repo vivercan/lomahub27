@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 import AppHeader from './AppHeader'
 import { useAuthContext } from '../../hooks/AuthContext'
@@ -52,7 +52,7 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
         padding: '12px 24px',
         flexShrink: 0
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <button
             onClick={() => navigate('/dashboard')}
             style={{
@@ -75,50 +75,52 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
             <span>Dashboard</span>
           </button>
           {moduloPadre && moduloPadre.ruta !== '/dashboard' && (
-            <>
-              <ChevronRight size={14} style={{ color: tokens.colors.textMuted, margin: '0 2px' }} />
-              <button
-                onClick={() => navigate(moduloPadre.ruta)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  padding: '6px 10px',
-                  background: 'rgba(15, 23, 42, 0.04)',
-                  border: '1px solid rgba(15, 23, 42, 0.06)',
-                  borderRadius: '8px',
-                  color: tokens.colors.textSecondary,
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                  fontFamily: tokens.fonts.body,
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                {moduloPadre.nombre}
-              </button>
-            </>
+            <button
+              onClick={() => navigate(moduloPadre.ruta)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '32px',
+                height: '32px',
+                padding: 0,
+                background: 'rgba(15, 23, 42, 0.08)',
+                border: '1px solid rgba(15, 23, 42, 0.12)',
+                borderRadius: '6px',
+                color: tokens.colors.textSecondary,
+                cursor: 'pointer',
+                fontFamily: tokens.fonts.body,
+                transition: 'all 0.15s ease'
+              }}
+              title="Volver"
+            >
+              <ArrowLeft size={14} />
+            </button>
           )}
-          <ChevronRight size={14} style={{ color: tokens.colors.textMuted, margin: '0 2px' }} />
-          <span style={{
-            color: tokens.colors.textPrimary,
-            fontSize: '16px',
-            fontWeight: 700,
-            fontFamily: tokens.fonts.heading
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2px'
           }}>
-            {titulo}
-          </span>
-          {subtitulo && (
             <span style={{
-              color: tokens.colors.textMuted,
-              fontSize: '13px',
-              fontWeight: 400,
-              marginLeft: '12px',
-              fontFamily: tokens.fonts.body
+              color: tokens.colors.textPrimary,
+              fontSize: '16px',
+              fontWeight: 700,
+              fontFamily: tokens.fonts.heading
             }}>
-              {subtitulo}
+              {titulo}
             </span>
-          )}
+            {subtitulo && (
+              <span style={{
+                color: tokens.colors.textMuted,
+                fontSize: '13px',
+                fontWeight: 400,
+                fontFamily: tokens.fonts.body
+              }}>
+                {subtitulo}
+              </span>
+            )}
+          </div>
         </div>
         {acciones && <div style={{ display: 'flex', gap: '8px' }}>{acciones}</div>}
       </div>

@@ -1,10 +1,12 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import { Card } from '../../components/ui/Card';
 import { KPICard } from '../../components/ui/KPICard';
 import { DataTable } from '../../components/ui/DataTable';
 import { tokens } from '../../lib/tokens';
 import { supabase } from '../../lib/supabase';
+import { useAuthContext } from '../../hooks/AuthContext';
 
 interface Lead {
   id: string;
@@ -12,11 +14,19 @@ interface Lead {
   estado: string;
   potencial_usd: number;
   responsable: string;
+  ejecutivo_nombre: string;
+  ejecutivo_id: string;
   segmento: string;
   created_at: string;
 }
 
+interface Ejecutivo {
+  id: string;
+  nombre: string;
+}
+
 type VistaActiva = 'funnel' | 'vendedor';
+type FilterMode = 'individual' | 'agrupado';
 
 const ETAPAS_ORDEN = [
   'Nuevo',
@@ -47,17 +57,41 @@ function formatCurrencyFull(amount: number): string {
 }
 
 export default function FunnelVentas() {
+  const { user } = useAuthContext();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [vistaActiva, setVistaActiva] = useState<VistaActiva>('funnel');
+  const [ejecutivos, setEjecutivos] = useState<Ejecutivo[]>([]);
+  const [filterMode, setFilterMode] = useState<FilterMode>('individual');
+  const [selectedVendedor, setSelectedVendedor] = useState<string>('todos');
+  const [selectedVendedores, setSelectedVendedores] = useState<Set<string>>(new Set());
+  const [showVendedorDropdown, setShowVendedorDropdown] = useState(false);
+  const vendedorDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (vendedorDropdownRef.current && !vendedorDropdownRef.current.contains(e.target as Node)) {
+        setShowVendedorDropdown(false);
+      }
+    };
+    if (showVendedorDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showVendedorDropdown]);
 
   useEffect(() => {
     const fetchLeads = async () => {
       try {
-        const { data, error } = await supabase
-          .from('leads')
-          .select('*')
-          .order('fecha_creacion', { ascending: false });
+        let query = supabase.from('leads').select('*');
+
+        // Permission logic: if vendedor role, filter by their leads
+        if (user?.rol === 'ventas' && user?.id) {
+          query = query.eq('ejecutivo_id', user.id);
+        }
+
+        const { data, error } = await query.order('fecha_creacion', { ascending: false });
 
         if (error) {
           console.error('Error fetching leads:', error);
@@ -69,10 +103,28 @@ export default function FunnelVentas() {
             estado: l.estado || 'Nuevo',
             potencial_usd: (l.proyectado_usd || l.valor_estimado || 0) || 0,
             responsable: l.ejecutivo_nombre || 'Sin asignar',
+            ejecutivo_nombre: l.ejecutivo_nombre || 'Sin asignar',
+            ejecutivo_id: l.ejecutivo_id || '',
             segmento: l.segmento || 'General',
             created_at: l.fecha_creacion || '',
           })));
         }
+
+        // Fetch ejecutivos for the filter dropdown
+        const { data: usuariosData } = await supabase
+          .from('usuarios_autorizados')
+          .select('id, nombre, email, rol')
+          .eq('activo', true)
+          .in('rol', ['ventas', 'superadmin'])
+          .order('nombre', { ascending: true });
+
+        const parsed = (usuariosData || []).map((u: any) => ({
+          id: u.id,
+          nombre: u.nombre && u.nombre.trim()
+            ? u.nombre
+            : (u.email ? u.email.split('@')[0].split(/[._-]/).map((w: string) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') : 'Sin nombre'),
+        }));
+        setEjecutivos(parsed);
       } catch (err) {
         console.error('Unexpected error:', err);
         setLeads([]);
@@ -81,29 +133,66 @@ export default function FunnelVentas() {
       }
     };
     fetchLeads();
-  }, []);
+  }, [user?.rol, user?.id]);
+
+  // Filter leads based on selected vendedor filter
+  const filteredLeads = useMemo(() => {
+    if (user?.rol === 'ventas') {
+      // Vendedor can only see their own leads
+      return leads;
+    }
+
+    // Admin/superadmin can filter
+    if (filterMode === 'individual') {
+      if (selectedVendedor === 'todos') {
+        return leads;
+      }
+      return leads.filter((l) => l.ejecutivo_id === selectedVendedor);
+    } else {
+      // agrupado mode
+      if (selectedVendedores.size === 0) {
+        return leads;
+      }
+      return leads.filter((l) => selectedVendedores.has(l.ejecutivo_id));
+    }
+  }, [leads, filterMode, selectedVendedor, selectedVendedores, user?.rol]);
 
   const etapas = useMemo(() => {
     const activos = ETAPAS_ORDEN.filter((e) => e !== 'Cerrado Perdido');
-    return activos.map((etapa) => {
-      const leadsEtapa = leads.filter((l) => l.estado === etapa);
+    return activos.map((etapa, idx) => {
+      const leadsEtapa = filteredLeads.filter((l) => l.estado === etapa);
       const count = leadsEtapa.length;
       const potencial = leadsEtapa.reduce((s, l) => s + l.potencial_usd, 0);
-      return { etapa, count, potencial };
+
+      // Calculate conversion rate to next stage
+      let conversionRate: number | null = null;
+      if (idx < activos.length - 1) {
+        const nextStageName = activos[idx + 1];
+        const leadsInNextStage = filteredLeads.filter((l) => l.estado === nextStageName);
+        if (count > 0) {
+          conversionRate = (leadsInNextStage.length / count) * 100;
+        }
+      }
+
+      return { etapa, count, potencial, conversionRate };
     });
-  }, [leads]);
+  }, [filteredLeads]);
 
-  const perdidos = useMemo(() => leads.filter((l) => l.estado === 'Cerrado Perdido'), [leads]);
+  const perdidos = useMemo(() => filteredLeads.filter((l) => l.estado === 'Cerrado Perdido'), [filteredLeads]);
 
-  const totalLeads = leads.length;
-  const totalPotencial = useMemo(() => leads.reduce((s, l) => s + l.potencial_usd, 0), [leads]);
-  const ganados = useMemo(() => leads.filter((l) => l.estado === 'Cerrado Ganado'), [leads]);
+  // KPI calculations based on filtered leads
+  const totalLeads = filteredLeads.length;
+  const totalPotencial = useMemo(() => filteredLeads.reduce((s, l) => s + l.potencial_usd, 0), [filteredLeads]);
+  const ganados = useMemo(() => filteredLeads.filter((l) => l.estado === 'Cerrado Ganado'), [filteredLeads]);
   const tasaConversion = totalLeads > 0 ? ((ganados.length / totalLeads) * 100).toFixed(1) : '0';
   const potencialActivo = useMemo(() =>
-    leads.filter((l) => l.estado !== 'Cerrado Perdido' && l.estado !== 'Cerrado Ganado')
+    filteredLeads.filter((l) => l.estado !== 'Cerrado Perdido' && l.estado !== 'Cerrado Ganado')
       .reduce((s, l) => s + l.potencial_usd, 0),
-    [leads]
+    [filteredLeads]
   );
+
+  const ticketPromedio = totalLeads > 0 ? totalPotencial / totalLeads : 0;
+  const cotizados = useMemo(() => filteredLeads.filter((l) => l.estado === 'Cotizado'), [filteredLeads]);
 
   const maxCount = useMemo(() => Math.max(...etapas.map((e) => e.count), 1), [etapas]);
 
@@ -125,6 +214,17 @@ export default function FunnelVentas() {
       conversion: data.total > 0 ? ((data.ganados / data.total) * 100) : 0,
     })).sort((a, b) => b.potencial - a.potencial);
   }, [leads]);
+
+  // Toggle vendedor selection in agrupado mode
+  const toggleVendedor = (vendedorId: string) => {
+    const newSelection = new Set(selectedVendedores);
+    if (newSelection.has(vendedorId)) {
+      newSelection.delete(vendedorId);
+    } else {
+      newSelection.add(vendedorId);
+    }
+    setSelectedVendedores(newSelection);
+  };
 
   const vendedorColumns = [
     { key: 'nombre', label: 'Vendedor', width: '20%' },
@@ -206,17 +306,203 @@ export default function FunnelVentas() {
 
   return (
     <ModuleLayout titulo="Comercial — Funnel de Ventas">
+      {/* Vendedor Filter - only show for admin/superadmin */}
+      {(user?.rol === 'superadmin' || user?.rol === 'admin') && (
+        <div style={{
+          marginBottom: tokens.spacing.md,
+          display: 'flex',
+          gap: tokens.spacing.sm,
+          alignItems: 'center',
+        }}>
+          <div ref={vendedorDropdownRef} style={{ position: 'relative' }}>
+            <button
+              onClick={() => setShowVendedorDropdown(!showVendedorDropdown)}
+              style={{
+                padding: `${tokens.spacing.xs} ${tokens.spacing.md}`,
+                borderRadius: tokens.radius.md,
+                border: `1px solid ${tokens.colors.borderLight}`,
+                background: tokens.colors.bgCard,
+                color: tokens.colors.textPrimary,
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                fontFamily: tokens.fonts.body,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: tokens.spacing.xs,
+              }}
+            >
+              {filterMode === 'individual'
+                ? (selectedVendedor === 'todos' ? 'Todos los vendedores' : ejecutivos.find(e => e.id === selectedVendedor)?.nombre || 'Seleccionar')
+                : `${selectedVendedores.size} vendedores`}
+              <ChevronDown size={16} />
+            </button>
+
+            {showVendedorDropdown && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                marginTop: tokens.spacing.xs,
+                background: tokens.colors.bgCard,
+                border: `1px solid ${tokens.colors.borderLight}`,
+                borderRadius: tokens.radius.md,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                zIndex: 1000,
+                minWidth: '240px',
+                maxHeight: '320px',
+                overflowY: 'auto',
+              }}>
+                {/* Mode selector */}
+                <div style={{
+                  padding: tokens.spacing.sm,
+                  borderBottom: `1px solid ${tokens.colors.borderLight}`,
+                  display: 'flex',
+                  gap: tokens.spacing.xs,
+                }}>
+                  <button
+                    onClick={() => {
+                      setFilterMode('individual');
+                      setSelectedVendedores(new Set());
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: `${tokens.spacing.xs} ${tokens.spacing.sm}`,
+                      borderRadius: tokens.radius.sm,
+                      border: 'none',
+                      background: filterMode === 'individual' ? tokens.colors.primary : tokens.colors.bgInput,
+                      color: filterMode === 'individual' ? '#fff' : tokens.colors.textSecondary,
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      fontFamily: tokens.fonts.body,
+                    }}
+                  >
+                    Individual
+                  </button>
+                  <button
+                    onClick={() => {
+                      setFilterMode('agrupado');
+                      setSelectedVendedor('todos');
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: `${tokens.spacing.xs} ${tokens.spacing.sm}`,
+                      borderRadius: tokens.radius.sm,
+                      border: 'none',
+                      background: filterMode === 'agrupado' ? tokens.colors.primary : tokens.colors.bgInput,
+                      color: filterMode === 'agrupado' ? '#fff' : tokens.colors.textSecondary,
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      fontFamily: tokens.fonts.body,
+                    }}
+                  >
+                    Agrupado
+                  </button>
+                </div>
+
+                {filterMode === 'individual' ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        setSelectedVendedor('todos');
+                        setShowVendedorDropdown(false);
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+                        border: 'none',
+                        background: selectedVendedor === 'todos' ? `${tokens.colors.primary}20` : 'transparent',
+                        color: selectedVendedor === 'todos' ? tokens.colors.primary : tokens.colors.textPrimary,
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        fontSize: '0.85rem',
+                        fontWeight: selectedVendedor === 'todos' ? 600 : 400,
+                        fontFamily: tokens.fonts.body,
+                      }}
+                    >
+                      Todos los vendedores
+                    </button>
+                    {ejecutivos.map((ej) => (
+                      <button
+                        key={ej.id}
+                        onClick={() => {
+                          setSelectedVendedor(ej.id);
+                          setShowVendedorDropdown(false);
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+                          border: 'none',
+                          background: selectedVendedor === ej.id ? `${tokens.colors.primary}20` : 'transparent',
+                          color: selectedVendedor === ej.id ? tokens.colors.primary : tokens.colors.textPrimary,
+                          textAlign: 'left',
+                          cursor: 'pointer',
+                          fontSize: '0.85rem',
+                          fontWeight: selectedVendedor === ej.id ? 600 : 400,
+                          fontFamily: tokens.fonts.body,
+                        }}
+                      >
+                        {ej.nombre}
+                      </button>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {ejecutivos.map((ej) => (
+                      <div
+                        key={ej.id}
+                        style={{
+                          padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+                          borderBottom: `1px solid ${tokens.colors.borderLight}`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: tokens.spacing.sm,
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => toggleVendedor(ej.id)}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedVendedores.has(ej.id)}
+                          onChange={() => { }}
+                          style={{
+                            cursor: 'pointer',
+                            width: '16px',
+                            height: '16px',
+                            accentColor: tokens.colors.primary,
+                          }}
+                        />
+                        <span style={{
+                          fontSize: '0.85rem',
+                          fontFamily: tokens.fonts.body,
+                          color: tokens.colors.textPrimary,
+                        }}>
+                          {ej.nombre}
+                        </span>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* KPIs */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
+        gridTemplateColumns: 'repeat(5, 1fr)',
         gap: tokens.spacing.md,
         marginBottom: tokens.spacing.md,
       }}>
-        <KPICard titulo="Total Leads" valor={String(totalLeads)} color="blue" />
-        <KPICard titulo="Pipeline Activo" valor={formatCurrency(potencialActivo)} color="yellow" />
-        <KPICard titulo="Potencial Total" valor={formatCurrency(totalPotencial)} color="primary" />
+        <KPICard titulo="Pipeline Total" valor={formatCurrency(totalPotencial)} color="primary" />
+        <KPICard titulo="Leads Activos" valor={String(totalLeads)} color="blue" />
         <KPICard titulo="Tasa Conversión" valor={`${tasaConversion}%`} color={Number(tasaConversion) >= 20 ? 'green' : Number(tasaConversion) >= 10 ? 'yellow' : 'red'} />
+        <KPICard titulo="Ticket Promedio" valor={formatCurrency(ticketPromedio)} color="yellow" />
+        <KPICard titulo="Cotizaciones" valor={String(cotizados.length)} color="orange" />
       </div>
 
       {/* Vista toggle */}
@@ -312,9 +598,9 @@ export default function FunnelVentas() {
                         </div>
                       </div>
 
-                      {/* Potencial + dropoff */}
+                      {/* Potencial + metrics */}
                       <div style={{
-                        width: '160px',
+                        width: '220px',
                         flexShrink: 0,
                         textAlign: 'right',
                         display: 'flex',
@@ -330,15 +616,23 @@ export default function FunnelVentas() {
                         }}>
                           {formatCurrency(item.potencial)}
                         </span>
-                        {dropoff && Number(dropoff) > 0 && (
-                          <span style={{
-                            fontSize: '0.72rem',
-                            color: tokens.colors.red,
-                            fontWeight: 500,
-                          }}>
-                            -{dropoff}% drop
-                          </span>
-                        )}
+                        <div style={{
+                          display: 'flex',
+                          gap: tokens.spacing.sm,
+                          fontSize: '0.72rem',
+                          fontWeight: 500,
+                        }}>
+                          {dropoff && Number(dropoff) > 0 && (
+                            <span style={{ color: tokens.colors.red }}>
+                              ↓ {dropoff}%
+                            </span>
+                          )}
+                          {item.conversionRate !== null && (
+                            <span style={{ color: tokens.colors.green }}>
+                              → {item.conversionRate.toFixed(0)}%
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );

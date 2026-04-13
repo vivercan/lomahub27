@@ -91,9 +91,7 @@ export default function HomeDashboard() {
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#0D9488', iconFile: 'comercial.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 subm\u00f3dulos' },
     { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#16A34A', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.07, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 subm\u00f3dulos' },
     { id: 'despacho', label: 'Despacho IA', route: '/operaciones/torre-control', bgColor: '#15803D', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.07, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes' },
-    { id: 'ventas', label: 'Ventas', route: '/ventas/mis-leads', bgColor: '#EA580C', iconFile: 'Ventas.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo' },
-    { id: 'cotizaciones', label: 'Cotizaciones', route: '/cotizador/nueva', bgColor: '#D97706', iconFile: 'cotizacionea.svg', iconOpacity: 0.07, kpiValue: '\u2014', kpiLabel: 'pendientes', statusDot: 'gray', statusText: 'Disponible' },
-    { id: 'plantillas', label: 'Plantillas', route: '/documentos', bgColor: '#7C3AED', iconFile: 'plantillas.svg', iconOpacity: 0.25, kpiValue: '\u2014', kpiLabel: 'plantillas', statusDot: 'gray', statusText: 'Disponible' },
+    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#EA580C', iconFile: 'Ventas.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo' },
   ]
 
   const row2Cards: CardConfig[] = [
@@ -219,12 +217,12 @@ export default function HomeDashboard() {
         gap: '14px',
         overflow: 'hidden',
       }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '14px' }}>
           {mainCards.map(renderCard)}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
-          <div style={{ gridColumn: '6 / 7' }}>{renderCard(row2Cards[0])}</div>
-          <div style={{ gridColumn: '7 / 8' }}>{renderCard(row2Cards[1])}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '14px' }}>
+          <div style={{ gridColumn: '4 / 5' }}>{renderCard(row2Cards[0])}</div>
+          <div style={{ gridColumn: '5 / 6' }}>{renderCard(row2Cards[1])}</div>
         </div>
       </div>
     </div>

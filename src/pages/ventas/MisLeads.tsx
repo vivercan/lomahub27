@@ -497,6 +497,7 @@ export default function MisLeads() {
     },
     table: {
       width: '100%',
+      height: '100%',
       borderCollapse: 'collapse' as const,
       minWidth: '1100px',
     },
@@ -540,7 +541,7 @@ export default function MisLeads() {
     row: {
       transition: 'background 0.15s',
       cursor: 'pointer',
-      height: '56px',
+      height: `${ROW_HEIGHT}px`,
     },
     stageBadge: (color: string) => ({
       display: 'inline-flex',
@@ -766,7 +767,7 @@ export default function MisLeads() {
   return (
     <ModuleLayout
         titulo="Panel de Oportunidades"
-        subtitulo={`${totalActive} oportunidades activas â¢ ${formatCurrency(totalValue)} en pipeline`}
+        subtitulo={`${totalActive} oportunidades activas \u2022 ${formatCurrency(totalValue)} en pipeline`}
         acciones={
           <button
             style={s.addBtn}
@@ -778,6 +779,7 @@ export default function MisLeads() {
           </button>
         }
       >
+      <div style={{ display: 'flex', flexDirection: 'column' as const, height: '100%', overflow: 'hidden' }}>
       {/* Hidden file input for quotation PDF */}
       <input
         ref={fileInputRef}
@@ -895,7 +897,7 @@ export default function MisLeads() {
 
       {viewMode === 'table' ? (
           <>
-          {/* ââ TABLE ââ */}
+          {/* ── TABLE ── */}
       <div ref={tableContainerRef} style={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
       <div style={{ ...s.tableWrap, height: '100%', paddingBottom: '0px', scrollbarWidth: 'none', overflow: 'hidden' }}>
         {loading ? (
@@ -966,7 +968,7 @@ export default function MisLeads() {
                           style={{ fontWeight: 600, color: tokens.colors.textPrimary, cursor: 'pointer', lineHeight: '1.3' }}
                           onClick={() => navigate(`/ventas/leads/${lead.id}`)}
                         >
-                          {lead.empresa || 'â'}
+                          {lead.empresa || '—'}
                         </div>
                         {lead.ciudad && (
                           <div style={{ fontSize: '11px', color: tokens.colors.textMuted, marginTop: '1px', lineHeight: '1.2' }}>{lead.ciudad}</div>
@@ -980,7 +982,7 @@ export default function MisLeads() {
                       </span>
                     </td>
                     <td style={{ ...s.td, height: `${ROW_HEIGHT}px`, padding: '6px 14px', verticalAlign: 'middle' as const }}>
-                      <div style={{ color: tokens.colors.textPrimary }}>{lead.contacto || 'â'}</div>
+                      <div style={{ color: tokens.colors.textPrimary }}>{lead.contacto || '—'}</div>
                     </td>
                     <td style={s.tdMuted}>{lead.tipo_carga || 'â'}</td>
                     <td style={s.tdMuted}>{lead.email || 'â'}</td>
@@ -998,7 +1000,7 @@ export default function MisLeads() {
                     <td style={{ ...s.td, textAlign: 'center' as const, width: '50px' }}>
                       <button
                         style={{ ...s.actionBtn, color: lead.cotizacion_url ? tokens.colors.green : tokens.colors.textMuted }}
-                        title={lead.cotizacion_url ? 'CotizaciÃ³n adjunta â clic para reemplazar' : 'Adjuntar CotizaciÃ³n PDF'}
+                        title={lead.cotizacion_url ? 'Cotización adjunta — clic para reemplazar' : 'Subir Cotización PDF'}
                         onClick={e => { e.stopPropagation(); handleAttachQuotation(lead) }}
                       >
                         <FileText size={15} />
@@ -1029,7 +1031,7 @@ export default function MisLeads() {
                             </button>
                             <button
                               style={{ ...s.actionBtn, color: '#DC2626' }}
-                              title="Adjuntar CotizaciÃ³n PDF"
+                              title="Subir Cotización PDF"
                               onClick={() => handleAttachQuotation(lead)}
                             >
                               <FileText size={15} />
@@ -1064,7 +1066,7 @@ export default function MisLeads() {
                             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
                           >
                             <FileText size={13} style={{ color: '#DC2626' }} />
-                            <span style={{ color: '#DC2626' }}>Adjuntar CotizaciÃ³n</span>
+                            <span style={{ color: '#DC2626' }}>Subir Cotización</span>
                           </button>
                           <button
                             style={s.actionsMenuItem}
@@ -1091,7 +1093,7 @@ export default function MisLeads() {
           /* ââ KANBAN VIEW ââ */
           <div style={{ display: 'flex', gap: '12px', height: 'calc(100vh - 280px)', overflowX: 'auto', scrollbarWidth: 'none', padding: '4px 0' }}>
             {PIPELINE_STAGES.map(stage => {
-              const stageLeads = filteredLeads.filter(l => l.estado === stage.id)
+              const stageLeads = filteredLeads.filter(l => l.estado === stage.id) /* Use all filteredLeads, not paginatedLeads, for kanban */
               return (
                 <div key={stage.id} style={{ minWidth: '220px', flex: 1, display: 'flex', flexDirection: 'column', background: tokens.colors.bgCard, borderRadius: tokens.radius.lg, border: '1px solid ' + tokens.colors.border, overflow: 'hidden' }}>
                   <div style={{ padding: '12px 14px', borderBottom: '1px solid ' + tokens.colors.border, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -1103,7 +1105,7 @@ export default function MisLeads() {
                   </div>
                   <div style={{ flex: 1, overflow: 'auto', padding: '8px', display: 'flex', flexDirection: 'column', gap: '8px', scrollbarWidth: 'none' }}>
                     {stageLeads.map(lead => (
-                      <div key={lead.id} onClick={() => navigate('/ventas/lead/' + lead.id)} style={{ padding: '12px', background: tokens.colors.bgHover, borderRadius: tokens.radius.md, cursor: 'pointer', border: '1px solid transparent', transition: 'all 0.15s ease' }}
+                      <div key={lead.id} onClick={() => navigate('/ventas/leads/' + lead.id)} style={{ padding: '12px', background: tokens.colors.bgHover, borderRadius: tokens.radius.md, cursor: 'pointer', border: '1px solid transparent', transition: 'all 0.15s ease' }}
                         onMouseEnter={e => { e.currentTarget.style.borderColor = stage.color + '44'; e.currentTarget.style.transform = 'translateY(-1px)' }}
                         onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'none' }}>
                         <div style={{ fontSize: '13px', fontWeight: 600, color: tokens.colors.textPrimary, marginBottom: '4px' }}>{lead.empresa}</div>
@@ -1124,10 +1126,10 @@ export default function MisLeads() {
           </div>
         )}
 
-      {/* ââ FOOTER ââ */}
+      {/* ── FOOTER ── */}
       <div style={{ ...s.footer, justifyContent: 'space-between' }}>
             <span style={s.footerText}>{totalFiltered} oportunidades</span>
-            {totalPages > 1 && (
+            {totalPages > 1 && viewMode === 'table' && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
@@ -1270,6 +1272,7 @@ export default function MisLeads() {
 
       {/* CSS for spinner animation */}
       <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      </div>
     </ModuleLayout>
   )
 }
