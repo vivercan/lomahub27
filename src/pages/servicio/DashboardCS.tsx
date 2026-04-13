@@ -31,18 +31,16 @@ const ico = (path: string, style: React.CSSProperties) => (
   <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
 )
 
-const compose = (main: string, sat: string, accent: string) => () => (
+const compose = (main: string) => () => (
   <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    {ico(sat, { position: 'absolute', right: '8%', bottom: '38%', width: '19%', height: '19%' })}
-    {ico(accent, { position: 'absolute', right: '2%', bottom: '4%', width: '30%', height: '30%' })}
     {ico(main, { position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' })}
   </div>
 )
 
-const IconTickets = compose('hugeicons:ticket-01', 'hugeicons:alert-circle', 'hugeicons:checkmark-circle-01')
-const IconClientes = compose('hugeicons:user-multiple', 'hugeicons:user-circle', 'hugeicons:star')
-const IconImpo = compose('hugeicons:package-moving', 'hugeicons:arrow-down-01', 'hugeicons:ship-02')
-const IconExpo = compose('hugeicons:package-delivered', 'hugeicons:arrow-up-01', 'hugeicons:airplane-take-off-01')
+const IconTickets = compose('hugeicons:ticket-01')
+const IconClientes = compose('hugeicons:user-multiple')
+const IconImpo = compose('hugeicons:package-moving')
+const IconExpo = compose('hugeicons:package-delivered')
 
 /* —— Card Config —— */
 interface LandingCard {

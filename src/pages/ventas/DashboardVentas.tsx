@@ -28,17 +28,15 @@ const ICO_OPACITY = 0.20
 const ico = (path: string, style: React.CSSProperties) => (
   <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
 )
-const compose = (main: string, sat: string, accent: string) => () => (
+const compose = (main: string) => () => (
   <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    {ico(sat,    { position: 'absolute', right: '8%',  bottom: '38%', width: '19%', height: '19%' })}
-    {ico(accent, { position: 'absolute', right: '2%',  bottom: '4%',  width: '30%', height: '30%' })}
-    {ico(main,   { position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' })}
+    {ico(main, { position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' })}
   </div>
 )
 
-const IconOportunidades = compose('hugeicons:filter',     'hugeicons:search-01',          'hugeicons:arrow-up-right-01')
-const IconCotizaciones  = compose('hugeicons:invoice-03', 'hugeicons:calculator-01',      'hugeicons:checkmark-circle-01')
-const IconPrograma      = compose('hugeicons:calendar-03','hugeicons:clock-01',           'hugeicons:checkmark-circle-01')
+const IconOportunidades = compose('hugeicons:filter')
+const IconCotizaciones  = compose('hugeicons:invoice-03')
+const IconPrograma      = compose('hugeicons:calendar-03')
 
 interface LandingCard {
   id: string; label: string; route: string; kpiLabel: string;
