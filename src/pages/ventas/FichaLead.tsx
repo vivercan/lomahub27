@@ -253,9 +253,9 @@ export default function FichaLead() {
       alignItems: 'center',
       gap: '6px',
       padding: '6px 12px',
-      borderRadius: tokens.radius.md,
-      border: '1px solid #CC3700',
-      background: '#FF4500',
+      borderRadius: '8px',
+      border: '1px solid #2F5BC4',
+      background: '#3B6CE7',
       color: '#FFFFFF',
       fontSize: '13px',
       fontWeight: 600,
@@ -395,8 +395,8 @@ export default function FichaLead() {
         <button
           style={s.backBtn}
           onClick={() => navigate('/ventas/mis-leads')}
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#CC3700' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FF4500' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#2F5BC4' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#3B6CE7' }}
         >
           <ArrowLeft size={14} /> Volver
         </button>

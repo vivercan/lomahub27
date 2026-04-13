@@ -371,13 +371,13 @@ export default function RadiografiaFinanciera() {
             style={{
               display: 'flex', alignItems: 'center', gap: '6px',
               padding: '6px 14px', borderRadius: '8px',
-              border: '1px solid #D97706', background: '#F59E0B',
+              border: '1px solid #2F5BC4', background: '#3B6CE7',
               color: '#FFFFFF', fontSize: '13px', fontWeight: 600,
               fontFamily: tokens.fonts.body, cursor: 'pointer',
               transition: 'all 0.15s',
             }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#D97706' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#F59E0B' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#2F5BC4' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#3B6CE7' }}
           >
             <ArrowLeft size={16} />
             Volver

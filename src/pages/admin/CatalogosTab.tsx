@@ -605,9 +605,9 @@ export default function CatalogosTab() {
               setEditingId(null);
             }}
             style={{
-              background: '#F59E0B',
-              border: '1px solid #D97706',
-              borderRadius: 10,
+              background: '#3B6CE7',
+              border: '1px solid #2F5BC4',
+              borderRadius: 8,
               padding: '8px 12px',
               cursor: 'pointer',
               display: 'flex',
@@ -620,10 +620,10 @@ export default function CatalogosTab() {
               transition: 'all 0.2s',
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = '#D97706';
+              (e.currentTarget as HTMLButtonElement).style.background = '#2F5BC4';
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = '#F59E0B';
+              (e.currentTarget as HTMLButtonElement).style.background = '#3B6CE7';
             }}
           >
             <ArrowLeft size={16} />
