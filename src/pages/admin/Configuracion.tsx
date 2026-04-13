@@ -176,10 +176,8 @@ export default function Configuracion() {
       }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-          gap: '20px',
-          maxWidth: '1400px',
-          margin: '0 auto',
+          gridTemplateColumns: 'repeat(7, 1fr)',
+          gap: '14px',
         }}>
           {CARDS.map(card => {
             const isH = hovered === card.id
