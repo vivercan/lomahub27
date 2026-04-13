@@ -217,12 +217,12 @@ export default function HomeDashboard() {
         gap: '14px',
         overflow: 'hidden',
       }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '14px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
           {mainCards.map(renderCard)}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '14px' }}>
-          <div style={{ gridColumn: '4 / 5' }}>{renderCard(row2Cards[0])}</div>
-          <div style={{ gridColumn: '5 / 6' }}>{renderCard(row2Cards[1])}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
+          <div style={{ gridColumn: '6 / 7' }}>{renderCard(row2Cards[0])}</div>
+          <div style={{ gridColumn: '7 / 8' }}>{renderCard(row2Cards[1])}</div>
         </div>
       </div>
     </div>
