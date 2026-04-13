@@ -208,7 +208,7 @@ export default function HomeDashboard() {
       />
       <div style={{
         flex: '1 1 auto',
-        padding: '26px 28px',
+        padding: '33px 28px',
         display: 'flex',
         flexDirection: 'column',
         gap: '14px',
