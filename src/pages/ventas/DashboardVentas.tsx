@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
-import { Loader2 } from 'lucide-react'
+// Loader2 removed — cards render instantly, KPIs load in background
 import { tokens } from '../../lib/tokens'
 
 /* ———————————————————————————————————————————————————————————————
@@ -24,7 +24,7 @@ const D = {
 } as const
 
 // ICON SYSTEM — Hugeicons via Iconify CDN (mismo patron HomeDashboard)
-const ICO_OPACITY = 0.35
+const ICO_OPACITY = 0.25
 const ico = (path: string, style: React.CSSProperties) => (
   <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
 )
@@ -92,14 +92,6 @@ export default function DashboardVentas() {
     boxShadow: isH ? '0 6px 12px rgba(0,0,0,0.15), 0 12px 32px rgba(0,0,0,0.1)' : '0 2px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06)',
   })
 
-  if (loading) return (
-    <ModuleLayout titulo="Comercial" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-        <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: '#1E66F5' }} />
-      </div>
-    </ModuleLayout>
-  )
-
   return (
     <ModuleLayout titulo="Comercial" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
@@ -127,7 +119,7 @@ export default function DashboardVentas() {
                 </div>
                 <div>
                   <div style={{ fontFamily: D.font, fontSize: D.kpiSize, fontWeight: D.kpiWeight, color: '#FFFFFF', lineHeight: 1, position: 'relative', zIndex: 1 }}>
-                    {(kpis[card.id] ?? 0).toLocaleString()}
+                    {loading ? '—' : (kpis[card.id] ?? 0).toLocaleString()}
                   </div>
                   <div style={{ fontFamily: D.font, fontSize: D.subSize, color: 'rgba(255,255,255,0.7)', marginTop: 3, position: 'relative', zIndex: 1 }}>
                     {card.kpiLabel}
