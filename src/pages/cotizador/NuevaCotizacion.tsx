@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Upload, MapPin, Globe, AlertTriangle, Plus, X, Calculator, FileText, ChevronDown , Loader2 } from 'lucide-react'
+import { Upload, MapPin, Globe, AlertTriangle, Plus, X, Calculator, FileText, ChevronDown } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
 import { Button } from '../../components/ui/Button'
@@ -219,14 +219,6 @@ export default function NuevaCotizacion() {
   const showMX = tipoOp && needsTramoMX(op)
   const showCruce = tipoOp && needsCruce(op)
   const showUSA = tipoOp && needsTramoUSA(op)
-
-  if (loading) return (
-    <ModuleLayout titulo="Nueva Cotización" subtitulo="Cotizador Cross-Border">
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-        <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: '#1E66F5' }} />
-      </div>
-    </ModuleLayout>
-  )
 
   return (
     <ModuleLayout titulo="Nueva Cotización" subtitulo="Cotizador cross-border V28">

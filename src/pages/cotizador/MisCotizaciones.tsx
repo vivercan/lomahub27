@@ -4,7 +4,7 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 import { Pagination } from '../../components/ui/Pagination'
-import { Loader2, Plus, FileText, Send, CheckCircle, XCircle, Clock, Eye } from 'lucide-react'
+import { Plus, FileText, Send, CheckCircle, XCircle, Clock, Eye } from 'lucide-react'
 import { useAuthContext } from '../../hooks/AuthContext'
 
 interface Cotizacion {
@@ -66,14 +66,6 @@ export default function MisCotizaciones() {
     enviadas: cotizaciones.filter(c => c.estado === 'enviada' || c.estado === 'vista').length,
     aceptadas: cotizaciones.filter(c => c.estado === 'aceptada').length,
   }
-
-  if (loading) return (
-    <ModuleLayout titulo="Mis Cotizaciones" subtitulo="Cotizador Cross-Border" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-        <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: tokens.colors.primary }} />
-      </div>
-    </ModuleLayout>
-  )
 
   return (
     <ModuleLayout titulo="Mis Cotizaciones" subtitulo="Cotizador Cross-Border" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
