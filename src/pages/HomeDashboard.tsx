@@ -461,15 +461,16 @@ export default function HomeDashboard() {
         gap: '14px',
         overflow: 'hidden',
         background: `
-          radial-gradient(ellipse 120% 90% at 50% 38%,
-            #EFEFEF 0%,
-            #E4E4E4 22%,
-            #D2D2D2 48%,
-            #BEBEBE 72%,
-            #ACACAC 92%,
-            #A2A2A2 100%
-          ),
-          linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 50%, rgba(0,0,0,0.06) 100%)
+          radial-gradient(ellipse 75% 65% at 50% 40%, transparent 55%, rgba(0,0,0,0.22) 100%),
+          linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.10) 82%, rgba(0,0,0,0.20) 100%),
+          radial-gradient(ellipse 100% 80% at 50% 38%,
+            #ECECEC 0%,
+            #DEDEDE 20%,
+            #C8C8C8 45%,
+            #AEAEAE 70%,
+            #959595 92%,
+            #888888 100%
+          )
         `,
       }}>
         <div style={{
