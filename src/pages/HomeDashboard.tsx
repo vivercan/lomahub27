@@ -103,10 +103,10 @@ export default function HomeDashboard() {
     gridColumn,
     gridRow,
     minHeight: 0,
-    borderRadius: '14px',
-    padding: '22px',
-    background: bgColor,
-    border: 'none',
+    borderRadius: '18px',
+    padding: '26px',
+    background: `linear-gradient(135deg, ${bgColor} 0%, ${bgColor} 55%, rgba(0,0,0,0.22) 100%)`,
+    border: '1px solid rgba(255,255,255,0.18)',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
@@ -114,11 +114,11 @@ export default function HomeDashboard() {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-    transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
+    transition: 'transform 0.3s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s cubic-bezier(0.23,1,0.32,1)',
+    transform: isHovered ? 'translateY(-5px) scale(1.015)' : 'translateY(0) scale(1)',
     boxShadow: isHovered
-      ? '0 6px 12px rgba(0,0,0,0.15), 0 12px 32px rgba(0,0,0,0.1)'
-      : '0 2px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06)',
+      ? 'inset 0 1px 0 rgba(255,255,255,0.38), inset 0 -1px 0 rgba(0,0,0,0.18), 0 14px 28px rgba(0,0,0,0.22), 0 22px 48px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.12)'
+      : 'inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.14), 0 6px 14px rgba(0,0,0,0.16), 0 12px 28px rgba(0,0,0,0.12)',
   })
 
   const renderCard = (card: CardConfig) => {
@@ -131,10 +131,29 @@ export default function HomeDashboard() {
         onMouseLeave={() => setHoveredCard(null)}
         style={getCardStyle(isHovered, card.bgColor, card.gridColumn, card.gridRow)}
       >
+        {/* Glass highlight overlay */}
+        <div style={{
+          position: 'absolute',
+          top: 0, left: 0, right: 0, height: '55%',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0) 100%)',
+          pointerEvents: 'none',
+          borderRadius: '18px 18px 0 0',
+        }} />
+        {/* Diagonal shine */}
+        <div style={{
+          position: 'absolute',
+          top: '-40%', left: '-20%', width: '70%', height: '180%',
+          background: 'linear-gradient(115deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.14) 45%, rgba(255,255,255,0) 60%)',
+          transform: isHovered ? 'translateX(40%) rotate(8deg)' : 'translateX(0%) rotate(8deg)',
+          transition: 'transform 0.8s cubic-bezier(0.23,1,0.32,1)',
+          pointerEvents: 'none',
+        }} />
         <div style={{
           position: 'absolute', top: '14px', right: '14px',
-          width: '6px', height: '6px', borderRadius: '50%',
+          width: '8px', height: '8px', borderRadius: '50%',
           backgroundColor: DOT_COLORS[card.statusDot] || DOT_COLORS.gray,
+          boxShadow: `0 0 8px ${DOT_COLORS[card.statusDot] || DOT_COLORS.gray}, inset 0 1px 0 rgba(255,255,255,0.5)`,
+          zIndex: 2,
         }} />
         <img
           src={`/icons/dashboard/${card.iconFile}`}
@@ -155,12 +174,14 @@ export default function HomeDashboard() {
         />
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
-          fontSize: '20px',
+          fontSize: '26px',
           fontWeight: 800,
           color: '#FFFFFF',
+          letterSpacing: '-0.3px',
           lineHeight: 1.2,
           marginBottom: 'auto',
           whiteSpace: 'nowrap', textAlign: 'center',
+          textShadow: '0 1px 2px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.18)',
           position: 'relative',
           zIndex: 1,
         }}>
@@ -168,11 +189,13 @@ export default function HomeDashboard() {
         </div>
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
-          fontSize: '28px',
-          fontWeight: 600,
+          fontSize: '44px',
+          fontWeight: 700,
           color: '#FFFFFF',
-          textAlign: 'left', width: '100%',lineHeight: 1,
+          letterSpacing: '-1px',
+          textAlign: 'left', width: '100%', lineHeight: 1,
           marginTop: '6px',
+          textShadow: '0 2px 4px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.15)',
           position: 'relative',
           zIndex: 1,
         }}>
@@ -180,11 +203,13 @@ export default function HomeDashboard() {
         </div>
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
-          fontSize: '9px',
-          fontWeight: 400,
-          color: 'rgba(255,255,255,0.7)',
+          fontSize: '12px',
+          fontWeight: 500,
+          color: 'rgba(255,255,255,0.85)',
+          letterSpacing: '0.2px',
           textAlign: 'left', width: '100%',
-          marginTop: '3px',
+          marginTop: '4px',
+          textShadow: '0 1px 2px rgba(0,0,0,0.2)',
           position: 'relative',
           zIndex: 1,
         }}>
