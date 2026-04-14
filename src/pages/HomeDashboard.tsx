@@ -388,23 +388,50 @@ export default function HomeDashboard() {
               transform: isHovered ? 'scale(1.02)' : 'scale(1)',
             }}
           >
-            {/* Bandas diagonales paralelas limpias — de amarillo-verde (izq) a verde-teal (der) */}
-            <g transform="skewX(-25)">
-              {/* Banda 1 — lime brillante (más izquierda) */}
-              <rect x="-80" y="-30" width="75" height="320" fill="#8AE60E" />
-              {/* Banda 2 — lime medio */}
-              <rect x="-5" y="-30" width="85" height="320" fill="#3CDC12" />
-              {/* Banda 3 — verde puro brillante */}
-              <rect x="80" y="-30" width="95" height="320" fill="#15D818" />
-              {/* Banda 4 — verde medio */}
-              <rect x="175" y="-30" width="85" height="320" fill="#10C418" />
-              {/* Banda 5 — verde */}
-              <rect x="260" y="-30" width="75" height="320" fill="#0AB01E" />
-              {/* Banda 6 — verde oscuro */}
-              <rect x="335" y="-30" width="70" height="320" fill="#089828" />
-              {/* Banda 7 — teal green (más derecha) */}
-              <rect x="405" y="-30" width="85" height="320" fill="#07A038" />
+            <defs>
+              {/* Gradientes suaves de banda a banda */}
+              <linearGradient id="ceBand1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#B8F20A" />
+                <stop offset="100%" stopColor="#8AE60E" />
+              </linearGradient>
+              <linearGradient id="ceBand2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#8AE60E" />
+                <stop offset="100%" stopColor="#4DDC10" />
+              </linearGradient>
+              <linearGradient id="ceBand3" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#4DDC10" />
+                <stop offset="100%" stopColor="#18D618" />
+              </linearGradient>
+              <linearGradient id="ceBand4" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#18D618" />
+                <stop offset="100%" stopColor="#0EBC1E" />
+              </linearGradient>
+              <linearGradient id="ceBand5" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#0EBC1E" />
+                <stop offset="100%" stopColor="#0AA028" />
+              </linearGradient>
+              <linearGradient id="ceBand6" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#0AA028" />
+                <stop offset="100%" stopColor="#078434" />
+              </linearGradient>
+            </defs>
+            {/* Bandas diagonales suaves — lime brillante (izq) → verde profundo (der) */}
+            <g transform="skewX(-22)">
+              <rect x="-90" y="-40" width="90" height="340" fill="url(#ceBand1)" />
+              <rect x="0" y="-40" width="90" height="340" fill="url(#ceBand2)" />
+              <rect x="90" y="-40" width="90" height="340" fill="url(#ceBand3)" />
+              <rect x="180" y="-40" width="90" height="340" fill="url(#ceBand4)" />
+              <rect x="270" y="-40" width="90" height="340" fill="url(#ceBand5)" />
+              <rect x="360" y="-40" width="120" height="340" fill="url(#ceBand6)" />
             </g>
+            {/* Sutil highlight superior para dar brillo a las bandas */}
+            <rect x="0" y="0" width="400" height="240" fill="url(#ceGloss)" opacity="0.12" />
+            <defs>
+              <linearGradient id="ceGloss" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.35" />
+                <stop offset="60%" stopColor="#FFFFFF" stopOpacity="0" />
+              </linearGradient>
+            </defs>
           </svg>
           {icon}
         </>
