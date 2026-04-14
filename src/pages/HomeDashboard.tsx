@@ -442,7 +442,7 @@ export default function HomeDashboard() {
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      background: 'radial-gradient(ellipse at 50% 0%, #EEF1F5 0%, #DFE3EA 60%, #D3D8E0 100%)',
+      background: '#FFFFFF',
       fontFamily: "'Montserrat', sans-serif",
       color: '#1E293B',
     }}>
@@ -460,6 +460,7 @@ export default function HomeDashboard() {
         flexDirection: 'column',
         gap: '14px',
         overflow: 'hidden',
+        background: 'radial-gradient(ellipse at 50% 40%, #BEC2C6 0%, #AEB2B6 55%, #9EA2A6 100%)',
       }}>
         <div style={{
           display: 'grid',
