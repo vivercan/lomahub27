@@ -98,7 +98,7 @@ export default function HomeDashboard() {
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFD700', gradient: 'linear-gradient(135deg, #FFDC10 0%, #FFCE00 50%, #FFB800 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #0930A0 0%, #0B3AB5 50%, #0F4AD0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#F55A0C', gradient: 'linear-gradient(135deg, #FF8A1A 0%, #F56410 50%, #E84A04 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#1458D0', gradient: 'linear-gradient(135deg, #1A68E0 0%, #1458D0 50%, #0C48B8 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
     { id: 'autofomento', label: 'Control de equipo', route: '/', bgColor: '#15C814', gradient: 'linear-gradient(90deg, #8AE60E 0%, #15D818 40%, #0AC020 75%, #07A038 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Próximamente', gridColumn: '1 / 3', gridRow: '3 / 4' },
     { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0A0A0A', gradient: 'linear-gradient(135deg, #141414 0%, #0A0A0A 50%, #050505 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
@@ -529,12 +529,12 @@ export default function HomeDashboard() {
         </>
       )
     }
-    // Caso especial Comunicaciones: naranja vibrante con streaks diagonales
+    // Caso especial Comunicaciones: geométrico azul con composición naranja lado izquierdo + dots halftone
     if (card.id === 'comunicaciones') {
       return (
         <>
           <svg
-            viewBox="0 0 400 400"
+            viewBox="0 0 400 500"
             preserveAspectRatio="xMidYMid slice"
             style={{
               position: 'absolute', inset: 0,
@@ -545,72 +545,108 @@ export default function HomeDashboard() {
             }}
           >
             <defs>
-              {/* Base naranja vibrante */}
-              <linearGradient id="comBase" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FFA820" />
-                <stop offset="45%" stopColor="#FA6E10" />
-                <stop offset="100%" stopColor="#D84008" />
+              {/* Gradientes naranja */}
+              <linearGradient id="comOrangeA" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#FFA230" />
+                <stop offset="100%" stopColor="#F07010" />
               </linearGradient>
-              {/* Streak claro */}
-              <linearGradient id="comStreakLight" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#FFD070" stopOpacity="0" />
-                <stop offset="50%" stopColor="#FFC058" stopOpacity="0.70" />
-                <stop offset="100%" stopColor="#FFA838" stopOpacity="0" />
+              <linearGradient id="comOrangeB" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#FFB040" />
+                <stop offset="100%" stopColor="#E06808" />
               </linearGradient>
-              {/* Streak medio */}
-              <linearGradient id="comStreakMid" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#FF9028" stopOpacity="0" />
-                <stop offset="50%" stopColor="#FF8018" stopOpacity="0.55" />
-                <stop offset="100%" stopColor="#F06008" stopOpacity="0" />
+              {/* Azul acento claro */}
+              <linearGradient id="comBlueAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#2D7CE8" />
+                <stop offset="100%" stopColor="#1458D0" />
               </linearGradient>
-              {/* Streak oscuro (sombra) */}
-              <linearGradient id="comStreakDark" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#C84008" stopOpacity="0" />
-                <stop offset="50%" stopColor="#B83808" stopOpacity="0.45" />
-                <stop offset="100%" stopColor="#A02804" stopOpacity="0" />
+              {/* Azul sombra más oscuro */}
+              <linearGradient id="comBlueShadow" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#0A3A9C" />
+                <stop offset="100%" stopColor="#062880" />
               </linearGradient>
-              {/* Highlight top-right (resplandor amarillo) */}
-              <radialGradient id="comGlow" cx="85%" cy="15%" r="55%">
-                <stop offset="0%" stopColor="#FFD060" stopOpacity="0.70" />
-                <stop offset="100%" stopColor="#FA6E10" stopOpacity="0" />
+              {/* Glow radial centro-derecha */}
+              <radialGradient id="comGlow" cx="70%" cy="40%" r="55%">
+                <stop offset="0%" stopColor="#2D7CE8" stopOpacity="0.40" />
+                <stop offset="100%" stopColor="#1458D0" stopOpacity="0" />
               </radialGradient>
+              {/* Patrón de puntos halftone (blancos) */}
+              <pattern id="comDots" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+                <circle cx="5" cy="5" r="1.5" fill="#FFFFFF" opacity="0.85" />
+              </pattern>
+              {/* Patrón de líneas horizontales blancas (para sobre naranja) */}
+              <pattern id="comLinesH" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+                <rect x="0" y="0" width="7" height="1.5" fill="#FFFFFF" opacity="0.55" />
+              </pattern>
+              {/* Patrón de líneas verticales finas */}
+              <pattern id="comLinesV" x="0" y="0" width="5" height="5" patternUnits="userSpaceOnUse">
+                <rect x="0" y="0" width="1" height="5" fill="#FFFFFF" opacity="0.50" />
+              </pattern>
             </defs>
 
-            {/* Base */}
-            <rect width="400" height="400" fill="url(#comBase)" />
+            {/* Glow azul centro-derecha */}
+            <rect width="400" height="500" fill="url(#comGlow)" />
 
-            {/* Glow amarillo top-right */}
-            <rect width="400" height="400" fill="url(#comGlow)" />
+            {/* ======== TOP-LEFT: triángulo grande naranja apuntando derecha ======== */}
+            <polygon points="0,0 160,0 0,135" fill="url(#comOrangeA)" />
+            {/* Triángulo recortado superpuesto azul oscuro para dar depth */}
+            <polygon points="35,0 120,0 35,80" fill="url(#comBlueShadow)" />
+            {/* Pequeña franja clara en el borde del triángulo */}
+            <polygon points="0,130 160,0 165,5 0,140" fill="#FFFFFF" opacity="0.15" />
 
-            {/* Streaks diagonales — rotate -45° */}
-            <g transform="rotate(-45 200 200)">
-              {/* Streaks claros (luces) */}
-              <rect x="-100" y="-200" width="30" height="900" fill="url(#comStreakLight)" />
-              <rect x="-40" y="-200" width="22" height="900" fill="url(#comStreakLight)" opacity="0.75" />
-              <rect x="20" y="-200" width="18" height="900" fill="url(#comStreakLight)" opacity="0.55" />
-              <rect x="60" y="-200" width="35" height="900" fill="url(#comStreakLight)" />
-              <rect x="110" y="-200" width="14" height="900" fill="url(#comStreakLight)" opacity="0.60" />
-              <rect x="145" y="-200" width="26" height="900" fill="url(#comStreakLight)" opacity="0.85" />
-              <rect x="200" y="-200" width="18" height="900" fill="url(#comStreakLight)" opacity="0.70" />
-              <rect x="245" y="-200" width="30" height="900" fill="url(#comStreakLight)" />
-              <rect x="295" y="-200" width="20" height="900" fill="url(#comStreakLight)" opacity="0.60" />
-              <rect x="340" y="-200" width="28" height="900" fill="url(#comStreakLight)" opacity="0.80" />
+            {/* Bloque naranja rectangular horizontal debajo del triángulo */}
+            <rect x="0" y="100" width="185" height="55" fill="url(#comOrangeA)" />
+            <rect x="10" y="115" width="165" height="28" fill="url(#comLinesH)" />
 
-              {/* Streaks medios */}
-              <rect x="-70" y="-200" width="40" height="900" fill="url(#comStreakMid)" />
-              <rect x="0" y="-200" width="55" height="900" fill="url(#comStreakMid)" opacity="0.70" />
-              <rect x="90" y="-200" width="45" height="900" fill="url(#comStreakMid)" />
-              <rect x="175" y="-200" width="50" height="900" fill="url(#comStreakMid)" opacity="0.80" />
-              <rect x="260" y="-200" width="40" height="900" fill="url(#comStreakMid)" />
-              <rect x="315" y="-200" width="45" height="900" fill="url(#comStreakMid)" opacity="0.75" />
+            {/* Borde diagonal blanco fino */}
+            <polygon points="185,100 210,100 175,155 150,155" fill="#FFFFFF" opacity="0.18" />
 
-              {/* Streaks oscuros (sombras finas) */}
-              <rect x="-50" y="-200" width="6" height="900" fill="url(#comStreakDark)" />
-              <rect x="45" y="-200" width="4" height="900" fill="url(#comStreakDark)" opacity="0.80" />
-              <rect x="130" y="-200" width="5" height="900" fill="url(#comStreakDark)" />
-              <rect x="225" y="-200" width="4" height="900" fill="url(#comStreakDark)" opacity="0.70" />
-              <rect x="310" y="-200" width="6" height="900" fill="url(#comStreakDark)" />
-            </g>
+            {/* ======== Bloque naranja top-right pequeño ======== */}
+            <polygon points="300,0 400,0 400,45 320,45" fill="url(#comOrangeA)" opacity="0.92" />
+
+            {/* ======== DOTS HALFTONE — centro-izquierda vertical ======== */}
+            <rect x="160" y="155" width="70" height="120" fill="url(#comDots)" />
+
+            {/* ======== MID-LEFT: barra delgada vertical naranja con líneas ======== */}
+            <rect x="0" y="175" width="18" height="120" fill="url(#comOrangeB)" />
+            <rect x="3" y="190" width="12" height="90" fill="url(#comLinesV)" />
+
+            {/* ======== MIDDLE: composición diagonal — segundo set de shapes ======== */}
+            {/* Bloque naranja diagonal tipo paralelogramo */}
+            <polygon points="25,180 180,180 150,260 0,260" fill="url(#comOrangeA)" opacity="0.95" />
+            {/* Con líneas horizontales */}
+            <polygon points="35,195 165,195 140,250 10,250" fill="url(#comLinesH)" opacity="0.85" />
+
+            {/* ======== BOTTOM-LEFT: triángulo grande naranja ======== */}
+            <polygon points="0,280 195,280 0,430" fill="url(#comOrangeA)" />
+            {/* Triángulo recorte azul oscuro superpuesto */}
+            <polygon points="0,310 110,310 0,385" fill="url(#comBlueShadow)" opacity="0.90" />
+            {/* Franja naranja con líneas horizontales */}
+            <rect x="25" y="340" width="135" height="60" fill="url(#comOrangeB)" />
+            <rect x="35" y="355" width="115" height="32" fill="url(#comLinesH)" />
+
+            {/* Línea fina diagonal blanca */}
+            <line x1="0" y1="430" x2="220" y2="280" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.40" />
+
+            {/* Dots halftone bottom-center */}
+            <rect x="155" y="390" width="65" height="90" fill="url(#comDots)" />
+
+            {/* ======== BOTTOM: bloques naranjas bottom-left esquina ======== */}
+            <polygon points="0,445 125,445 85,500 0,500" fill="url(#comOrangeA)" />
+            <polygon points="125,445 200,445 160,500 85,500" fill="url(#comBlueAccent)" opacity="0.85" />
+
+            {/* ======== RIGHT SIDE: bloques azules sutiles ======== */}
+            {/* Bloque azul medio bottom-right */}
+            <rect x="270" y="360" width="130" height="70" fill="url(#comBlueAccent)" opacity="0.50" />
+            {/* Bloque azul más oscuro debajo */}
+            <rect x="300" y="425" width="100" height="40" fill="url(#comBlueShadow)" opacity="0.55" />
+            {/* Bloque azul derecho delgado arriba */}
+            <rect x="360" y="150" width="40" height="90" fill="url(#comBlueAccent)" opacity="0.40" />
+
+            {/* Línea diagonal sutil bottom-right */}
+            <line x1="200" y1="500" x2="400" y2="370" stroke="#FFFFFF" strokeWidth="1" opacity="0.25" />
+
+            {/* Línea fina horizontal accent mid-right */}
+            <rect x="250" y="270" width="150" height="1.2" fill="#FFFFFF" opacity="0.30" />
           </svg>
           {icon}
         </>
