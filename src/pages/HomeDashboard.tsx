@@ -94,7 +94,7 @@ export default function HomeDashboard() {
 
   const mainCards: CardConfig[] = [
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#000000', gradient: 'linear-gradient(135deg, #0A0A0A 0%, #050505 50%, #000000 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#020412', gradient: 'linear-gradient(110deg, #010308 0%, #020614 50%, #050E28 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#031128', gradient: 'linear-gradient(100deg, #083068 0%, #052148 45%, #021028 80%, #010818 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFD700', gradient: 'linear-gradient(135deg, #FFDC10 0%, #FFCE00 50%, #FFB800 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #0930A0 0%, #0B3AB5 50%, #0F4AD0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
@@ -768,7 +768,7 @@ export default function HomeDashboard() {
           </>
         )
       }
-      // Caso especial Servicio al Cliente: tech blue streaks — lineas neon diagonales sobre negro navy
+      // Caso especial Servicio al Cliente: chevrons cyan apuntando → sobre navy deep (izq brillante, der oscuro)
       if (card.id === 'servicio-clientes') {
         return (
           <>
@@ -784,74 +784,80 @@ export default function HomeDashboard() {
               }}
             >
               <defs>
-                {/* Glow radial azul lado derecho */}
-                <radialGradient id="svcGlow" cx="85%" cy="55%" r="55%">
-                  <stop offset="0%" stopColor="#2D6BE8" stopOpacity="0.55" />
-                  <stop offset="50%" stopColor="#0D2560" stopOpacity="0.25" />
-                  <stop offset="100%" stopColor="#020412" stopOpacity="0" />
+                {/* Glow radial cyan brillante lado izquierdo */}
+                <radialGradient id="svcGlow" cx="12%" cy="35%" r="60%">
+                  <stop offset="0%" stopColor="#2EB8FF" stopOpacity="0.55" />
+                  <stop offset="55%" stopColor="#0A4CB8" stopOpacity="0.22" />
+                  <stop offset="100%" stopColor="#031128" stopOpacity="0" />
                 </radialGradient>
-                {/* Linea brillante con glow — gradient vertical para fade en los extremos */}
-                <linearGradient id="svcLineBright" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#4A90FF" stopOpacity="0" />
-                  <stop offset="20%" stopColor="#60A8FF" stopOpacity="0.95" />
-                  <stop offset="80%" stopColor="#60A8FF" stopOpacity="0.95" />
-                  <stop offset="100%" stopColor="#4A90FF" stopOpacity="0" />
+                {/* Chevron grande — cyan brillante con fade horizontal (izq brillante → der apaga) */}
+                <linearGradient id="svcChevBright" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#30D4FF" stopOpacity="1" />
+                  <stop offset="40%" stopColor="#1A9CF8" stopOpacity="0.95" />
+                  <stop offset="100%" stopColor="#0A4CB8" stopOpacity="0.55" />
                 </linearGradient>
-                <linearGradient id="svcLineMid" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#2F70E0" stopOpacity="0" />
-                  <stop offset="25%" stopColor="#3D85F0" stopOpacity="0.75" />
-                  <stop offset="75%" stopColor="#3D85F0" stopOpacity="0.75" />
-                  <stop offset="100%" stopColor="#2F70E0" stopOpacity="0" />
+                {/* Chevron medio */}
+                <linearGradient id="svcChevMid" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#45C0F8" stopOpacity="0.85" />
+                  <stop offset="50%" stopColor="#2078E8" stopOpacity="0.70" />
+                  <stop offset="100%" stopColor="#0A3A98" stopOpacity="0.30" />
                 </linearGradient>
-                <linearGradient id="svcLineDim" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#1E55B8" stopOpacity="0" />
-                  <stop offset="30%" stopColor="#2866C8" stopOpacity="0.55" />
-                  <stop offset="70%" stopColor="#2866C8" stopOpacity="0.55" />
-                  <stop offset="100%" stopColor="#1E55B8" stopOpacity="0" />
+                {/* Chevron dim (tenue) */}
+                <linearGradient id="svcChevDim" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#1E88D8" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#06265A" stopOpacity="0.15" />
+                </linearGradient>
+                {/* Línea horizontal fina — brillante izq, apaga der */}
+                <linearGradient id="svcLineHoriz" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#60D8FF" stopOpacity="0.90" />
+                  <stop offset="50%" stopColor="#2888E8" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#0A3080" stopOpacity="0" />
+                </linearGradient>
+                {/* Línea muy tenue */}
+                <linearGradient id="svcLineDim" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#4AA8E8" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#082458" stopOpacity="0" />
                 </linearGradient>
               </defs>
 
-              {/* Glow suave lado derecho */}
+              {/* Glow suave cyan lado izquierdo */}
               <rect width="400" height="240" fill="url(#svcGlow)" />
 
-              {/* Lineas diagonales en angulo -30° simulando tech streaks */}
-              <g transform="rotate(-30 200 120)">
-                {/* Lineas brillantes largas (streaks principales) */}
-                <rect x="140" y="20" width="2.5" height="90" fill="url(#svcLineBright)" />
-                <rect x="220" y="50" width="2" height="100" fill="url(#svcLineBright)" />
-                <rect x="300" y="30" width="2.5" height="120" fill="url(#svcLineBright)" />
-                <rect x="360" y="60" width="2" height="90" fill="url(#svcLineBright)" />
+              {/* Chevrons apuntando → concentrados lado izquierdo */}
+              {/* Chevron 1 — grande, superior, más brillante */}
+              <polygon points="-30,10 110,10 170,55 110,100 -30,100" fill="url(#svcChevBright)" />
+              {/* Chevron 2 — medio, superior-medio */}
+              <polygon points="20,35 140,35 200,75 140,115 20,115" fill="url(#svcChevBright)" opacity="0.92" />
+              {/* Chevron 3 — grande centro */}
+              <polygon points="-30,80 150,80 220,120 150,160 -30,160" fill="url(#svcChevBright)" opacity="0.85" />
+              {/* Chevron 4 — mid inferior */}
+              <polygon points="0,130 180,130 240,170 180,210 0,210" fill="url(#svcChevMid)" />
+              {/* Chevron 5 — muy inferior */}
+              <polygon points="-30,185 130,185 180,215 130,245 -30,245" fill="url(#svcChevDim)" />
 
-                {/* Lineas medias (intermedias) */}
-                <rect x="180" y="80" width="1.8" height="70" fill="url(#svcLineMid)" />
-                <rect x="260" y="90" width="1.8" height="80" fill="url(#svcLineMid)" />
-                <rect x="340" y="100" width="1.8" height="80" fill="url(#svcLineMid)" />
-                <rect x="400" y="90" width="1.5" height="90" fill="url(#svcLineMid)" />
+              {/* Hairline highlights brillantes sobre los bordes superiores de chevrons */}
+              <polygon points="-30,10 110,10 113,16 -30,16" fill="#8AE8FF" opacity="0.70" />
+              <polygon points="20,35 140,35 143,41 20,41" fill="#8AE8FF" opacity="0.60" />
+              <polygon points="-30,80 150,80 153,86 -30,86" fill="#8AE8FF" opacity="0.55" />
 
-                {/* Lineas dim cortas (accents) */}
-                <rect x="160" y="140" width="1.5" height="50" fill="url(#svcLineDim)" />
-                <rect x="240" y="160" width="1.5" height="40" fill="url(#svcLineDim)" />
-                <rect x="320" y="170" width="1.5" height="45" fill="url(#svcLineDim)" />
-              </g>
+              {/* Líneas horizontales delgadas extendiéndose de los chevrons hacia la derecha */}
+              {/* Arriba */}
+              <rect x="170" y="52" width="230" height="1.5" fill="url(#svcLineHoriz)" opacity="0.85" />
+              <rect x="200" y="72" width="200" height="1.2" fill="url(#svcLineHoriz)" opacity="0.70" />
+              <rect x="220" y="117" width="180" height="1.5" fill="url(#svcLineHoriz)" />
+              <rect x="240" y="167" width="160" height="1.2" fill="url(#svcLineHoriz)" opacity="0.75" />
+              <rect x="180" y="212" width="220" height="1" fill="url(#svcLineDim)" />
 
-              {/* Bloques rectangulares lado derecho (más brillantes/solidos) */}
-              <g opacity="0.70" transform="rotate(-30 380 120)">
-                {/* Bloque largo inferior derecho */}
-                <rect x="360" y="10" width="40" height="300" fill="#123880" />
-                <rect x="360" y="10" width="2" height="300" fill="rgba(70,130,230,0.70)" />
-                {/* Bloque medio */}
-                <rect x="320" y="110" width="28" height="80" fill="#1A4690" opacity="0.85" />
-                <rect x="320" y="110" width="1.5" height="80" fill="rgba(70,130,230,0.60)" />
-              </g>
+              {/* Líneas adicionales muy tenues — dan sensación de movimiento */}
+              <rect x="250" y="90" width="150" height="0.8" fill="url(#svcLineDim)" />
+              <rect x="260" y="140" width="140" height="0.8" fill="url(#svcLineDim)" />
+              <rect x="220" y="185" width="180" height="0.8" fill="url(#svcLineDim)" />
 
-              {/* Pixels/cuadrados accent far right */}
-              <g transform="rotate(-30 370 130)">
-                <rect x="375" y="115" width="4" height="4" fill="#4A90FF" opacity="0.85" />
-                <rect x="383" y="115" width="6" height="3" fill="#4A90FF" opacity="0.75" />
-                <rect x="375" y="125" width="3" height="3" fill="#4A90FF" opacity="0.60" />
-                <rect x="378" y="140" width="8" height="3" fill="#4A90FF" opacity="0.80" />
-                <rect x="375" y="148" width="3" height="3" fill="#4A90FF" opacity="0.55" />
-              </g>
+              {/* Acento brillante en el vértice de cada chevron */}
+              <circle cx="170" cy="55" r="2" fill="#A0F0FF" opacity="0.85" />
+              <circle cx="200" cy="75" r="1.5" fill="#A0F0FF" opacity="0.75" />
+              <circle cx="220" cy="120" r="2.2" fill="#A0F0FF" opacity="0.85" />
+              <circle cx="240" cy="170" r="1.8" fill="#A0F0FF" opacity="0.70" />
             </svg>
             {icon}
           </>
