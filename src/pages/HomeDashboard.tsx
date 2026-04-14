@@ -274,21 +274,45 @@ export default function HomeDashboard() {
       </svg>
     )
 
-    // Icon universal — estilo engrane (bottom-right, rotado, tintado blanco, sombra)
+    // Icon universal — mismo tamaño/estilo que el engrane + efecto emboss "push-through"
+    // Caja cuadrada 60%×60% con object-fit:contain para que TODOS se vean del mismo tamaño,
+    // sin importar el viewBox intrínseco de cada SVG.
     const icon = card.iconFile && card.iconOpacity > 0 ? (
-      <img
-        src={`/icons/dashboard/${card.iconFile}`}
-        alt=""
+      <div
         style={{
           position: 'absolute',
-          right: '-10%', bottom: '-14%',
-          width: '70%', height: '70%',
-          opacity: card.iconOpacity,
-          filter: 'brightness(0) invert(1) drop-shadow(0 3px 10px rgba(0,0,0,0.5))',
-          transform: isHovered ? 'rotate(18deg) scale(1.04)' : 'rotate(12deg) scale(1)',
-          transition: baseTransition, pointerEvents: 'none',
+          right: '-6%', bottom: '-10%',
+          width: '60%',
+          aspectRatio: '1 / 1',
+          pointerEvents: 'none',
+          transition: baseTransition,
+          transform: isHovered ? 'rotate(14deg) scale(1.03)' : 'rotate(10deg) scale(1)',
         }}
-      />
+      >
+        <img
+          src={`/icons/dashboard/${card.iconFile}`}
+          alt=""
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            opacity: card.iconOpacity,
+            // Filter stack para efecto "empujado desde atrás":
+            //  1. brightness(0) invert(1) → tinte blanco puro
+            //  2. drop-shadow blanco arriba-izquierda → highlight de borde superior (luz)
+            //  3. drop-shadow negro abajo-derecha sólido → borde oscuro de extrusión
+            //  4. drop-shadow difuso grande → sombra proyectada hacia el fondo (profundidad)
+            //  5. drop-shadow ceñido → contacto con la superficie
+            filter: `
+              brightness(0) invert(1)
+              drop-shadow(-1px -1px 0 rgba(255,255,255,0.28))
+              drop-shadow(2px 3px 0 rgba(0,0,0,0.32))
+              drop-shadow(0 8px 16px rgba(0,0,0,0.55))
+              drop-shadow(0 3px 5px rgba(0,0,0,0.40))
+            `,
+          }}
+        />
+      </div>
     ) : null
 
     if (card.decorType === 'silk') {
