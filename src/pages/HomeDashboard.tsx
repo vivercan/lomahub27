@@ -153,27 +153,69 @@ export default function HomeDashboard() {
       `,
   })
 
-  // Superficies curvas con efecto chrome-fold (sombra + brillo) estilo master Tesla
+  // Superficies curvas con efecto chrome-fold — cada card tiene su propio recorrido (no repetitivo)
   const renderDecor = (card: CardConfig, isHovered: boolean) => {
     const baseTransition = 'transform 1s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease'
-    // Intensidad del highlight según el card
+    // Intensidad atenuada globalmente (-40%) para un look más tenue y premium
     const intensity =
-      card.id === 'ventas' ? 1.5
-      : card.id === 'servicio-clientes' || card.id === 'comercial' ? 1.15
-      : card.id === 'autofomento' ? 0.9
-      : 1.0
-    // Offset por card para que no sean idénticos
-    const offsets: Record<string, { a: number; b: number; c: number }> = {
-      'oportunidades': { a: 0, b: 0, c: 0 },
-      'servicio-clientes': { a: -10, b: 6, c: -4 },
-      'comercial': { a: 8, b: -8, c: 4 },
-      'operaciones': { a: -4, b: 4, c: -2 },
-      'ventas': { a: 4, b: -6, c: 6 },
-      'autofomento': { a: 12, b: -10, c: 8 },
-      'comunicaciones': { a: -6, b: 8, c: -4 },
-      'config': { a: 10, b: -6, c: 2 },
+      card.id === 'ventas' ? 1.1
+      : card.id === 'servicio-clientes' || card.id === 'comercial' ? 0.85
+      : card.id === 'autofomento' ? 0.65
+      : 0.72
+    // Cada card tiene SU propio recorrido de curva (ribbon + hairline). Nada repetido.
+    type Recipe = { ribbon: string; hairline: string; showHair2: boolean; hair2?: string }
+    const recipes: Record<string, Recipe> = {
+      'oportunidades': {
+        ribbon: 'M -40 70 Q 100 30 250 80 T 460 50 L 460 160 Q 300 200 140 160 T -40 200 Z',
+        hairline: 'M -10 130 Q 140 65 280 100 T 430 70',
+        showHair2: false,
+      },
+      'servicio-clientes': {
+        // curva más horizontal y amplia (es un card ancho 2-cols)
+        ribbon: 'M -40 90 Q 120 40 240 70 T 460 55 L 460 155 Q 300 195 160 170 T -40 210 Z',
+        hairline: 'M -10 135 Q 140 75 280 105 T 430 85',
+        showHair2: true,
+        hair2: 'M 20 170 Q 160 110 310 140 T 440 125',
+      },
+      'comercial': {
+        // card vertical alto — curva descendente
+        ribbon: 'M -40 50 Q 120 100 260 70 T 460 120 L 460 210 Q 280 230 140 200 T -40 240 Z',
+        hairline: 'M 0 90 Q 130 140 270 110 T 430 150',
+        showHair2: false,
+      },
+      'operaciones': {
+        // S-curve más marcada
+        ribbon: 'M -40 110 Q 80 60 200 95 Q 320 130 460 80 L 460 180 Q 320 220 200 190 Q 80 160 -40 210 Z',
+        hairline: 'M -10 150 Q 100 100 220 130 Q 340 160 430 115',
+        showHair2: false,
+      },
+      'ventas': {
+        // curva ascendente amplia (card más brillante)
+        ribbon: 'M -40 140 Q 130 50 270 110 T 460 70 L 460 180 Q 300 220 160 195 T -40 230 Z',
+        hairline: 'M -10 170 Q 140 85 280 140 T 430 100',
+        showHair2: true,
+        hair2: 'M 30 200 Q 170 115 300 170 T 440 135',
+      },
+      'autofomento': {
+        // card ancho — curva muy tendida, casi plana
+        ribbon: 'M -40 120 Q 200 80 440 110 T 460 110 L 460 170 Q 220 200 -40 180 Z',
+        hairline: 'M -10 150 Q 220 110 440 135',
+        showHair2: false,
+      },
+      'comunicaciones': {
+        // curva que abraza el anillo por abajo
+        ribbon: 'M -40 60 Q 140 130 260 80 T 460 110 L 460 180 Q 300 230 140 200 T -40 220 Z',
+        hairline: 'M 0 100 Q 150 170 270 120 T 430 145',
+        showHair2: false,
+      },
+      'config': {
+        // curva que pasa sobre el engrane
+        ribbon: 'M -40 80 Q 120 130 260 100 T 460 130 L 460 190 Q 300 220 140 200 T -40 220 Z',
+        hairline: 'M -10 115 Q 130 160 270 130 T 430 165',
+        showHair2: false,
+      },
     }
-    const o = offsets[card.id] || { a: 0, b: 0, c: 0 }
+    const r = recipes[card.id] || recipes['oportunidades']
 
     const chromeFolds = (
       <svg
@@ -188,61 +230,47 @@ export default function HomeDashboard() {
         }}
       >
         <defs>
-          {/* Fold gradient principal: sombra arriba → brillo medio → sombra abajo (efecto superficie curvada) */}
+          {/* Fold gradient principal — atenuado 40% para look tenue */}
           <linearGradient id={`fold1-${card.id}`} x1="50%" y1="0%" x2="50%" y2="100%">
-            <stop offset="0%" stopColor="#000000" stopOpacity={0.35} />
-            <stop offset="28%" stopColor="#000000" stopOpacity={0.08} />
-            <stop offset="52%" stopColor="#FFFFFF" stopOpacity={0.26 * intensity} />
-            <stop offset="68%" stopColor="#FFFFFF" stopOpacity={0.04} />
-            <stop offset="100%" stopColor="#000000" stopOpacity={0.20} />
-          </linearGradient>
-          {/* Fold secundario */}
-          <linearGradient id={`fold2-${card.id}`} x1="50%" y1="0%" x2="50%" y2="100%">
             <stop offset="0%" stopColor="#000000" stopOpacity={0.22} />
-            <stop offset="50%" stopColor="#FFFFFF" stopOpacity={0.14 * intensity} />
-            <stop offset="100%" stopColor="#000000" stopOpacity={0.10} />
+            <stop offset="30%" stopColor="#000000" stopOpacity={0.05} />
+            <stop offset="52%" stopColor="#FFFFFF" stopOpacity={0.14 * intensity} />
+            <stop offset="70%" stopColor="#FFFFFF" stopOpacity={0.02} />
+            <stop offset="100%" stopColor="#000000" stopOpacity={0.14} />
           </linearGradient>
-          {/* Viñeta superior izquierda */}
+          {/* Viñeta superior izquierda (más sutil) */}
           <radialGradient id={`vignette-${card.id}`} cx="0%" cy="0%" r="100%">
-            <stop offset="0%" stopColor="#000000" stopOpacity={0.30} />
+            <stop offset="0%" stopColor="#000000" stopOpacity={0.22} />
             <stop offset="50%" stopColor="#000000" stopOpacity="0" />
           </radialGradient>
-          {/* Hairline brillante */}
+          {/* Hairline brillante (más tenue) */}
           <linearGradient id={`hair-${card.id}`} x1="0%" y1="50%" x2="100%" y2="50%">
             <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0" />
-            <stop offset="45%" stopColor="#FFFFFF" stopOpacity={0.55 * intensity} />
+            <stop offset="45%" stopColor="#FFFFFF" stopOpacity={0.32 * intensity} />
             <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
           </linearGradient>
         </defs>
-        {/* Capa 0: viñeta superior-izquierda (profundidad) */}
+        {/* Capa 0: viñeta superior-izquierda */}
         <rect width="400" height="240" fill={`url(#vignette-${card.id})`} />
-        {/* Capa 1: ribbon principal grande (superficie curvada diagonal) */}
+        {/* Capa 1: un solo ribbon con recorrido específico del card */}
+        <path d={r.ribbon} fill={`url(#fold1-${card.id})`} />
+        {/* Capa 2: hairline principal (único en la mayoría de cards) */}
         <path
-          d={`M -40 ${60 + o.a} Q 100 ${20 + o.b} 250 ${70 + o.c} T 460 ${40 + o.a}
-              L 460 ${170 + o.b} Q 300 ${210 - o.c} 140 ${170 + o.a} T -40 ${210 + o.b} Z`}
-          fill={`url(#fold1-${card.id})`}
-        />
-        {/* Capa 2: ribbon secundario inferior */}
-        <path
-          d={`M -30 ${180 + o.b} Q 140 ${110 - o.c} 300 ${150 + o.a} T 460 ${110 + o.c}
-              L 460 ${235} Q 300 ${255} 140 ${225 + o.b} T -30 ${255} Z`}
-          fill={`url(#fold2-${card.id})`}
-        />
-        {/* Capa 3: hairline brillante nítido sobre el pliegue (más fino, más premium) */}
-        <path
-          d={`M -10 ${125 + o.a} Q 130 ${55 + o.b} 270 ${100 + o.c} T 430 ${65 + o.a}`}
+          d={r.hairline}
           stroke={`url(#hair-${card.id})`}
-          strokeWidth="0.9"
+          strokeWidth="0.8"
           fill="none"
         />
-        {/* Capa 4: hairline tenue paralelo (más discreto) */}
-        <path
-          d={`M 10 ${155 + o.c} Q 150 ${85 + o.a} 290 ${130 + o.b} T 440 ${95 + o.c}`}
-          stroke="#FFFFFF"
-          strokeOpacity={0.14 * intensity}
-          strokeWidth="0.7"
-          fill="none"
-        />
+        {/* Capa 3: hairline adicional solo en cards anchos (para balancear el vacío) */}
+        {r.showHair2 && r.hair2 && (
+          <path
+            d={r.hair2}
+            stroke="#FFFFFF"
+            strokeOpacity={0.10 * intensity}
+            strokeWidth="0.6"
+            fill="none"
+          />
+        )}
       </svg>
     )
 
