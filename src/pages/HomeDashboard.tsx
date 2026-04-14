@@ -118,7 +118,12 @@ export default function HomeDashboard() {
     minHeight: 0,
     borderRadius: '22px',
     padding: '26px',
-    background: card.gradient,
+    // Gradiente con capa blanca 10% encima para translucidez + gradiente diagonal tenue para 3D sutil
+    background: `
+      linear-gradient(155deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 35%, rgba(0,0,0,0) 65%, rgba(0,0,0,0.12) 100%),
+      linear-gradient(0deg, rgba(255,255,255,0.10), rgba(255,255,255,0.10)),
+      ${card.gradient}
+    `,
     border: 'none',
     cursor: 'pointer',
     position: 'relative',
@@ -128,10 +133,26 @@ export default function HomeDashboard() {
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     transition: 'transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s cubic-bezier(0.16,1,0.3,1)',
-    transform: isHovered ? 'translateY(-8px)' : 'translateY(0)',
+    transformStyle: 'preserve-3d',
+    transform: isHovered
+      ? 'perspective(1200px) rotateX(4deg) rotateY(-3deg) translateY(-12px) scale(1.025)'
+      : 'perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)',
     boxShadow: isHovered
-      ? `0 30px 60px -16px ${hexToRgba(card.bgColor, 0.55)}, 0 18px 36px -12px rgba(0,0,0,0.25)`
-      : `0 14px 28px -14px ${hexToRgba(card.bgColor, 0.45)}, 0 6px 14px -6px rgba(0,0,0,0.14)`,
+      ? `
+        0 0 0 2px ${hexToRgba(card.bgColor, 0.25)},
+        0 40px 80px -20px ${hexToRgba(card.bgColor, 0.7)},
+        0 24px 48px -12px ${hexToRgba(card.bgColor, 0.5)},
+        0 12px 24px -6px rgba(0,0,0,0.3),
+        inset 0 2px 0 rgba(255,255,255,0.45),
+        inset 0 -2px 0 rgba(0,0,0,0.22)
+      `
+      : `
+        0 22px 40px -16px ${hexToRgba(card.bgColor, 0.55)},
+        0 12px 22px -10px ${hexToRgba(card.bgColor, 0.35)},
+        0 4px 8px -2px rgba(0,0,0,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.28),
+        inset 0 -1px 0 rgba(0,0,0,0.15)
+      `,
   })
 
   // Renderiza formas geométricas decorativas según el tipo
@@ -256,7 +277,6 @@ export default function HomeDashboard() {
     const isLight = card.id === 'comunicaciones'
     const textColor = isLight ? '#0F172A' : '#FFFFFF'
     const mutedColor = isLight ? 'rgba(15,23,42,0.65)' : 'rgba(255,255,255,0.85)'
-    const eyebrow = isLight ? 'rgba(15,23,42,0.55)' : 'rgba(255,255,255,0.75)'
     return (
       <div
         key={card.id}
@@ -275,26 +295,14 @@ export default function HomeDashboard() {
         }} />
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
-          fontSize: '11px',
-          fontWeight: 700,
-          color: eyebrow,
-          letterSpacing: '1.8px',
-          textTransform: 'uppercase',
-          position: 'relative',
-          zIndex: 2,
-        }}>
-          {card.kpiLabel || 'Módulo'}
-        </div>
-        <div style={{
-          fontFamily: "'Montserrat', sans-serif",
-          fontSize: '30px',
+          fontSize: '32px',
           fontWeight: 800,
           color: textColor,
           letterSpacing: '-0.5px',
           lineHeight: 1.1,
-          marginTop: '8px',
           marginBottom: 'auto',
           textAlign: 'left', width: '100%',
+          textShadow: isLight ? 'none' : '0 2px 6px rgba(0,0,0,0.25)',
           position: 'relative',
           zIndex: 2,
         }}>
