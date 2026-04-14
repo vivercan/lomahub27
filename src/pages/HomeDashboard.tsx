@@ -93,14 +93,14 @@ export default function HomeDashboard() {
   }, [fetchKpis])
 
   const mainCards: CardConfig[] = [
-    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#F97316', gradient: 'linear-gradient(135deg, #F97316 0%, #FBBF24 100%)', decorType: 'circle', decorColor: 'rgba(253,191,36,0.85)', iconFile: 'oportunidades.svg', iconOpacity: 0.07, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#3B82F6', gradient: 'linear-gradient(135deg, #2563EB 0%, #38BDF8 100%)', decorType: 'chevron', decorColor: 'rgba(14,165,233,0.9)', decorSecondary: 'rgba(125,211,252,0.6)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.07, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 subm\u00f3dulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#A855F7', gradient: 'linear-gradient(160deg, #A855F7 0%, #EC4899 100%)', decorType: 'square', decorColor: 'rgba(236,72,153,0.8)', decorSecondary: 'rgba(192,132,252,0.6)', iconFile: 'comercial.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 subm\u00f3dulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
-    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0F172A', gradient: 'linear-gradient(140deg, #0F172A 0%, #1E293B 100%)', decorType: 'multi', decorColor: '#F97316', decorSecondary: '#A855F7', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.07, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
-    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#EC4899', gradient: 'linear-gradient(135deg, #F43F5E 0%, #EC4899 100%)', decorType: 'square', decorColor: 'rgba(251,207,232,0.85)', decorSecondary: 'rgba(252,165,165,0.55)', iconFile: 'Ventas.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#FAFAFA', gradient: 'linear-gradient(165deg, #FAFAFA 0%, #F3F4F6 100%)', decorType: 'multi', decorColor: '#F97316', decorSecondary: '#3B82F6', iconFile: 'comunicaciones.svg', iconOpacity: 0.25, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
-    { id: 'jj', label: 'JJ', route: '/', bgColor: '#0F172A', gradient: 'linear-gradient(135deg, #0F172A 0%, #312E81 50%, #7C3AED 100%)', decorType: 'wave', decorColor: 'rgba(249,115,22,0.8)', decorSecondary: 'rgba(168,85,247,0.7)', iconFile: 'configuracion.svg', iconOpacity: 0.07, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Placeholder', gridColumn: '1 / 3', gridRow: '3 / 4' },
-    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#6366F1', gradient: 'linear-gradient(150deg, #6366F1 0%, #8B5CF6 100%)', decorType: 'square', decorColor: 'rgba(196,181,253,0.65)', decorSecondary: 'rgba(99,102,241,0.4)', iconFile: 'configuracion.svg', iconOpacity: 0.07, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
+    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#F97316', gradient: 'linear-gradient(135deg, rgba(249,115,22,0.80) 0%, rgba(251,191,36,0.80) 100%)', decorType: 'circle', decorColor: 'rgba(253,191,36,0.80)', iconFile: 'oportunidades.svg', iconOpacity: 0.07, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#3B82F6', gradient: 'linear-gradient(135deg, rgba(37,99,235,0.80) 0%, rgba(56,189,248,0.80) 100%)', decorType: 'chevron', decorColor: 'rgba(14,165,233,0.80)', decorSecondary: 'rgba(125,211,252,0.55)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.07, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 subm\u00f3dulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#A855F7', gradient: 'linear-gradient(160deg, rgba(168,85,247,0.80) 0%, rgba(236,72,153,0.80) 100%)', decorType: 'square', decorColor: 'rgba(236,72,153,0.75)', decorSecondary: 'rgba(192,132,252,0.55)', iconFile: 'comercial.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 subm\u00f3dulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
+    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0F172A', gradient: 'linear-gradient(140deg, rgba(15,23,42,0.80) 0%, rgba(30,41,59,0.80) 100%)', decorType: 'multi', decorColor: '#F97316', decorSecondary: '#A855F7', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.07, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
+    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#EC4899', gradient: 'linear-gradient(135deg, rgba(244,63,94,0.80) 0%, rgba(236,72,153,0.80) 100%)', decorType: 'square', decorColor: 'rgba(251,207,232,0.80)', decorSecondary: 'rgba(252,165,165,0.50)', iconFile: 'Ventas.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#FAFAFA', gradient: 'linear-gradient(165deg, rgba(250,250,250,0.80) 0%, rgba(243,244,246,0.80) 100%)', decorType: 'multi', decorColor: '#F97316', decorSecondary: '#3B82F6', iconFile: 'comunicaciones.svg', iconOpacity: 0.25, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
+    { id: 'jj', label: 'JJ', route: '/', bgColor: '#0F172A', gradient: 'linear-gradient(135deg, rgba(15,23,42,0.80) 0%, rgba(49,46,129,0.80) 50%, rgba(124,58,237,0.80) 100%)', decorType: 'wave', decorColor: 'rgba(249,115,22,0.75)', decorSecondary: 'rgba(168,85,247,0.65)', iconFile: 'configuracion.svg', iconOpacity: 0.07, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Placeholder', gridColumn: '1 / 3', gridRow: '3 / 4' },
+    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#6366F1', gradient: 'linear-gradient(150deg, rgba(99,102,241,0.80) 0%, rgba(139,92,246,0.80) 100%)', decorType: 'square', decorColor: 'rgba(196,181,253,0.60)', decorSecondary: 'rgba(99,102,241,0.35)', iconFile: 'configuracion.svg', iconOpacity: 0.07, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
   // Helper: convierte hex a rgba con alpha, para sombras teñidas del color del card
@@ -118,13 +118,14 @@ export default function HomeDashboard() {
     minHeight: 0,
     borderRadius: '22px',
     padding: '26px',
-    // Gradiente con capa blanca 10% encima para translucidez + gradiente diagonal tenue para 3D sutil
+    // Gradiente translúcido (80% opacidad) + brillo diagonal tenue para dar 3D
     background: `
-      linear-gradient(155deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 35%, rgba(0,0,0,0) 65%, rgba(0,0,0,0.12) 100%),
-      linear-gradient(0deg, rgba(255,255,255,0.10), rgba(255,255,255,0.10)),
+      linear-gradient(155deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 40%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.18) 100%),
       ${card.gradient}
     `,
-    border: 'none',
+    backdropFilter: 'blur(14px) saturate(1.2)',
+    WebkitBackdropFilter: 'blur(14px) saturate(1.2)',
+    border: '1px solid rgba(255,255,255,0.28)',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
@@ -132,26 +133,29 @@ export default function HomeDashboard() {
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    transition: 'transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s cubic-bezier(0.16,1,0.3,1)',
+    transition: 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.55s cubic-bezier(0.16,1,0.3,1), border-color 0.3s ease',
     transformStyle: 'preserve-3d',
     transform: isHovered
-      ? 'perspective(1200px) rotateX(4deg) rotateY(-3deg) translateY(-12px) scale(1.025)'
+      ? 'perspective(1200px) rotateX(6deg) rotateY(-4deg) translateY(-14px) scale(1.03)'
       : 'perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)',
     boxShadow: isHovered
       ? `
-        0 0 0 2px ${hexToRgba(card.bgColor, 0.25)},
-        0 40px 80px -20px ${hexToRgba(card.bgColor, 0.7)},
-        0 24px 48px -12px ${hexToRgba(card.bgColor, 0.5)},
-        0 12px 24px -6px rgba(0,0,0,0.3),
-        inset 0 2px 0 rgba(255,255,255,0.45),
-        inset 0 -2px 0 rgba(0,0,0,0.22)
+        0 0 0 3px ${hexToRgba(card.bgColor, 0.3)},
+        0 0 60px 6px ${hexToRgba(card.bgColor, 0.55)},
+        0 50px 100px -24px ${hexToRgba(card.bgColor, 0.8)},
+        0 30px 60px -16px ${hexToRgba(card.bgColor, 0.55)},
+        0 14px 28px -8px rgba(0,0,0,0.35),
+        inset 0 2px 0 rgba(255,255,255,0.55),
+        inset 0 -3px 0 rgba(0,0,0,0.22),
+        inset 0 -8px 16px rgba(0,0,0,0.12)
       `
       : `
-        0 22px 40px -16px ${hexToRgba(card.bgColor, 0.55)},
-        0 12px 22px -10px ${hexToRgba(card.bgColor, 0.35)},
-        0 4px 8px -2px rgba(0,0,0,0.18),
-        inset 0 1px 0 rgba(255,255,255,0.28),
-        inset 0 -1px 0 rgba(0,0,0,0.15)
+        0 28px 50px -18px ${hexToRgba(card.bgColor, 0.60)},
+        0 16px 30px -12px ${hexToRgba(card.bgColor, 0.40)},
+        0 6px 12px -4px rgba(0,0,0,0.22),
+        inset 0 2px 0 rgba(255,255,255,0.40),
+        inset 0 -2px 0 rgba(0,0,0,0.18),
+        inset 0 -6px 14px rgba(0,0,0,0.10)
       `,
   })
 
