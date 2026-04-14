@@ -95,7 +95,7 @@ export default function HomeDashboard() {
   const mainCards: CardConfig[] = [
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#02103A', gradient: 'linear-gradient(135deg, #031858 0%, #021244 50%, #010826 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
     { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#031128', gradient: 'linear-gradient(100deg, #083068 0%, #052148 45%, #021028 80%, #010818 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFD700', gradient: 'linear-gradient(135deg, #FFDC10 0%, #FFCE00 50%, #FFB800 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFB810', gradient: 'linear-gradient(135deg, #FFC820 0%, #FFA808 55%, #FF7A00 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #0930A0 0%, #0B3AB5 50%, #0F4AD0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#1458D0', gradient: 'linear-gradient(135deg, #1A68E0 0%, #1458D0 50%, #0C48B8 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
@@ -707,12 +707,12 @@ export default function HomeDashboard() {
           </>
         )
       }
-      // Caso especial Comercial: amarillo vibrante con streaks diagonales + textura vertical
+      // Caso especial Comercial: amarillo-naranja painterly con textura canvas + shapes angulares translúcidos
       if (card.id === 'comercial') {
         return (
           <>
             <svg
-              viewBox="0 0 400 400"
+              viewBox="0 0 400 500"
               preserveAspectRatio="xMidYMid slice"
               style={{
                 position: 'absolute', inset: 0,
@@ -723,82 +723,93 @@ export default function HomeDashboard() {
               }}
             >
               <defs>
-                {/* Base amarillo vibrante con gradiente diagonal */}
-                <linearGradient id="comBaseYellow" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#FFE020" />
-                  <stop offset="45%" stopColor="#FFD000" />
-                  <stop offset="100%" stopColor="#F5B800" />
+                {/* Base gradient amarillo → naranja (top-right más naranja) */}
+                <linearGradient id="comCanvasBase" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#FFC828" />
+                  <stop offset="50%" stopColor="#FFB008" />
+                  <stop offset="100%" stopColor="#FF6E00" />
                 </linearGradient>
-                {/* Streak claro (banda luminosa) */}
-                <linearGradient id="comYStreakLight" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#FFF48A" stopOpacity="0" />
-                  <stop offset="50%" stopColor="#FFF060" stopOpacity="0.80" />
-                  <stop offset="100%" stopColor="#FFE020" stopOpacity="0" />
+                {/* Shape naranja translúcido */}
+                <linearGradient id="comShapeOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#FF7A00" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#FF9000" stopOpacity="0.20" />
                 </linearGradient>
-                {/* Streak medio */}
-                <linearGradient id="comYStreakMid" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#FFE860" stopOpacity="0" />
-                  <stop offset="50%" stopColor="#FFDC20" stopOpacity="0.55" />
-                  <stop offset="100%" stopColor="#F5C800" stopOpacity="0" />
+                {/* Shape amarillo claro translúcido */}
+                <linearGradient id="comShapeLight" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#FFE860" stopOpacity="0.40" />
+                  <stop offset="100%" stopColor="#FFD020" stopOpacity="0.15" />
                 </linearGradient>
-                {/* Sombra sutil entre streaks */}
-                <linearGradient id="comYStreakShadow" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#E8A800" stopOpacity="0" />
-                  <stop offset="50%" stopColor="#D89800" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="#C88800" stopOpacity="0" />
-                </linearGradient>
-                {/* Glow central (resaltar centro) */}
-                <radialGradient id="comYGlow" cx="55%" cy="50%" r="55%">
-                  <stop offset="0%" stopColor="#FFF480" stopOpacity="0.55" />
-                  <stop offset="100%" stopColor="#FFD000" stopOpacity="0" />
-                </radialGradient>
-                {/* Patrón de líneas verticales finas (textura tipo pleat) */}
-                <pattern id="comYFiber" x="0" y="0" width="4" height="10" patternUnits="userSpaceOnUse">
-                  <line x1="0" y1="0" x2="0" y2="10" stroke="#E8B400" strokeWidth="0.6" opacity="0.55" />
-                  <line x1="2" y1="0" x2="2" y2="10" stroke="#FFF060" strokeWidth="0.3" opacity="0.45" />
+                {/* Textura canvas (tejido) — cruz fina */}
+                <pattern id="comCanvas" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+                  <rect x="0" y="0" width="6" height="6" fill="none" />
+                  <line x1="0" y1="0" x2="6" y2="0" stroke="#B06800" strokeWidth="0.4" opacity="0.30" />
+                  <line x1="0" y1="3" x2="6" y2="3" stroke="#FFDE40" strokeWidth="0.3" opacity="0.25" />
+                  <line x1="0" y1="0" x2="0" y2="6" stroke="#B06800" strokeWidth="0.4" opacity="0.30" />
+                  <line x1="3" y1="0" x2="3" y2="6" stroke="#FFDE40" strokeWidth="0.3" opacity="0.25" />
                 </pattern>
+                {/* Textura pinceladas suaves */}
+                <pattern id="comBrush" x="0" y="0" width="120" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 0 20 Q 30 10 60 20 T 120 20" stroke="#FFDC40" strokeWidth="0.8" fill="none" opacity="0.25" />
+                  <path d="M 0 30 Q 40 22 80 30 T 160 30" stroke="#D08000" strokeWidth="0.6" fill="none" opacity="0.20" />
+                </pattern>
+                {/* Glow radial warm naranja top-right */}
+                <radialGradient id="comWarmGlow" cx="80%" cy="10%" r="65%">
+                  <stop offset="0%" stopColor="#FF7A00" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#FFB000" stopOpacity="0" />
+                </radialGradient>
+                {/* Highlight amarillo bajo-izquierda */}
+                <radialGradient id="comBrightGlow" cx="20%" cy="70%" r="60%">
+                  <stop offset="0%" stopColor="#FFE85A" stopOpacity="0.45" />
+                  <stop offset="100%" stopColor="#FFB000" stopOpacity="0" />
+                </radialGradient>
               </defs>
 
               {/* Base */}
-              <rect width="400" height="400" fill="url(#comBaseYellow)" />
+              <rect width="400" height="500" fill="url(#comCanvasBase)" />
 
-              {/* Glow central */}
-              <rect width="400" height="400" fill="url(#comYGlow)" />
+              {/* Warm glow top-right (acento naranja) */}
+              <rect width="400" height="500" fill="url(#comWarmGlow)" />
 
-              {/* Streaks diagonales — rotate -45° (top-right a bottom-left) */}
-              <g transform="rotate(-45 200 200)">
-                {/* Streaks claros */}
-                <rect x="-120" y="-200" width="34" height="900" fill="url(#comYStreakLight)" />
-                <rect x="-60" y="-200" width="22" height="900" fill="url(#comYStreakLight)" opacity="0.75" />
-                <rect x="0" y="-200" width="40" height="900" fill="url(#comYStreakLight)" />
-                <rect x="55" y="-200" width="20" height="900" fill="url(#comYStreakLight)" opacity="0.60" />
-                <rect x="95" y="-200" width="32" height="900" fill="url(#comYStreakLight)" opacity="0.85" />
-                <rect x="150" y="-200" width="18" height="900" fill="url(#comYStreakLight)" opacity="0.70" />
-                <rect x="190" y="-200" width="36" height="900" fill="url(#comYStreakLight)" />
-                <rect x="245" y="-200" width="22" height="900" fill="url(#comYStreakLight)" opacity="0.65" />
-                <rect x="290" y="-200" width="30" height="900" fill="url(#comYStreakLight)" opacity="0.85" />
-                <rect x="340" y="-200" width="24" height="900" fill="url(#comYStreakLight)" opacity="0.70" />
+              {/* Bright glow bottom-left (resplandor amarillo) */}
+              <rect width="400" height="500" fill="url(#comBrightGlow)" />
 
-                {/* Streaks medios */}
-                <rect x="-90" y="-200" width="55" height="900" fill="url(#comYStreakMid)" />
-                <rect x="-10" y="-200" width="60" height="900" fill="url(#comYStreakMid)" opacity="0.75" />
-                <rect x="75" y="-200" width="55" height="900" fill="url(#comYStreakMid)" />
-                <rect x="165" y="-200" width="60" height="900" fill="url(#comYStreakMid)" opacity="0.80" />
-                <rect x="255" y="-200" width="55" height="900" fill="url(#comYStreakMid)" />
-                <rect x="315" y="-200" width="45" height="900" fill="url(#comYStreakMid)" opacity="0.75" />
+              {/* ===== Shapes angulares translúcidos superpuestos ===== */}
+              {/* Shape grande naranja top-right — forma de ala/triángulo */}
+              <polygon points="260,0 400,0 400,180 320,220 240,80" fill="url(#comShapeOrange)" />
+              {/* Shape secundario naranja */}
+              <polygon points="310,0 400,0 400,120 340,140" fill="url(#comShapeOrange)" opacity="0.60" />
 
-                {/* Sombras finas entre streaks (dan definición) */}
-                <rect x="-70" y="-200" width="5" height="900" fill="url(#comYStreakShadow)" />
-                <rect x="40" y="-200" width="4" height="900" fill="url(#comYStreakShadow)" opacity="0.70" />
-                <rect x="135" y="-200" width="5" height="900" fill="url(#comYStreakShadow)" />
-                <rect x="225" y="-200" width="4" height="900" fill="url(#comYStreakShadow)" opacity="0.65" />
-                <rect x="320" y="-200" width="5" height="900" fill="url(#comYStreakShadow)" />
+              {/* Shape amarillo claro diagonal centro */}
+              <polygon points="80,180 260,80 340,220 140,320" fill="url(#comShapeLight)" />
+
+              {/* Shape diagonal bottom con brush */}
+              <polygon points="0,280 200,200 280,360 80,460" fill="url(#comShapeLight)" opacity="0.70" />
+
+              {/* Shape triangular bottom-right naranja */}
+              <polygon points="220,340 400,260 400,500 280,500" fill="url(#comShapeOrange)" opacity="0.55" />
+
+              {/* Shape delgado vertical naranja centro-derecha */}
+              <polygon points="290,140 350,100 390,350 330,390" fill="url(#comShapeOrange)" opacity="0.45" />
+
+              {/* ===== Pinceladas/brush strokes ===== */}
+              <rect width="400" height="500" fill="url(#comBrush)" opacity="0.55" />
+
+              {/* Líneas diagonales pinceladas largas (marca de pincel) */}
+              <g opacity="0.35">
+                <path d="M -20 180 Q 180 120 420 40" stroke="#FFDE60" strokeWidth="2" fill="none" />
+                <path d="M -20 220 Q 200 150 420 100" stroke="#B87000" strokeWidth="1.2" fill="none" />
+                <path d="M -20 300 Q 180 240 420 180" stroke="#FFDE60" strokeWidth="1.5" fill="none" />
+                <path d="M -20 350 Q 200 280 420 220" stroke="#A86000" strokeWidth="1" fill="none" />
+                <path d="M -20 420 Q 180 340 420 280" stroke="#FFD040" strokeWidth="1.8" fill="none" />
               </g>
 
-              {/* Textura vertical sutil (pleat) — esquina bottom */}
-              <rect x="0" y="260" width="400" height="140" fill="url(#comYFiber)" opacity="0.70" />
-              {/* Textura vertical ligera en toda la card (muy baja opacidad para no saturar) */}
-              <rect width="400" height="400" fill="url(#comYFiber)" opacity="0.18" />
+              {/* Textura canvas encima de todo (tejido) */}
+              <rect width="400" height="500" fill="url(#comCanvas)" opacity="0.75" />
+
+              {/* Highlight sutil top-left (painted paper edge) */}
+              <path d="M 0 0 L 120 0 Q 80 60 40 100 L 0 140 Z" fill="#FFE860" opacity="0.20" />
+              {/* Sombra sutil bottom-right edge */}
+              <path d="M 400 350 L 400 500 L 260 500 Q 320 440 360 400 Z" fill="#B84000" opacity="0.18" />
             </svg>
             {icon}
           </>
