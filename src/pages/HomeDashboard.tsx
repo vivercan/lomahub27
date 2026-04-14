@@ -123,7 +123,7 @@ export default function HomeDashboard() {
       radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.06) 0%, transparent 55%),
       ${card.gradient}
     `,
-    border: '1px solid rgba(255,255,255,0.06)',
+    border: '1px solid rgba(255,255,255,0.05)',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
@@ -135,16 +135,21 @@ export default function HomeDashboard() {
     transform: isHovered
       ? 'translateY(-6px)'
       : 'translateY(0)',
+    // Sombras en dos capas + doble highlight interno (top + bottom) para acabado premium "cristal corporativo"
     boxShadow: isHovered
       ? `
-        0 22px 44px -18px rgba(0,0,0,0.45),
-        0 12px 24px -10px rgba(0,0,0,0.30),
-        inset 0 1px 0 rgba(255,255,255,0.10)
+        0 26px 50px -20px rgba(0,0,0,0.50),
+        0 14px 28px -12px rgba(0,0,0,0.32),
+        inset 0 1px 0 rgba(255,255,255,0.09),
+        inset 0 0 0 1px rgba(255,255,255,0.03),
+        inset 0 -1px 0 rgba(0,0,0,0.18)
       `
       : `
-        0 12px 28px -14px rgba(0,0,0,0.35),
-        0 6px 14px -6px rgba(0,0,0,0.22),
-        inset 0 1px 0 rgba(255,255,255,0.06)
+        0 14px 30px -14px rgba(0,0,0,0.38),
+        0 7px 15px -7px rgba(0,0,0,0.24),
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        inset 0 0 0 1px rgba(255,255,255,0.025),
+        inset 0 -1px 0 rgba(0,0,0,0.15)
       `,
   })
 
@@ -223,19 +228,19 @@ export default function HomeDashboard() {
               L 460 ${235} Q 300 ${255} 140 ${225 + o.b} T -30 ${255} Z`}
           fill={`url(#fold2-${card.id})`}
         />
-        {/* Capa 3: hairline brillante nítido sobre el pliegue */}
+        {/* Capa 3: hairline brillante nítido sobre el pliegue (más fino, más premium) */}
         <path
           d={`M -10 ${125 + o.a} Q 130 ${55 + o.b} 270 ${100 + o.c} T 430 ${65 + o.a}`}
           stroke={`url(#hair-${card.id})`}
-          strokeWidth="1.1"
+          strokeWidth="0.9"
           fill="none"
         />
-        {/* Capa 4: hairline tenue paralelo */}
+        {/* Capa 4: hairline tenue paralelo (más discreto) */}
         <path
           d={`M 10 ${155 + o.c} Q 150 ${85 + o.a} 290 ${130 + o.b} T 440 ${95 + o.c}`}
           stroke="#FFFFFF"
-          strokeOpacity={0.18 * intensity}
-          strokeWidth="0.8"
+          strokeOpacity={0.14 * intensity}
+          strokeWidth="0.7"
           fill="none"
         />
       </svg>
@@ -313,10 +318,10 @@ export default function HomeDashboard() {
       >
         {renderDecor(card, isHovered)}
         <div style={{
-          position: 'absolute', top: '14px', right: '14px',
-          width: '8px', height: '8px', borderRadius: '50%',
+          position: 'absolute', top: '16px', right: '16px',
+          width: '7px', height: '7px', borderRadius: '50%',
           backgroundColor: DOT_COLORS[card.statusDot] || DOT_COLORS.gray,
-          boxShadow: `0 0 10px ${DOT_COLORS[card.statusDot] || DOT_COLORS.gray}`,
+          boxShadow: `0 0 0 2px rgba(255,255,255,0.04), 0 0 8px ${DOT_COLORS[card.statusDot] || DOT_COLORS.gray}66`,
           zIndex: 3,
         }} />
         <div style={{
@@ -328,7 +333,7 @@ export default function HomeDashboard() {
           lineHeight: 1.1,
           marginBottom: 'auto',
           textAlign: 'left', width: '100%',
-          textShadow: '0 2px 6px rgba(0,0,0,0.35)',
+          textShadow: '0 1px 2px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.25)',
           position: 'relative',
           zIndex: 2,
         }}>
