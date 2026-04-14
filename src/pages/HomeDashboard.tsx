@@ -99,7 +99,7 @@ export default function HomeDashboard() {
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#F4F4F4', gradient: 'linear-gradient(135deg, #F8F8F8 0%, #EDEDED 55%, #E0E0E0 100%)', decorType: 'silk', decorColor: 'rgba(0,0,0,0.05)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.18, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#0AA8F0', gradient: 'linear-gradient(135deg, #06A8F0 0%, #1AB0F5 50%, #2BB5F5 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
-    { id: 'autofomento', label: 'Control de equipo', route: '/', bgColor: '#1BD51A', gradient: 'linear-gradient(90deg, #B8E614 0%, #7CDB12 35%, #2BCE1A 75%, #0CC014 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Próximamente', gridColumn: '1 / 3', gridRow: '3 / 4' },
+    { id: 'autofomento', label: 'Control de equipo', route: '/', bgColor: '#15C814', gradient: 'linear-gradient(90deg, #8AE60E 0%, #15D818 40%, #0AC020 75%, #07A038 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Próximamente', gridColumn: '1 / 3', gridRow: '3 / 4' },
     { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#E84040', gradient: 'linear-gradient(135deg, #F05050 0%, #E84040 50%, #D63030 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
@@ -379,7 +379,7 @@ export default function HomeDashboard() {
         <>
           <svg
             viewBox="0 0 400 240"
-            preserveAspectRatio="none"
+            preserveAspectRatio="xMidYMid slice"
             style={{
               position: 'absolute', inset: 0,
               width: '100%', height: '100%',
@@ -388,23 +388,23 @@ export default function HomeDashboard() {
               transform: isHovered ? 'scale(1.02)' : 'scale(1)',
             }}
           >
-            <defs>
-              <linearGradient id="ctrlWaveLight" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#D4F04C" stopOpacity="0.55" />
-                <stop offset="100%" stopColor="#D4F04C" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient id="ctrlWaveDark" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#0A9012" stopOpacity="0" />
-                <stop offset="100%" stopColor="#0A9012" stopOpacity="0.35" />
-              </linearGradient>
-            </defs>
-            {/* Bandas verticales curvas tipo cortina */}
-            <path d="M 80 -20 Q 60 120 90 260 L 130 260 Q 110 120 130 -20 Z" fill="url(#ctrlWaveLight)" />
-            <path d="M 170 -20 Q 150 120 180 260 L 215 260 Q 200 120 220 -20 Z" fill="url(#ctrlWaveLight)" opacity="0.75" />
-            <path d="M 260 -20 Q 245 120 275 260 L 310 260 Q 295 120 315 -20 Z" fill="url(#ctrlWaveDark)" />
-            <path d="M 340 -20 Q 325 120 355 260 L 420 260 Q 400 120 420 -20 Z" fill="url(#ctrlWaveDark)" opacity="0.85" />
-            {/* Highlight curvado en esquina superior izquierda */}
-            <path d="M -20 -20 Q 20 50 -20 120 Z" fill="#E8FA5C" opacity="0.45" />
+            {/* Bandas diagonales paralelas limpias — de amarillo-verde (izq) a verde-teal (der) */}
+            <g transform="skewX(-25)">
+              {/* Banda 1 — lime brillante (más izquierda) */}
+              <rect x="-80" y="-30" width="75" height="320" fill="#8AE60E" />
+              {/* Banda 2 — lime medio */}
+              <rect x="-5" y="-30" width="85" height="320" fill="#3CDC12" />
+              {/* Banda 3 — verde puro brillante */}
+              <rect x="80" y="-30" width="95" height="320" fill="#15D818" />
+              {/* Banda 4 — verde medio */}
+              <rect x="175" y="-30" width="85" height="320" fill="#10C418" />
+              {/* Banda 5 — verde */}
+              <rect x="260" y="-30" width="75" height="320" fill="#0AB01E" />
+              {/* Banda 6 — verde oscuro */}
+              <rect x="335" y="-30" width="70" height="320" fill="#089828" />
+              {/* Banda 7 — teal green (más derecha) */}
+              <rect x="405" y="-30" width="85" height="320" fill="#07A038" />
+            </g>
           </svg>
           {icon}
         </>
