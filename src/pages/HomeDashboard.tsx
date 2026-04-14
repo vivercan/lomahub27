@@ -95,7 +95,7 @@ export default function HomeDashboard() {
   const mainCards: CardConfig[] = [
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#000000', gradient: 'linear-gradient(135deg, #0A0A0A 0%, #050505 50%, #000000 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
     { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#020412', gradient: 'linear-gradient(110deg, #010308 0%, #020614 50%, #050E28 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFCC00', gradient: 'linear-gradient(135deg, #FFD000 0%, #FFC000 50%, #FFB000 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFD700', gradient: 'linear-gradient(135deg, #FFDC10 0%, #FFCE00 50%, #FFB800 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #0930A0 0%, #0B3AB5 50%, #0F4AD0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#F55A0C', gradient: 'linear-gradient(135deg, #FF8A1A 0%, #F56410 50%, #E84A04 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
@@ -671,13 +671,13 @@ export default function HomeDashboard() {
           </>
         )
       }
-      // Caso especial Comercial: amarillo dorado con anillos orgánicos translúcidos
+      // Caso especial Comercial: amarillo vibrante con streaks diagonales + textura vertical
       if (card.id === 'comercial') {
         return (
           <>
             <svg
-              viewBox="0 0 400 240"
-              preserveAspectRatio="none"
+              viewBox="0 0 400 400"
+              preserveAspectRatio="xMidYMid slice"
               style={{
                 position: 'absolute', inset: 0,
                 width: '100%', height: '100%',
@@ -687,29 +687,82 @@ export default function HomeDashboard() {
               }}
             >
               <defs>
-                <linearGradient id="comYellowLight" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#FFF060" stopOpacity="0.55" />
-                  <stop offset="100%" stopColor="#FFE000" stopOpacity="0.30" />
+                {/* Base amarillo vibrante con gradiente diagonal */}
+                <linearGradient id="comBaseYellow" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#FFE020" />
+                  <stop offset="45%" stopColor="#FFD000" />
+                  <stop offset="100%" stopColor="#F5B800" />
                 </linearGradient>
-                <linearGradient id="comOrange" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#FFA500" stopOpacity="0.55" />
-                  <stop offset="100%" stopColor="#FF9000" stopOpacity="0.30" />
+                {/* Streak claro (banda luminosa) */}
+                <linearGradient id="comYStreakLight" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#FFF48A" stopOpacity="0" />
+                  <stop offset="50%" stopColor="#FFF060" stopOpacity="0.80" />
+                  <stop offset="100%" stopColor="#FFE020" stopOpacity="0" />
                 </linearGradient>
+                {/* Streak medio */}
+                <linearGradient id="comYStreakMid" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#FFE860" stopOpacity="0" />
+                  <stop offset="50%" stopColor="#FFDC20" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#F5C800" stopOpacity="0" />
+                </linearGradient>
+                {/* Sombra sutil entre streaks */}
+                <linearGradient id="comYStreakShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#E8A800" stopOpacity="0" />
+                  <stop offset="50%" stopColor="#D89800" stopOpacity="0.35" />
+                  <stop offset="100%" stopColor="#C88800" stopOpacity="0" />
+                </linearGradient>
+                {/* Glow central (resaltar centro) */}
+                <radialGradient id="comYGlow" cx="55%" cy="50%" r="55%">
+                  <stop offset="0%" stopColor="#FFF480" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#FFD000" stopOpacity="0" />
+                </radialGradient>
+                {/* Patrón de líneas verticales finas (textura tipo pleat) */}
+                <pattern id="comYFiber" x="0" y="0" width="4" height="10" patternUnits="userSpaceOnUse">
+                  <line x1="0" y1="0" x2="0" y2="10" stroke="#E8B400" strokeWidth="0.6" opacity="0.55" />
+                  <line x1="2" y1="0" x2="2" y2="10" stroke="#FFF060" strokeWidth="0.3" opacity="0.45" />
+                </pattern>
               </defs>
-              {/* Anillo grande arriba-izquierda (cortado por el top edge) */}
-              <circle cx="80" cy="-20" r="110" fill="none" stroke="url(#comYellowLight)" strokeWidth="42" />
-              {/* Anillo mediano naranja arriba-centro */}
-              <circle cx="180" cy="40" r="75" fill="none" stroke="url(#comOrange)" strokeWidth="28" opacity="0.85" />
-              {/* Anillo grande derecha (cortado por el right edge) */}
-              <circle cx="370" cy="145" r="130" fill="none" stroke="url(#comYellowLight)" strokeWidth="55" />
-              {/* Anillo interior derecha más brillante */}
-              <circle cx="375" cy="150" r="85" fill="none" stroke="#FFEC40" strokeOpacity="0.60" strokeWidth="18" />
-              {/* Anillo abajo-izquierda */}
-              <circle cx="50" cy="230" r="90" fill="none" stroke="url(#comOrange)" strokeWidth="32" opacity="0.75" />
-              {/* Ring sólido translúcido superpuesto central */}
-              <circle cx="220" cy="180" r="55" fill="rgba(255,230,50,0.25)" />
-              {/* Highlight amarillo brillante esquina sup-izq */}
-              <ellipse cx="-20" cy="-20" rx="120" ry="100" fill="rgba(255,245,100,0.35)" />
+
+              {/* Base */}
+              <rect width="400" height="400" fill="url(#comBaseYellow)" />
+
+              {/* Glow central */}
+              <rect width="400" height="400" fill="url(#comYGlow)" />
+
+              {/* Streaks diagonales — rotate -45° (top-right a bottom-left) */}
+              <g transform="rotate(-45 200 200)">
+                {/* Streaks claros */}
+                <rect x="-120" y="-200" width="34" height="900" fill="url(#comYStreakLight)" />
+                <rect x="-60" y="-200" width="22" height="900" fill="url(#comYStreakLight)" opacity="0.75" />
+                <rect x="0" y="-200" width="40" height="900" fill="url(#comYStreakLight)" />
+                <rect x="55" y="-200" width="20" height="900" fill="url(#comYStreakLight)" opacity="0.60" />
+                <rect x="95" y="-200" width="32" height="900" fill="url(#comYStreakLight)" opacity="0.85" />
+                <rect x="150" y="-200" width="18" height="900" fill="url(#comYStreakLight)" opacity="0.70" />
+                <rect x="190" y="-200" width="36" height="900" fill="url(#comYStreakLight)" />
+                <rect x="245" y="-200" width="22" height="900" fill="url(#comYStreakLight)" opacity="0.65" />
+                <rect x="290" y="-200" width="30" height="900" fill="url(#comYStreakLight)" opacity="0.85" />
+                <rect x="340" y="-200" width="24" height="900" fill="url(#comYStreakLight)" opacity="0.70" />
+
+                {/* Streaks medios */}
+                <rect x="-90" y="-200" width="55" height="900" fill="url(#comYStreakMid)" />
+                <rect x="-10" y="-200" width="60" height="900" fill="url(#comYStreakMid)" opacity="0.75" />
+                <rect x="75" y="-200" width="55" height="900" fill="url(#comYStreakMid)" />
+                <rect x="165" y="-200" width="60" height="900" fill="url(#comYStreakMid)" opacity="0.80" />
+                <rect x="255" y="-200" width="55" height="900" fill="url(#comYStreakMid)" />
+                <rect x="315" y="-200" width="45" height="900" fill="url(#comYStreakMid)" opacity="0.75" />
+
+                {/* Sombras finas entre streaks (dan definición) */}
+                <rect x="-70" y="-200" width="5" height="900" fill="url(#comYStreakShadow)" />
+                <rect x="40" y="-200" width="4" height="900" fill="url(#comYStreakShadow)" opacity="0.70" />
+                <rect x="135" y="-200" width="5" height="900" fill="url(#comYStreakShadow)" />
+                <rect x="225" y="-200" width="4" height="900" fill="url(#comYStreakShadow)" opacity="0.65" />
+                <rect x="320" y="-200" width="5" height="900" fill="url(#comYStreakShadow)" />
+              </g>
+
+              {/* Textura vertical sutil (pleat) — esquina bottom */}
+              <rect x="0" y="260" width="400" height="140" fill="url(#comYFiber)" opacity="0.70" />
+              {/* Textura vertical ligera en toda la card (muy baja opacidad para no saturar) */}
+              <rect width="400" height="400" fill="url(#comYFiber)" opacity="0.18" />
             </svg>
             {icon}
           </>
