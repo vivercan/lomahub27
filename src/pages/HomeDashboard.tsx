@@ -274,18 +274,18 @@ export default function HomeDashboard() {
       </svg>
     )
 
-    // Icon universal — estilo del engrane original pero adaptado a cada card
-    // Tamaño uniforme (caja cuadrada 45%) + push-through sutil (no duro)
+    // Icon universal — watermark discreto, tamaño fijo uniforme, bien alineado
+    // Caja cuadrada de 72px (no porcentaje) → TODOS los cards tienen icons del MISMO tamaño absoluto
     const icon = card.iconFile && card.iconOpacity > 0 ? (
       <div
         style={{
           position: 'absolute',
-          right: '4%', bottom: '4%',
-          width: '45%',
-          aspectRatio: '1 / 1',
+          right: '18px', bottom: '18px',
+          width: '72px',
+          height: '72px',
           pointerEvents: 'none',
           transition: baseTransition,
-          transform: isHovered ? 'rotate(14deg) scale(1.03)' : 'rotate(10deg) scale(1)',
+          transform: isHovered ? 'scale(1.04)' : 'scale(1)',
         }}
       >
         <img
@@ -296,16 +296,12 @@ export default function HomeDashboard() {
             height: '100%',
             objectFit: 'contain',
             opacity: card.iconOpacity,
-            // Emboss sutil (como el engrane original pero con push-through):
-            //  1. brightness(0) invert(1) → tinte blanco
-            //  2. highlight superior de 1px → luz cenital
-            //  3. sombra principal difusa → proyección detrás
-            //  4. sombra de contacto → asentamiento en la superficie
+            // Emboss sutil: highlight arriba + sombra suave + contacto
             filter: `
               brightness(0) invert(1)
-              drop-shadow(0 1px 0 rgba(255,255,255,0.18))
-              drop-shadow(0 5px 12px rgba(0,0,0,0.55))
-              drop-shadow(0 2px 4px rgba(0,0,0,0.35))
+              drop-shadow(0 1px 0 rgba(255,255,255,0.15))
+              drop-shadow(0 3px 8px rgba(0,0,0,0.45))
+              drop-shadow(0 1px 2px rgba(0,0,0,0.30))
             `,
           }}
         />
