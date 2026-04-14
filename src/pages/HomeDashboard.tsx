@@ -100,7 +100,7 @@ export default function HomeDashboard() {
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#F55A0C', gradient: 'linear-gradient(135deg, #FF8A1A 0%, #F56410 50%, #E84A04 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
     { id: 'autofomento', label: 'Control de equipo', route: '/', bgColor: '#15C814', gradient: 'linear-gradient(90deg, #8AE60E 0%, #15D818 40%, #0AC020 75%, #07A038 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Próximamente', gridColumn: '1 / 3', gridRow: '3 / 4' },
-    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#E84040', gradient: 'linear-gradient(135deg, #F05050 0%, #E84040 50%, #D63030 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
+    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0A0A0A', gradient: 'linear-gradient(135deg, #141414 0%, #0A0A0A 50%, #050505 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
   // Helper: convierte hex a rgba con alpha, para sombras teñidas del color del card
@@ -308,13 +308,13 @@ export default function HomeDashboard() {
       </div>
     ) : null
 
-    // Caso especial Configuración: papel crepé rojo con pliegues diagonales y textura vertical
+    // Caso especial Configuración: rectángulos oscuros superpuestos — layers geométricos minimales
     if (card.id === 'config') {
       return (
         <>
           <svg
             viewBox="0 0 400 240"
-            preserveAspectRatio="none"
+            preserveAspectRatio="xMidYMid slice"
             style={{
               position: 'absolute', inset: 0,
               width: '100%', height: '100%',
@@ -324,50 +324,68 @@ export default function HomeDashboard() {
             }}
           >
             <defs>
-              {/* Patrón de fibra vertical tipo crepé */}
-              <pattern id="cfgFiber" x="0" y="0" width="3" height="240" patternUnits="userSpaceOnUse">
-                <line x1="0" y1="0" x2="0" y2="240" stroke="rgba(120,20,20,0.18)" strokeWidth="0.5" />
-                <line x1="1.5" y1="0" x2="1.5" y2="240" stroke="rgba(255,200,200,0.10)" strokeWidth="0.3" />
-              </pattern>
-              {/* Highlight suave diagonal */}
-              <linearGradient id="cfgHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FF6A6A" stopOpacity="0.35" />
-                <stop offset="50%" stopColor="#FF8080" stopOpacity="0.20" />
-                <stop offset="100%" stopColor="#FF5050" stopOpacity="0" />
+              {/* Gradientes grises oscuros (tonos muy sutiles sobre negro) */}
+              <linearGradient id="cfgLayerA" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#222222" />
+                <stop offset="100%" stopColor="#0C0C0C" />
               </linearGradient>
-              {/* Sombra suave de capa */}
-              <linearGradient id="cfgShadow" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#A01818" stopOpacity="0" />
-                <stop offset="50%" stopColor="#B01C1C" stopOpacity="0.30" />
-                <stop offset="100%" stopColor="#8A1212" stopOpacity="0.55" />
+              <linearGradient id="cfgLayerB" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#1C1C1C" />
+                <stop offset="100%" stopColor="#080808" />
               </linearGradient>
+              <linearGradient id="cfgLayerC" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#1A1A1A" />
+                <stop offset="100%" stopColor="#060606" />
+              </linearGradient>
+              <linearGradient id="cfgLayerD" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#262626" />
+                <stop offset="100%" stopColor="#101010" />
+              </linearGradient>
+              {/* Glow sutil centro */}
+              <radialGradient id="cfgGlow" cx="50%" cy="50%" r="60%">
+                <stop offset="0%" stopColor="#2A2A2A" stopOpacity="0.40" />
+                <stop offset="100%" stopColor="#0A0A0A" stopOpacity="0" />
+              </radialGradient>
             </defs>
-            {/* Capa 1 (parte superior) - tono medio con borde de pliegue */}
-            <polygon points="0,0 400,0 400,60 0,95" fill="#E84040" />
-            <polygon points="0,0 400,0 400,60 0,95" fill="url(#cfgHighlight)" />
-            {/* Borde/hairline del pliegue */}
-            <polygon points="0,95 400,60 400,64 0,99" fill="rgba(80,8,8,0.40)" />
-            <polygon points="0,92 400,57 400,60 0,95" fill="rgba(255,180,180,0.25)" />
 
-            {/* Capa 2 (centro) - más claro */}
-            <polygon points="0,95 400,60 400,145 0,175" fill="#F05050" />
-            <polygon points="0,95 400,60 400,145 0,175" fill="url(#cfgHighlight)" opacity="0.6" />
-            {/* Borde del pliegue inferior */}
-            <polygon points="0,175 400,145 400,149 0,179" fill="rgba(90,10,10,0.45)" />
-            <polygon points="0,172 400,142 400,145 0,175" fill="rgba(255,190,190,0.25)" />
+            {/* Glow central sutil */}
+            <rect width="400" height="240" fill="url(#cfgGlow)" />
 
-            {/* Capa 3 (inferior) - tono profundo con sombra */}
-            <polygon points="0,175 400,145 400,240 0,240" fill="#D83030" />
-            <polygon points="0,175 400,145 400,240 0,240" fill="url(#cfgShadow)" />
+            {/* Rectángulos superpuestos — inclinados ligeramente */}
+            {/* Capa base grande izquierda, inclinada */}
+            <g transform="rotate(-10 100 120)">
+              <rect x="-60" y="-40" width="260" height="200" fill="url(#cfgLayerA)" />
+              <rect x="-60" y="-40" width="260" height="200" fill="none" stroke="#2E2E2E" strokeWidth="0.5" opacity="0.6" />
+            </g>
 
-            {/* Textura de fibra vertical sobre todo el card */}
-            <rect width="400" height="240" fill="url(#cfgFiber)" opacity="0.85" />
+            {/* Rectángulo derecho grande inclinado al otro lado */}
+            <g transform="rotate(12 320 130)">
+              <rect x="210" y="-30" width="240" height="220" fill="url(#cfgLayerB)" />
+              <rect x="210" y="-30" width="240" height="220" fill="none" stroke="#262626" strokeWidth="0.5" opacity="0.5" />
+            </g>
 
-            {/* Detalle de edge irregular en los pliegues (tear-like) */}
-            <path d="M 50 93 L 80 96 L 120 92 L 160 94 L 200 91 L 240 95 L 280 90 L 320 93 L 360 91"
-                  stroke="rgba(60,5,5,0.30)" strokeWidth="0.5" fill="none" />
-            <path d="M 50 173 L 90 176 L 130 172 L 170 175 L 210 171 L 250 175 L 290 172 L 330 175 L 370 172"
-                  stroke="rgba(60,5,5,0.35)" strokeWidth="0.5" fill="none" />
+            {/* Rectángulo central delgado vertical inclinado */}
+            <g transform="rotate(-14 200 120)">
+              <rect x="145" y="-50" width="80" height="340" fill="url(#cfgLayerC)" />
+            </g>
+
+            {/* Rectángulo superior horizontal inclinado */}
+            <g transform="rotate(8 200 50)">
+              <rect x="60" y="-30" width="320" height="80" fill="url(#cfgLayerD)" opacity="0.75" />
+            </g>
+
+            {/* Rectángulo inferior horizontal inclinado */}
+            <g transform="rotate(-6 200 190)">
+              <rect x="40" y="170" width="340" height="100" fill="url(#cfgLayerA)" opacity="0.70" />
+            </g>
+
+            {/* Hairline highlight sutil en un borde para dar dimensión */}
+            <g transform="rotate(-10 100 120)">
+              <line x1="-60" y1="-40" x2="200" y2="-40" stroke="#3A3A3A" strokeWidth="0.5" opacity="0.5" />
+            </g>
+            <g transform="rotate(12 320 130)">
+              <line x1="210" y1="-30" x2="450" y2="-30" stroke="#323232" strokeWidth="0.5" opacity="0.45" />
+            </g>
           </svg>
           {icon}
         </>
