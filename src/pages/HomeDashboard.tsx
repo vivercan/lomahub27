@@ -96,7 +96,7 @@ export default function HomeDashboard() {
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#000000', gradient: 'linear-gradient(135deg, #0A0A0A 0%, #050505 50%, #000000 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
     { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#020412', gradient: 'linear-gradient(110deg, #010308 0%, #020614 50%, #050E28 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFCC00', gradient: 'linear-gradient(135deg, #FFD000 0%, #FFC000 50%, #FFB000 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
-    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#F4F4F4', gradient: 'linear-gradient(135deg, #F8F8F8 0%, #EDEDED 55%, #E0E0E0 100%)', decorType: 'silk', decorColor: 'rgba(0,0,0,0.05)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.18, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
+    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #0930A0 0%, #0B3AB5 50%, #0F4AD0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#0AA8F0', gradient: 'linear-gradient(135deg, #06A8F0 0%, #1AB0F5 50%, #2BB5F5 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
     { id: 'autofomento', label: 'Control de equipo', route: '/', bgColor: '#15C814', gradient: 'linear-gradient(90deg, #8AE60E 0%, #15D818 40%, #0AC020 75%, #07A038 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Próximamente', gridColumn: '1 / 3', gridRow: '3 / 4' },
@@ -542,13 +542,13 @@ export default function HomeDashboard() {
       )
     }
     if (card.decorType === 'silk') {
-      // Caso especial Operaciones: blanco premium con óvalos orgánicos translúcidos
+      // Caso especial Operaciones: royal blue con bandas diagonales sutiles lado izq y der
       if (card.id === 'operaciones') {
         return (
           <>
             <svg
               viewBox="0 0 400 240"
-              preserveAspectRatio="none"
+              preserveAspectRatio="xMidYMid slice"
               style={{
                 position: 'absolute', inset: 0,
                 width: '100%', height: '100%',
@@ -558,56 +558,41 @@ export default function HomeDashboard() {
               }}
             >
               <defs>
-                <linearGradient id="opOvalLight" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#E8E8E8" stopOpacity="0.65" />
-                  <stop offset="100%" stopColor="#D0D0D0" stopOpacity="0.30" />
+                {/* Banda clara sutil */}
+                <linearGradient id="opBandLight" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#1A58E0" stopOpacity="0.35" />
+                  <stop offset="100%" stopColor="#1A58E0" stopOpacity="0.10" />
                 </linearGradient>
-                <linearGradient id="opOvalSoft" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#DADADA" stopOpacity="0.50" />
-                  <stop offset="100%" stopColor="#C5C5C5" stopOpacity="0.20" />
+                {/* Banda oscura sutil */}
+                <linearGradient id="opBandDark" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#041E7A" stopOpacity="0.45" />
+                  <stop offset="100%" stopColor="#041E7A" stopOpacity="0.15" />
                 </linearGradient>
+                {/* Glow radial bottom-right */}
+                <radialGradient id="opGlow" cx="75%" cy="70%" r="55%">
+                  <stop offset="0%" stopColor="#1E60E8" stopOpacity="0.30" />
+                  <stop offset="100%" stopColor="#0B3AB5" stopOpacity="0" />
+                </radialGradient>
               </defs>
-              {/* Óvalo grande arriba-izquierda (cortado) */}
-              <ellipse cx="120" cy="30" rx="110" ry="95" fill="url(#opOvalLight)" />
-              {/* Óvalo grande centro-izquierda intersectando abajo */}
-              <ellipse cx="80" cy="200" rx="130" ry="100" fill="url(#opOvalSoft)" />
-              {/* Óvalo grande centro-derecha abajo */}
-              <ellipse cx="260" cy="220" rx="170" ry="110" fill="url(#opOvalLight)" opacity="0.75" />
-              {/* Óvalo derecha */}
-              <ellipse cx="390" cy="180" rx="120" ry="95" fill="url(#opOvalSoft)" opacity="0.85" />
-              {/* Pequeño acento abajo-centro */}
-              <ellipse cx="200" cy="235" rx="80" ry="45" fill="#C8C8C8" opacity="0.20" />
+
+              {/* Glow suave bottom-right */}
+              <rect width="400" height="240" fill="url(#opGlow)" />
+
+              {/* Bandas diagonales sutiles ↘ lado izquierdo */}
+              <g transform="rotate(28 200 120)">
+                <rect x="-220" y="-180" width="120" height="900" fill="url(#opBandDark)" />
+                <rect x="-100" y="-180" width="12" height="900" fill="rgba(80,140,240,0.25)" />
+                <rect x="-350" y="-180" width="80" height="900" fill="url(#opBandLight)" opacity="0.65" />
+              </g>
+
+              {/* Bandas diagonales sutiles ↘ lado derecho */}
+              <g transform="rotate(28 200 120)">
+                <rect x="340" y="-180" width="90" height="900" fill="url(#opBandDark)" opacity="0.70" />
+                <rect x="340" y="-180" width="8" height="900" fill="rgba(80,140,240,0.30)" />
+                <rect x="440" y="-180" width="60" height="900" fill="url(#opBandLight)" opacity="0.55" />
+                <rect x="510" y="-180" width="40" height="900" fill="url(#opBandDark)" opacity="0.50" />
+              </g>
             </svg>
-            {/* Icono oscuro en lugar de blanco para fondo claro */}
-            {card.iconFile && card.iconOpacity > 0 && (
-              <div
-                style={{
-                  position: 'absolute',
-                  right: '18px', bottom: '18px',
-                  width: '72px',
-                  height: '72px',
-                  pointerEvents: 'none',
-                  transition: baseTransition,
-                  transform: isHovered ? 'scale(1.04)' : 'scale(1)',
-                }}
-              >
-                <img
-                  src={`/icons/dashboard/${card.iconFile}`}
-                  alt=""
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
-                    opacity: 0.25,
-                    filter: `
-                      brightness(0)
-                      drop-shadow(0 1px 0 rgba(255,255,255,0.6))
-                      drop-shadow(0 2px 4px rgba(0,0,0,0.15))
-                    `,
-                  }}
-                />
-              </div>
-            )}
           </>
         )
       }
@@ -866,8 +851,8 @@ export default function HomeDashboard() {
 
   const renderCard = (card: CardConfig) => {
     const isHovered = hoveredCard === card.id
-    // Operaciones tiene fondo claro → texto oscuro. El resto texto blanco.
-    const isLightBg = card.id === 'operaciones'
+    // Todos los cards con fondos oscuros → texto blanco.
+    const isLightBg = false
     const textColor = isLightBg ? '#0F172A' : '#FFFFFF'
     const mutedColor = isLightBg ? 'rgba(15,23,42,0.65)' : 'rgba(255,255,255,0.72)'
     return (
