@@ -94,7 +94,7 @@ export default function HomeDashboard() {
 
   const mainCards: CardConfig[] = [
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#000000', gradient: 'linear-gradient(135deg, #0A0A0A 0%, #050505 50%, #000000 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#040D28', gradient: 'linear-gradient(135deg, #030A22 0%, #061230 50%, #081840 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#020412', gradient: 'linear-gradient(110deg, #010308 0%, #020614 50%, #050E28 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFCC00', gradient: 'linear-gradient(135deg, #FFD000 0%, #FFC000 50%, #FFB000 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#F4F4F4', gradient: 'linear-gradient(135deg, #F8F8F8 0%, #EDEDED 55%, #E0E0E0 100%)', decorType: 'silk', decorColor: 'rgba(0,0,0,0.05)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.18, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
@@ -611,7 +611,7 @@ export default function HomeDashboard() {
           </>
         )
       }
-      // Caso especial Servicio al Cliente: navy con X de bandas diagonales + accent bright bottom-right
+      // Caso especial Servicio al Cliente: tech blue streaks — lineas neon diagonales sobre negro navy
       if (card.id === 'servicio-clientes') {
         return (
           <>
@@ -627,65 +627,74 @@ export default function HomeDashboard() {
               }}
             >
               <defs>
-                {/* Banda mid-tone con gradient lateral */}
-                <linearGradient id="svcBandMid" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#0A1C50" stopOpacity="0.60" />
-                  <stop offset="50%" stopColor="#123278" stopOpacity="0.90" />
-                  <stop offset="100%" stopColor="#0A1C50" stopOpacity="0.40" />
-                </linearGradient>
-                {/* Banda oscura */}
-                <linearGradient id="svcBandShadow" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#010512" stopOpacity="0.85" />
-                  <stop offset="50%" stopColor="#020A22" stopOpacity="0.95" />
-                  <stop offset="100%" stopColor="#010512" stopOpacity="0.85" />
-                </linearGradient>
-                {/* Accent azul brillante abajo-derecha */}
-                <radialGradient id="svcAccent" cx="80%" cy="75%" r="45%">
-                  <stop offset="0%" stopColor="#1848A5" stopOpacity="0.90" />
-                  <stop offset="60%" stopColor="#0C2460" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="#020A22" stopOpacity="0" />
+                {/* Glow radial azul lado derecho */}
+                <radialGradient id="svcGlow" cx="85%" cy="55%" r="55%">
+                  <stop offset="0%" stopColor="#2D6BE8" stopOpacity="0.55" />
+                  <stop offset="50%" stopColor="#0D2560" stopOpacity="0.25" />
+                  <stop offset="100%" stopColor="#020412" stopOpacity="0" />
                 </radialGradient>
+                {/* Linea brillante con glow — gradient vertical para fade en los extremos */}
+                <linearGradient id="svcLineBright" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#4A90FF" stopOpacity="0" />
+                  <stop offset="20%" stopColor="#60A8FF" stopOpacity="0.95" />
+                  <stop offset="80%" stopColor="#60A8FF" stopOpacity="0.95" />
+                  <stop offset="100%" stopColor="#4A90FF" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="svcLineMid" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#2F70E0" stopOpacity="0" />
+                  <stop offset="25%" stopColor="#3D85F0" stopOpacity="0.75" />
+                  <stop offset="75%" stopColor="#3D85F0" stopOpacity="0.75" />
+                  <stop offset="100%" stopColor="#2F70E0" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="svcLineDim" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#1E55B8" stopOpacity="0" />
+                  <stop offset="30%" stopColor="#2866C8" stopOpacity="0.55" />
+                  <stop offset="70%" stopColor="#2866C8" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#1E55B8" stopOpacity="0" />
+                </linearGradient>
               </defs>
 
-              {/* Accent luminoso bottom-right */}
-              <rect width="400" height="240" fill="url(#svcAccent)" />
+              {/* Glow suave lado derecho */}
+              <rect width="400" height="240" fill="url(#svcGlow)" />
 
-              {/* Banda oscura diagonal ↘ (superior izquierda → inferior derecha) */}
-              <g transform="rotate(22 200 120)">
-                <rect x="-200" y="40" width="800" height="38" fill="url(#svcBandShadow)" />
-                <rect x="-200" y="38" width="800" height="1.5" fill="rgba(25,55,125,0.45)" />
-                <rect x="-200" y="78" width="800" height="1.5" fill="rgba(0,4,12,0.80)" />
+              {/* Lineas diagonales en angulo -30° simulando tech streaks */}
+              <g transform="rotate(-30 200 120)">
+                {/* Lineas brillantes largas (streaks principales) */}
+                <rect x="140" y="20" width="2.5" height="90" fill="url(#svcLineBright)" />
+                <rect x="220" y="50" width="2" height="100" fill="url(#svcLineBright)" />
+                <rect x="300" y="30" width="2.5" height="120" fill="url(#svcLineBright)" />
+                <rect x="360" y="60" width="2" height="90" fill="url(#svcLineBright)" />
+
+                {/* Lineas medias (intermedias) */}
+                <rect x="180" y="80" width="1.8" height="70" fill="url(#svcLineMid)" />
+                <rect x="260" y="90" width="1.8" height="80" fill="url(#svcLineMid)" />
+                <rect x="340" y="100" width="1.8" height="80" fill="url(#svcLineMid)" />
+                <rect x="400" y="90" width="1.5" height="90" fill="url(#svcLineMid)" />
+
+                {/* Lineas dim cortas (accents) */}
+                <rect x="160" y="140" width="1.5" height="50" fill="url(#svcLineDim)" />
+                <rect x="240" y="160" width="1.5" height="40" fill="url(#svcLineDim)" />
+                <rect x="320" y="170" width="1.5" height="45" fill="url(#svcLineDim)" />
               </g>
 
-              {/* Banda media diagonal ↘ (más abajo) */}
-              <g transform="rotate(22 200 120)">
-                <rect x="-200" y="130" width="800" height="32" fill="url(#svcBandMid)" opacity="0.75" />
-                <rect x="-200" y="128" width="800" height="1.5" fill="rgba(30,70,155,0.45)" />
-                <rect x="-200" y="162" width="800" height="1.5" fill="rgba(0,4,12,0.70)" />
+              {/* Bloques rectangulares lado derecho (más brillantes/solidos) */}
+              <g opacity="0.70" transform="rotate(-30 380 120)">
+                {/* Bloque largo inferior derecho */}
+                <rect x="360" y="10" width="40" height="300" fill="#123880" />
+                <rect x="360" y="10" width="2" height="300" fill="rgba(70,130,230,0.70)" />
+                {/* Bloque medio */}
+                <rect x="320" y="110" width="28" height="80" fill="#1A4690" opacity="0.85" />
+                <rect x="320" y="110" width="1.5" height="80" fill="rgba(70,130,230,0.60)" />
               </g>
 
-              {/* Banda oscura diagonal ↗ (inferior izquierda → superior derecha) */}
-              <g transform="rotate(-22 200 120)">
-                <rect x="-200" y="60" width="800" height="45" fill="url(#svcBandShadow)" opacity="0.95" />
-                <rect x="-200" y="58" width="800" height="1.5" fill="rgba(25,55,125,0.40)" />
-                <rect x="-200" y="105" width="800" height="1.5" fill="rgba(0,4,12,0.75)" />
+              {/* Pixels/cuadrados accent far right */}
+              <g transform="rotate(-30 370 130)">
+                <rect x="375" y="115" width="4" height="4" fill="#4A90FF" opacity="0.85" />
+                <rect x="383" y="115" width="6" height="3" fill="#4A90FF" opacity="0.75" />
+                <rect x="375" y="125" width="3" height="3" fill="#4A90FF" opacity="0.60" />
+                <rect x="378" y="140" width="8" height="3" fill="#4A90FF" opacity="0.80" />
+                <rect x="375" y="148" width="3" height="3" fill="#4A90FF" opacity="0.55" />
               </g>
-
-              {/* Banda media diagonal ↗ (más abajo) */}
-              <g transform="rotate(-22 200 120)">
-                <rect x="-200" y="145" width="800" height="35" fill="url(#svcBandMid)" opacity="0.65" />
-                <rect x="-200" y="143" width="800" height="1.5" fill="rgba(30,70,155,0.40)" />
-                <rect x="-200" y="180" width="800" height="1.5" fill="rgba(0,4,12,0.65)" />
-              </g>
-
-              {/* Triángulo muy oscuro esquina sup-izq */}
-              <polygon points="0,0 0,45 120,0" fill="#010410" opacity="0.85" />
-              {/* Triángulo muy oscuro esquina sup-der */}
-              <polygon points="290,0 400,0 400,60" fill="#010410" opacity="0.75" />
-
-              {/* Hairline highlight en los edges de los triángulos */}
-              <line x1="0" y1="45" x2="120" y2="0" stroke="rgba(35,75,165,0.50)" strokeWidth="0.7" />
-              <line x1="290" y1="0" x2="400" y2="60" stroke="rgba(35,75,165,0.45)" strokeWidth="0.7" />
             </svg>
             {icon}
           </>
