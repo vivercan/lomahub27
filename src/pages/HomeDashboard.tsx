@@ -93,7 +93,7 @@ export default function HomeDashboard() {
   }, [fetchKpis])
 
   const mainCards: CardConfig[] = [
-    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#000000', gradient: 'linear-gradient(135deg, #0A0A0A 0%, #050505 50%, #000000 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
+    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#02103A', gradient: 'linear-gradient(135deg, #031858 0%, #021244 50%, #010826 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
     { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#031128', gradient: 'linear-gradient(100deg, #083068 0%, #052148 45%, #021028 80%, #010818 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFD700', gradient: 'linear-gradient(135deg, #FFDC10 0%, #FFCE00 50%, #FFB800 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #0930A0 0%, #0B3AB5 50%, #0F4AD0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
@@ -899,7 +899,7 @@ export default function HomeDashboard() {
           </>
         )
       }
-      // Caso especial Oportunidades: negro puro con rectangulos flotantes scattered (match ref)
+      // Caso especial Oportunidades: navy profundo con streaks diagonales sutiles top-right + dots bottom-right
       if (card.id === 'oportunidades') {
         return (
           <>
@@ -915,56 +915,63 @@ export default function HomeDashboard() {
               }}
             >
               <defs>
-                {/* Gradient sutil: highlight top-left → sombra bottom-right */}
-                <linearGradient id="oppRect" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#2A2A2A" stopOpacity="1" />
-                  <stop offset="50%" stopColor="#1A1A1A" stopOpacity="1" />
-                  <stop offset="100%" stopColor="#080808" stopOpacity="1" />
+                {/* Base navy gradient — top-right ligeramente más claro */}
+                <linearGradient id="oppBase" x1="100%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#0A3088" />
+                  <stop offset="40%" stopColor="#051E60" />
+                  <stop offset="100%" stopColor="#010828" />
                 </linearGradient>
-                <linearGradient id="oppRectAlt" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#242424" stopOpacity="1" />
-                  <stop offset="60%" stopColor="#141414" stopOpacity="1" />
-                  <stop offset="100%" stopColor="#050505" stopOpacity="1" />
+                {/* Streak azul sutil */}
+                <linearGradient id="oppStreak" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#2060D8" stopOpacity="0" />
+                  <stop offset="50%" stopColor="#2060D8" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#1A50C8" stopOpacity="0" />
                 </linearGradient>
+                {/* Streak más tenue */}
+                <linearGradient id="oppStreakDim" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#1A4AB8" stopOpacity="0" />
+                  <stop offset="50%" stopColor="#1A4AB8" stopOpacity="0.35" />
+                  <stop offset="100%" stopColor="#123890" stopOpacity="0" />
+                </linearGradient>
+                {/* Glow radial top-right */}
+                <radialGradient id="oppGlow" cx="85%" cy="15%" r="55%">
+                  <stop offset="0%" stopColor="#1A50C8" stopOpacity="0.45" />
+                  <stop offset="100%" stopColor="#031858" stopOpacity="0" />
+                </radialGradient>
+                {/* Patrón de puntos halftone */}
+                <pattern id="oppDots" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                  <circle cx="4" cy="4" r="1" fill="#3080E8" opacity="0.60" />
+                </pattern>
               </defs>
 
-              {/* FILA SUPERIOR */}
-              {/* Cuadrado pequeño centro-izquierda */}
-              <rect x="110" y="0" width="55" height="60" fill="url(#oppRect)" />
-              <line x1="110" y1="0" x2="110" y2="60" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
+              {/* Base */}
+              <rect width="400" height="240" fill="url(#oppBase)" />
 
-              {/* Rect medio centro */}
-              <rect x="165" y="0" width="110" height="70" fill="url(#oppRectAlt)" />
-              <line x1="165" y1="0" x2="165" y2="70" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" />
+              {/* Glow top-right */}
+              <rect width="400" height="240" fill="url(#oppGlow)" />
 
-              {/* Rect grande derecha */}
-              <rect x="305" y="0" width="110" height="70" fill="url(#oppRect)" />
-              <line x1="305" y1="0" x2="305" y2="70" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
+              {/* Streaks diagonales sutiles — rotate -45° concentrados top-right */}
+              <g transform="rotate(-45 280 60)">
+                <rect x="150" y="-50" width="2.5" height="220" fill="url(#oppStreak)" />
+                <rect x="170" y="-50" width="1.5" height="200" fill="url(#oppStreakDim)" />
+                <rect x="195" y="-50" width="3" height="220" fill="url(#oppStreak)" opacity="0.85" />
+                <rect x="215" y="-50" width="1.5" height="180" fill="url(#oppStreakDim)" />
+                <rect x="235" y="-50" width="2" height="210" fill="url(#oppStreak)" opacity="0.70" />
+                <rect x="255" y="-50" width="1.2" height="180" fill="url(#oppStreakDim)" opacity="0.65" />
+                <rect x="275" y="-50" width="2.5" height="200" fill="url(#oppStreak)" opacity="0.80" />
+                <rect x="300" y="-50" width="1.5" height="180" fill="url(#oppStreakDim)" />
+                <rect x="320" y="-50" width="2" height="190" fill="url(#oppStreak)" opacity="0.60" />
+              </g>
 
-              {/* FILA MEDIA */}
-              {/* Rect medio derecha */}
-              <rect x="215" y="75" width="120" height="65" fill="url(#oppRectAlt)" />
-              <line x1="215" y1="75" x2="215" y2="140" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" />
-              <line x1="215" y1="75" x2="335" y2="75" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
-
-              {/* FILA INFERIOR */}
-              {/* Rect medio-bajo izquierda */}
-              <rect x="45" y="155" width="125" height="50" fill="url(#oppRect)" />
-              <line x1="45" y1="155" x2="45" y2="205" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
-              <line x1="45" y1="155" x2="170" y2="155" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
-
-              {/* Rect inferior izquierda muy ancho */}
-              <rect x="0" y="205" width="165" height="40" fill="url(#oppRectAlt)" />
-              <line x1="0" y1="205" x2="165" y2="205" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
-
-              {/* Rect inferior centro */}
-              <rect x="165" y="200" width="90" height="45" fill="url(#oppRect)" />
-              <line x1="165" y1="200" x2="165" y2="245" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
-              <line x1="165" y1="200" x2="255" y2="200" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
-
-              {/* Cuadrado pequeño inferior-centro-der */}
-              <rect x="255" y="205" width="55" height="40" fill="url(#oppRectAlt)" />
-              <line x1="255" y1="205" x2="255" y2="245" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" />
+              {/* Dots halftone bottom-right — con fade via masking */}
+              <mask id="oppDotsMask">
+                <radialGradient id="oppDotsFade" cx="85%" cy="85%" r="50%">
+                  <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+                </radialGradient>
+                <rect width="400" height="240" fill="url(#oppDotsFade)" />
+              </mask>
+              <rect x="260" y="130" width="140" height="110" fill="url(#oppDots)" mask="url(#oppDotsMask)" />
             </svg>
             {icon}
           </>
