@@ -389,49 +389,39 @@ export default function HomeDashboard() {
             }}
           >
             <defs>
-              {/* Gradientes suaves de banda a banda */}
-              <linearGradient id="ceBand1" x1="0%" y1="0%" x2="100%" y2="0%">
+              {/* Base gradient — lime amarillo (izq) → verde profundo (der) */}
+              <linearGradient id="ceBase" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#B8F20A" />
-                <stop offset="100%" stopColor="#8AE60E" />
+                <stop offset="45%" stopColor="#5EE412" />
+                <stop offset="100%" stopColor="#0CB028" />
               </linearGradient>
-              <linearGradient id="ceBand2" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#8AE60E" />
-                <stop offset="100%" stopColor="#4DDC10" />
+              {/* Curva superior clara */}
+              <linearGradient id="ceCurveTop" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#CFFB3A" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="#6EE816" stopOpacity="0.70" />
               </linearGradient>
-              <linearGradient id="ceBand3" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#4DDC10" />
-                <stop offset="100%" stopColor="#18D618" />
+              {/* Curva media — verde vibrante */}
+              <linearGradient id="ceCurveMid" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#8EEA10" stopOpacity="0.75" />
+                <stop offset="100%" stopColor="#18CE20" stopOpacity="0.85" />
               </linearGradient>
-              <linearGradient id="ceBand4" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#18D618" />
-                <stop offset="100%" stopColor="#0EBC1E" />
-              </linearGradient>
-              <linearGradient id="ceBand5" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#0EBC1E" />
-                <stop offset="100%" stopColor="#0AA028" />
-              </linearGradient>
-              <linearGradient id="ceBand6" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#0AA028" />
-                <stop offset="100%" stopColor="#078434" />
+              {/* Curva inferior — verde más oscuro */}
+              <linearGradient id="ceCurveDeep" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#18B820" stopOpacity="0" />
+                <stop offset="70%" stopColor="#0AA028" stopOpacity="0.70" />
+                <stop offset="100%" stopColor="#047C30" stopOpacity="0.95" />
               </linearGradient>
             </defs>
-            {/* Bandas diagonales suaves — lime brillante (izq) → verde profundo (der) */}
-            <g transform="skewX(-22)">
-              <rect x="-90" y="-40" width="90" height="340" fill="url(#ceBand1)" />
-              <rect x="0" y="-40" width="90" height="340" fill="url(#ceBand2)" />
-              <rect x="90" y="-40" width="90" height="340" fill="url(#ceBand3)" />
-              <rect x="180" y="-40" width="90" height="340" fill="url(#ceBand4)" />
-              <rect x="270" y="-40" width="90" height="340" fill="url(#ceBand5)" />
-              <rect x="360" y="-40" width="120" height="340" fill="url(#ceBand6)" />
-            </g>
-            {/* Sutil highlight superior para dar brillo a las bandas */}
-            <rect x="0" y="0" width="400" height="240" fill="url(#ceGloss)" opacity="0.12" />
-            <defs>
-              <linearGradient id="ceGloss" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.35" />
-                <stop offset="60%" stopColor="#FFFFFF" stopOpacity="0" />
-              </linearGradient>
-            </defs>
+            {/* Fondo base */}
+            <rect width="400" height="240" fill="url(#ceBase)" />
+            {/* Curva superior suave — sweep desde bottom-left hasta top-right */}
+            <path d="M 0,240 C 150,200 280,100 400,10 L 400,0 L 0,0 Z" fill="url(#ceCurveTop)" opacity="0.55" />
+            {/* Curva media — desde bottom-left hasta mid-right */}
+            <path d="M 0,240 C 180,220 290,140 400,60 L 400,0 L 0,0 Z" fill="url(#ceCurveMid)" opacity="0.45" />
+            {/* Curva profunda — acento oscuro superior-derecho */}
+            <path d="M 150,240 C 260,190 340,100 400,0 L 400,240 Z" fill="url(#ceCurveDeep)" />
+            {/* Highlight sutil top */}
+            <path d="M 0,0 L 400,0 L 400,40 C 280,55 150,75 0,100 Z" fill="#FFFFFF" opacity="0.10" />
           </svg>
           {icon}
         </>
