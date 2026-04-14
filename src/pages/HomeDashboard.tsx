@@ -99,7 +99,7 @@ export default function HomeDashboard() {
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0B0F1A 0%, #181E2E 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.09)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1E40AF', gradient: 'linear-gradient(135deg, #1E3A8A 0%, #2563EB 60%, #3B82F6 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.15)', iconFile: 'Ventas.svg', iconOpacity: 0, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0A0E18 0%, #161C2A 100%)', decorType: 'ring', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
-    { id: 'jj', label: 'JJ', route: '/', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0A0E18 0%, #14192A 50%, #1C2236 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'configuracion.svg', iconOpacity: 0, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Placeholder', gridColumn: '1 / 3', gridRow: '3 / 4' },
+    { id: 'autofomento', label: 'Auto Fomento SEAT', route: '/', bgColor: '#2E3138', gradient: 'linear-gradient(135deg, #22252B 0%, #2E3138 45%, #3A3E46 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'configuracion.svg', iconOpacity: 0, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Próximamente', gridColumn: '1 / 3', gridRow: '3 / 4' },
     { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0B0F1A 0%, #181E2E 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'configuracion.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
@@ -148,73 +148,120 @@ export default function HomeDashboard() {
       `,
   })
 
-  // Renderiza decoración abstracta integrada (estilo premium dark, no elementos sueltos)
+  // Renderiza curvas abstractas nítidas estilo Tesla premium (SVG para máxima definición)
   const renderDecor = (card: CardConfig, isHovered: boolean) => {
     const baseTransition = 'transform 0.8s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease'
+    // Capas de curvas fluidas para todos los cards excepto ring/gear (que las combinan)
+    const curves = (
+      <svg
+        viewBox="0 0 400 200"
+        preserveAspectRatio="none"
+        style={{
+          position: 'absolute', inset: 0,
+          width: '100%', height: '100%',
+          pointerEvents: 'none',
+          transition: baseTransition,
+          transform: isHovered ? 'scale(1.015)' : 'scale(1)',
+        }}
+      >
+        <defs>
+          <linearGradient id={`g1-${card.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.18" />
+            <stop offset="55%" stopColor="#FFFFFF" stopOpacity="0.06" />
+            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id={`g2-${card.id}`} x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.10" />
+            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id={`g3-${card.id}`} x1="0%" y1="50%" x2="100%" y2="50%">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0" />
+            <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.55" />
+            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {/* Arco amplio dominante (capa 1) */}
+        <path
+          d="M -40 160 Q 120 60 260 110 T 460 70"
+          stroke={`url(#g1-${card.id})`}
+          strokeWidth="90"
+          fill="none"
+          strokeLinecap="round"
+        />
+        {/* Contra-arco inferior (capa 2) */}
+        <path
+          d="M -30 210 Q 140 130 300 190 T 450 170"
+          stroke={`url(#g2-${card.id})`}
+          strokeWidth="55"
+          fill="none"
+          strokeLinecap="round"
+        />
+        {/* Hairline de luz nítido (capa 3) */}
+        <path
+          d="M -10 110 Q 130 30 280 80 T 420 40"
+          stroke={`url(#g3-${card.id})`}
+          strokeWidth="1.2"
+          fill="none"
+          opacity="0.85"
+        />
+        {/* Segundo hairline tenue */}
+        <path
+          d="M 20 180 Q 160 110 320 160 T 430 140"
+          stroke="#FFFFFF"
+          strokeOpacity="0.15"
+          strokeWidth="0.8"
+          fill="none"
+        />
+      </svg>
+    )
+
     if (card.decorType === 'silk') {
-      // Franja diagonal de luz satinada integrada al fondo (no pegote)
-      return (
-        <>
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: `linear-gradient(108deg, transparent 38%, ${card.decorColor} 52%, transparent 66%)`,
-            transform: isHovered ? 'translateX(3%)' : 'translateX(0)',
-            transition: baseTransition, pointerEvents: 'none',
-            filter: 'blur(0.5px)',
-          }} />
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: `linear-gradient(82deg, transparent 62%, rgba(255,255,255,0.035) 78%, transparent 92%)`,
-            pointerEvents: 'none',
-          }} />
-        </>
-      )
+      return curves
     }
     if (card.decorType === 'ring') {
-      // Anillos sutiles concéntricos, esquina inferior derecha
+      // Anillos concéntricos protagonistas + curvas de fondo
       return (
         <>
-          <div style={{
-            position: 'absolute', right: '-22%', bottom: '-30%',
-            width: '85%', aspectRatio: '1 / 1',
-            borderRadius: '50%',
-            border: `1px solid ${card.decorColor}`,
-            transform: isHovered ? 'scale(1.04)' : 'scale(1)',
-            transition: baseTransition, pointerEvents: 'none',
-          }} />
-          <div style={{
-            position: 'absolute', right: '-8%', bottom: '-16%',
-            width: '55%', aspectRatio: '1 / 1',
-            borderRadius: '50%',
-            border: `1px solid rgba(255,255,255,0.05)`,
-            pointerEvents: 'none',
-          }} />
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: `linear-gradient(112deg, transparent 55%, rgba(255,255,255,0.05) 72%, transparent 85%)`,
-            pointerEvents: 'none',
-          }} />
+          {curves}
+          <svg
+            viewBox="0 0 400 400"
+            preserveAspectRatio="xMidYMid meet"
+            style={{
+              position: 'absolute',
+              right: '-18%', bottom: '-22%',
+              width: '92%', height: '92%',
+              pointerEvents: 'none',
+              transition: baseTransition,
+              transform: isHovered ? 'scale(1.04)' : 'scale(1)',
+            }}
+          >
+            <defs>
+              <radialGradient id={`ring-${card.id}`} cx="50%" cy="50%" r="50%">
+                <stop offset="70%" stopColor="rgba(255,255,255,0)" />
+                <stop offset="85%" stopColor="rgba(255,255,255,0.22)" />
+                <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+              </radialGradient>
+            </defs>
+            <circle cx="200" cy="200" r="180" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="1.5" />
+            <circle cx="200" cy="200" r="150" fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="1" />
+            <circle cx="200" cy="200" r="180" fill={`url(#ring-${card.id})`} opacity="0.4" />
+          </svg>
         </>
       )
     }
     if (card.decorType === 'gear') {
-      // Ícono engrane sutil + franja de luz
       return (
         <>
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: `linear-gradient(108deg, transparent 42%, ${card.decorColor} 56%, transparent 70%)`,
-            pointerEvents: 'none',
-          }} />
+          {curves}
           <img
             src={`/icons/dashboard/${card.iconFile}`}
             alt=""
             style={{
               position: 'absolute',
-              right: '-12%', bottom: '-18%',
-              width: '62%', height: '62%',
-              opacity: card.iconOpacity,
-              filter: 'brightness(0) invert(1)',
+              right: '-10%', bottom: '-14%',
+              width: '70%', height: '70%',
+              opacity: 0.22,
+              filter: 'brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.4))',
               transform: isHovered ? 'rotate(18deg) scale(1.04)' : 'rotate(12deg) scale(1)',
               transition: baseTransition, pointerEvents: 'none',
             }}
@@ -299,7 +346,7 @@ export default function HomeDashboard() {
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      background: 'radial-gradient(ellipse at 30% 10%, #E3E7ED 0%, #C9CFD8 55%, #B8BFC9 100%)',
+      background: 'radial-gradient(ellipse at 50% 0%, #EEF1F5 0%, #DFE3EA 60%, #D3D8E0 100%)',
       fontFamily: "'Montserrat', sans-serif",
       color: '#1E293B',
     }}>
