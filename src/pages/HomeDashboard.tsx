@@ -94,10 +94,10 @@ export default function HomeDashboard() {
 
   const mainCards: CardConfig[] = [
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0B0F1A 0%, #161C2C 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#1E3A8A', gradient: 'linear-gradient(135deg, #172554 0%, #1E3A8A 45%, #2E5AD6 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.14)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#1E3A8A', gradient: 'linear-gradient(135deg, #0F1936 0%, #1E3A8A 55%, #2A4FB8 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#172554', gradient: 'linear-gradient(135deg, #0B1226 0%, #13204A 50%, #1E3A8A 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.14)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#172554', gradient: 'linear-gradient(135deg, #0A0F22 0%, #131C3E 50%, #1E3072 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0B0F1A 0%, #181E2E 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.09)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
-    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1E40AF', gradient: 'linear-gradient(135deg, #1E3A8A 0%, #2563EB 60%, #3B82F6 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.15)', iconFile: 'Ventas.svg', iconOpacity: 0, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
+    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#2563EB', gradient: 'linear-gradient(135deg, #1D4ED8 0%, #2563EB 45%, #3B82F6 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0A0E18 0%, #161C2A 100%)', decorType: 'ring', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
     { id: 'autofomento', label: 'Auto Fomento SEAT', route: '/', bgColor: '#2E3138', gradient: 'linear-gradient(135deg, #22252B 0%, #2E3138 45%, #3A3E46 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'configuracion.svg', iconOpacity: 0, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Próximamente', gridColumn: '1 / 3', gridRow: '3 / 4' },
     { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0B0F1A 0%, #181E2E 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'configuracion.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
@@ -148,67 +148,93 @@ export default function HomeDashboard() {
       `,
   })
 
-  // Renderiza curvas abstractas nítidas estilo Tesla premium (SVG para máxima definición)
+  // Superficies curvas con efecto chrome-fold (sombra + brillo) estilo master Tesla
   const renderDecor = (card: CardConfig, isHovered: boolean) => {
-    const baseTransition = 'transform 0.8s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease'
-    // Capas de curvas fluidas para todos los cards excepto ring/gear (que las combinan)
-    const curves = (
+    const baseTransition = 'transform 1s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease'
+    // Intensidad del highlight según el card
+    const intensity =
+      card.id === 'ventas' ? 1.5
+      : card.id === 'servicio-clientes' || card.id === 'comercial' ? 1.15
+      : card.id === 'autofomento' ? 0.9
+      : 1.0
+    // Offset por card para que no sean idénticos
+    const offsets: Record<string, { a: number; b: number; c: number }> = {
+      'oportunidades': { a: 0, b: 0, c: 0 },
+      'servicio-clientes': { a: -10, b: 6, c: -4 },
+      'comercial': { a: 8, b: -8, c: 4 },
+      'operaciones': { a: -4, b: 4, c: -2 },
+      'ventas': { a: 4, b: -6, c: 6 },
+      'autofomento': { a: 12, b: -10, c: 8 },
+      'comunicaciones': { a: -6, b: 8, c: -4 },
+      'config': { a: 10, b: -6, c: 2 },
+    }
+    const o = offsets[card.id] || { a: 0, b: 0, c: 0 }
+
+    const chromeFolds = (
       <svg
-        viewBox="0 0 400 200"
+        viewBox="0 0 400 240"
         preserveAspectRatio="none"
         style={{
           position: 'absolute', inset: 0,
           width: '100%', height: '100%',
           pointerEvents: 'none',
           transition: baseTransition,
-          transform: isHovered ? 'scale(1.015)' : 'scale(1)',
+          transform: isHovered ? 'scale(1.02)' : 'scale(1)',
         }}
       >
         <defs>
-          <linearGradient id={`g1-${card.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.18" />
-            <stop offset="55%" stopColor="#FFFFFF" stopOpacity="0.06" />
-            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+          {/* Fold gradient principal: sombra arriba → brillo medio → sombra abajo (efecto superficie curvada) */}
+          <linearGradient id={`fold1-${card.id}`} x1="50%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" stopColor="#000000" stopOpacity={0.35} />
+            <stop offset="28%" stopColor="#000000" stopOpacity={0.08} />
+            <stop offset="52%" stopColor="#FFFFFF" stopOpacity={0.26 * intensity} />
+            <stop offset="68%" stopColor="#FFFFFF" stopOpacity={0.04} />
+            <stop offset="100%" stopColor="#000000" stopOpacity={0.20} />
           </linearGradient>
-          <linearGradient id={`g2-${card.id}`} x1="100%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.10" />
-            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+          {/* Fold secundario */}
+          <linearGradient id={`fold2-${card.id}`} x1="50%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" stopColor="#000000" stopOpacity={0.22} />
+            <stop offset="50%" stopColor="#FFFFFF" stopOpacity={0.14 * intensity} />
+            <stop offset="100%" stopColor="#000000" stopOpacity={0.10} />
           </linearGradient>
-          <linearGradient id={`g3-${card.id}`} x1="0%" y1="50%" x2="100%" y2="50%">
+          {/* Viñeta superior izquierda */}
+          <radialGradient id={`vignette-${card.id}`} cx="0%" cy="0%" r="100%">
+            <stop offset="0%" stopColor="#000000" stopOpacity={0.30} />
+            <stop offset="50%" stopColor="#000000" stopOpacity="0" />
+          </radialGradient>
+          {/* Hairline brillante */}
+          <linearGradient id={`hair-${card.id}`} x1="0%" y1="50%" x2="100%" y2="50%">
             <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0" />
-            <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.55" />
+            <stop offset="45%" stopColor="#FFFFFF" stopOpacity={0.55 * intensity} />
             <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
           </linearGradient>
         </defs>
-        {/* Arco amplio dominante (capa 1) */}
+        {/* Capa 0: viñeta superior-izquierda (profundidad) */}
+        <rect width="400" height="240" fill={`url(#vignette-${card.id})`} />
+        {/* Capa 1: ribbon principal grande (superficie curvada diagonal) */}
         <path
-          d="M -40 160 Q 120 60 260 110 T 460 70"
-          stroke={`url(#g1-${card.id})`}
-          strokeWidth="90"
-          fill="none"
-          strokeLinecap="round"
+          d={`M -40 ${60 + o.a} Q 100 ${20 + o.b} 250 ${70 + o.c} T 460 ${40 + o.a}
+              L 460 ${170 + o.b} Q 300 ${210 - o.c} 140 ${170 + o.a} T -40 ${210 + o.b} Z`}
+          fill={`url(#fold1-${card.id})`}
         />
-        {/* Contra-arco inferior (capa 2) */}
+        {/* Capa 2: ribbon secundario inferior */}
         <path
-          d="M -30 210 Q 140 130 300 190 T 450 170"
-          stroke={`url(#g2-${card.id})`}
-          strokeWidth="55"
-          fill="none"
-          strokeLinecap="round"
+          d={`M -30 ${180 + o.b} Q 140 ${110 - o.c} 300 ${150 + o.a} T 460 ${110 + o.c}
+              L 460 ${235} Q 300 ${255} 140 ${225 + o.b} T -30 ${255} Z`}
+          fill={`url(#fold2-${card.id})`}
         />
-        {/* Hairline de luz nítido (capa 3) */}
+        {/* Capa 3: hairline brillante nítido sobre el pliegue */}
         <path
-          d="M -10 110 Q 130 30 280 80 T 420 40"
-          stroke={`url(#g3-${card.id})`}
-          strokeWidth="1.2"
+          d={`M -10 ${125 + o.a} Q 130 ${55 + o.b} 270 ${100 + o.c} T 430 ${65 + o.a}`}
+          stroke={`url(#hair-${card.id})`}
+          strokeWidth="1.1"
           fill="none"
-          opacity="0.85"
         />
-        {/* Segundo hairline tenue */}
+        {/* Capa 4: hairline tenue paralelo */}
         <path
-          d="M 20 180 Q 160 110 320 160 T 430 140"
+          d={`M 10 ${155 + o.c} Q 150 ${85 + o.a} 290 ${130 + o.b} T 440 ${95 + o.c}`}
           stroke="#FFFFFF"
-          strokeOpacity="0.15"
+          strokeOpacity={0.18 * intensity}
           strokeWidth="0.8"
           fill="none"
         />
@@ -216,13 +242,12 @@ export default function HomeDashboard() {
     )
 
     if (card.decorType === 'silk') {
-      return curves
+      return chromeFolds
     }
     if (card.decorType === 'ring') {
-      // Anillos concéntricos protagonistas + curvas de fondo
       return (
         <>
-          {curves}
+          {chromeFolds}
           <svg
             viewBox="0 0 400 400"
             preserveAspectRatio="xMidYMid meet"
@@ -236,15 +261,16 @@ export default function HomeDashboard() {
             }}
           >
             <defs>
-              <radialGradient id={`ring-${card.id}`} cx="50%" cy="50%" r="50%">
-                <stop offset="70%" stopColor="rgba(255,255,255,0)" />
-                <stop offset="85%" stopColor="rgba(255,255,255,0.22)" />
+              <radialGradient id={`ringGlow-${card.id}`} cx="50%" cy="50%" r="50%">
+                <stop offset="60%" stopColor="rgba(255,255,255,0)" />
+                <stop offset="82%" stopColor="rgba(255,255,255,0.18)" />
                 <stop offset="100%" stopColor="rgba(255,255,255,0)" />
               </radialGradient>
             </defs>
-            <circle cx="200" cy="200" r="180" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="1.5" />
-            <circle cx="200" cy="200" r="150" fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="1" />
-            <circle cx="200" cy="200" r="180" fill={`url(#ring-${card.id})`} opacity="0.4" />
+            <circle cx="200" cy="200" r="180" fill={`url(#ringGlow-${card.id})`} />
+            <circle cx="200" cy="200" r="180" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="1.5" />
+            <circle cx="200" cy="200" r="155" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+            <circle cx="200" cy="200" r="128" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
           </svg>
         </>
       )
@@ -252,7 +278,7 @@ export default function HomeDashboard() {
     if (card.decorType === 'gear') {
       return (
         <>
-          {curves}
+          {chromeFolds}
           <img
             src={`/icons/dashboard/${card.iconFile}`}
             alt=""
@@ -260,8 +286,8 @@ export default function HomeDashboard() {
               position: 'absolute',
               right: '-10%', bottom: '-14%',
               width: '70%', height: '70%',
-              opacity: 0.22,
-              filter: 'brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.4))',
+              opacity: 0.25,
+              filter: 'brightness(0) invert(1) drop-shadow(0 3px 10px rgba(0,0,0,0.5))',
               transform: isHovered ? 'rotate(18deg) scale(1.04)' : 'rotate(12deg) scale(1)',
               transition: baseTransition, pointerEvents: 'none',
             }}
