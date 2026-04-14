@@ -12,7 +12,7 @@ interface CardConfig {
   route: string
   bgColor: string
   gradient: string
-  decorType: 'circle' | 'square' | 'chevron' | 'multi' | 'wave'
+  decorType: 'silk' | 'ring' | 'gear'
   decorColor: string
   decorSecondary?: string
   iconFile: string
@@ -93,14 +93,14 @@ export default function HomeDashboard() {
   }, [fetchKpis])
 
   const mainCards: CardConfig[] = [
-    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#F97316', gradient: 'linear-gradient(135deg, rgba(249,115,22,0.80) 0%, rgba(251,191,36,0.80) 100%)', decorType: 'circle', decorColor: 'rgba(253,191,36,0.80)', iconFile: 'oportunidades.svg', iconOpacity: 0.07, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#3B82F6', gradient: 'linear-gradient(135deg, rgba(37,99,235,0.80) 0%, rgba(56,189,248,0.80) 100%)', decorType: 'chevron', decorColor: 'rgba(14,165,233,0.80)', decorSecondary: 'rgba(125,211,252,0.55)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.07, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 subm\u00f3dulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#A855F7', gradient: 'linear-gradient(160deg, rgba(168,85,247,0.80) 0%, rgba(236,72,153,0.80) 100%)', decorType: 'square', decorColor: 'rgba(236,72,153,0.75)', decorSecondary: 'rgba(192,132,252,0.55)', iconFile: 'comercial.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 subm\u00f3dulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
-    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0F172A', gradient: 'linear-gradient(140deg, rgba(15,23,42,0.80) 0%, rgba(30,41,59,0.80) 100%)', decorType: 'multi', decorColor: '#F97316', decorSecondary: '#A855F7', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.07, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
-    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#EC4899', gradient: 'linear-gradient(135deg, rgba(244,63,94,0.80) 0%, rgba(236,72,153,0.80) 100%)', decorType: 'square', decorColor: 'rgba(251,207,232,0.80)', decorSecondary: 'rgba(252,165,165,0.50)', iconFile: 'Ventas.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#FAFAFA', gradient: 'linear-gradient(165deg, rgba(250,250,250,0.80) 0%, rgba(243,244,246,0.80) 100%)', decorType: 'multi', decorColor: '#F97316', decorSecondary: '#3B82F6', iconFile: 'comunicaciones.svg', iconOpacity: 0.25, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
-    { id: 'jj', label: 'JJ', route: '/', bgColor: '#0F172A', gradient: 'linear-gradient(135deg, rgba(15,23,42,0.80) 0%, rgba(49,46,129,0.80) 50%, rgba(124,58,237,0.80) 100%)', decorType: 'wave', decorColor: 'rgba(249,115,22,0.75)', decorSecondary: 'rgba(168,85,247,0.65)', iconFile: 'configuracion.svg', iconOpacity: 0.07, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Placeholder', gridColumn: '1 / 3', gridRow: '3 / 4' },
-    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#6366F1', gradient: 'linear-gradient(150deg, rgba(99,102,241,0.80) 0%, rgba(139,92,246,0.80) 100%)', decorType: 'square', decorColor: 'rgba(196,181,253,0.60)', decorSecondary: 'rgba(99,102,241,0.35)', iconFile: 'configuracion.svg', iconOpacity: 0.07, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
+    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0B0F1A 0%, #161C2C 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#1E3A8A', gradient: 'linear-gradient(135deg, #172554 0%, #1E3A8A 45%, #2E5AD6 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.14)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#1E3A8A', gradient: 'linear-gradient(135deg, #0F1936 0%, #1E3A8A 55%, #2A4FB8 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
+    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0B0F1A 0%, #181E2E 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.09)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
+    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1E40AF', gradient: 'linear-gradient(135deg, #1E3A8A 0%, #2563EB 60%, #3B82F6 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.15)', iconFile: 'Ventas.svg', iconOpacity: 0, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0A0E18 0%, #161C2A 100%)', decorType: 'ring', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
+    { id: 'jj', label: 'JJ', route: '/', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0A0E18 0%, #14192A 50%, #1C2236 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'configuracion.svg', iconOpacity: 0, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Placeholder', gridColumn: '1 / 3', gridRow: '3 / 4' },
+    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0B0F1A 0%, #181E2E 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'configuracion.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
   // Helper: convierte hex a rgba con alpha, para sombras teñidas del color del card
@@ -116,16 +116,14 @@ export default function HomeDashboard() {
     gridColumn: card.gridColumn,
     gridRow: card.gridRow,
     minHeight: 0,
-    borderRadius: '22px',
+    borderRadius: '20px',
     padding: '26px',
-    // Gradiente translúcido (80% opacidad) + brillo diagonal tenue para dar 3D
+    // Fondo sobrio: gradiente base + viñeta muy sutil para profundidad premium
     background: `
-      linear-gradient(155deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 40%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.18) 100%),
+      radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.06) 0%, transparent 55%),
       ${card.gradient}
     `,
-    backdropFilter: 'blur(14px) saturate(1.2)',
-    WebkitBackdropFilter: 'blur(14px) saturate(1.2)',
-    border: '1px solid rgba(255,255,255,0.28)',
+    border: '1px solid rgba(255,255,255,0.06)',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
@@ -133,142 +131,94 @@ export default function HomeDashboard() {
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    transition: 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.55s cubic-bezier(0.16,1,0.3,1), border-color 0.3s ease',
-    transformStyle: 'preserve-3d',
+    transition: 'transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s cubic-bezier(0.16,1,0.3,1), border-color 0.3s ease',
     transform: isHovered
-      ? 'perspective(1200px) rotateX(6deg) rotateY(-4deg) translateY(-14px) scale(1.03)'
-      : 'perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)',
+      ? 'translateY(-6px)'
+      : 'translateY(0)',
     boxShadow: isHovered
       ? `
-        0 0 0 3px ${hexToRgba(card.bgColor, 0.3)},
-        0 0 60px 6px ${hexToRgba(card.bgColor, 0.55)},
-        0 50px 100px -24px ${hexToRgba(card.bgColor, 0.8)},
-        0 30px 60px -16px ${hexToRgba(card.bgColor, 0.55)},
-        0 14px 28px -8px rgba(0,0,0,0.35),
-        inset 0 2px 0 rgba(255,255,255,0.55),
-        inset 0 -3px 0 rgba(0,0,0,0.22),
-        inset 0 -8px 16px rgba(0,0,0,0.12)
+        0 22px 44px -18px rgba(0,0,0,0.45),
+        0 12px 24px -10px rgba(0,0,0,0.30),
+        inset 0 1px 0 rgba(255,255,255,0.10)
       `
       : `
-        0 28px 50px -18px ${hexToRgba(card.bgColor, 0.60)},
-        0 16px 30px -12px ${hexToRgba(card.bgColor, 0.40)},
-        0 6px 12px -4px rgba(0,0,0,0.22),
-        inset 0 2px 0 rgba(255,255,255,0.40),
-        inset 0 -2px 0 rgba(0,0,0,0.18),
-        inset 0 -6px 14px rgba(0,0,0,0.10)
+        0 12px 28px -14px rgba(0,0,0,0.35),
+        0 6px 14px -6px rgba(0,0,0,0.22),
+        inset 0 1px 0 rgba(255,255,255,0.06)
       `,
   })
 
-  // Renderiza formas geométricas decorativas según el tipo
+  // Renderiza decoración abstracta integrada (estilo premium dark, no elementos sueltos)
   const renderDecor = (card: CardConfig, isHovered: boolean) => {
-    const baseTransition = 'transform 0.7s cubic-bezier(0.16,1,0.3,1), opacity 0.5s ease'
-    if (card.decorType === 'circle') {
-      return (
-        <div style={{
-          position: 'absolute', right: '-20%', bottom: '-30%',
-          width: '100%', aspectRatio: '1 / 1',
-          borderRadius: '50%', background: card.decorColor,
-          transition: baseTransition, pointerEvents: 'none',
-          transform: isHovered ? 'translate(-6%,-6%) scale(1.08)' : 'scale(1)',
-          boxShadow: `0 0 60px ${card.decorColor}`,
-        }} />
-      )
-    }
-    if (card.decorType === 'square') {
+    const baseTransition = 'transform 0.8s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease'
+    if (card.decorType === 'silk') {
+      // Franja diagonal de luz satinada integrada al fondo (no pegote)
       return (
         <>
-          {card.decorSecondary && (
-            <div style={{
-              position: 'absolute', right: '-18%', bottom: '-22%',
-              width: '75%', aspectRatio: '1 / 1',
-              borderRadius: '28px', background: card.decorSecondary,
-              transform: isHovered ? 'rotate(-24deg) scale(1.05)' : 'rotate(-18deg) scale(1)',
-              transition: baseTransition, pointerEvents: 'none',
-            }} />
-          )}
           <div style={{
-            position: 'absolute', right: '-8%', bottom: '-12%',
-            width: '62%', aspectRatio: '1 / 1',
-            borderRadius: '24px', background: card.decorColor,
-            transform: isHovered ? 'rotate(18deg) scale(1.08)' : 'rotate(12deg) scale(1)',
+            position: 'absolute', inset: 0,
+            background: `linear-gradient(108deg, transparent 38%, ${card.decorColor} 52%, transparent 66%)`,
+            transform: isHovered ? 'translateX(3%)' : 'translateX(0)',
             transition: baseTransition, pointerEvents: 'none',
-            boxShadow: `0 10px 30px ${card.decorColor}`,
+            filter: 'blur(0.5px)',
+          }} />
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: `linear-gradient(82deg, transparent 62%, rgba(255,255,255,0.035) 78%, transparent 92%)`,
+            pointerEvents: 'none',
           }} />
         </>
       )
     }
-    if (card.decorType === 'chevron') {
+    if (card.decorType === 'ring') {
+      // Anillos sutiles concéntricos, esquina inferior derecha
       return (
         <>
           <div style={{
-            position: 'absolute', right: '-5%', top: '-20%',
-            width: '40%', height: '140%',
-            background: card.decorColor,
-            clipPath: 'polygon(0 50%, 45% 0, 100% 0, 55% 50%, 100% 100%, 45% 100%)',
-            transform: isHovered ? 'translateX(-10px) scale(1.05)' : 'translateX(0) scale(1)',
+            position: 'absolute', right: '-22%', bottom: '-30%',
+            width: '85%', aspectRatio: '1 / 1',
+            borderRadius: '50%',
+            border: `1px solid ${card.decorColor}`,
+            transform: isHovered ? 'scale(1.04)' : 'scale(1)',
             transition: baseTransition, pointerEvents: 'none',
           }} />
-          {card.decorSecondary && (
-            <div style={{
-              position: 'absolute', right: '15%', top: '-20%',
-              width: '35%', height: '140%',
-              background: card.decorSecondary,
-              clipPath: 'polygon(0 50%, 45% 0, 100% 0, 55% 50%, 100% 100%, 45% 100%)',
-              transform: isHovered ? 'translateX(-6px) scale(1.03)' : 'translateX(0) scale(1)',
-              transition: baseTransition, pointerEvents: 'none',
-              opacity: 0.85,
-            }} />
-          )}
-        </>
-      )
-    }
-    if (card.decorType === 'multi') {
-      return (
-        <>
           <div style={{
-            position: 'absolute', right: '8%', bottom: '-10%',
+            position: 'absolute', right: '-8%', bottom: '-16%',
             width: '55%', aspectRatio: '1 / 1',
             borderRadius: '50%',
-            background: `radial-gradient(circle at 30% 30%, ${card.decorColor}, ${card.decorColor} 60%, transparent 100%)`,
-            transform: isHovered ? 'translate(-10px,-10px) scale(1.1)' : 'scale(1)',
-            transition: baseTransition, pointerEvents: 'none',
-            filter: `drop-shadow(0 8px 24px ${card.decorColor})`,
+            border: `1px solid rgba(255,255,255,0.05)`,
+            pointerEvents: 'none',
           }} />
-          {card.decorSecondary && (
-            <div style={{
-              position: 'absolute', right: '42%', bottom: '20%',
-              width: '30%', aspectRatio: '1 / 1',
-              borderRadius: '50%',
-              background: `radial-gradient(circle at 30% 30%, ${card.decorSecondary}, ${card.decorSecondary} 60%, transparent 100%)`,
-              transform: isHovered ? 'translate(6px,-6px) scale(1.12)' : 'scale(1)',
-              transition: baseTransition, pointerEvents: 'none',
-              filter: `drop-shadow(0 6px 18px ${card.decorSecondary})`,
-            }} />
-          )}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: `linear-gradient(112deg, transparent 55%, rgba(255,255,255,0.05) 72%, transparent 85%)`,
+            pointerEvents: 'none',
+          }} />
         </>
       )
     }
-    if (card.decorType === 'wave') {
+    if (card.decorType === 'gear') {
+      // Ícono engrane sutil + franja de luz
       return (
         <>
           <div style={{
-            position: 'absolute', right: '-5%', bottom: '-20%',
-            width: '45%', aspectRatio: '1 / 1',
-            borderRadius: '50%', background: card.decorColor,
-            transform: isHovered ? 'translate(-10px,-10px) scale(1.1)' : 'scale(1)',
-            transition: baseTransition, pointerEvents: 'none',
-            filter: `drop-shadow(0 10px 30px ${card.decorColor})`,
+            position: 'absolute', inset: 0,
+            background: `linear-gradient(108deg, transparent 42%, ${card.decorColor} 56%, transparent 70%)`,
+            pointerEvents: 'none',
           }} />
-          {card.decorSecondary && (
-            <div style={{
-              position: 'absolute', right: '28%', bottom: '-5%',
-              width: '28%', aspectRatio: '1 / 1',
-              borderRadius: '50%', background: card.decorSecondary,
-              transform: isHovered ? 'translate(4px,-8px) scale(1.1)' : 'scale(1)',
+          <img
+            src={`/icons/dashboard/${card.iconFile}`}
+            alt=""
+            style={{
+              position: 'absolute',
+              right: '-12%', bottom: '-18%',
+              width: '62%', height: '62%',
+              opacity: card.iconOpacity,
+              filter: 'brightness(0) invert(1)',
+              transform: isHovered ? 'rotate(18deg) scale(1.04)' : 'rotate(12deg) scale(1)',
               transition: baseTransition, pointerEvents: 'none',
-              filter: `drop-shadow(0 8px 22px ${card.decorSecondary})`,
-            }} />
-          )}
+            }}
+          />
         </>
       )
     }
@@ -277,10 +227,9 @@ export default function HomeDashboard() {
 
   const renderCard = (card: CardConfig) => {
     const isHovered = hoveredCard === card.id
-    // Card clara (comunicaciones) usa texto oscuro, el resto blanco
-    const isLight = card.id === 'comunicaciones'
-    const textColor = isLight ? '#0F172A' : '#FFFFFF'
-    const mutedColor = isLight ? 'rgba(15,23,42,0.65)' : 'rgba(255,255,255,0.85)'
+    // Todos los cards son dark premium → texto blanco
+    const textColor = '#FFFFFF'
+    const mutedColor = 'rgba(255,255,255,0.72)'
     return (
       <div
         key={card.id}
@@ -306,7 +255,7 @@ export default function HomeDashboard() {
           lineHeight: 1.1,
           marginBottom: 'auto',
           textAlign: 'left', width: '100%',
-          textShadow: isLight ? 'none' : '0 2px 6px rgba(0,0,0,0.25)',
+          textShadow: '0 2px 6px rgba(0,0,0,0.35)',
           position: 'relative',
           zIndex: 2,
         }}>
@@ -350,7 +299,7 @@ export default function HomeDashboard() {
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      backgroundColor: '#E8EBF0',
+      background: 'radial-gradient(ellipse at 30% 10%, #E3E7ED 0%, #C9CFD8 55%, #B8BFC9 100%)',
       fontFamily: "'Montserrat', sans-serif",
       color: '#1E293B',
     }}>
