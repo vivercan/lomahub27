@@ -4,14 +4,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        'fx-primary': '#1E66F5',
-        'fx-bg': '#0B1220',
-        'fx-bg-card': '#111827',
-        'fx-bg-hover': '#1F2937',
-        'fx-border': '#1F2937',
-        'fx-text-primary': '#F9FAFB',
-        'fx-text-secondary': '#9CA3AF',
-        'fx-orange': '#F59E0B',
+        // V30 Light Premium — sincronizado con src/lib/tokens.ts
+        // Actualizado 13/Abr/2026 — eliminados colores dark del sistema viejo
+        'fx-primary':        '#3B6CE7',
+        'fx-bg':             '#F7F8FA',
+        'fx-bg-card':        '#FFFFFF',
+        'fx-bg-hover':       '#F1F5F9',
+        'fx-border':         '#E2E8F0',
+        'fx-text-primary':   '#0F172A',
+        'fx-text-secondary': '#64748B',
+        'fx-orange':         '#C27803',
       },
       fontFamily: {
         montserrat: ['Montserrat', 'sans-serif'],
