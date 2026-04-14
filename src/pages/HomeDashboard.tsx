@@ -679,13 +679,13 @@ export default function HomeDashboard() {
           </>
         )
       }
-      // Caso especial Oportunidades: negro con bloques rectangulares paper-fold
+      // Caso especial Oportunidades: negro puro con rectangulos flotantes scattered (match ref)
       if (card.id === 'oportunidades') {
         return (
           <>
             <svg
               viewBox="0 0 400 240"
-              preserveAspectRatio="none"
+              preserveAspectRatio="xMidYMid slice"
               style={{
                 position: 'absolute', inset: 0,
                 width: '100%', height: '100%',
@@ -695,39 +695,56 @@ export default function HomeDashboard() {
               }}
             >
               <defs>
-                <linearGradient id="oppBlock1" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#3A3A3A" stopOpacity="0.60" />
-                  <stop offset="100%" stopColor="#1A1A1A" stopOpacity="0.20" />
+                {/* Gradient sutil: highlight top-left → sombra bottom-right */}
+                <linearGradient id="oppRect" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#2A2A2A" stopOpacity="1" />
+                  <stop offset="50%" stopColor="#1A1A1A" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#080808" stopOpacity="1" />
                 </linearGradient>
-                <linearGradient id="oppBlock2" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#2E2E2E" stopOpacity="0.55" />
-                  <stop offset="100%" stopColor="#0E0E0E" stopOpacity="0.15" />
-                </linearGradient>
-                <linearGradient id="oppBlock3" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#252525" stopOpacity="0.50" />
-                  <stop offset="100%" stopColor="#050505" stopOpacity="0.10" />
+                <linearGradient id="oppRectAlt" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#242424" stopOpacity="1" />
+                  <stop offset="60%" stopColor="#141414" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#050505" stopOpacity="1" />
                 </linearGradient>
               </defs>
-              {/* Bloques rectangulares rotados ~15° formando paper-fold */}
-              <g transform="rotate(15 200 120)">
-                {/* Fila superior */}
-                <rect x="-50" y="-40" width="120" height="130" fill="url(#oppBlock1)" />
-                <rect x="80" y="-40" width="90" height="110" fill="url(#oppBlock3)" />
-                <rect x="180" y="-40" width="110" height="130" fill="url(#oppBlock1)" opacity="0.85" />
-                <rect x="300" y="-40" width="130" height="115" fill="url(#oppBlock2)" />
-                {/* Fila inferior */}
-                <rect x="-50" y="110" width="100" height="200" fill="url(#oppBlock2)" opacity="0.8" />
-                <rect x="60" y="110" width="140" height="200" fill="url(#oppBlock3)" />
-                <rect x="210" y="130" width="110" height="200" fill="url(#oppBlock1)" opacity="0.75" />
-                <rect x="330" y="115" width="100" height="200" fill="url(#oppBlock2)" />
-              </g>
-              {/* Hairlines sutiles de separación entre bloques */}
-              <g transform="rotate(15 200 120)" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5">
-                <line x1="80" y1="-50" x2="80" y2="310" />
-                <line x1="180" y1="-50" x2="180" y2="310" />
-                <line x1="300" y1="-50" x2="300" y2="310" />
-                <line x1="-50" y1="110" x2="450" y2="110" />
-              </g>
+
+              {/* FILA SUPERIOR */}
+              {/* Cuadrado pequeño centro-izquierda */}
+              <rect x="110" y="0" width="55" height="60" fill="url(#oppRect)" />
+              <line x1="110" y1="0" x2="110" y2="60" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
+
+              {/* Rect medio centro */}
+              <rect x="165" y="0" width="110" height="70" fill="url(#oppRectAlt)" />
+              <line x1="165" y1="0" x2="165" y2="70" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" />
+
+              {/* Rect grande derecha */}
+              <rect x="305" y="0" width="110" height="70" fill="url(#oppRect)" />
+              <line x1="305" y1="0" x2="305" y2="70" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
+
+              {/* FILA MEDIA */}
+              {/* Rect medio derecha */}
+              <rect x="215" y="75" width="120" height="65" fill="url(#oppRectAlt)" />
+              <line x1="215" y1="75" x2="215" y2="140" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" />
+              <line x1="215" y1="75" x2="335" y2="75" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
+
+              {/* FILA INFERIOR */}
+              {/* Rect medio-bajo izquierda */}
+              <rect x="45" y="155" width="125" height="50" fill="url(#oppRect)" />
+              <line x1="45" y1="155" x2="45" y2="205" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
+              <line x1="45" y1="155" x2="170" y2="155" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
+
+              {/* Rect inferior izquierda muy ancho */}
+              <rect x="0" y="205" width="165" height="40" fill="url(#oppRectAlt)" />
+              <line x1="0" y1="205" x2="165" y2="205" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
+
+              {/* Rect inferior centro */}
+              <rect x="165" y="200" width="90" height="45" fill="url(#oppRect)" />
+              <line x1="165" y1="200" x2="165" y2="245" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
+              <line x1="165" y1="200" x2="255" y2="200" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
+
+              {/* Cuadrado pequeño inferior-centro-der */}
+              <rect x="255" y="205" width="55" height="40" fill="url(#oppRectAlt)" />
+              <line x1="255" y1="205" x2="255" y2="245" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" />
             </svg>
             {icon}
           </>
