@@ -611,7 +611,7 @@ export default function HomeDashboard() {
           </>
         )
       }
-      // Caso especial Servicio al Cliente: navy con bandas diagonales en X (no distorsiona — usa xMidYMid slice)
+      // Caso especial Servicio al Cliente: navy con X de bandas diagonales + accent bright bottom-right
       if (card.id === 'servicio-clientes') {
         return (
           <>
@@ -627,53 +627,65 @@ export default function HomeDashboard() {
               }}
             >
               <defs>
-                <linearGradient id="svcBandMed" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#0A1F55" stopOpacity="0.95" />
-                  <stop offset="100%" stopColor="#0E2A70" stopOpacity="0.85" />
+                {/* Banda mid-tone con gradient lateral */}
+                <linearGradient id="svcBandMid" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#0A1C50" stopOpacity="0.60" />
+                  <stop offset="50%" stopColor="#123278" stopOpacity="0.90" />
+                  <stop offset="100%" stopColor="#0A1C50" stopOpacity="0.40" />
                 </linearGradient>
-                <linearGradient id="svcBandBright" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#0A1F55" stopOpacity="0.30" />
-                  <stop offset="50%" stopColor="#143D95" stopOpacity="0.95" />
-                  <stop offset="100%" stopColor="#0A1F55" stopOpacity="0.30" />
+                {/* Banda oscura */}
+                <linearGradient id="svcBandShadow" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#010512" stopOpacity="0.85" />
+                  <stop offset="50%" stopColor="#020A22" stopOpacity="0.95" />
+                  <stop offset="100%" stopColor="#010512" stopOpacity="0.85" />
                 </linearGradient>
-                <linearGradient id="svcBandDark" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#020819" stopOpacity="0.95" />
-                  <stop offset="100%" stopColor="#030E28" stopOpacity="0.95" />
-                </linearGradient>
+                {/* Accent azul brillante abajo-derecha */}
+                <radialGradient id="svcAccent" cx="80%" cy="75%" r="45%">
+                  <stop offset="0%" stopColor="#1848A5" stopOpacity="0.90" />
+                  <stop offset="60%" stopColor="#0C2460" stopOpacity="0.35" />
+                  <stop offset="100%" stopColor="#020A22" stopOpacity="0" />
+                </radialGradient>
               </defs>
 
-              {/* Banda diagonal ↘ (top-left → bottom-right) */}
-              <g transform="rotate(28 200 120)">
-                <rect x="-150" y="80" width="700" height="55" fill="url(#svcBandMed)" />
-                <rect x="-150" y="78" width="700" height="2" fill="rgba(30,70,160,0.50)" />
-                <rect x="-150" y="135" width="700" height="2" fill="rgba(0,4,12,0.65)" />
+              {/* Accent luminoso bottom-right */}
+              <rect width="400" height="240" fill="url(#svcAccent)" />
+
+              {/* Banda oscura diagonal ↘ (superior izquierda → inferior derecha) */}
+              <g transform="rotate(22 200 120)">
+                <rect x="-200" y="40" width="800" height="38" fill="url(#svcBandShadow)" />
+                <rect x="-200" y="38" width="800" height="1.5" fill="rgba(25,55,125,0.45)" />
+                <rect x="-200" y="78" width="800" height="1.5" fill="rgba(0,4,12,0.80)" />
               </g>
 
-              {/* Banda diagonal ↗ (bottom-left → top-right) */}
-              <g transform="rotate(-28 200 120)">
-                <rect x="-150" y="80" width="700" height="55" fill="url(#svcBandMed)" opacity="0.90" />
-                <rect x="-150" y="78" width="700" height="2" fill="rgba(30,70,160,0.50)" />
-                <rect x="-150" y="135" width="700" height="2" fill="rgba(0,4,12,0.65)" />
+              {/* Banda media diagonal ↘ (más abajo) */}
+              <g transform="rotate(22 200 120)">
+                <rect x="-200" y="130" width="800" height="32" fill="url(#svcBandMid)" opacity="0.75" />
+                <rect x="-200" y="128" width="800" height="1.5" fill="rgba(30,70,155,0.45)" />
+                <rect x="-200" y="162" width="800" height="1.5" fill="rgba(0,4,12,0.70)" />
               </g>
 
-              {/* Plano oscuro inferior diagonal (triángulo bajo derecha) */}
-              <polygon points="120,240 400,240 400,180 250,240" fill="url(#svcBandDark)" opacity="0.75" />
-              {/* Plano oscuro superior diagonal (triángulo sup izquierda) */}
-              <polygon points="0,0 0,70 180,0" fill="url(#svcBandDark)" opacity="0.70" />
-
-              {/* Highlight diagonal brillante — cruce de la X */}
-              <g transform="rotate(-28 200 120)">
-                <rect x="120" y="95" width="180" height="25" fill="url(#svcBandBright)" opacity="0.70" />
-              </g>
-              <g transform="rotate(28 200 120)">
-                <rect x="120" y="95" width="160" height="22" fill="url(#svcBandBright)" opacity="0.55" />
+              {/* Banda oscura diagonal ↗ (inferior izquierda → superior derecha) */}
+              <g transform="rotate(-22 200 120)">
+                <rect x="-200" y="60" width="800" height="45" fill="url(#svcBandShadow)" opacity="0.95" />
+                <rect x="-200" y="58" width="800" height="1.5" fill="rgba(25,55,125,0.40)" />
+                <rect x="-200" y="105" width="800" height="1.5" fill="rgba(0,4,12,0.75)" />
               </g>
 
-              {/* Hairlines en los edges para efecto paper-fold crisp */}
-              <g opacity="0.45">
-                <line x1="0" y1="70" x2="180" y2="0" stroke="rgba(40,80,170,0.55)" strokeWidth="0.6" />
-                <line x1="120" y1="240" x2="400" y2="180" stroke="rgba(40,80,170,0.45)" strokeWidth="0.6" />
+              {/* Banda media diagonal ↗ (más abajo) */}
+              <g transform="rotate(-22 200 120)">
+                <rect x="-200" y="145" width="800" height="35" fill="url(#svcBandMid)" opacity="0.65" />
+                <rect x="-200" y="143" width="800" height="1.5" fill="rgba(30,70,155,0.40)" />
+                <rect x="-200" y="180" width="800" height="1.5" fill="rgba(0,4,12,0.65)" />
               </g>
+
+              {/* Triángulo muy oscuro esquina sup-izq */}
+              <polygon points="0,0 0,45 120,0" fill="#010410" opacity="0.85" />
+              {/* Triángulo muy oscuro esquina sup-der */}
+              <polygon points="290,0 400,0 400,60" fill="#010410" opacity="0.75" />
+
+              {/* Hairline highlight en los edges de los triángulos */}
+              <line x1="0" y1="45" x2="120" y2="0" stroke="rgba(35,75,165,0.50)" strokeWidth="0.7" />
+              <line x1="290" y1="0" x2="400" y2="60" stroke="rgba(35,75,165,0.45)" strokeWidth="0.7" />
             </svg>
             {icon}
           </>
