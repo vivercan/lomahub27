@@ -15,8 +15,9 @@ html, body {
 }
 
 body {
-  background-color: #16161E;
-  color: #F9FAFB;
+  /* V30 Light Premium — actualizado 13/Abr/2026 */
+  background-color: #F7F8FA;
+  color: #0F172A;
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -25,62 +26,61 @@ body {
   overflow: hidden;
 }
 
-/* Glassmorphism base */
+/* Glassmorphism base — V30 Light Premium */
 .glass {
-  background: rgba(22, 22, 30, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(31, 41, 55, 0.5);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(15, 23, 42, 0.06);
   border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.08);
 }
 
 /* Glow button */
 .btn-glow {
-  box-shadow: 0 0 20px rgba(30, 102, 245, 0.3);
+  box-shadow: 0 0 20px rgba(59, 108, 231, 0.25);
 }
-
 .btn-glow:hover {
-  box-shadow: 0 0 30px rgba(30, 102, 245, 0.5);
+  box-shadow: 0 0 30px rgba(59, 108, 231, 0.40);
 }
 
-/* Gradient backgrounds */
+/* Gradient backgrounds — V30 Light */
 .bg-gradient-fx {
-  background: linear-gradient(135deg, #16161E 0%, #1A1A26 50%, #16161E 100%);
+  background: linear-gradient(135deg, #F7F8FA 0%, #EEF2F7 50%, #F7F8FA 100%);
 }
 
-/* Scrollbar invisible but functional — scroll works, bar hidden */
+/* Scrollbar invisible pero funcional */
 ::-webkit-scrollbar {
   width: 0px;
   background: transparent;
 }
 * {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-
 
 /* Dashboard animations */
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes statusFadeIn {
   from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Stagger delays for 14 module cards */
-.dash-card-0 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 0ms; opacity: 0; }
-.dash-card-1 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 60ms; opacity: 0; }
-.dash-card-2 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 120ms; opacity: 0; }
-.dash-card-3 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 180ms; opacity: 0; }
-.dash-card-4 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 240ms; opacity: 0; }
-.dash-card-5 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 300ms; opacity: 0; }
-.dash-card-6 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 360ms; opacity: 0; }
-.dash-card-7 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 420ms; opacity: 0; }
-.dash-card-8 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 480ms; opacity: 0; }
-.dash-card-9 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 540ms; opacity: 0; }
+/* Stagger delays for module cards */
+.dash-card-0  { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 0ms;   opacity: 0; }
+.dash-card-1  { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 60ms;  opacity: 0; }
+.dash-card-2  { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 120ms; opacity: 0; }
+.dash-card-3  { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 180ms; opacity: 0; }
+.dash-card-4  { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 240ms; opacity: 0; }
+.dash-card-5  { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 300ms; opacity: 0; }
+.dash-card-6  { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 360ms; opacity: 0; }
+.dash-card-7  { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 420ms; opacity: 0; }
+.dash-card-8  { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 480ms; opacity: 0; }
+.dash-card-9  { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 540ms; opacity: 0; }
 .dash-card-10 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 600ms; opacity: 0; }
 .dash-card-11 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 660ms; opacity: 0; }
 .dash-card-12 { animation: fadeSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 720ms; opacity: 0; }
@@ -91,10 +91,10 @@ body {
 /* Loading spinner animation */
 @keyframes spin {
   from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  to   { transform: rotate(360deg); }
 }
 
-/* T4: Remove spinner arrows from all numeric inputs globally */
+/* T4: Remove spinner arrows from numeric inputs */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
