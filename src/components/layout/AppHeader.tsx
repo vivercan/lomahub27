@@ -204,9 +204,8 @@ export default function AppHeader({
       style={{
         position: 'relative',
         height: 64,
-        background: '#0A1930',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.20)',
+        background: '#FFFFFF',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06)',
         zIndex: 50,
         fontFamily: 'Montserrat, sans-serif',
         flexShrink: 0,
@@ -226,9 +225,9 @@ export default function AppHeader({
         {/* LEFT — Logo Institucional LomaHUB27 */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <h1 style={{ margin: 0, fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontStyle: 'italic', fontSize: 22, letterSpacing: '-0.5px', lineHeight: 1 }}>
-            <span style={{ color: '#F5F8FF' }}>Loma</span>
-            <span style={{ color: '#F5F8FF' }}>HUB</span>
-            <span style={{ color: '#2F5FE8' }}>27</span>
+            <span style={{ color: '#0F172A' }}>Loma</span>
+            <span style={{ color: '#0F172A' }}>HUB</span>
+            <span style={{ color: '#3B6CE7' }}>27</span>
           </h1>
         </div>
 
@@ -236,7 +235,7 @@ export default function AppHeader({
         <div style={{ display: 'flex', alignItems: 'center', gap: 56, marginRight: 'auto', marginLeft: 40 }}>
           {/* Fecha */}
           <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#F5F8FF', fontFamily: "'Montserrat', sans-serif", textTransform: 'capitalize' as const }}>
+            <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1E293B', fontFamily: "'Montserrat', sans-serif", textTransform: 'capitalize' as const }}>
               {fechaStr}
             </p>
           </div>
@@ -250,19 +249,19 @@ export default function AppHeader({
               padding: '3px 0',
             }}
           >
-            <span style={{ fontSize: 14, fontWeight: 700, color: '#2F5FE8', fontFamily: "'Montserrat', sans-serif" }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: '#3B6CE7', fontFamily: "'Montserrat', sans-serif" }}>
               Semana {weekNum}
             </span>
           </div>
 
           {/* USD / MXN */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 13, color: '#A7B7CD', fontFamily: "'Montserrat', sans-serif" }}>USD/MXN</span>
+            <span style={{ fontSize: 13, color: '#1E293B', fontFamily: "'Montserrat', sans-serif" }}>USD/MXN</span>
             <span
               style={{
                 fontSize: 15,
                 fontWeight: 700,
-                color: '#F5F8FF',
+                color: '#1E293B',
                 fontFamily: "'Montserrat', sans-serif",
               }}
             >
@@ -275,10 +274,10 @@ export default function AppHeader({
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           {/* User info — name + role stacked */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.3 }}>
-            <span style={{ fontSize: 13, color: '#F5F8FF', fontWeight: 600, fontFamily: "'Montserrat', sans-serif" }}>
+            <span style={{ fontSize: 13, color: '#1E293B', fontWeight: 600, fontFamily: "'Montserrat', sans-serif" }}>
               {userName}
             </span>
-            <span style={{ fontSize: 13, color: '#A7B7CD', fontWeight: 400, fontFamily: "'Montserrat', sans-serif" }}>
+            <span style={{ fontSize: 13, color: '#1E293B', fontWeight: 400, fontFamily: "'Montserrat', sans-serif" }}>
               {userRole}
             </span>
           </div>
@@ -305,7 +304,7 @@ export default function AppHeader({
               onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; }}
               onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.7'; }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F8FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E293B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
               </svg>
