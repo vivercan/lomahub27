@@ -100,7 +100,7 @@ export default function HomeDashboard() {
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#0AA8F0', gradient: 'linear-gradient(135deg, #06A8F0 0%, #1AB0F5 50%, #2BB5F5 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
     { id: 'autofomento', label: 'Control de equipo', route: '/', bgColor: '#1BD51A', gradient: 'linear-gradient(90deg, #B8E614 0%, #7CDB12 35%, #2BCE1A 75%, #0CC014 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Próximamente', gridColumn: '1 / 3', gridRow: '3 / 4' },
-    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#E02020', gradient: 'radial-gradient(ellipse 60% 70% at 50% 50%, #EE2424 0%, #D81B1B 60%, #B01010 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
+    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#E84040', gradient: 'linear-gradient(135deg, #F05050 0%, #E84040 50%, #D63030 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
   // Helper: convierte hex a rgba con alpha, para sombras teñidas del color del card
@@ -308,7 +308,7 @@ export default function HomeDashboard() {
       </div>
     ) : null
 
-    // Caso especial Configuración: rojo con arcos concéntricos desde esquina inferior izquierda
+    // Caso especial Configuración: papel crepé rojo con pliegues diagonales y textura vertical
     if (card.id === 'config') {
       return (
         <>
@@ -323,20 +323,51 @@ export default function HomeDashboard() {
               transform: isHovered ? 'scale(1.02)' : 'scale(1)',
             }}
           >
-            {/* Arcos concéntricos desde esquina inferior-izquierda (0, 240) */}
-            {/* Bandas alternando tonos de rojo - simulan rainbow waves monocromáticas */}
-            <circle cx="0" cy="240" r="680" fill="none" stroke="#FF3838" strokeWidth="45" opacity="0.95" />
-            <circle cx="0" cy="240" r="620" fill="none" stroke="#D51818" strokeWidth="35" opacity="0.95" />
-            <circle cx="0" cy="240" r="570" fill="none" stroke="#FF4040" strokeWidth="50" opacity="0.95" />
-            <circle cx="0" cy="240" r="500" fill="none" stroke="#E61818" strokeWidth="30" opacity="0.95" />
-            <circle cx="0" cy="240" r="450" fill="none" stroke="#FF3030" strokeWidth="55" opacity="0.95" />
-            <circle cx="0" cy="240" r="375" fill="none" stroke="#D01010" strokeWidth="30" opacity="0.95" />
-            <circle cx="0" cy="240" r="325" fill="none" stroke="#FF3838" strokeWidth="50" opacity="0.95" />
-            <circle cx="0" cy="240" r="255" fill="none" stroke="#E01818" strokeWidth="30" opacity="0.95" />
-            <circle cx="0" cy="240" r="205" fill="none" stroke="#FF4040" strokeWidth="45" opacity="0.95" />
-            <circle cx="0" cy="240" r="145" fill="none" stroke="#D01010" strokeWidth="28" opacity="0.95" />
-            <circle cx="0" cy="240" r="95" fill="none" stroke="#FF3838" strokeWidth="40" opacity="0.95" />
-            <circle cx="0" cy="240" r="40" fill="none" stroke="#D51818" strokeWidth="28" opacity="0.95" />
+            <defs>
+              {/* Patrón de fibra vertical tipo crepé */}
+              <pattern id="cfgFiber" x="0" y="0" width="3" height="240" patternUnits="userSpaceOnUse">
+                <line x1="0" y1="0" x2="0" y2="240" stroke="rgba(120,20,20,0.18)" strokeWidth="0.5" />
+                <line x1="1.5" y1="0" x2="1.5" y2="240" stroke="rgba(255,200,200,0.10)" strokeWidth="0.3" />
+              </pattern>
+              {/* Highlight suave diagonal */}
+              <linearGradient id="cfgHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#FF6A6A" stopOpacity="0.35" />
+                <stop offset="50%" stopColor="#FF8080" stopOpacity="0.20" />
+                <stop offset="100%" stopColor="#FF5050" stopOpacity="0" />
+              </linearGradient>
+              {/* Sombra suave de capa */}
+              <linearGradient id="cfgShadow" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#A01818" stopOpacity="0" />
+                <stop offset="50%" stopColor="#B01C1C" stopOpacity="0.30" />
+                <stop offset="100%" stopColor="#8A1212" stopOpacity="0.55" />
+              </linearGradient>
+            </defs>
+            {/* Capa 1 (parte superior) - tono medio con borde de pliegue */}
+            <polygon points="0,0 400,0 400,60 0,95" fill="#E84040" />
+            <polygon points="0,0 400,0 400,60 0,95" fill="url(#cfgHighlight)" />
+            {/* Borde/hairline del pliegue */}
+            <polygon points="0,95 400,60 400,64 0,99" fill="rgba(80,8,8,0.40)" />
+            <polygon points="0,92 400,57 400,60 0,95" fill="rgba(255,180,180,0.25)" />
+
+            {/* Capa 2 (centro) - más claro */}
+            <polygon points="0,95 400,60 400,145 0,175" fill="#F05050" />
+            <polygon points="0,95 400,60 400,145 0,175" fill="url(#cfgHighlight)" opacity="0.6" />
+            {/* Borde del pliegue inferior */}
+            <polygon points="0,175 400,145 400,149 0,179" fill="rgba(90,10,10,0.45)" />
+            <polygon points="0,172 400,142 400,145 0,175" fill="rgba(255,190,190,0.25)" />
+
+            {/* Capa 3 (inferior) - tono profundo con sombra */}
+            <polygon points="0,175 400,145 400,240 0,240" fill="#D83030" />
+            <polygon points="0,175 400,145 400,240 0,240" fill="url(#cfgShadow)" />
+
+            {/* Textura de fibra vertical sobre todo el card */}
+            <rect width="400" height="240" fill="url(#cfgFiber)" opacity="0.85" />
+
+            {/* Detalle de edge irregular en los pliegues (tear-like) */}
+            <path d="M 50 93 L 80 96 L 120 92 L 160 94 L 200 91 L 240 95 L 280 90 L 320 93 L 360 91"
+                  stroke="rgba(60,5,5,0.30)" strokeWidth="0.5" fill="none" />
+            <path d="M 50 173 L 90 176 L 130 172 L 170 175 L 210 171 L 250 175 L 290 172 L 330 175 L 370 172"
+                  stroke="rgba(60,5,5,0.35)" strokeWidth="0.5" fill="none" />
           </svg>
           {icon}
         </>
