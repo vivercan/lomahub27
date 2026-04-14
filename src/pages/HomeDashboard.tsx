@@ -94,7 +94,7 @@ export default function HomeDashboard() {
 
   const mainCards: CardConfig[] = [
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#000000', gradient: 'linear-gradient(135deg, #0A0A0A 0%, #050505 50%, #000000 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#172554', gradient: 'linear-gradient(135deg, #0B1226 0%, #13204A 50%, #1E3A8A 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.14)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#0A1F6E', gradient: 'linear-gradient(135deg, #081654 0%, #0F1F6E 50%, #1E3A8A 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.14)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#172554', gradient: 'linear-gradient(135deg, #0A0F22 0%, #131C3E 50%, #1E3072 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0.15, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0B0F1A 0%, #181E2E 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.09)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.18, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#2563EB', gradient: 'linear-gradient(135deg, #1D4ED8 0%, #2563EB 45%, #3B82F6 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
@@ -309,6 +309,71 @@ export default function HomeDashboard() {
     ) : null
 
     if (card.decorType === 'silk') {
+      // Caso especial Servicio al Cliente: azul techy con diagonales + halftone + chevrons
+      if (card.id === 'servicio-clientes') {
+        return (
+          <>
+            <svg
+              viewBox="0 0 400 240"
+              preserveAspectRatio="none"
+              style={{
+                position: 'absolute', inset: 0,
+                width: '100%', height: '100%',
+                pointerEvents: 'none',
+                transition: baseTransition,
+                transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+              }}
+            >
+              <defs>
+                <pattern id="svcDots" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+                  <circle cx="3.5" cy="3.5" r="0.9" fill="rgba(100,140,230,0.55)" />
+                </pattern>
+                <linearGradient id="svcStripe" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#4B7FD9" stopOpacity="0.10" />
+                  <stop offset="50%" stopColor="#6FA0F0" stopOpacity="0.35" />
+                  <stop offset="100%" stopColor="#4B7FD9" stopOpacity="0.10" />
+                </linearGradient>
+                <linearGradient id="svcStripeHi" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#6FA0F0" stopOpacity="0.22" />
+                  <stop offset="50%" stopColor="#8ABDFF" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#6FA0F0" stopOpacity="0.22" />
+                </linearGradient>
+              </defs>
+              {/* Halftone esquina superior izquierda */}
+              <rect x="0" y="0" width="90" height="95" fill="url(#svcDots)" opacity="0.55" />
+              {/* Halftone esquina inferior derecha */}
+              <rect x="310" y="150" width="90" height="90" fill="url(#svcDots)" opacity="0.55" />
+              {/* Halftone esquina inferior izquierda (pequeño) */}
+              <rect x="0" y="190" width="60" height="50" fill="url(#svcDots)" opacity="0.35" />
+              {/* Diagonales — bloques paralelos rotados -45° */}
+              <g transform="rotate(-45 200 120)">
+                <rect x="-250" y="-20" width="900" height="10" fill="url(#svcStripe)" />
+                <rect x="-250" y="15" width="900" height="18" fill="url(#svcStripeHi)" />
+                <rect x="-250" y="50" width="900" height="8" fill="url(#svcStripe)" />
+                <rect x="-250" y="95" width="900" height="26" fill="url(#svcStripeHi)" opacity="0.9" />
+                <rect x="-250" y="145" width="900" height="10" fill="url(#svcStripe)" />
+                <rect x="-250" y="185" width="900" height="14" fill="url(#svcStripeHi)" />
+                <rect x="-250" y="225" width="900" height="8" fill="url(#svcStripe)" />
+                <rect x="-250" y="265" width="900" height="18" fill="url(#svcStripeHi)" opacity="0.8" />
+              </g>
+              {/* Chevrons superior-derecha — líneas crujientes paralelas */}
+              <g opacity="0.75">
+                <line x1="325" y1="0" x2="405" y2="45" stroke="#8ABDFF" strokeOpacity="0.50" strokeWidth="1.2" />
+                <line x1="340" y1="0" x2="405" y2="35" stroke="#8ABDFF" strokeOpacity="0.55" strokeWidth="1.2" />
+                <line x1="355" y1="0" x2="405" y2="25" stroke="#8ABDFF" strokeOpacity="0.60" strokeWidth="1.2" />
+                <line x1="370" y1="0" x2="405" y2="18" stroke="#8ABDFF" strokeOpacity="0.65" strokeWidth="1.2" />
+              </g>
+              {/* Chevrons inferior-izquierda — espejo */}
+              <g opacity="0.55">
+                <line x1="-5" y1="180" x2="65" y2="240" stroke="#8ABDFF" strokeOpacity="0.45" strokeWidth="1" />
+                <line x1="-5" y1="200" x2="50" y2="240" stroke="#8ABDFF" strokeOpacity="0.50" strokeWidth="1" />
+                <line x1="-5" y1="220" x2="35" y2="240" stroke="#8ABDFF" strokeOpacity="0.55" strokeWidth="1" />
+              </g>
+            </svg>
+            {icon}
+          </>
+        )
+      }
       // Caso especial Oportunidades: ondas fluidas tipo matte black silk
       if (card.id === 'oportunidades') {
         return (
