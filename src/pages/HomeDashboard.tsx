@@ -90,8 +90,8 @@ export default function HomeDashboard() {
 
   const mainCards: CardConfig[] = [
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#2563EB', iconFile: 'oportunidades.svg', iconOpacity: 0.07, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#0D9488', iconFile: 'comercial.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 subm\u00f3dulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#16A34A', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.07, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 subm\u00f3dulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#16A34A', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.07, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 subm\u00f3dulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#0D9488', iconFile: 'comercial.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 subm\u00f3dulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#15803D', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.07, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#EA580C', iconFile: 'Ventas.svg', iconOpacity: 0.07, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#DB2777', iconFile: 'comunicaciones.svg', iconOpacity: 0.25, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
@@ -103,10 +103,14 @@ export default function HomeDashboard() {
     gridColumn,
     gridRow,
     minHeight: 0,
-    borderRadius: '18px',
-    padding: '26px',
-    background: `linear-gradient(135deg, ${bgColor} 0%, ${bgColor} 55%, rgba(0,0,0,0.22) 100%)`,
-    border: '1px solid rgba(255,255,255,0.18)',
+    borderRadius: '20px',
+    padding: '28px',
+    background: `
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 45%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 55%),
+      linear-gradient(145deg, ${bgColor} 0%, ${bgColor} 60%, rgba(0,0,0,0.35) 100%)
+    `,
+    border: '1px solid rgba(255,255,255,0.25)',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
@@ -114,11 +118,27 @@ export default function HomeDashboard() {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    transition: 'transform 0.3s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s cubic-bezier(0.23,1,0.32,1)',
-    transform: isHovered ? 'translateY(-5px) scale(1.015)' : 'translateY(0) scale(1)',
+    transition: 'transform 0.35s cubic-bezier(0.23,1,0.32,1), box-shadow 0.35s cubic-bezier(0.23,1,0.32,1)',
+    transform: isHovered ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
     boxShadow: isHovered
-      ? 'inset 0 1px 0 rgba(255,255,255,0.38), inset 0 -1px 0 rgba(0,0,0,0.18), 0 14px 28px rgba(0,0,0,0.22), 0 22px 48px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.12)'
-      : 'inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.14), 0 6px 14px rgba(0,0,0,0.16), 0 12px 28px rgba(0,0,0,0.12)',
+      ? `
+        inset 0 2px 0 rgba(255,255,255,0.55),
+        inset 0 -3px 0 rgba(0,0,0,0.32),
+        inset 3px 0 8px rgba(255,255,255,0.10),
+        inset -3px 0 8px rgba(0,0,0,0.18),
+        0 20px 40px rgba(0,0,0,0.38),
+        0 32px 64px rgba(0,0,0,0.28),
+        0 4px 10px rgba(0,0,0,0.22)
+      `
+      : `
+        inset 0 2px 0 rgba(255,255,255,0.45),
+        inset 0 -3px 0 rgba(0,0,0,0.28),
+        inset 2px 0 6px rgba(255,255,255,0.08),
+        inset -2px 0 6px rgba(0,0,0,0.15),
+        0 10px 22px rgba(0,0,0,0.28),
+        0 20px 42px rgba(0,0,0,0.22),
+        0 3px 8px rgba(0,0,0,0.18)
+      `,
   })
 
   const renderCard = (card: CardConfig) => {
@@ -174,14 +194,14 @@ export default function HomeDashboard() {
         />
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
-          fontSize: '26px',
+          fontSize: '32px',
           fontWeight: 800,
           color: '#FFFFFF',
-          letterSpacing: '-0.3px',
-          lineHeight: 1.2,
+          letterSpacing: '-0.5px',
+          lineHeight: 1.15,
           marginBottom: 'auto',
           whiteSpace: 'nowrap', textAlign: 'center',
-          textShadow: '0 1px 2px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.18)',
+          textShadow: '0 2px 4px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.22)',
           position: 'relative',
           zIndex: 1,
         }}>
