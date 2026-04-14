@@ -224,7 +224,7 @@ export default function HomeDashboard() {
           gridTemplateColumns: 'repeat(4, 1fr)',
           gridTemplateRows: 'repeat(3, 1fr)',
           gap: '14px',
-          flex: '1 1 auto',
+          flex: '0 0 70%',
           minHeight: 0,
         }}>
           {mainCards.map(renderCard)}
