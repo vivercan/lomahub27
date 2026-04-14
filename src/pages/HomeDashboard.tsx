@@ -416,7 +416,7 @@ export default function HomeDashboard() {
         <>
           <svg
             viewBox="0 0 400 240"
-            preserveAspectRatio="none"
+            preserveAspectRatio="xMidYMid slice"
             style={{
               position: 'absolute', inset: 0,
               width: '100%', height: '100%',
@@ -426,25 +426,69 @@ export default function HomeDashboard() {
             }}
           >
             <defs>
-              <linearGradient id="ventChevronLight" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#1FC4FF" stopOpacity="0.75" />
-                <stop offset="100%" stopColor="#5DD4FF" stopOpacity="0.55" />
+              {/* Chevron grande — body con gradient cyan→azul medio y highlight inner edge */}
+              <linearGradient id="ventChevron1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#20D4FF" stopOpacity="0.95" />
+                <stop offset="35%" stopColor="#1888F8" stopOpacity="0.90" />
+                <stop offset="100%" stopColor="#0E5CE0" stopOpacity="0.80" />
               </linearGradient>
-              <linearGradient id="ventChevronMid" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#3F8CF5" stopOpacity="0.55" />
-                <stop offset="100%" stopColor="#5DA3FF" stopOpacity="0.45" />
+              {/* Chevron medio */}
+              <linearGradient id="ventChevron2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#38C8FF" stopOpacity="0.80" />
+                <stop offset="50%" stopColor="#1E7AF5" stopOpacity="0.75" />
+                <stop offset="100%" stopColor="#1060E5" stopOpacity="0.65" />
               </linearGradient>
-              <linearGradient id="ventChevronDark" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#0E4FC2" stopOpacity="0.70" />
-                <stop offset="100%" stopColor="#1968E8" stopOpacity="0" />
+              {/* Chevron outer */}
+              <linearGradient id="ventChevron3" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#50D8FF" stopOpacity="0.65" />
+                <stop offset="100%" stopColor="#2E88F8" stopOpacity="0.55" />
               </linearGradient>
+              {/* Chevron most outer (más tenue) */}
+              <linearGradient id="ventChevron4" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#70E0FF" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="#3E92FA" stopOpacity="0.40" />
+              </linearGradient>
+              {/* Highlight radial sutil centro-izquierda */}
+              <radialGradient id="ventGlow" cx="35%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#2F8CF8" stopOpacity="0.20" />
+                <stop offset="100%" stopColor="#1060E0" stopOpacity="0" />
+              </radialGradient>
             </defs>
-            {/* Chevrons apuntando a la derecha — stacked desde izquierda hacia afuera */}
-            <polygon points="200,0 270,0 340,120 270,240 200,240 270,120" fill="url(#ventChevronDark)" />
-            <polygon points="255,0 310,0 375,120 310,240 255,240 320,120" fill="url(#ventChevronMid)" />
-            <polygon points="300,0 345,0 400,120 345,240 300,240 355,120" fill="url(#ventChevronLight)" />
-            <polygon points="340,0 375,0 420,120 375,240 340,240 385,120" fill="url(#ventChevronMid)" opacity="0.8" />
-            <polygon points="370,0 400,0 430,120 400,240 370,240 405,120" fill="url(#ventChevronLight)" opacity="0.6" />
+
+            {/* Glow suave lado izquierdo */}
+            <rect width="400" height="240" fill="url(#ventGlow)" />
+
+            {/* Chevron 1 (más grande / más a la izquierda del grupo) — tip x=300 */}
+            <polygon
+              points="300,120 195,0 255,0 360,120 255,240 195,240"
+              fill="url(#ventChevron1)"
+            />
+
+            {/* Chevron 2 — tip x=345 */}
+            <polygon
+              points="345,120 250,0 295,0 390,120 295,240 250,240"
+              fill="url(#ventChevron2)"
+            />
+
+            {/* Chevron 3 — tip x=385 */}
+            <polygon
+              points="385,120 300,0 340,0 425,120 340,240 300,240"
+              fill="url(#ventChevron3)"
+            />
+
+            {/* Chevron 4 (más outer / más tenue) — tip x=420 */}
+            <polygon
+              points="420,120 345,0 380,0 455,120 380,240 345,240"
+              fill="url(#ventChevron4)"
+            />
+
+            {/* Hairline highlight cyan en inner edge del chevron 1 */}
+            <polyline
+              points="195,0 300,120 195,240"
+              fill="none"
+              stroke="rgba(100,230,255,0.55)"
+              strokeWidth="1.2"
+            />
           </svg>
           {icon}
         </>
