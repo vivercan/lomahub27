@@ -94,7 +94,7 @@ export default function HomeDashboard() {
 
   const mainCards: CardConfig[] = [
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#000000', gradient: 'linear-gradient(135deg, #0A0A0A 0%, #050505 50%, #000000 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#1E6CFF', gradient: 'linear-gradient(135deg, #1458DA 0%, #1E6CFF 50%, #2580FF 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#040D28', gradient: 'linear-gradient(135deg, #030A22 0%, #061230 50%, #081840 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFCC00', gradient: 'linear-gradient(135deg, #FFD000 0%, #FFC000 50%, #FFB000 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#F4F4F4', gradient: 'linear-gradient(135deg, #F8F8F8 0%, #EDEDED 55%, #E0E0E0 100%)', decorType: 'silk', decorColor: 'rgba(0,0,0,0.05)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.18, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
@@ -611,13 +611,13 @@ export default function HomeDashboard() {
           </>
         )
       }
-      // Caso especial Servicio al Cliente: royal blue con parallelogramos diagonales + líneas verticales
+      // Caso especial Servicio al Cliente: navy con bandas diagonales en X (no distorsiona — usa xMidYMid slice)
       if (card.id === 'servicio-clientes') {
         return (
           <>
             <svg
               viewBox="0 0 400 240"
-              preserveAspectRatio="none"
+              preserveAspectRatio="xMidYMid slice"
               style={{
                 position: 'absolute', inset: 0,
                 width: '100%', height: '100%',
@@ -626,44 +626,53 @@ export default function HomeDashboard() {
                 transform: isHovered ? 'scale(1.02)' : 'scale(1)',
               }}
             >
-              {/* Parallelogramos diagonales a -30° con distintos tonos de azul */}
-              <g transform="rotate(-30 200 120)">
-                {/* Rect oscuro grande esquina sup-der */}
-                <rect x="320" y="-120" width="180" height="130" fill="#0A3CB0" opacity="0.80" />
-                {/* Rect medio-claro sup */}
-                <rect x="120" y="-90" width="180" height="40" fill="#3D8BFF" opacity="0.55" />
-                {/* Rect oscuro sup-izq */}
-                <rect x="-80" y="-70" width="200" height="60" fill="#0A3CB0" opacity="0.70" />
-                {/* Rect claro central-izq */}
-                <rect x="-120" y="10" width="320" height="55" fill="#4390FF" opacity="0.40" />
-                {/* Rect oscuro medio */}
-                <rect x="200" y="40" width="250" height="45" fill="#0E4AD0" opacity="0.65" />
-                {/* Rect claro medio-bajo */}
-                <rect x="-60" y="95" width="280" height="50" fill="#3D8BFF" opacity="0.45" />
-                {/* Rect medio bajo-der */}
-                <rect x="220" y="130" width="200" height="55" fill="#0F50D8" opacity="0.60" />
-                {/* Rect claro bajo */}
-                <rect x="-100" y="180" width="340" height="60" fill="#4390FF" opacity="0.35" />
-                {/* Rect oscuro bajo-der */}
-                <rect x="240" y="220" width="260" height="60" fill="#0A3CB0" opacity="0.70" />
+              <defs>
+                <linearGradient id="svcBandMed" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#0A1F55" stopOpacity="0.95" />
+                  <stop offset="100%" stopColor="#0E2A70" stopOpacity="0.85" />
+                </linearGradient>
+                <linearGradient id="svcBandBright" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#0A1F55" stopOpacity="0.30" />
+                  <stop offset="50%" stopColor="#143D95" stopOpacity="0.95" />
+                  <stop offset="100%" stopColor="#0A1F55" stopOpacity="0.30" />
+                </linearGradient>
+                <linearGradient id="svcBandDark" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#020819" stopOpacity="0.95" />
+                  <stop offset="100%" stopColor="#030E28" stopOpacity="0.95" />
+                </linearGradient>
+              </defs>
+
+              {/* Banda diagonal ↘ (top-left → bottom-right) */}
+              <g transform="rotate(28 200 120)">
+                <rect x="-150" y="80" width="700" height="55" fill="url(#svcBandMed)" />
+                <rect x="-150" y="78" width="700" height="2" fill="rgba(30,70,160,0.50)" />
+                <rect x="-150" y="135" width="700" height="2" fill="rgba(0,4,12,0.65)" />
               </g>
-              {/* Líneas verticales tipo "rain" — blancas sutiles y cyan accent */}
-              <g opacity="0.50">
-                <line x1="95" y1="60" x2="95" y2="95" stroke="rgba(255,255,255,0.55)" strokeWidth="1" />
-                <line x1="140" y1="170" x2="140" y2="215" stroke="rgba(120,230,255,0.70)" strokeWidth="1" />
-                <line x1="190" y1="40" x2="190" y2="85" stroke="rgba(255,255,255,0.50)" strokeWidth="1" />
-                <line x1="230" y1="120" x2="230" y2="155" stroke="rgba(120,230,255,0.65)" strokeWidth="1" />
-                <line x1="275" y1="70" x2="275" y2="120" stroke="rgba(255,255,255,0.50)" strokeWidth="1" />
-                <line x1="310" y1="160" x2="310" y2="200" stroke="rgba(120,230,255,0.60)" strokeWidth="1" />
-                <line x1="355" y1="30" x2="355" y2="80" stroke="rgba(255,255,255,0.55)" strokeWidth="1" />
+
+              {/* Banda diagonal ↗ (bottom-left → top-right) */}
+              <g transform="rotate(-28 200 120)">
+                <rect x="-150" y="80" width="700" height="55" fill="url(#svcBandMed)" opacity="0.90" />
+                <rect x="-150" y="78" width="700" height="2" fill="rgba(30,70,160,0.50)" />
+                <rect x="-150" y="135" width="700" height="2" fill="rgba(0,4,12,0.65)" />
               </g>
-              {/* Grupo de líneas paralelas delgadas lado derecho (shimmer) */}
-              <g opacity="0.45" transform="rotate(-30 370 120)">
-                <line x1="360" y1="0" x2="360" y2="240" stroke="rgba(255,255,255,0.60)" strokeWidth="0.8" />
-                <line x1="365" y1="0" x2="365" y2="240" stroke="rgba(255,255,255,0.55)" strokeWidth="0.8" />
-                <line x1="370" y1="0" x2="370" y2="240" stroke="rgba(255,255,255,0.50)" strokeWidth="0.8" />
-                <line x1="375" y1="0" x2="375" y2="240" stroke="rgba(255,255,255,0.45)" strokeWidth="0.8" />
-                <line x1="380" y1="0" x2="380" y2="240" stroke="rgba(255,255,255,0.40)" strokeWidth="0.8" />
+
+              {/* Plano oscuro inferior diagonal (triángulo bajo derecha) */}
+              <polygon points="120,240 400,240 400,180 250,240" fill="url(#svcBandDark)" opacity="0.75" />
+              {/* Plano oscuro superior diagonal (triángulo sup izquierda) */}
+              <polygon points="0,0 0,70 180,0" fill="url(#svcBandDark)" opacity="0.70" />
+
+              {/* Highlight diagonal brillante — cruce de la X */}
+              <g transform="rotate(-28 200 120)">
+                <rect x="120" y="95" width="180" height="25" fill="url(#svcBandBright)" opacity="0.70" />
+              </g>
+              <g transform="rotate(28 200 120)">
+                <rect x="120" y="95" width="160" height="22" fill="url(#svcBandBright)" opacity="0.55" />
+              </g>
+
+              {/* Hairlines en los edges para efecto paper-fold crisp */}
+              <g opacity="0.45">
+                <line x1="0" y1="70" x2="180" y2="0" stroke="rgba(40,80,170,0.55)" strokeWidth="0.6" />
+                <line x1="120" y1="240" x2="400" y2="180" stroke="rgba(40,80,170,0.45)" strokeWidth="0.6" />
               </g>
             </svg>
             {icon}
