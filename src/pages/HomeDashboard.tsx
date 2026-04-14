@@ -274,15 +274,14 @@ export default function HomeDashboard() {
       </svg>
     )
 
-    // Icon universal — mismo tamaño/estilo que el engrane + efecto emboss "push-through"
-    // Caja cuadrada 60%×60% con object-fit:contain para que TODOS se vean del mismo tamaño,
-    // sin importar el viewBox intrínseco de cada SVG.
+    // Icon universal — estilo del engrane original pero adaptado a cada card
+    // Tamaño uniforme (caja cuadrada 45%) + push-through sutil (no duro)
     const icon = card.iconFile && card.iconOpacity > 0 ? (
       <div
         style={{
           position: 'absolute',
-          right: '-6%', bottom: '-10%',
-          width: '60%',
+          right: '4%', bottom: '4%',
+          width: '45%',
           aspectRatio: '1 / 1',
           pointerEvents: 'none',
           transition: baseTransition,
@@ -297,18 +296,16 @@ export default function HomeDashboard() {
             height: '100%',
             objectFit: 'contain',
             opacity: card.iconOpacity,
-            // Filter stack para efecto "empujado desde atrás":
-            //  1. brightness(0) invert(1) → tinte blanco puro
-            //  2. drop-shadow blanco arriba-izquierda → highlight de borde superior (luz)
-            //  3. drop-shadow negro abajo-derecha sólido → borde oscuro de extrusión
-            //  4. drop-shadow difuso grande → sombra proyectada hacia el fondo (profundidad)
-            //  5. drop-shadow ceñido → contacto con la superficie
+            // Emboss sutil (como el engrane original pero con push-through):
+            //  1. brightness(0) invert(1) → tinte blanco
+            //  2. highlight superior de 1px → luz cenital
+            //  3. sombra principal difusa → proyección detrás
+            //  4. sombra de contacto → asentamiento en la superficie
             filter: `
               brightness(0) invert(1)
-              drop-shadow(-1px -1px 0 rgba(255,255,255,0.28))
-              drop-shadow(2px 3px 0 rgba(0,0,0,0.32))
-              drop-shadow(0 8px 16px rgba(0,0,0,0.55))
-              drop-shadow(0 3px 5px rgba(0,0,0,0.40))
+              drop-shadow(0 1px 0 rgba(255,255,255,0.18))
+              drop-shadow(0 5px 12px rgba(0,0,0,0.55))
+              drop-shadow(0 2px 4px rgba(0,0,0,0.35))
             `,
           }}
         />
