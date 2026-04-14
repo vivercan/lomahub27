@@ -100,7 +100,7 @@ export default function HomeDashboard() {
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#2563EB', gradient: 'linear-gradient(135deg, #1D4ED8 0%, #2563EB 45%, #3B82F6 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0A0E18 0%, #161C2A 100%)', decorType: 'ring', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
     { id: 'autofomento', label: 'Auto Fomento SEAT', route: '/', bgColor: '#2E3138', gradient: 'linear-gradient(135deg, #22252B 0%, #2E3138 45%, #3A3E46 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'configuracion.svg', iconOpacity: 0, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Próximamente', gridColumn: '1 / 3', gridRow: '3 / 4' },
-    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0B0F1A 0%, #181E2E 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'configuracion.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
+    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#3F444D', gradient: 'linear-gradient(135deg, #2D3138 0%, #3F444D 55%, #4B515A 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'configuracion.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
   // Helper: convierte hex a rgba con alpha, para sombras teñidas del color del card
@@ -354,7 +354,7 @@ export default function HomeDashboard() {
         }} />
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
-          fontSize: '32px',
+          fontSize: '28px',
           fontWeight: 800,
           color: textColor,
           letterSpacing: '-0.5px',
@@ -370,10 +370,10 @@ export default function HomeDashboard() {
         {card.kpiValue !== '' && (
           <div style={{
             fontFamily: "'Montserrat', sans-serif",
-            fontSize: '46px',
+            fontSize: '42px',
             fontWeight: 800,
             color: textColor,
-            letterSpacing: '-1.5px',
+            letterSpacing: '-1.3px',
             textAlign: 'left', width: '100%', lineHeight: 1,
             marginTop: '6px',
             position: 'relative',
