@@ -308,7 +308,7 @@ export default function HomeDashboard() {
       </div>
     ) : null
 
-    // Caso especial Configuración: rojo brillante con halftone puro (más denso en esquinas)
+    // Caso especial Configuración: rojo con arcos concéntricos desde esquina inferior izquierda
     if (card.id === 'config') {
       return (
         <>
@@ -323,33 +323,20 @@ export default function HomeDashboard() {
               transform: isHovered ? 'scale(1.02)' : 'scale(1)',
             }}
           >
-            <defs>
-              {/* Dots más grandes para esquinas (halftone denso) */}
-              <pattern id="cfgDotsLg" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                <circle cx="4" cy="4" r="1.6" fill="rgba(130,12,12,0.85)" />
-              </pattern>
-              {/* Dots medianos (transición) */}
-              <pattern id="cfgDotsMd" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                <circle cx="4" cy="4" r="1.1" fill="rgba(140,15,15,0.60)" />
-              </pattern>
-              {/* Dots pequeños (halftone fino) */}
-              <pattern id="cfgDotsSm" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                <circle cx="4" cy="4" r="0.7" fill="rgba(150,20,20,0.40)" />
-              </pattern>
-              {/* Máscara radial: densa en bordes, transparente en centro */}
-              <radialGradient id="cfgMask" cx="50%" cy="50%" r="55%">
-                <stop offset="0%" stopColor="white" stopOpacity="0" />
-                <stop offset="50%" stopColor="white" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="white" stopOpacity="1" />
-              </radialGradient>
-              <mask id="cfgHaloMask">
-                <rect width="400" height="240" fill="url(#cfgMask)" />
-              </mask>
-            </defs>
-            {/* Halftone denso en las 4 esquinas usando mask radial */}
-            <rect width="400" height="240" fill="url(#cfgDotsLg)" mask="url(#cfgHaloMask)" opacity="0.9" />
-            {/* Capa fina adicional por todo el card (muy sutil) */}
-            <rect width="400" height="240" fill="url(#cfgDotsSm)" opacity="0.25" />
+            {/* Arcos concéntricos desde esquina inferior-izquierda (0, 240) */}
+            {/* Bandas alternando tonos de rojo - simulan rainbow waves monocromáticas */}
+            <circle cx="0" cy="240" r="680" fill="none" stroke="#FF3838" strokeWidth="45" opacity="0.95" />
+            <circle cx="0" cy="240" r="620" fill="none" stroke="#D51818" strokeWidth="35" opacity="0.95" />
+            <circle cx="0" cy="240" r="570" fill="none" stroke="#FF4040" strokeWidth="50" opacity="0.95" />
+            <circle cx="0" cy="240" r="500" fill="none" stroke="#E61818" strokeWidth="30" opacity="0.95" />
+            <circle cx="0" cy="240" r="450" fill="none" stroke="#FF3030" strokeWidth="55" opacity="0.95" />
+            <circle cx="0" cy="240" r="375" fill="none" stroke="#D01010" strokeWidth="30" opacity="0.95" />
+            <circle cx="0" cy="240" r="325" fill="none" stroke="#FF3838" strokeWidth="50" opacity="0.95" />
+            <circle cx="0" cy="240" r="255" fill="none" stroke="#E01818" strokeWidth="30" opacity="0.95" />
+            <circle cx="0" cy="240" r="205" fill="none" stroke="#FF4040" strokeWidth="45" opacity="0.95" />
+            <circle cx="0" cy="240" r="145" fill="none" stroke="#D01010" strokeWidth="28" opacity="0.95" />
+            <circle cx="0" cy="240" r="95" fill="none" stroke="#FF3838" strokeWidth="40" opacity="0.95" />
+            <circle cx="0" cy="240" r="40" fill="none" stroke="#D51818" strokeWidth="28" opacity="0.95" />
           </svg>
           {icon}
         </>
