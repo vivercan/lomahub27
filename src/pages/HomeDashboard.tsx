@@ -114,8 +114,8 @@ export default function HomeDashboard() {
     minHeight: 0,
     borderRadius: '20px',
     padding: '28px',
-    // Sutil profundidad sin parecer cristal: base sólida con un leve oscurecimiento en la esquina inferior derecha
-    background: `linear-gradient(160deg, ${bgColor} 0%, ${bgColor} 70%, ${hexToRgba('#000000', 0.18)} 100%), ${bgColor}`,
+    // Volumen real sin parecer cristal: arriba el color base un poco aclarado, abajo oscurecido
+    background: `linear-gradient(180deg, ${hexToRgba('#FFFFFF', 0.12)} 0%, rgba(255,255,255,0) 35%, rgba(0,0,0,0) 65%, ${hexToRgba('#000000', 0.28)} 100%), ${bgColor}`,
     border: 'none',
     cursor: 'pointer',
     position: 'relative',
@@ -129,19 +129,27 @@ export default function HomeDashboard() {
     boxShadow: isHovered
       ? `
         0 0 0 3px ${hexToRgba(bgColor, 0.35)},
-        0 0 40px 4px ${hexToRgba(bgColor, 0.6)},
-        0 40px 80px -16px ${hexToRgba(bgColor, 0.85)},
-        0 24px 48px -10px ${hexToRgba(bgColor, 0.6)},
-        0 12px 24px -6px rgba(0,0,0,0.35),
-        inset 0 2px 0 rgba(255,255,255,0.4),
-        inset 0 -4px 12px rgba(0,0,0,0.18)
+        0 0 50px 6px ${hexToRgba(bgColor, 0.7)},
+        0 45px 90px -16px ${hexToRgba(bgColor, 0.9)},
+        0 28px 56px -10px ${hexToRgba(bgColor, 0.65)},
+        0 14px 28px -6px rgba(0,0,0,0.4),
+        inset 0 3px 0 rgba(255,255,255,0.55),
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        inset 2px 0 4px rgba(255,255,255,0.15),
+        inset -2px 0 4px rgba(0,0,0,0.18),
+        inset 0 -4px 0 rgba(0,0,0,0.35),
+        inset 0 -8px 20px rgba(0,0,0,0.25)
       `
       : `
-        0 22px 44px -14px ${hexToRgba(bgColor, 0.6)},
-        0 12px 22px -8px ${hexToRgba(bgColor, 0.4)},
-        0 4px 8px -2px rgba(0,0,0,0.18),
-        inset 0 1px 0 rgba(255,255,255,0.22),
-        inset 0 -3px 10px rgba(0,0,0,0.15)
+        0 26px 50px -14px ${hexToRgba(bgColor, 0.65)},
+        0 14px 26px -8px ${hexToRgba(bgColor, 0.45)},
+        0 5px 10px -2px rgba(0,0,0,0.22),
+        inset 0 2px 0 rgba(255,255,255,0.38),
+        inset 0 1px 0 rgba(255,255,255,0.7),
+        inset 2px 0 3px rgba(255,255,255,0.10),
+        inset -2px 0 3px rgba(0,0,0,0.14),
+        inset 0 -3px 0 rgba(0,0,0,0.28),
+        inset 0 -8px 18px rgba(0,0,0,0.22)
       `,
   })
 
