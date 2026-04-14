@@ -99,18 +99,23 @@ export default function HomeDashboard() {
     { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#334155', iconFile: 'configuracion.svg', iconOpacity: 0.07, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
+  // Helper: convierte hex a rgba con alpha, para sombras teñidas del color del card
+  const hexToRgba = (hex: string, alpha: number): string => {
+    const h = hex.replace('#', '')
+    const r = parseInt(h.substring(0, 2), 16)
+    const g = parseInt(h.substring(2, 4), 16)
+    const b = parseInt(h.substring(4, 6), 16)
+    return `rgba(${r},${g},${b},${alpha})`
+  }
+
   const getCardStyle = (isHovered: boolean, bgColor: string, gridColumn: string, gridRow: string): React.CSSProperties => ({
     gridColumn,
     gridRow,
     minHeight: 0,
     borderRadius: '20px',
     padding: '28px',
-    background: `
-      radial-gradient(ellipse at top left, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 45%),
-      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 55%),
-      linear-gradient(145deg, ${bgColor} 0%, ${bgColor} 60%, rgba(0,0,0,0.35) 100%)
-    `,
-    border: '1px solid rgba(255,255,255,0.25)',
+    background: bgColor,
+    border: 'none',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
@@ -118,27 +123,11 @@ export default function HomeDashboard() {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    transition: 'transform 0.35s cubic-bezier(0.23,1,0.32,1), box-shadow 0.35s cubic-bezier(0.23,1,0.32,1)',
-    transform: isHovered ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
+    transition: 'transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s cubic-bezier(0.23,1,0.32,1)',
+    transform: isHovered ? 'translateY(-10px) scale(1.025)' : 'translateY(0) scale(1)',
     boxShadow: isHovered
-      ? `
-        inset 0 2px 0 rgba(255,255,255,0.55),
-        inset 0 -3px 0 rgba(0,0,0,0.32),
-        inset 3px 0 8px rgba(255,255,255,0.10),
-        inset -3px 0 8px rgba(0,0,0,0.18),
-        0 20px 40px rgba(0,0,0,0.38),
-        0 32px 64px rgba(0,0,0,0.28),
-        0 4px 10px rgba(0,0,0,0.22)
-      `
-      : `
-        inset 0 2px 0 rgba(255,255,255,0.45),
-        inset 0 -3px 0 rgba(0,0,0,0.28),
-        inset 2px 0 6px rgba(255,255,255,0.08),
-        inset -2px 0 6px rgba(0,0,0,0.15),
-        0 10px 22px rgba(0,0,0,0.28),
-        0 20px 42px rgba(0,0,0,0.22),
-        0 3px 8px rgba(0,0,0,0.18)
-      `,
+      ? `0 30px 60px -12px ${hexToRgba(bgColor, 0.75)}, 0 18px 36px -8px ${hexToRgba(bgColor, 0.5)}, 0 0 0 2px rgba(255,255,255,0.35) inset`
+      : `0 20px 40px -12px ${hexToRgba(bgColor, 0.55)}, 0 10px 20px -6px ${hexToRgba(bgColor, 0.35)}`,
   })
 
   const renderCard = (card: CardConfig) => {
@@ -151,23 +140,6 @@ export default function HomeDashboard() {
         onMouseLeave={() => setHoveredCard(null)}
         style={getCardStyle(isHovered, card.bgColor, card.gridColumn, card.gridRow)}
       >
-        {/* Glass highlight overlay */}
-        <div style={{
-          position: 'absolute',
-          top: 0, left: 0, right: 0, height: '55%',
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0) 100%)',
-          pointerEvents: 'none',
-          borderRadius: '18px 18px 0 0',
-        }} />
-        {/* Diagonal shine */}
-        <div style={{
-          position: 'absolute',
-          top: '-40%', left: '-20%', width: '70%', height: '180%',
-          background: 'linear-gradient(115deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.14) 45%, rgba(255,255,255,0) 60%)',
-          transform: isHovered ? 'translateX(40%) rotate(8deg)' : 'translateX(0%) rotate(8deg)',
-          transition: 'transform 0.8s cubic-bezier(0.23,1,0.32,1)',
-          pointerEvents: 'none',
-        }} />
         <div style={{
           position: 'absolute', top: '14px', right: '14px',
           width: '8px', height: '8px', borderRadius: '50%',
