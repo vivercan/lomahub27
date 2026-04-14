@@ -93,7 +93,7 @@ export default function HomeDashboard() {
   }, [fetchKpis])
 
   const mainCards: CardConfig[] = [
-    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0B0F1A 0%, #161C2C 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
+    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#000000', gradient: 'linear-gradient(135deg, #0A0A0A 0%, #050505 50%, #000000 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
     { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#172554', gradient: 'linear-gradient(135deg, #0B1226 0%, #13204A 50%, #1E3A8A 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.14)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#172554', gradient: 'linear-gradient(135deg, #0A0F22 0%, #131C3E 50%, #1E3072 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0.15, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0D1220', gradient: 'linear-gradient(135deg, #0B0F1A 0%, #181E2E 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.09)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.18, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
@@ -309,6 +309,55 @@ export default function HomeDashboard() {
     ) : null
 
     if (card.decorType === 'silk') {
+      // Caso especial Oportunidades: ondas fluidas tipo matte black silk
+      if (card.id === 'oportunidades') {
+        return (
+          <>
+            <svg
+              viewBox="0 0 400 240"
+              preserveAspectRatio="none"
+              style={{
+                position: 'absolute', inset: 0,
+                width: '100%', height: '100%',
+                pointerEvents: 'none',
+                transition: baseTransition,
+                transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+              }}
+            >
+              <defs>
+                <linearGradient id="oppWave1" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#3A3A3A" stopOpacity="0.55" />
+                  <stop offset="40%" stopColor="#242424" stopOpacity="0.35" />
+                  <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="oppWave2" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#2E2E2E" stopOpacity="0.70" />
+                  <stop offset="50%" stopColor="#1A1A1A" stopOpacity="0.40" />
+                  <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="oppWave3" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#333333" stopOpacity="0.60" />
+                  <stop offset="50%" stopColor="#1E1E1E" stopOpacity="0.30" />
+                  <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+                </linearGradient>
+                <radialGradient id="oppVignette" cx="50%" cy="50%" r="70%">
+                  <stop offset="60%" stopColor="rgba(0,0,0,0)" />
+                  <stop offset="100%" stopColor="rgba(0,0,0,0.5)" />
+                </radialGradient>
+              </defs>
+              {/* Onda superior — barrido suave desde esquina superior derecha */}
+              <path d="M -20 20 Q 140 -5 280 40 T 460 30 L 460 70 Q 300 85 150 65 T -20 75 Z" fill="url(#oppWave1)" />
+              {/* Onda media — el pliegue más prominente, diagonal */}
+              <path d="M -40 100 Q 120 60 260 120 T 460 95 L 460 150 Q 290 170 140 145 T -40 175 Z" fill="url(#oppWave2)" />
+              {/* Onda inferior — curva ancha estilo tela */}
+              <path d="M -40 185 Q 150 140 290 200 T 460 180 L 460 250 L -40 250 Z" fill="url(#oppWave3)" />
+              {/* Viñeta sutil para profundidad extra */}
+              <rect width="400" height="240" fill="url(#oppVignette)" />
+            </svg>
+            {icon}
+          </>
+        )
+      }
       return (
         <>
           {chromeFolds}
