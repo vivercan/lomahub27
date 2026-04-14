@@ -114,7 +114,8 @@ export default function HomeDashboard() {
     minHeight: 0,
     borderRadius: '20px',
     padding: '28px',
-    background: bgColor,
+    // Sutil profundidad sin parecer cristal: base sólida con un leve oscurecimiento en la esquina inferior derecha
+    background: `linear-gradient(160deg, ${bgColor} 0%, ${bgColor} 70%, ${hexToRgba('#000000', 0.18)} 100%), ${bgColor}`,
     border: 'none',
     cursor: 'pointer',
     position: 'relative',
@@ -123,11 +124,25 @@ export default function HomeDashboard() {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    transition: 'transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s cubic-bezier(0.23,1,0.32,1)',
-    transform: isHovered ? 'translateY(-10px) scale(1.025)' : 'translateY(0) scale(1)',
+    transition: 'transform 0.45s cubic-bezier(0.16,1,0.3,1), box-shadow 0.45s cubic-bezier(0.16,1,0.3,1)',
+    transform: isHovered ? 'translateY(-14px) scale(1.04)' : 'translateY(0) scale(1)',
     boxShadow: isHovered
-      ? `0 30px 60px -12px ${hexToRgba(bgColor, 0.75)}, 0 18px 36px -8px ${hexToRgba(bgColor, 0.5)}, 0 0 0 2px rgba(255,255,255,0.35) inset`
-      : `0 20px 40px -12px ${hexToRgba(bgColor, 0.55)}, 0 10px 20px -6px ${hexToRgba(bgColor, 0.35)}`,
+      ? `
+        0 0 0 3px ${hexToRgba(bgColor, 0.35)},
+        0 0 40px 4px ${hexToRgba(bgColor, 0.6)},
+        0 40px 80px -16px ${hexToRgba(bgColor, 0.85)},
+        0 24px 48px -10px ${hexToRgba(bgColor, 0.6)},
+        0 12px 24px -6px rgba(0,0,0,0.35),
+        inset 0 2px 0 rgba(255,255,255,0.4),
+        inset 0 -4px 12px rgba(0,0,0,0.18)
+      `
+      : `
+        0 22px 44px -14px ${hexToRgba(bgColor, 0.6)},
+        0 12px 22px -8px ${hexToRgba(bgColor, 0.4)},
+        0 4px 8px -2px rgba(0,0,0,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.22),
+        inset 0 -3px 10px rgba(0,0,0,0.15)
+      `,
   })
 
   const renderCard = (card: CardConfig) => {
@@ -158,10 +173,10 @@ export default function HomeDashboard() {
             height: '70%',
             objectFit: 'contain',
             pointerEvents: 'none',
-            opacity: card.iconOpacity,
+            opacity: isHovered ? Math.min(card.iconOpacity * 2.2, 0.35) : card.iconOpacity,
             filter: 'brightness(0) invert(1)',
-            transition: 'transform 0.5s cubic-bezier(0.23,1,0.32,1)',
-            transform: isHovered ? 'translate(3px,-3px) scale(1.05)' : 'translate(0,0) scale(1)',
+            transition: 'transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease',
+            transform: isHovered ? 'translate(8px,-8px) scale(1.15) rotate(-3deg)' : 'translate(0,0) scale(1) rotate(0deg)',
           }}
         />
         <div style={{
