@@ -460,7 +460,7 @@ export default function HomeDashboard() {
         flexDirection: 'column',
         gap: '14px',
         overflow: 'hidden',
-        background: 'radial-gradient(ellipse at 50% 40%, #BEC2C6 0%, #AEB2B6 55%, #9EA2A6 100%)',
+        background: 'radial-gradient(ellipse at 50% 45%, #8E8E8E 0%, #757575 40%, #5A5A5A 85%, #525252 100%)',
       }}>
         <div style={{
           display: 'grid',
