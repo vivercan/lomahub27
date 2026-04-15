@@ -276,21 +276,39 @@ export default function HomeDashboard() {
 
     // Icon universal — watermark discreto, tamaño uniforme
     // Config mantiene su tratamiento original (72px, emboss, iconOpacity original)
-    // Los otros 7 cards: agrandados 15% (72→83px), 90% opacity (10% transparencia)
+    // Los otros 7 cards: agrandados 15%, ~62% opacity, normalizados visualmente
     const isSolidWhiteIcon = ['oportunidades', 'servicio-clientes', 'ventas', 'comunicaciones', 'comercial'].includes(card.id)
     const isConfig = card.id === 'config'
     const iconSize = isConfig ? 72 : 83 // 72 * 1.15 = 82.8 ≈ 83
-    const iconOpacityFinal = isConfig ? card.iconOpacity : 0.765 // 0.9 - 15% adicional
+    const iconOpacityFinal = isConfig ? card.iconOpacity : 0.69 // 0.765 - 10% adicional ≈ 0.69
+    // Compensación de tamaño visual basado en el fill-ratio interno de cada SVG
+    // (algunos SVGs tienen padding interno mayor; esto los normaliza)
+    const iconVisualScale = (() => {
+      if (isConfig) return 1
+      switch (card.id) {
+        case 'oportunidades': return 1.18 // fill interno 0.845 → compensar
+        case 'comunicaciones': return 1.06 // fill interno 0.945 → compensar
+        case 'operaciones': return 1.06   // fill interno 0.940 → compensar
+        case 'autofomento': return 1.00   // fill interno 0.996
+        case 'servicio-clientes': return 1.00
+        case 'comercial': return 1.00
+        case 'ventas': return 1.00
+        default: return 1.00
+      }
+    })()
+    const hoverScale = isHovered ? 1.04 : 1
+    const combinedScale = hoverScale * iconVisualScale
     const icon = card.iconFile && card.iconOpacity > 0 ? (
       <div
         style={{
           position: 'absolute',
-          right: '18px', bottom: '15px',
+          right: '18px', bottom: '10px', // -5px extra
           width: `${iconSize}px`,
           height: `${iconSize}px`,
           pointerEvents: 'none',
           transition: baseTransition,
-          transform: isHovered ? 'scale(1.04)' : 'scale(1)',
+          transform: `scale(${combinedScale})`,
+          transformOrigin: 'bottom right',
         }}
       >
         <img
