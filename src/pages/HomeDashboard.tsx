@@ -94,7 +94,7 @@ export default function HomeDashboard() {
 
   const mainCards: CardConfig[] = [
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#02103A', gradient: 'linear-gradient(135deg, #031858 0%, #021244 50%, #010826 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#1E7DD8', gradient: 'linear-gradient(180deg, #2A8CE8 0%, #1268C8 45%, #0A4AA8 75%, #3A9AEC 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#020718', gradient: 'linear-gradient(135deg, #030A22 0%, #010614 50%, #000308 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFB810', gradient: 'linear-gradient(135deg, #FFC820 0%, #FFA808 55%, #FF7A00 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #0930A0 0%, #0B3AB5 50%, #0F4AD0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
@@ -787,7 +787,7 @@ export default function HomeDashboard() {
           </>
         )
       }
-      // Caso especial Servicio al Cliente: curvas flowing azules tipo ribbon/wave
+      // Caso especial Servicio al Cliente: navy-black minimalista con bandas diagonales sutiles ↘
       if (card.id === 'servicio-clientes') {
         return (
           <>
@@ -803,62 +803,51 @@ export default function HomeDashboard() {
               }}
             >
               <defs>
-                {/* Curva clara (ribbon highlight) */}
-                <linearGradient id="svcCurveLight" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.55" />
-                  <stop offset="50%" stopColor="#E8F4FF" stopOpacity="0.75" />
-                  <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.45" />
+                {/* Banda navy sutil (tono más claro) */}
+                <linearGradient id="svcPlaneLight" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#0A1E4A" stopOpacity="0.85" />
+                  <stop offset="100%" stopColor="#051238" stopOpacity="0.60" />
                 </linearGradient>
-                {/* Curva azul medio */}
-                <linearGradient id="svcCurveMid" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#4AA4F0" stopOpacity="0.75" />
-                  <stop offset="50%" stopColor="#68B8F4" stopOpacity="0.85" />
-                  <stop offset="100%" stopColor="#2E88E0" stopOpacity="0.65" />
+                {/* Banda muy oscura (casi negro con tinte azul) */}
+                <linearGradient id="svcPlaneDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#010510" stopOpacity="0.95" />
+                  <stop offset="100%" stopColor="#000208" stopOpacity="0.90" />
                 </linearGradient>
-                {/* Curva azul oscuro (sombra) */}
-                <linearGradient id="svcCurveDark" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#0A4AA8" stopOpacity="0.80" />
-                  <stop offset="50%" stopColor="#0E54BC" stopOpacity="0.70" />
-                  <stop offset="100%" stopColor="#073C98" stopOpacity="0.60" />
+                {/* Banda intermedia */}
+                <linearGradient id="svcPlaneMid" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#061430" stopOpacity="0.75" />
+                  <stop offset="100%" stopColor="#030A20" stopOpacity="0.50" />
                 </linearGradient>
-                {/* Curva cyan brillante (foreground wave bottom) */}
-                <linearGradient id="svcCurveCyan" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#48AEE8" stopOpacity="0.90" />
-                  <stop offset="50%" stopColor="#70C6F0" stopOpacity="0.95" />
-                  <stop offset="100%" stopColor="#3898E0" stopOpacity="0.85" />
+                {/* Hairline edge (borde casi imperceptible entre bandas) */}
+                <linearGradient id="svcEdgeHint" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#0C2258" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#0C2258" stopOpacity="0" />
                 </linearGradient>
-                {/* Highlight top glow */}
-                <radialGradient id="svcTopGlow" cx="50%" cy="20%" r="60%">
-                  <stop offset="0%" stopColor="#7AC0F8" stopOpacity="0.40" />
-                  <stop offset="100%" stopColor="#1E7DD8" stopOpacity="0" />
-                </radialGradient>
               </defs>
 
-              {/* Glow superior */}
-              <rect width="400" height="240" fill="url(#svcTopGlow)" />
+              {/* Banda 1 — más clara, diagonal top-left a bottom-left (cross) */}
+              <polygon points="-40,-20 240,-20 60,260 -40,260" fill="url(#svcPlaneLight)" />
 
-              {/* ===== Wave 1 — Curva oscura más alta (background) ===== */}
-              <path d="M -20 90 Q 120 30 260 50 Q 340 60 420 80 L 420 110 Q 340 85 260 80 Q 120 65 -20 125 Z" fill="url(#svcCurveDark)" />
+              {/* Banda 2 — oscura, diagonal que cruza la clara */}
+              <polygon points="120,-20 320,-20 220,260 20,260" fill="url(#svcPlaneDark)" />
 
-              {/* ===== Wave 2 — Curva media ===== */}
-              <path d="M -20 110 Q 140 55 280 75 Q 360 85 420 100 L 420 130 Q 360 110 280 105 Q 140 95 -20 150 Z" fill="url(#svcCurveMid)" opacity="0.85" />
+              {/* Banda 3 — intermedia top-right */}
+              <polygon points="260,-20 440,-20 440,140 200,260" fill="url(#svcPlaneMid)" />
 
-              {/* ===== Wave 3 — Curva blanca/clara hairline (el brillante) ===== */}
-              <path d="M -20 120 Q 150 70 300 90 Q 370 98 420 110 L 420 122 Q 370 113 300 103 Q 150 85 -20 138 Z" fill="url(#svcCurveLight)" />
+              {/* Banda 4 — sutil right edge */}
+              <polygon points="360,-20 440,-20 440,260 300,260" fill="url(#svcPlaneLight)" opacity="0.50" />
 
-              {/* ===== Wave 4 — Curva cyan foreground grande (bottom wave) ===== */}
-              <path d="M -20 170 Q 100 130 220 145 Q 320 155 420 175 L 420 240 L -20 240 Z" fill="url(#svcCurveCyan)" />
+              {/* Hairline edges finos reforzando bordes */}
+              <line x1="240" y1="-20" x2="60" y2="260" stroke="#0C2560" strokeWidth="0.6" opacity="0.55" />
+              <line x1="320" y1="-20" x2="220" y2="260" stroke="#0A1E4A" strokeWidth="0.5" opacity="0.45" />
+              <line x1="360" y1="-20" x2="300" y2="260" stroke="#0A1E4A" strokeWidth="0.4" opacity="0.35" />
 
-              {/* ===== Wave 5 — Curva cyan secundaria encima ===== */}
-              <path d="M -20 195 Q 120 160 250 175 Q 340 185 420 200 L 420 240 L -20 240 Z" fill="url(#svcCurveMid)" opacity="0.65" />
-
-              {/* ===== Línea fina blanca acentuando la curva principal ===== */}
-              <path d="M -20 120 Q 150 70 300 90 Q 370 98 420 110" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.65" />
-              <path d="M -20 170 Q 100 130 220 145 Q 320 155 420 175" stroke="#FFFFFF" strokeWidth="1" fill="none" opacity="0.55" />
-
-              {/* Línea sutil arriba (horizonte) */}
-              <path d="M 0 70 Q 200 55 400 70" stroke="#B0DCFF" strokeWidth="0.6" fill="none" opacity="0.40" />
-              <path d="M 0 60 Q 200 48 400 60" stroke="#D0E8FF" strokeWidth="0.4" fill="none" opacity="0.30" />
+              {/* Glow radial sutil top-center (apenas perceptible) */}
+              <radialGradient id="svcSubtleGlow" cx="50%" cy="20%" r="55%">
+                <stop offset="0%" stopColor="#0A1E50" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#020718" stopOpacity="0" />
+              </radialGradient>
+              <rect width="400" height="240" fill="url(#svcSubtleGlow)" />
             </svg>
             {icon}
           </>
