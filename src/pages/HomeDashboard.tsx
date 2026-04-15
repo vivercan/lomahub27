@@ -274,8 +274,39 @@ export default function HomeDashboard() {
       </svg>
     )
 
-    // Icons deshabilitados en los 8 cards por request del user
-    const icon = null
+    // Icon universal — watermark discreto, tamaño fijo uniforme, bien alineado
+    // Caja cuadrada de 72px (no porcentaje) → TODOS los cards tienen icons del MISMO tamaño absoluto
+    const icon = card.iconFile && card.iconOpacity > 0 ? (
+      <div
+        style={{
+          position: 'absolute',
+          right: '18px', bottom: '18px',
+          width: '72px',
+          height: '72px',
+          pointerEvents: 'none',
+          transition: baseTransition,
+          transform: isHovered ? 'scale(1.04)' : 'scale(1)',
+        }}
+      >
+        <img
+          src={`/icons/dashboard/${card.iconFile}`}
+          alt=""
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            opacity: card.iconOpacity,
+            // Emboss sutil: highlight arriba + sombra suave + contacto
+            filter: `
+              brightness(0) invert(1)
+              drop-shadow(0 1px 0 rgba(255,255,255,0.15))
+              drop-shadow(0 3px 8px rgba(0,0,0,0.45))
+              drop-shadow(0 1px 2px rgba(0,0,0,0.30))
+            `,
+          }}
+        />
+      </div>
+    ) : null
 
     // Caso especial Configuración: rectángulos oscuros superpuestos — layers geométricos minimales
     if (card.id === 'config') {
