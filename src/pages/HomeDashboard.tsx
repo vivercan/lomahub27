@@ -274,17 +274,20 @@ export default function HomeDashboard() {
       </svg>
     )
 
-    // Icon universal — watermark discreto, tamaño fijo uniforme, bien alineado
-    // Caja cuadrada de 72px (no porcentaje) → TODOS los cards tienen icons del MISMO tamaño absoluto
-    // Cards con icono BLANCO SOLIDO (full opacity, sin emboss): oportunidades, servicio, ventas, comunicaciones, comercial
+    // Icon universal — watermark discreto, tamaño uniforme
+    // Config mantiene su tratamiento original (72px, emboss, iconOpacity original)
+    // Los otros 7 cards: agrandados 15% (72→83px), 90% opacity (10% transparencia)
     const isSolidWhiteIcon = ['oportunidades', 'servicio-clientes', 'ventas', 'comunicaciones', 'comercial'].includes(card.id)
+    const isConfig = card.id === 'config'
+    const iconSize = isConfig ? 72 : 83 // 72 * 1.15 = 82.8 ≈ 83
+    const iconOpacityFinal = isConfig ? card.iconOpacity : 0.9
     const icon = card.iconFile && card.iconOpacity > 0 ? (
       <div
         style={{
           position: 'absolute',
           right: '18px', bottom: '18px',
-          width: '72px',
-          height: '72px',
+          width: `${iconSize}px`,
+          height: `${iconSize}px`,
           pointerEvents: 'none',
           transition: baseTransition,
           transform: isHovered ? 'scale(1.04)' : 'scale(1)',
@@ -297,7 +300,7 @@ export default function HomeDashboard() {
             width: '100%',
             height: '100%',
             objectFit: 'contain',
-            opacity: isSolidWhiteIcon ? 1 : card.iconOpacity,
+            opacity: iconOpacityFinal,
             // Solid white: brillo pleno sin emboss; otros: emboss sutil
             filter: isSolidWhiteIcon
               ? 'brightness(0) invert(1)'
