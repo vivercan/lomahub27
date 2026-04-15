@@ -65,7 +65,7 @@ export default function PortalAltaPublico() {
   const [step, setStep] = useState(1)
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState('')
-  const [csrEmails, setCsrEmails] = useState<string[]>(['claudia.verde@trob.com.mx'])
+  const [csrEmails, setCsrEmails] = useState<string[]>([])
 
   // Step 1
   const [tipoEmpresa, setTipoEmpresa] = useState<'MEXICANA' | 'USA_CANADA' | ''>('')
@@ -124,7 +124,7 @@ export default function PortalAltaPublico() {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.from('catalogo_csr').select('email').eq('activo', true)
-      if (data && data.length > 0) setCsrEmails(['claudia.verde@trob.com.mx', ...data.map(c => c.email)])
+      if (data && data.length > 0) setCsrEmails(data.map(c => c.email))
     })()
   }, [])
 
