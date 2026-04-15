@@ -105,14 +105,14 @@ export default function HomeDashboard() {
   }, [fetchKpis])
 
   const mainCards: CardConfig[] = [
-    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#234B7A', gradient: 'linear-gradient(135deg, #234B7A 0%, #17365C 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.22, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#17365C', gradient: 'linear-gradient(135deg, #17365C 0%, #10263F 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.22, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#445468', gradient: 'linear-gradient(135deg, #445468 0%, #17365C 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comercial.svg', iconOpacity: 0.22, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
-    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#4F7FB8', gradient: 'linear-gradient(135deg, #4F7FB8 0%, #315F96 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.22, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
-    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#315F96', gradient: 'linear-gradient(135deg, #315F96 0%, #234B7A 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'ingresos.svg', iconOpacity: 0.22, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#17365C', gradient: 'linear-gradient(135deg, #17365C 0%, #445468 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.22, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
-    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#10263F', gradient: 'linear-gradient(135deg, #10263F 0%, #0C1118 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'gps.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: '', statusDot: kpis.cajasGPS > 0 || kpis.thermosGPS > 0 ? 'green' : 'gray', statusText: `Cajas ${kpis.cajasGPS} · Thermos ${kpis.thermosGPS}`, gridColumn: '1 / 3', gridRow: '3 / 4' },
-    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0C1118', gradient: 'linear-gradient(135deg, #0C1118 0%, #10263F 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
+    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#1D4674', gradient: 'linear-gradient(135deg, #1D4674 0%, #10263F 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'oportunidades.svg', iconOpacity: 0.22, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#163459', gradient: 'linear-gradient(135deg, #163459 0%, #0B1220 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.22, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#2A5B90', gradient: 'linear-gradient(135deg, #2A5B90 0%, #0B1220 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comercial.svg', iconOpacity: 0.22, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
+    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#2A5B90', gradient: 'linear-gradient(135deg, #2A5B90 0%, #163459 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.22, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
+    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1D4674', gradient: 'linear-gradient(135deg, #1D4674 0%, #10263F 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'ingresos.svg', iconOpacity: 0.22, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#1D4674', gradient: 'linear-gradient(135deg, #1D4674 0%, #0B1220 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comunicaciones.svg', iconOpacity: 0.22, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
+    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#10263F', gradient: 'linear-gradient(135deg, #10263F 0%, #0B1220 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'gps.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: '', statusDot: kpis.cajasGPS > 0 || kpis.thermosGPS > 0 ? 'green' : 'gray', statusText: `Cajas ${kpis.cajasGPS} · Thermos ${kpis.thermosGPS}`, gridColumn: '1 / 3', gridRow: '3 / 4' },
+    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0B1220', gradient: 'linear-gradient(135deg, #0B1220 0%, #163459 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
   // (helper hexToRgba eliminado — fue dead code tras el rediseño premium)
@@ -123,10 +123,11 @@ export default function HomeDashboard() {
     minHeight: 0,
     borderRadius: '22px',
     padding: '26px',
-    // Capa 1 (base): un solo gradiente diagonal top-left → bottom-right (ya en card.gradient)
-    // Capa 2 (luz superior): brillo suave tercio superior, opacidad baja.
+    // Capa 1 (base) + Capa 2 (luz superior refinada): highlight más preciso en tercio superior,
+    // micro-profundidad con viñeta inferior-derecha para dar materialidad de objeto, no de parche.
     background: `
-      linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 42%),
+      radial-gradient(ellipse 90% 55% at 50% 0%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 28%, rgba(255,255,255,0) 60%),
+      radial-gradient(ellipse 80% 60% at 100% 110%, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0) 70%),
       ${card.gradient}
     `,
     border: '1px solid rgba(255,255,255,0.10)',
@@ -141,7 +142,7 @@ export default function HomeDashboard() {
     transform: isHovered
       ? 'translateY(-10px) scale(1.012)'
       : 'translateY(0) scale(1)',
-    // HOVER INTACTO — mismos tokens que antes en hover; base ajustada a la familia spec.
+    // HOVER INTACTO — tokens de hover preservados.
     boxShadow: isHovered
       ? `
         0 3px 5px -1px rgba(0,0,0,0.70),
@@ -152,18 +153,21 @@ export default function HomeDashboard() {
         inset 0 0 24px rgba(0,0,0,0.18)
       `
       : `
-        0 14px 36px rgba(0,0,0,0.22),
-        inset 0 1px 0 rgba(255,255,255,0.08)
+        0 1px 0 rgba(255,255,255,0.06) inset,
+        inset 0 1px 0 rgba(255,255,255,0.10),
+        inset 0 -1px 0 rgba(0,0,0,0.22),
+        0 2px 4px rgba(0,0,0,0.18),
+        0 16px 42px rgba(0,0,0,0.32)
       `,
   })
 
-  // renderDecor — UNIFICADO. Misma gramática visual en los 8 cards:
-  //   · 2 planos geométricos suaves (mismos ángulos) en opacidad baja
-  //   · icono outline con color rgba(245,247,250,0.22), misma escala, misma posición bottom-right
+  // renderDecor — UNIFICADO. Misma gramática visual en los 8 cards.
+  //   · 2 planos arquitectónicos (corte limpio, contraste fino luz↔sombra)
+  //   · icono glifo técnico: rgba(245,247,250,0.22) + hairline nítida, misma escala
   const renderDecor = (card: CardConfig, isHovered: boolean) => {
     const baseTransition = 'transform 1s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease'
 
-    // 2 planos geométricos mínimos — misma familia angular para todos los cards.
+    // 2 planos estructurales — cortes limpios en el mismo ángulo para los 8 cards.
     const geometry = (
       <svg
         viewBox="0 0 400 240"
@@ -177,25 +181,34 @@ export default function HomeDashboard() {
         }}
       >
         <defs>
+          {/* Plano 1: luz diagonal top-left → corte limpio */}
           <linearGradient id={`plane1-${card.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.08" />
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.12" />
+            <stop offset="55%" stopColor="#FFFFFF" stopOpacity="0.04" />
             <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
           </linearGradient>
+          {/* Plano 2: sombra bottom-right → corte limpio, misma angular */}
           <linearGradient id={`plane2-${card.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#000000" stopOpacity="0.22" />
-            <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+            <stop offset="0%" stopColor="#000000" stopOpacity="0" />
+            <stop offset="55%" stopColor="#000000" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#000000" stopOpacity="0.42" />
           </linearGradient>
         </defs>
-        {/* Plano 1: reflejo superior izquierdo */}
-        <polygon points="0,0 260,0 120,240 0,240" fill={`url(#plane1-${card.id})`} />
-        {/* Plano 2: sombra inferior derecha */}
-        <polygon points="400,40 400,240 180,240 300,80" fill={`url(#plane2-${card.id})`} />
+        {/* Plano 1: bisel luminoso superior-izquierdo (polígono ancho, ángulo ~28°) */}
+        <polygon points="0,0 280,0 140,240 0,240" fill={`url(#plane1-${card.id})`} />
+        {/* Plano 2: bisel de sombra inferior-derecho (mismo ángulo, espejo) */}
+        <polygon points="400,60 400,240 160,240 290,90" fill={`url(#plane2-${card.id})`} />
+        {/* Hairline estructural en el corte — línea finísima que separa los planos */}
+        <line x1="280" y1="0" x2="140" y2="240" stroke="#FFFFFF" strokeOpacity="0.08" strokeWidth="0.6" />
+        <line x1="290" y1="90" x2="160" y2="240" stroke="#000000" strokeOpacity="0.24" strokeWidth="0.6" />
       </svg>
     )
 
-    // Icono unificado — color rgba(245,247,250,0.22), misma escala, bottom-right, outline filter
+    // Icono glifo técnico — trazo nítido, drop-shadow hairline, color rgba(245,247,250,0.22).
+    // Operaciones: +20% de escala (camión se ve más pequeño visualmente por el recorte del SVG).
     const iconSize = 95
-    const iconScale = isHovered ? 1.04 : 1
+    const iconVisualScale = card.id === 'operaciones' ? 1.20 : 1
+    const iconScale = (isHovered ? 1.04 : 1) * iconVisualScale
     const icon = card.iconFile ? (
       <div
         style={{
@@ -218,8 +231,9 @@ export default function HomeDashboard() {
             height: '100%',
             objectFit: 'contain',
             objectPosition: 'center center',
-            // Tinte #F5F7FA a 22% — brightness(0) invert(1) = blanco puro, opacity 0.22 = rgba(245,247,250,0.22) visual
-            filter: 'brightness(0) invert(1)',
+            // Glifo técnico: blanco puro + drop-shadow hairline superior (luz) e inferior (sombra)
+            // → sensación de grabado fino en la superficie, opacidad 0.22 estricta.
+            filter: 'brightness(0) invert(1) drop-shadow(0 1px 0 rgba(255,255,255,0.10)) drop-shadow(0 1px 1px rgba(0,0,0,0.35))',
             opacity: 0.22,
           }}
         />
@@ -294,7 +308,7 @@ export default function HomeDashboard() {
           lineHeight: 1.15,
           marginBottom: 'auto',
           textAlign: 'left', width: '100%',
-          textShadow: '0 1px 2px rgba(0,0,0,0.28)',
+          textShadow: '0 1px 2px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.20)',
           position: 'relative',
           zIndex: 2,
         }}>
@@ -313,7 +327,7 @@ export default function HomeDashboard() {
             marginTop: '6px',
             position: 'relative',
             zIndex: 2,
-            textShadow: '0 1px 2px rgba(0,0,0,0.25)',
+            textShadow: '0 1px 2px rgba(0,0,0,0.45), 0 3px 10px rgba(0,0,0,0.25)',
           }}>
             {card.kpiValue}
           </div>
