@@ -98,7 +98,7 @@ export default function HomeDashboard() {
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFB810', gradient: 'linear-gradient(135deg, #FFC820 0%, #FFA808 55%, #FF7A00 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #0930A0 0%, #0B3AB5 50%, #0F4AD0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#0C2E80', gradient: 'linear-gradient(135deg, #1246B8 0%, #0C2E80 45%, #051858 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#061670', gradient: 'linear-gradient(135deg, #0A1E88 0%, #061670 50%, #020A40 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
     { id: 'autofomento', label: 'Control de equipo', route: '/', bgColor: '#15C814', gradient: 'linear-gradient(90deg, #8AE60E 0%, #15D818 40%, #0AC020 75%, #07A038 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Próximamente', gridColumn: '1 / 3', gridRow: '3 / 4' },
     { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0A0A0A', gradient: 'linear-gradient(135deg, #141414 0%, #0A0A0A 50%, #050505 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
@@ -529,7 +529,7 @@ export default function HomeDashboard() {
         </>
       )
     }
-    // Caso especial Comunicaciones: royal blue con streaks diagonales sutiles ↘
+    // Caso especial Comunicaciones: royal blue con bars diagonales scattered + hairlines
     if (card.id === 'comunicaciones') {
       return (
         <>
@@ -545,80 +545,102 @@ export default function HomeDashboard() {
             }}
           >
             <defs>
-              {/* Base royal blue gradient — más claro arriba-izq → oscuro abajo-der */}
-              <linearGradient id="comuBase" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#1E58C8" />
-                <stop offset="45%" stopColor="#0E3A98" />
-                <stop offset="100%" stopColor="#041858" />
+              {/* Base royal blue — zona bottom más saturada */}
+              <linearGradient id="comuBase2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#0A1E88" />
+                <stop offset="45%" stopColor="#061670" />
+                <stop offset="100%" stopColor="#020A40" />
               </linearGradient>
-              {/* Streak claro sutil */}
-              <linearGradient id="comuStreakLight" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#3A78E8" stopOpacity="0" />
-                <stop offset="50%" stopColor="#4888F0" stopOpacity="0.45" />
-                <stop offset="100%" stopColor="#3068D8" stopOpacity="0" />
+              {/* Bar oscuro casi negro */}
+              <linearGradient id="comuBarDark" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#02042E" stopOpacity="0" />
+                <stop offset="50%" stopColor="#010218" stopOpacity="0.95" />
+                <stop offset="100%" stopColor="#010218" stopOpacity="0" />
               </linearGradient>
-              {/* Streak medio */}
-              <linearGradient id="comuStreakMid" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#1E50C0" stopOpacity="0" />
-                <stop offset="50%" stopColor="#2A60D0" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="#1848A8" stopOpacity="0" />
+              {/* Bar medio-oscuro */}
+              <linearGradient id="comuBarMid" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#0E2A98" stopOpacity="0" />
+                <stop offset="50%" stopColor="#0A2088" stopOpacity="0.95" />
+                <stop offset="100%" stopColor="#0A2088" stopOpacity="0" />
               </linearGradient>
-              {/* Streak sombra */}
-              <linearGradient id="comuStreakShadow" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#051848" stopOpacity="0" />
-                <stop offset="50%" stopColor="#030F38" stopOpacity="0.45" />
-                <stop offset="100%" stopColor="#020828" stopOpacity="0" />
+              {/* Bar claro (medium blue brillante) */}
+              <linearGradient id="comuBarLight" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#1A40D0" stopOpacity="0" />
+                <stop offset="50%" stopColor="#1E48DC" stopOpacity="1" />
+                <stop offset="100%" stopColor="#1A40D0" stopOpacity="0" />
               </linearGradient>
-              {/* Glow top-right (área más brillante) */}
-              <radialGradient id="comuGlow" cx="75%" cy="15%" r="65%">
-                <stop offset="0%" stopColor="#2E6CE0" stopOpacity="0.55" />
-                <stop offset="100%" stopColor="#0C2E80" stopOpacity="0" />
+              {/* Rectángulos translúcidos top-right (ventanas claras) */}
+              <linearGradient id="comuWindow" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#4A88F8" stopOpacity="0.30" />
+                <stop offset="100%" stopColor="#2A68E8" stopOpacity="0.12" />
+              </linearGradient>
+              {/* Glow top-right (zona más brillante) */}
+              <radialGradient id="comuTRGlow" cx="85%" cy="10%" r="70%">
+                <stop offset="0%" stopColor="#3068E8" stopOpacity="0.55" />
+                <stop offset="100%" stopColor="#061670" stopOpacity="0" />
               </radialGradient>
-              {/* Oscurecer bottom-left */}
-              <radialGradient id="comuDarkCorner" cx="10%" cy="95%" r="55%">
-                <stop offset="0%" stopColor="#020A28" stopOpacity="0.55" />
-                <stop offset="100%" stopColor="#0C2E80" stopOpacity="0" />
+              {/* Glow bottom-left medio azul */}
+              <radialGradient id="comuBLGlow" cx="5%" cy="90%" r="55%">
+                <stop offset="0%" stopColor="#1040C8" stopOpacity="0.40" />
+                <stop offset="100%" stopColor="#061670" stopOpacity="0" />
+              </radialGradient>
+              {/* Dark corner bottom-right */}
+              <radialGradient id="comuBRDark" cx="95%" cy="95%" r="55%">
+                <stop offset="0%" stopColor="#01040F" stopOpacity="0.65" />
+                <stop offset="100%" stopColor="#061670" stopOpacity="0" />
               </radialGradient>
             </defs>
 
             {/* Base */}
-            <rect width="400" height="500" fill="url(#comuBase)" />
+            <rect width="400" height="500" fill="url(#comuBase2)" />
 
             {/* Glow top-right */}
-            <rect width="400" height="500" fill="url(#comuGlow)" />
+            <rect width="400" height="500" fill="url(#comuTRGlow)" />
 
-            {/* Dark bottom-left */}
-            <rect width="400" height="500" fill="url(#comuDarkCorner)" />
+            {/* Glow bottom-left */}
+            <rect width="400" height="500" fill="url(#comuBLGlow)" />
 
-            {/* Streaks diagonales ↘ — rotate -45° */}
-            <g transform="rotate(-45 200 250)">
-              {/* Streaks claros (highlights) */}
-              <rect x="-150" y="-200" width="28" height="1000" fill="url(#comuStreakLight)" />
-              <rect x="-90" y="-200" width="20" height="1000" fill="url(#comuStreakLight)" opacity="0.70" />
-              <rect x="-30" y="-200" width="32" height="1000" fill="url(#comuStreakLight)" />
-              <rect x="30" y="-200" width="18" height="1000" fill="url(#comuStreakLight)" opacity="0.60" />
-              <rect x="80" y="-200" width="28" height="1000" fill="url(#comuStreakLight)" opacity="0.80" />
-              <rect x="140" y="-200" width="18" height="1000" fill="url(#comuStreakLight)" opacity="0.65" />
-              <rect x="185" y="-200" width="30" height="1000" fill="url(#comuStreakLight)" />
-              <rect x="245" y="-200" width="20" height="1000" fill="url(#comuStreakLight)" opacity="0.55" />
-              <rect x="290" y="-200" width="26" height="1000" fill="url(#comuStreakLight)" opacity="0.75" />
-              <rect x="345" y="-200" width="22" height="1000" fill="url(#comuStreakLight)" opacity="0.60" />
+            {/* Dark corner bottom-right */}
+            <rect width="400" height="500" fill="url(#comuBRDark)" />
 
-              {/* Streaks medios (bloques más anchos, tenues) */}
-              <rect x="-120" y="-200" width="60" height="1000" fill="url(#comuStreakMid)" />
-              <rect x="-40" y="-200" width="60" height="1000" fill="url(#comuStreakMid)" opacity="0.70" />
-              <rect x="50" y="-200" width="55" height="1000" fill="url(#comuStreakMid)" />
-              <rect x="150" y="-200" width="60" height="1000" fill="url(#comuStreakMid)" opacity="0.80" />
-              <rect x="250" y="-200" width="50" height="1000" fill="url(#comuStreakMid)" />
-              <rect x="310" y="-200" width="55" height="1000" fill="url(#comuStreakMid)" opacity="0.70" />
-
-              {/* Sombras finas (líneas de separación más oscuras) */}
-              <rect x="-70" y="-200" width="4" height="1000" fill="url(#comuStreakShadow)" />
-              <rect x="20" y="-200" width="3" height="1000" fill="url(#comuStreakShadow)" opacity="0.70" />
-              <rect x="115" y="-200" width="4" height="1000" fill="url(#comuStreakShadow)" />
-              <rect x="215" y="-200" width="3" height="1000" fill="url(#comuStreakShadow)" opacity="0.65" />
-              <rect x="315" y="-200" width="4" height="1000" fill="url(#comuStreakShadow)" />
+            {/* ===== Ventanas translúcidas top-right (overlapping parallelograms) ===== */}
+            <g transform="rotate(-45 320 60)">
+              <rect x="220" y="-20" width="200" height="110" fill="url(#comuWindow)" />
+              <rect x="200" y="100" width="220" height="120" fill="url(#comuWindow)" opacity="0.75" />
+              <rect x="280" y="220" width="180" height="100" fill="url(#comuWindow)" opacity="0.55" />
             </g>
+
+            {/* ===== Bars diagonales scattered — rotate -45° ===== */}
+            {/* Bar 1 — oscuro casi negro, top-left */}
+            <g transform="rotate(-45 95 140)">
+              <rect x="45" y="20" width="12" height="260" fill="url(#comuBarDark)" />
+            </g>
+
+            {/* Bar 2 — medio, centro superior */}
+            <g transform="rotate(-45 230 220)">
+              <rect x="180" y="90" width="14" height="300" fill="url(#comuBarMid)" />
+            </g>
+
+            {/* Bar 3 — medium blue brillante, centro (el más visible) */}
+            <g transform="rotate(-45 245 315)">
+              <rect x="195" y="170" width="18" height="300" fill="url(#comuBarLight)" />
+            </g>
+
+            {/* Bar 4 — medium blue más claro bottom-center */}
+            <g transform="rotate(-45 170 430)">
+              <rect x="125" y="320" width="16" height="240" fill="url(#comuBarLight)" opacity="0.85" />
+            </g>
+
+            {/* Bar 5 — medio bottom-left */}
+            <g transform="rotate(-45 45 410)">
+              <rect x="5" y="310" width="14" height="220" fill="url(#comuBarMid)" opacity="0.80" />
+            </g>
+
+            {/* ===== Hairlines diagonales (líneas finas muy sutiles) ===== */}
+            <line x1="60" y1="720" x2="250" y2="510" stroke="#6A9CF8" strokeWidth="0.8" opacity="0.35" />
+            <line x1="290" y1="700" x2="450" y2="540" stroke="#6A9CF8" strokeWidth="0.9" opacity="0.40" />
+            <line x1="-20" y1="540" x2="200" y2="300" stroke="#5088F0" strokeWidth="0.6" opacity="0.22" />
+            <line x1="250" y1="200" x2="400" y2="40" stroke="#5088F0" strokeWidth="0.5" opacity="0.20" />
           </svg>
           {icon}
         </>
