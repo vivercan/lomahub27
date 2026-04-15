@@ -98,7 +98,7 @@ export default function HomeDashboard() {
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFB810', gradient: 'linear-gradient(135deg, #FFC820 0%, #FFA808 55%, #FF7A00 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #0930A0 0%, #0B3AB5 50%, #0F4AD0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'Despacho inteligente.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'Ventas.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#0A1848', gradient: 'linear-gradient(135deg, #0E2060 0%, #0A1848 50%, #050E30 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#0C2E80', gradient: 'linear-gradient(135deg, #1246B8 0%, #0C2E80 45%, #051858 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
     { id: 'autofomento', label: 'Control de equipo', route: '/', bgColor: '#15C814', gradient: 'linear-gradient(90deg, #8AE60E 0%, #15D818 40%, #0AC020 75%, #07A038 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comercial.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Próximamente', gridColumn: '1 / 3', gridRow: '3 / 4' },
     { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0A0A0A', gradient: 'linear-gradient(135deg, #141414 0%, #0A0A0A 50%, #050505 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
@@ -529,7 +529,7 @@ export default function HomeDashboard() {
         </>
       )
     }
-    // Caso especial Comunicaciones: navy deep con diamonds/rombos sutiles superpuestos
+    // Caso especial Comunicaciones: royal blue con streaks diagonales sutiles ↘
     if (card.id === 'comunicaciones') {
       return (
         <>
@@ -545,78 +545,80 @@ export default function HomeDashboard() {
             }}
           >
             <defs>
-              {/* Diamond gradient claro sutil */}
-              <linearGradient id="comDiamondLight" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#1A2E78" stopOpacity="0.55" />
-                <stop offset="100%" stopColor="#0A1848" stopOpacity="0.20" />
+              {/* Base royal blue gradient — más claro arriba-izq → oscuro abajo-der */}
+              <linearGradient id="comuBase" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#1E58C8" />
+                <stop offset="45%" stopColor="#0E3A98" />
+                <stop offset="100%" stopColor="#041858" />
               </linearGradient>
-              {/* Diamond gradient medio */}
-              <linearGradient id="comDiamondMid" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#142668" stopOpacity="0.65" />
-                <stop offset="100%" stopColor="#081240" stopOpacity="0.30" />
+              {/* Streak claro sutil */}
+              <linearGradient id="comuStreakLight" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#3A78E8" stopOpacity="0" />
+                <stop offset="50%" stopColor="#4888F0" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="#3068D8" stopOpacity="0" />
               </linearGradient>
-              {/* Diamond sombra profunda */}
-              <linearGradient id="comDiamondDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#050C2A" stopOpacity="0.85" />
-                <stop offset="100%" stopColor="#020618" stopOpacity="0.60" />
+              {/* Streak medio */}
+              <linearGradient id="comuStreakMid" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#1E50C0" stopOpacity="0" />
+                <stop offset="50%" stopColor="#2A60D0" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#1848A8" stopOpacity="0" />
               </linearGradient>
-              {/* Glow radial top-center sutil */}
-              <radialGradient id="comDiamondGlow" cx="40%" cy="25%" r="60%">
-                <stop offset="0%" stopColor="#1E3888" stopOpacity="0.45" />
-                <stop offset="100%" stopColor="#0A1848" stopOpacity="0" />
+              {/* Streak sombra */}
+              <linearGradient id="comuStreakShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#051848" stopOpacity="0" />
+                <stop offset="50%" stopColor="#030F38" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="#020828" stopOpacity="0" />
+              </linearGradient>
+              {/* Glow top-right (área más brillante) */}
+              <radialGradient id="comuGlow" cx="75%" cy="15%" r="65%">
+                <stop offset="0%" stopColor="#2E6CE0" stopOpacity="0.55" />
+                <stop offset="100%" stopColor="#0C2E80" stopOpacity="0" />
               </radialGradient>
-              {/* Stroke sutil para edges */}
-              <linearGradient id="comDiamondEdge" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#2A4898" stopOpacity="0.60" />
-                <stop offset="100%" stopColor="#0A1848" stopOpacity="0" />
-              </linearGradient>
+              {/* Oscurecer bottom-left */}
+              <radialGradient id="comuDarkCorner" cx="10%" cy="95%" r="55%">
+                <stop offset="0%" stopColor="#020A28" stopOpacity="0.55" />
+                <stop offset="100%" stopColor="#0C2E80" stopOpacity="0" />
+              </radialGradient>
             </defs>
 
-            {/* Glow top-center */}
-            <rect width="400" height="500" fill="url(#comDiamondGlow)" />
+            {/* Base */}
+            <rect width="400" height="500" fill="url(#comuBase)" />
 
-            {/* ===== Diamonds/rombos rotados 45° — capas superpuestas ===== */}
-            {/* Rombo grande central — sombra profunda */}
-            <g transform="rotate(45 200 250)">
-              <rect x="60" y="110" width="280" height="280" fill="url(#comDiamondDark)" />
-              <rect x="60" y="110" width="280" height="280" fill="none" stroke="url(#comDiamondEdge)" strokeWidth="1" opacity="0.50" />
+            {/* Glow top-right */}
+            <rect width="400" height="500" fill="url(#comuGlow)" />
+
+            {/* Dark bottom-left */}
+            <rect width="400" height="500" fill="url(#comuDarkCorner)" />
+
+            {/* Streaks diagonales ↘ — rotate -45° */}
+            <g transform="rotate(-45 200 250)">
+              {/* Streaks claros (highlights) */}
+              <rect x="-150" y="-200" width="28" height="1000" fill="url(#comuStreakLight)" />
+              <rect x="-90" y="-200" width="20" height="1000" fill="url(#comuStreakLight)" opacity="0.70" />
+              <rect x="-30" y="-200" width="32" height="1000" fill="url(#comuStreakLight)" />
+              <rect x="30" y="-200" width="18" height="1000" fill="url(#comuStreakLight)" opacity="0.60" />
+              <rect x="80" y="-200" width="28" height="1000" fill="url(#comuStreakLight)" opacity="0.80" />
+              <rect x="140" y="-200" width="18" height="1000" fill="url(#comuStreakLight)" opacity="0.65" />
+              <rect x="185" y="-200" width="30" height="1000" fill="url(#comuStreakLight)" />
+              <rect x="245" y="-200" width="20" height="1000" fill="url(#comuStreakLight)" opacity="0.55" />
+              <rect x="290" y="-200" width="26" height="1000" fill="url(#comuStreakLight)" opacity="0.75" />
+              <rect x="345" y="-200" width="22" height="1000" fill="url(#comuStreakLight)" opacity="0.60" />
+
+              {/* Streaks medios (bloques más anchos, tenues) */}
+              <rect x="-120" y="-200" width="60" height="1000" fill="url(#comuStreakMid)" />
+              <rect x="-40" y="-200" width="60" height="1000" fill="url(#comuStreakMid)" opacity="0.70" />
+              <rect x="50" y="-200" width="55" height="1000" fill="url(#comuStreakMid)" />
+              <rect x="150" y="-200" width="60" height="1000" fill="url(#comuStreakMid)" opacity="0.80" />
+              <rect x="250" y="-200" width="50" height="1000" fill="url(#comuStreakMid)" />
+              <rect x="310" y="-200" width="55" height="1000" fill="url(#comuStreakMid)" opacity="0.70" />
+
+              {/* Sombras finas (líneas de separación más oscuras) */}
+              <rect x="-70" y="-200" width="4" height="1000" fill="url(#comuStreakShadow)" />
+              <rect x="20" y="-200" width="3" height="1000" fill="url(#comuStreakShadow)" opacity="0.70" />
+              <rect x="115" y="-200" width="4" height="1000" fill="url(#comuStreakShadow)" />
+              <rect x="215" y="-200" width="3" height="1000" fill="url(#comuStreakShadow)" opacity="0.65" />
+              <rect x="315" y="-200" width="4" height="1000" fill="url(#comuStreakShadow)" />
             </g>
-
-            {/* Rombo grande top-left — claro sutil */}
-            <g transform="rotate(45 120 150)">
-              <rect x="-20" y="50" width="280" height="280" fill="url(#comDiamondLight)" />
-              <rect x="-20" y="50" width="280" height="280" fill="none" stroke="#2A4898" strokeWidth="0.8" opacity="0.40" />
-            </g>
-
-            {/* Rombo medio top-right */}
-            <g transform="rotate(45 300 100)">
-              <rect x="180" y="20" width="240" height="240" fill="url(#comDiamondMid)" />
-              <rect x="180" y="20" width="240" height="240" fill="none" stroke="#2A4898" strokeWidth="0.7" opacity="0.35" />
-            </g>
-
-            {/* Rombo medio bottom-left */}
-            <g transform="rotate(45 100 400)">
-              <rect x="-30" y="300" width="260" height="260" fill="url(#comDiamondMid)" opacity="0.75" />
-              <rect x="-30" y="300" width="260" height="260" fill="none" stroke="#2A4898" strokeWidth="0.6" opacity="0.30" />
-            </g>
-
-            {/* Rombo medio bottom-right */}
-            <g transform="rotate(45 320 420)">
-              <rect x="200" y="320" width="240" height="240" fill="url(#comDiamondDark)" />
-              <rect x="200" y="320" width="240" height="240" fill="none" stroke="#1E3A80" strokeWidth="0.7" opacity="0.35" />
-            </g>
-
-            {/* Rombo pequeño accent centro */}
-            <g transform="rotate(45 220 260)">
-              <rect x="165" y="215" width="110" height="110" fill="url(#comDiamondLight)" opacity="0.55" />
-              <rect x="165" y="215" width="110" height="110" fill="none" stroke="#3A5AB0" strokeWidth="0.5" opacity="0.45" />
-            </g>
-
-            {/* Líneas hairline sutiles reforzando bordes diagonales */}
-            <line x1="0" y1="120" x2="280" y2="400" stroke="#2A4898" strokeWidth="0.6" opacity="0.35" />
-            <line x1="120" y1="0" x2="400" y2="280" stroke="#2A4898" strokeWidth="0.6" opacity="0.30" />
-            <line x1="0" y1="320" x2="200" y2="520" stroke="#1E3A80" strokeWidth="0.5" opacity="0.30" />
-            <line x1="200" y1="0" x2="420" y2="220" stroke="#1E3A80" strokeWidth="0.5" opacity="0.25" />
           </svg>
           {icon}
         </>
