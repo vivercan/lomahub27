@@ -302,7 +302,7 @@ export default function HomeDashboard() {
     const iconBottom = (() => {
       if (isConfig) return '10px'
       if (card.id === 'oportunidades') return '5px'   // bajar 5px más
-      if (card.id === 'operaciones') return '0px'     // al ras, el camión es wide
+      if (card.id === 'operaciones') return '-7px'    // camión más abajo (off-ras 7px)
       return '10px'
     })()
     // Para el camión (wide SVG con mucho padding vertical interno), empujar contenido al fondo
@@ -1109,7 +1109,12 @@ export default function HomeDashboard() {
           textAlign: 'left', width: '100%',
           marginTop: '6px',
           position: 'relative',
-          zIndex: 2,
+          zIndex: 3,
+          paddingRight: '110px', // reservar espacio para el icono (83px + 18px + margen)
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          boxSizing: 'border-box',
         }}>
           {card.statusText}
         </div>
