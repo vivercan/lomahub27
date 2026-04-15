@@ -94,6 +94,23 @@ body {
   to   { transform: rotate(360deg); }
 }
 
+/* Status dot pulse (solo para dots verdes activos) */
+@keyframes statusPulse {
+  0%   { box-shadow: 0 0 0 2px rgba(255,255,255,0.04), 0 0 8px rgba(34,197,94,0.55), 0 0 0 0 rgba(34,197,94,0.45); }
+  70%  { box-shadow: 0 0 0 2px rgba(255,255,255,0.04), 0 0 8px rgba(34,197,94,0.40), 0 0 0 8px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 2px rgba(255,255,255,0.04), 0 0 8px rgba(34,197,94,0.55), 0 0 0 0 rgba(34,197,94,0); }
+}
+.status-dot-pulse-green { animation: statusPulse 2.2s ease-in-out infinite; }
+
+/* KPI tabular numerals + subtle lift on hover via parent .dash-card */
+.kpi-value-num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'lnum' 1; }
+
+/* Twinkle aleatorio para las estrellas de Control de equipo */
+@keyframes twinkleSoft {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+
 /* T4: Remove spinner arrows from numeric inputs */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {

@@ -108,9 +108,9 @@ export default function HomeDashboard() {
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#3B82F6', gradient: 'linear-gradient(135deg, #5C9EFF 0%, #3B82F6 50%, #1E5CC5 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.14)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
     { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#2563EB', gradient: 'linear-gradient(135deg, #4F85F5 0%, #2563EB 50%, #1340B0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#1E3A8A', gradient: "url('/icons/dashboard/bg-comercial.svg') center/cover no-repeat, linear-gradient(135deg, #2F54B0 0%, #1E3A8A 50%, #122560 100%)", decorType: 'silk', decorColor: 'rgba(255,255,255,0.06)', iconFile: 'comercial.svg', iconOpacity: 0.16, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
-    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#60A5FA', gradient: 'linear-gradient(135deg, #8FC0FF 0%, #60A5FA 50%, #3A7FD4 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.18)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.20, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
+    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#60A5FA', gradient: 'linear-gradient(135deg, #60A5FA 0%, #2563EB 55%, #1E3A8A 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.14)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.20, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#2C3297', gradient: 'linear-gradient(135deg, #4149BD 0%, #2C3297 50%, #191E68 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.14)', iconFile: 'ingresos.svg', iconOpacity: 0.14, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#475569', gradient: 'linear-gradient(135deg, #667588 0%, #475569 50%, #2D3948 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#475569', gradient: 'radial-gradient(ellipse at 80% 15%, rgba(99,102,241,0.22) 0%, transparent 55%), linear-gradient(135deg, #64748B 0%, #475569 45%, #334155 75%, #1E293B 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
     { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#0F172A', gradient: "url('/icons/dashboard/bg-control-equipo.svg') center/cover no-repeat, linear-gradient(135deg, #1E293B 0%, #0F172A 50%, #050812 100%)", decorType: 'silk', decorColor: 'rgba(255,255,255,0.05)', iconFile: 'gps.svg', iconOpacity: 0.20, kpiValue: '', kpiLabel: '', statusDot: kpis.cajasGPS > 0 || kpis.thermosGPS > 0 ? 'green' : 'gray', statusText: `Cajas ${kpis.cajasGPS} · Thermos ${kpis.thermosGPS}`, gridColumn: '1 / 3', gridRow: '3 / 4' },
     { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#020617', gradient: 'linear-gradient(135deg, #0F172A 0%, #020617 50%, #00030A 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
@@ -128,7 +128,10 @@ export default function HomeDashboard() {
       radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.06) 0%, transparent 55%),
       ${card.gradient}
     `,
-    border: '1px solid rgba(255,255,255,0.05)',
+    // Hairline border visible en cards muy oscuras (config, control-equipo) sin afectar las claras
+    border: card.id === 'config' || card.id === 'autofomento'
+      ? '1px solid rgba(255,255,255,0.10)'
+      : '1px solid rgba(255,255,255,0.06)',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
@@ -1138,11 +1141,15 @@ export default function HomeDashboard() {
             filter: 'blur(0.5px)',
           }} />
         </div>
-        <div style={{
+        <div
+          className={card.statusDot === 'green' ? 'status-dot-pulse-green' : undefined}
+          style={{
           position: 'absolute', top: '16px', right: '16px',
           width: '7px', height: '7px', borderRadius: '50%',
           backgroundColor: DOT_COLORS[card.statusDot] || DOT_COLORS.gray,
-          boxShadow: `0 0 0 2px rgba(255,255,255,0.04), 0 0 8px ${DOT_COLORS[card.statusDot] || DOT_COLORS.gray}66`,
+          boxShadow: card.statusDot === 'green'
+            ? undefined // lo maneja la animación statusPulse
+            : `0 0 0 2px rgba(255,255,255,0.04), 0 0 8px ${DOT_COLORS[card.statusDot] || DOT_COLORS.gray}66`,
           zIndex: 3,
         }} />
         <div style={{
@@ -1170,7 +1177,9 @@ export default function HomeDashboard() {
           {card.label}
         </div>
         {card.kpiValue !== '' && (
-          <div style={{
+          <div
+            className="kpi-value-num"
+            style={{
             fontFamily: "'Montserrat', sans-serif",
             fontSize: '39px',
             fontWeight: 800,
