@@ -280,12 +280,12 @@ export default function HomeDashboard() {
     const isSolidWhiteIcon = ['oportunidades', 'servicio-clientes', 'ventas', 'comunicaciones', 'comercial'].includes(card.id)
     const isConfig = card.id === 'config'
     const iconSize = isConfig ? 72 : 83 // 72 * 1.15 = 82.8 ≈ 83
-    const iconOpacityFinal = isConfig ? card.iconOpacity : 0.9
+    const iconOpacityFinal = isConfig ? card.iconOpacity : 0.765 // 0.9 - 15% adicional
     const icon = card.iconFile && card.iconOpacity > 0 ? (
       <div
         style={{
           position: 'absolute',
-          right: '18px', bottom: '18px',
+          right: '18px', bottom: '15px',
           width: `${iconSize}px`,
           height: `${iconSize}px`,
           pointerEvents: 'none',
