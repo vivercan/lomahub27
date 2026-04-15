@@ -135,23 +135,27 @@ export default function HomeDashboard() {
     transform: isHovered
       ? 'translateY(-10px) scale(1.012)'
       : 'translateY(0) scale(1)',
-    // 3D premium: sombra ambiente profunda + contact shadow nítido + highlight interno top/bottom
+    // 3D con luz direccional top-left:
+    //   - highlight interno solo en top-left
+    //   - sombra interna sutil en bottom-right (vignette asimétrico)
+    //   - contact shadow nítido pegado al card (ancla)
+    //   - ambient shadow profunda (flota)
     boxShadow: isHovered
       ? `
-        0 40px 70px -24px rgba(0,0,0,0.55),
-        0 22px 38px -14px rgba(0,0,0,0.40),
-        0 8px 16px -6px rgba(0,0,0,0.28),
-        inset 0 1px 0 rgba(255,255,255,0.12),
-        inset 0 0 0 1px rgba(255,255,255,0.04),
-        inset 0 -1px 0 rgba(0,0,0,0.22)
+        0 2px 4px -1px rgba(0,0,0,0.55),
+        0 12px 22px -8px rgba(0,0,0,0.42),
+        0 36px 72px -20px rgba(0,0,0,0.55),
+        inset 2px 2px 0 rgba(255,255,255,0.14),
+        inset -2px -2px 0 rgba(0,0,0,0.22),
+        inset 0 0 24px rgba(0,0,0,0.18)
       `
       : `
-        0 22px 44px -18px rgba(0,0,0,0.48),
-        0 12px 22px -10px rgba(0,0,0,0.30),
-        0 4px 8px -2px rgba(0,0,0,0.20),
-        inset 0 1px 0 rgba(255,255,255,0.08),
-        inset 0 0 0 1px rgba(255,255,255,0.03),
-        inset 0 -1px 0 rgba(0,0,0,0.18)
+        0 1px 2px 0 rgba(0,0,0,0.48),
+        0 8px 16px -4px rgba(0,0,0,0.32),
+        0 22px 44px -12px rgba(0,0,0,0.42),
+        inset 2px 2px 0 rgba(255,255,255,0.10),
+        inset -2px -2px 0 rgba(0,0,0,0.18),
+        inset 0 0 18px rgba(0,0,0,0.14)
       `,
   })
 
@@ -279,10 +283,11 @@ export default function HomeDashboard() {
     // Icon universal — watermark discreto, tamaño uniforme
     // Config mantiene su tratamiento original (72px, emboss, iconOpacity original)
     // Los otros 7 cards: agrandados 15%, ~62% opacity, normalizados visualmente
-    const isSolidWhiteIcon = ['oportunidades', 'servicio-clientes', 'ventas', 'comunicaciones', 'comercial'].includes(card.id)
     const isConfig = card.id === 'config'
-    const iconSize = isConfig ? 72 : 83 // 72 * 1.15 = 82.8 ≈ 83
-    const iconOpacityFinal = isConfig ? card.iconOpacity : 0.69 // 0.765 - 10% adicional ≈ 0.69
+    // Iconos "fundidos" al card: mix-blend-mode overlay en vez de blanco puro
+    // → el icono tiñe la superficie subyacente en lugar de apilarse encima
+    const iconSize = isConfig ? 72 : 95 // más grande ahora que es watermark (antes 83)
+    const iconOpacityFinal = isConfig ? card.iconOpacity : 0.55 // overlay necesita más opacidad
     // Compensación de tamaño visual basado en el fill-ratio interno de cada SVG
     // (algunos SVGs tienen padding interno mayor; esto los normaliza)
     const iconVisualScale = (() => {
@@ -331,15 +336,10 @@ export default function HomeDashboard() {
             objectFit: 'contain',
             objectPosition: iconObjectPosition,
             opacity: iconOpacityFinal,
-            // Solid white: brillo pleno sin emboss; otros: emboss sutil
-            filter: isSolidWhiteIcon
-              ? 'brightness(0) invert(1)'
-              : `
-                brightness(0) invert(1)
-                drop-shadow(0 1px 0 rgba(255,255,255,0.15))
-                drop-shadow(0 3px 8px rgba(0,0,0,0.45))
-                drop-shadow(0 1px 2px rgba(0,0,0,0.30))
-              `,
+            // Config mantiene el look sólido blanco; los 7 cards usan overlay
+            // para que el icono se "funda" con el material del card (tiñe en vez de encimarse)
+            filter: 'brightness(0) invert(1)',
+            mixBlendMode: isConfig ? 'normal' : 'overlay',
           }}
         />
       </div>
@@ -1155,7 +1155,7 @@ export default function HomeDashboard() {
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      background: '#FFFFFF',
+      background: '#F1F2F5', // fondo ligeramente gris para que las sombras se lean mejor
       fontFamily: "'Montserrat', sans-serif",
       color: '#1E293B',
     }}>
