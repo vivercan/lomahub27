@@ -705,6 +705,7 @@ export default function HomeDashboard() {
                 <rect x="510" y="-180" width="40" height="900" fill="url(#opBandDark)" opacity="0.50" />
               </g>
             </svg>
+            {icon}
           </>
         )
       }
