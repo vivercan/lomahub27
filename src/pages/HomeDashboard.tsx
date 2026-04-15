@@ -288,7 +288,7 @@ export default function HomeDashboard() {
       switch (card.id) {
         case 'oportunidades': return 1.18 // fill interno 0.845 → compensar
         case 'comunicaciones': return 1.06 // fill interno 0.945 → compensar
-        case 'operaciones': return 1.06   // fill interno 0.940 → compensar
+        case 'operaciones': return 1.22   // 1.06 × 1.15 extra (camión wide, llenar más)
         case 'autofomento': return 1.00   // fill interno 0.996
         case 'servicio-clientes': return 1.00
         case 'comercial': return 1.00
@@ -298,11 +298,20 @@ export default function HomeDashboard() {
     })()
     const hoverScale = isHovered ? 1.04 : 1
     const combinedScale = hoverScale * iconVisualScale
+    // Per-card bottom offset (default 10px)
+    const iconBottom = (() => {
+      if (isConfig) return '10px'
+      if (card.id === 'oportunidades') return '5px'   // bajar 5px más
+      if (card.id === 'operaciones') return '0px'     // al ras, el camión es wide
+      return '10px'
+    })()
+    // Para el camión (wide SVG con mucho padding vertical interno), empujar contenido al fondo
+    const iconObjectPosition = card.id === 'operaciones' ? 'right bottom' : 'center center'
     const icon = card.iconFile && card.iconOpacity > 0 ? (
       <div
         style={{
           position: 'absolute',
-          right: '18px', bottom: '10px', // -5px extra
+          right: '18px', bottom: iconBottom,
           width: `${iconSize}px`,
           height: `${iconSize}px`,
           pointerEvents: 'none',
@@ -318,6 +327,7 @@ export default function HomeDashboard() {
             width: '100%',
             height: '100%',
             objectFit: 'contain',
+            objectPosition: iconObjectPosition,
             opacity: iconOpacityFinal,
             // Solid white: brillo pleno sin emboss; otros: emboss sutil
             filter: isSolidWhiteIcon
