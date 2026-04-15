@@ -1,58 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Overlay minimalista: red delgada con pocos nodos de luz.
-  Inspiración: Linear / Vercel / Attio — 5-6 puntos bien colocados,
-  líneas finas, mucho espacio negativo. Se superpone al #0F172A.
+  Overlay estilizado tipo "dark tech": franjas diagonales con luz azul sutil.
+  Base: #0F172A (slate-900). Aesthetic: sobrio, minimalista, tipo Tesla/Linear.
+  Sin estrellas/constelaciones — solo bandas de luz en diagonal y un par
+  de hairlines azul brillante en los cortes.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.85"/>
-      <stop offset="35%"  stop-color="#FFFFFF" stop-opacity="0.25"/>
-      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="bigGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="1"/>
-      <stop offset="25%"  stop-color="#FFFFFF" stop-opacity="0.35"/>
-      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
-    </radialGradient>
+    <!-- Gradient para franjas oscuras (blue→black) -->
+    <linearGradient id="darkBand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#1E3A8A" stop-opacity="0.35"/>
+      <stop offset="50%" stop-color="#0F172A" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.55"/>
+    </linearGradient>
+
+    <!-- Gradient para franjas azul medio brillantes -->
+    <linearGradient id="blueBand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#1E40AF" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#3B82F6" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#1E40AF" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Gradient para hairlines brillantes azul claro (acento) -->
+    <linearGradient id="hotLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"  stop-color="#60A5FA" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#93C5FD" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#60A5FA" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Gradient sombra inferior para profundidad -->
+    <linearGradient id="bottomShade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"  stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.45"/>
+    </linearGradient>
   </defs>
 
-  <!-- Líneas finas: solo conexiones esenciales entre los nodos principales -->
-  <g stroke="#FFFFFF" stroke-width="0.6" stroke-opacity="0.28" fill="none">
-    <line x1="220" y1="120" x2="520" y2="220"/>
-    <line x1="520" y1="220" x2="820" y2="110"/>
-    <line x1="820" y1="110" x2="1160" y2="280"/>
-    <line x1="1160" y1="280" x2="1420" y2="140"/>
-    <line x1="220" y1="120" x2="820" y2="110"/>
-    <line x1="520" y1="220" x2="1160" y2="280"/>
-  </g>
+  <!-- Viñeta inferior sutil para dar peso -->
+  <rect width="1600" height="400" fill="url(#bottomShade)"/>
 
-  <!-- 5 nodos principales bien espaciados — halos grandes -->
-  <circle cx="220"  cy="120" r="40" fill="url(#nodeGlow)"/>
-  <circle cx="520"  cy="220" r="48" fill="url(#bigGlow)"/>
-  <circle cx="820"  cy="110" r="44" fill="url(#nodeGlow)"/>
-  <circle cx="1160" cy="280" r="52" fill="url(#bigGlow)"/>
-  <circle cx="1420" cy="140" r="40" fill="url(#nodeGlow)"/>
+  <!-- Banda oscura diagonal izquierda (grande) -->
+  <polygon points="-50,-50 480,-50 180,450 -50,450" fill="url(#darkBand)" opacity="0.85"/>
 
-  <!-- Nodos duros centrales (puntos de luz nítidos) -->
-  <g fill="#FFFFFF">
-    <circle cx="220"  cy="120" r="2.8"/>
-    <circle cx="520"  cy="220" r="3.2"/>
-    <circle cx="820"  cy="110" r="3.0"/>
-    <circle cx="1160" cy="280" r="3.4"/>
-    <circle cx="1420" cy="140" r="2.8"/>
-  </g>
+  <!-- Banda azul brillante diagonal media-izquierda -->
+  <polygon points="280,-50 420,-50 140,450 0,450" fill="url(#blueBand)"/>
 
-  <!-- Polvo estelar muy discreto (solo 8 puntitos dispersos) -->
-  <g fill="#FFFFFF" opacity="0.35">
-    <circle cx="110"  cy="300" r="0.9"/>
-    <circle cx="380"  cy="60"  r="0.8"/>
-    <circle cx="680"  cy="340" r="0.8"/>
-    <circle cx="980"  cy="60"  r="0.9"/>
-    <circle cx="1300" cy="340" r="0.8"/>
-    <circle cx="1520" cy="280" r="0.8"/>
-    <circle cx="60"   cy="180" r="0.7"/>
-    <circle cx="1560" cy="80"  r="0.7"/>
+  <!-- Banda oscura central-izquierda delgada -->
+  <polygon points="500,-50 560,-50 280,450 220,450" fill="#000000" opacity="0.45"/>
+
+  <!-- Hairline azul brillante en el corte entre banda oscura y azul -->
+  <polygon points="470,-50 478,-50 198,450 190,450" fill="url(#hotLine)"/>
+
+  <!-- Banda azul brillante central -->
+  <polygon points="720,-50 880,-50 600,450 440,450" fill="url(#blueBand)" opacity="0.75"/>
+
+  <!-- Banda oscura diagonal central-derecha -->
+  <polygon points="920,-50 1060,-50 780,450 640,450" fill="url(#darkBand)" opacity="0.70"/>
+
+  <!-- Hairline azul brillante largo (acento principal) -->
+  <polygon points="1040,-50 1046,-50 766,450 760,450" fill="url(#hotLine)" opacity="0.9"/>
+
+  <!-- Banda azul brillante derecha -->
+  <polygon points="1220,-50 1380,-50 1100,450 940,450" fill="url(#blueBand)" opacity="0.60"/>
+
+  <!-- Banda oscura extrema derecha -->
+  <polygon points="1440,-50 1650,-50 1650,450 1170,450" fill="url(#darkBand)" opacity="0.80"/>
+
+  <!-- Hairline azul brillante derecha (acento secundario, más sutil) -->
+  <polygon points="1400,-50 1404,-50 1124,450 1120,450" fill="url(#hotLine)" opacity="0.55"/>
+
+  <!-- Thin stripes para textura sutil tipo "lámina metálica cepillada" -->
+  <g opacity="0.06" fill="#FFFFFF">
+    <polygon points="-50,120 1650,-280 1650,-276 -50,124"/>
+    <polygon points="-50,280 1650,-120 1650,-116 -50,284"/>
+    <polygon points="-50,440 1650,40 1650,44 -50,444"/>
   </g>
 </svg>

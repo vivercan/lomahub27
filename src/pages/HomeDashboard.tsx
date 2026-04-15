@@ -123,11 +123,19 @@ export default function HomeDashboard() {
     minHeight: 0,
     borderRadius: '20px',
     padding: '26px',
-    // Fondo sobrio: gradiente base + viñeta muy sutil para profundidad premium
-    background: `
-      radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.06) 0%, transparent 55%),
-      ${card.gradient}
-    `,
+    // Fondo sobrio: gradiente base + viñeta muy sutil para profundidad premium.
+    // Para cards de fondo claro (Operaciones #60A5FA) se aplica una viñeta OSCURA
+    // en la zona del texto para garantizar contraste WCAG AA con texto blanco.
+    background: card.id === 'operaciones'
+      ? `
+        radial-gradient(ellipse at 15% 10%, rgba(15,23,42,0.45) 0%, rgba(15,23,42,0.18) 35%, transparent 65%),
+        linear-gradient(180deg, rgba(15,23,42,0.12) 0%, transparent 50%),
+        ${card.gradient}
+      `
+      : `
+        radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.06) 0%, transparent 55%),
+        ${card.gradient}
+      `,
     // Hairline border visible en cards muy oscuras (config, control-equipo) sin afectar las claras
     border: card.id === 'config' || card.id === 'autofomento'
       ? '1px solid rgba(255,255,255,0.10)'
@@ -1091,10 +1099,11 @@ export default function HomeDashboard() {
 
   const renderCard = (card: CardConfig) => {
     const isHovered = hoveredCard === card.id
-    // Todos los cards con fondos oscuros → texto blanco.
-    const isLightBg = false
-    const textColor = isLightBg ? '#0F172A' : '#FFFFFF'
-    const mutedColor = isLightBg ? 'rgba(15,23,42,0.65)' : 'rgba(255,255,255,0.72)'
+    // Cards con fondo claro (Operaciones #60A5FA) necesitan mutedColor más opaco
+    // para que el statusText a 12px sea legible (WCAG AA).
+    const isLightCard = card.id === 'operaciones'
+    const textColor = '#FFFFFF'
+    const mutedColor = isLightCard ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.72)'
     return (
       <div
         key={card.id}
