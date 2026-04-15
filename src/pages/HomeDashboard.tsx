@@ -74,13 +74,20 @@ export default function HomeDashboard() {
         supabase.from('cajas').select('*', { count: 'exact', head: true }).eq('activo', true),
       ])
       const totalAlertas = (viajesRiesgo ?? 0) + (notifUnread ?? 0)
+      // TODO WidgeTech: reemplazar por conteo real desde endpoint de GPS.
+      // Por ahora distribuimos el total de unidades_gps en dos categorías
+      // asumiendo que el ~30% son thermos y el ~70% cajas secas (calibrar con datos reales)
+      const totalGps = gps ?? 0
+      const thermosGPS = Math.floor(totalGps * 0.3)
+      const cajasGPS = totalGps - thermosGPS
       setKpis({
         leadsActivos: leads ?? 0, viajesActivos: viajes ?? 0,
         clientes: clientes ?? 0, segmentosDedicados: dedicados ?? 0,
-        cuentasCxc: cxc ?? 0, unidadesGps: gps ?? 0,
+        cuentasCxc: cxc ?? 0, unidadesGps: totalGps,
         alertasHoy: totalAlertas, formatosActivos: formatosActivos ?? 0,
         leadsPipeline: leads ?? 0, tractosTotal: tractos ?? 0,
         cajasTotal: cajas ?? 0,
+        cajasGPS, thermosGPS,
       })
     } catch (err) {
       console.error('Error fetching KPIs:', err)
@@ -95,7 +102,7 @@ export default function HomeDashboard() {
 
   const mainCards: CardConfig[] = [
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#02103A', gradient: 'linear-gradient(135deg, #031858 0%, #021244 50%, #010826 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#020718', gradient: 'linear-gradient(135deg, #030A22 0%, #010614 50%, #000308 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#0E1838', gradient: 'linear-gradient(135deg, #1C2C5A 0%, #0E1838 50%, #040A20 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFB810', gradient: 'linear-gradient(135deg, #FFC820 0%, #FFA808 55%, #FF7A00 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #1E55D0 0%, #0B3AB5 50%, #062478 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #3A85F5 0%, #1868E8 50%, #0A3BA0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'ingresos.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
@@ -143,17 +150,17 @@ export default function HomeDashboard() {
     //   - ambient shadow profunda (flota)
     boxShadow: isHovered
       ? `
-        0 2px 4px -1px rgba(0,0,0,0.55),
-        0 12px 22px -8px rgba(0,0,0,0.42),
-        0 36px 72px -20px rgba(0,0,0,0.55),
+        0 3px 5px -1px rgba(0,0,0,0.70),
+        0 14px 26px -8px rgba(0,0,0,0.48),
+        0 38px 76px -20px rgba(0,0,0,0.58),
         inset 2px 2px 0 rgba(255,255,255,0.14),
         inset -2px -2px 0 rgba(0,0,0,0.22),
         inset 0 0 24px rgba(0,0,0,0.18)
       `
       : `
-        0 1px 2px 0 rgba(0,0,0,0.48),
-        0 8px 16px -4px rgba(0,0,0,0.32),
-        0 22px 44px -12px rgba(0,0,0,0.42),
+        0 2px 4px 0 rgba(0,0,0,0.65),
+        0 10px 18px -4px rgba(0,0,0,0.38),
+        0 24px 48px -12px rgba(0,0,0,0.46),
         inset 2px 2px 0 rgba(255,255,255,0.10),
         inset -2px -2px 0 rgba(0,0,0,0.18),
         inset 0 0 18px rgba(0,0,0,0.14)
@@ -325,6 +332,9 @@ export default function HomeDashboard() {
       return '10px'
     })()
     const iconObjectPosition = card.id === 'operaciones' ? 'right bottom' : 'center center'
+    // Cards brillantes (yellow/green) → icono oscuro con multiply para "grabar" en el material
+    // (blanco con emboss se ve encimado sobre fondos brillantes)
+    const isBrightBg = card.id === 'comercial' || card.id === 'autofomento'
     const icon = card.iconFile && card.iconOpacity > 0 ? (
       <div
         style={{
@@ -346,17 +356,23 @@ export default function HomeDashboard() {
             height: '100%',
             objectFit: 'contain',
             objectPosition: iconObjectPosition,
-            opacity: iconOpacityFinal,
-            // Emboss uniforme tipo "tallado en la superficie" (mismo tratamiento en los 8 cards):
-            //   · brightness(0) invert(1) → icono blanco puro
-            //   · highlight superior sutil (simula luz arriba)
-            //   · doble sombra inferior (simula profundidad debajo)
-            filter: `
-              brightness(0) invert(1)
-              drop-shadow(0 1px 0 rgba(255,255,255,0.25))
-              drop-shadow(0 3px 8px rgba(0,0,0,0.55))
-              drop-shadow(0 1px 2px rgba(0,0,0,0.40))
-            `,
+            // Bright cards: icono oscuro con multiply (se tiñe al color oscuro del card → "grabado")
+            // Dark cards: icono blanco puro con emboss (se ve "tallado en relieve" sobre la superficie)
+            opacity: isBrightBg ? 0.55 : iconOpacityFinal,
+            filter: isBrightBg
+              ? `
+                brightness(0)
+                drop-shadow(0 -1px 0 rgba(0,0,0,0.35))
+                drop-shadow(0 2px 3px rgba(255,255,255,0.35))
+                drop-shadow(0 1px 2px rgba(0,0,0,0.25))
+              `
+              : `
+                brightness(0) invert(1)
+                drop-shadow(0 1px 0 rgba(255,255,255,0.25))
+                drop-shadow(0 3px 8px rgba(0,0,0,0.55))
+                drop-shadow(0 1px 2px rgba(0,0,0,0.40))
+              `,
+            mixBlendMode: isBrightBg ? 'multiply' : 'normal',
           }}
         />
       </div>
