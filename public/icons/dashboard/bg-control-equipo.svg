@@ -1,198 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Overlay monocromo translúcido: constelación en tonos blanco/blanco-tenue.
-  Se superpone al color base del card (#0F172A Azul marino oscuro);
-  la red de nodos se nota claramente sobre el color base.
+  Overlay minimalista: red delgada con pocos nodos de luz.
+  Inspiración: Linear / Vercel / Attio — 5-6 puntos bien colocados,
+  líneas finas, mucho espacio negativo. Se superpone al #0F172A.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" preserveAspectRatio="xMidYMid slice">
   <defs>
     <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
       <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.85"/>
-      <stop offset="40%"  stop-color="#FFFFFF" stop-opacity="0.30"/>
-      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.70"/>
-      <stop offset="50%"  stop-color="#FFFFFF" stop-opacity="0.18"/>
+      <stop offset="35%"  stop-color="#FFFFFF" stop-opacity="0.25"/>
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="bigGlow" cx="50%" cy="50%" r="50%">
       <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="1"/>
-      <stop offset="30%"  stop-color="#FFFFFF" stop-opacity="0.35"/>
+      <stop offset="25%"  stop-color="#FFFFFF" stop-opacity="0.35"/>
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
-  <!-- Líneas de red (más visibles) -->
-  <g stroke="#FFFFFF" stroke-width="0.9" stroke-opacity="0.40" fill="none">
-    <line x1="60" y1="70" x2="180" y2="30"/>
-    <line x1="180" y1="30" x2="250" y2="130"/>
-    <line x1="250" y1="130" x2="60" y2="70"/>
-    <line x1="180" y1="30" x2="320" y2="90"/>
-    <line x1="320" y1="90" x2="250" y2="130"/>
-    <line x1="60" y1="70" x2="90" y2="190"/>
-    <line x1="90" y1="190" x2="250" y2="130"/>
-    <line x1="90" y1="190" x2="140" y2="300"/>
-    <line x1="140" y1="300" x2="260" y2="260"/>
-    <line x1="260" y1="260" x2="90" y2="190"/>
-    <line x1="260" y1="260" x2="320" y2="90"/>
-    <line x1="260" y1="260" x2="410" y2="230"/>
-    <line x1="410" y1="230" x2="320" y2="90"/>
-    <line x1="140" y1="300" x2="220" y2="370"/>
-
-    <line x1="520" y1="80" x2="640" y2="40"/>
-    <line x1="640" y1="40" x2="730" y2="120"/>
-    <line x1="730" y1="120" x2="520" y2="80"/>
-    <line x1="640" y1="40" x2="860" y2="90"/>
-    <line x1="860" y1="90" x2="730" y2="120"/>
-    <line x1="730" y1="120" x2="680" y2="230"/>
-    <line x1="680" y1="230" x2="860" y2="90"/>
-    <line x1="680" y1="230" x2="820" y2="270"/>
-    <line x1="820" y1="270" x2="860" y2="90"/>
-    <line x1="820" y1="270" x2="940" y2="190"/>
-    <line x1="940" y1="190" x2="860" y2="90"/>
-    <line x1="680" y1="230" x2="560" y2="290"/>
-    <line x1="560" y1="290" x2="820" y2="270"/>
-    <line x1="820" y1="270" x2="700" y2="360"/>
-    <line x1="700" y1="360" x2="560" y2="290"/>
-
-    <line x1="1020" y1="60" x2="1150" y2="40"/>
-    <line x1="1150" y1="40" x2="1240" y2="140"/>
-    <line x1="1240" y1="140" x2="1020" y2="60"/>
-    <line x1="1150" y1="40" x2="1350" y2="90"/>
-    <line x1="1350" y1="90" x2="1240" y2="140"/>
-    <line x1="1350" y1="90" x2="1480" y2="60"/>
-    <line x1="1480" y1="60" x2="1240" y2="140"/>
-    <line x1="1240" y1="140" x2="1170" y2="230"/>
-    <line x1="1170" y1="230" x2="1350" y2="90"/>
-    <line x1="1170" y1="230" x2="1330" y2="260"/>
-    <line x1="1330" y1="260" x2="1240" y2="140"/>
-    <line x1="1330" y1="260" x2="1450" y2="210"/>
-    <line x1="1450" y1="210" x2="1350" y2="90"/>
-    <line x1="1450" y1="210" x2="1550" y2="130"/>
-    <line x1="1550" y1="130" x2="1480" y2="60"/>
-    <line x1="1170" y1="230" x2="1080" y2="330"/>
-    <line x1="1080" y1="330" x2="1330" y2="260"/>
-    <line x1="1330" y1="260" x2="1220" y2="370"/>
-    <line x1="1220" y1="370" x2="1080" y2="330"/>
-    <line x1="1450" y1="210" x2="1390" y2="340"/>
-    <line x1="1390" y1="340" x2="1330" y2="260"/>
-    <line x1="1550" y1="130" x2="1500" y2="300"/>
-    <line x1="1500" y1="300" x2="1450" y2="210"/>
+  <!-- Líneas finas: solo conexiones esenciales entre los nodos principales -->
+  <g stroke="#FFFFFF" stroke-width="0.6" stroke-opacity="0.28" fill="none">
+    <line x1="220" y1="120" x2="520" y2="220"/>
+    <line x1="520" y1="220" x2="820" y2="110"/>
+    <line x1="820" y1="110" x2="1160" y2="280"/>
+    <line x1="1160" y1="280" x2="1420" y2="140"/>
+    <line x1="220" y1="120" x2="820" y2="110"/>
+    <line x1="520" y1="220" x2="1160" y2="280"/>
   </g>
 
-  <!-- Halos grandes (nodos principales) — ampliados -->
-  <circle cx="180"  cy="30"  r="32" fill="url(#nodeGlow)"/>
-  <circle cx="320"  cy="90"  r="26" fill="url(#nodeGlow)"/>
-  <circle cx="140"  cy="300" r="28" fill="url(#nodeGlow)"/>
-  <circle cx="860"  cy="90"  r="36" fill="url(#bigGlow)"/>
-  <circle cx="820"  cy="270" r="28" fill="url(#nodeGlow)"/>
-  <circle cx="1150" cy="40"  r="30" fill="url(#nodeGlow)"/>
-  <circle cx="1350" cy="90"  r="34" fill="url(#bigGlow)"/>
-  <circle cx="1330" cy="260" r="28" fill="url(#nodeGlow)"/>
-  <circle cx="1450" cy="210" r="26" fill="url(#nodeGlow)"/>
+  <!-- 5 nodos principales bien espaciados — halos grandes -->
+  <circle cx="220"  cy="120" r="40" fill="url(#nodeGlow)"/>
+  <circle cx="520"  cy="220" r="48" fill="url(#bigGlow)"/>
+  <circle cx="820"  cy="110" r="44" fill="url(#nodeGlow)"/>
+  <circle cx="1160" cy="280" r="52" fill="url(#bigGlow)"/>
+  <circle cx="1420" cy="140" r="40" fill="url(#nodeGlow)"/>
 
-  <!-- Halos pequeños (estrellas secundarias) — ampliados -->
-  <g>
-    <circle cx="60"   cy="70"  r="15" fill="url(#starGlow)"/>
-    <circle cx="250"  cy="130" r="15" fill="url(#starGlow)"/>
-    <circle cx="90"   cy="190" r="12" fill="url(#starGlow)"/>
-    <circle cx="260"  cy="260" r="13" fill="url(#starGlow)"/>
-    <circle cx="410"  cy="230" r="12" fill="url(#starGlow)"/>
-    <circle cx="220"  cy="370" r="11" fill="url(#starGlow)"/>
-    <circle cx="520"  cy="80"  r="12" fill="url(#starGlow)"/>
-    <circle cx="640"  cy="40"  r="14" fill="url(#starGlow)"/>
-    <circle cx="730"  cy="120" r="13" fill="url(#starGlow)"/>
-    <circle cx="680"  cy="230" r="13" fill="url(#starGlow)"/>
-    <circle cx="940"  cy="190" r="11" fill="url(#starGlow)"/>
-    <circle cx="560"  cy="290" r="12" fill="url(#starGlow)"/>
-    <circle cx="700"  cy="360" r="10" fill="url(#starGlow)"/>
-    <circle cx="1020" cy="60"  r="12" fill="url(#starGlow)"/>
-    <circle cx="1240" cy="140" r="14" fill="url(#starGlow)"/>
-    <circle cx="1480" cy="60"  r="13" fill="url(#starGlow)"/>
-    <circle cx="1170" cy="230" r="13" fill="url(#starGlow)"/>
-    <circle cx="1550" cy="130" r="11" fill="url(#starGlow)"/>
-    <circle cx="1080" cy="330" r="11" fill="url(#starGlow)"/>
-    <circle cx="1220" cy="370" r="10" fill="url(#starGlow)"/>
-    <circle cx="1390" cy="340" r="11" fill="url(#starGlow)"/>
-    <circle cx="1500" cy="300" r="11" fill="url(#starGlow)"/>
+  <!-- Nodos duros centrales (puntos de luz nítidos) -->
+  <g fill="#FFFFFF">
+    <circle cx="220"  cy="120" r="2.8"/>
+    <circle cx="520"  cy="220" r="3.2"/>
+    <circle cx="820"  cy="110" r="3.0"/>
+    <circle cx="1160" cy="280" r="3.4"/>
+    <circle cx="1420" cy="140" r="2.8"/>
   </g>
 
-  <!-- Nodos duros principales -->
-  <g fill="#FFFFFF" opacity="1">
-    <circle cx="180"  cy="30"  r="3.4"/>
-    <circle cx="320"  cy="90"  r="3"/>
-    <circle cx="140"  cy="300" r="3.2"/>
-    <circle cx="860"  cy="90"  r="3.8"/>
-    <circle cx="820"  cy="270" r="3.2"/>
-    <circle cx="1150" cy="40"  r="3.4"/>
-    <circle cx="1350" cy="90"  r="3.8"/>
-    <circle cx="1330" cy="260" r="3.2"/>
-    <circle cx="1450" cy="210" r="3"/>
-  </g>
-
-  <!-- Nodos secundarios -->
-  <g fill="#FFFFFF" opacity="0.88">
-    <circle cx="60"   cy="70"  r="2.2"/>
-    <circle cx="250"  cy="130" r="2.2"/>
-    <circle cx="90"   cy="190" r="2"/>
-    <circle cx="260"  cy="260" r="2.1"/>
-    <circle cx="410"  cy="230" r="2"/>
-    <circle cx="220"  cy="370" r="1.8"/>
-    <circle cx="520"  cy="80"  r="2"/>
-    <circle cx="640"  cy="40"  r="2.3"/>
-    <circle cx="730"  cy="120" r="2.1"/>
-    <circle cx="680"  cy="230" r="2.1"/>
-    <circle cx="940"  cy="190" r="1.9"/>
-    <circle cx="560"  cy="290" r="2"/>
-    <circle cx="700"  cy="360" r="1.7"/>
-    <circle cx="1020" cy="60"  r="2"/>
-    <circle cx="1240" cy="140" r="2.3"/>
-    <circle cx="1480" cy="60"  r="2.2"/>
-    <circle cx="1170" cy="230" r="2.1"/>
-    <circle cx="1550" cy="130" r="1.9"/>
-    <circle cx="1080" cy="330" r="1.9"/>
-    <circle cx="1220" cy="370" r="1.7"/>
-    <circle cx="1390" cy="340" r="1.9"/>
-    <circle cx="1500" cy="300" r="1.9"/>
-  </g>
-
-  <!-- Polvo estelar (más visible) -->
-  <g fill="#FFFFFF" opacity="0.60">
-    <circle cx="30"   cy="150" r="1.1"/>
-    <circle cx="115"  cy="110" r="1.0"/>
-    <circle cx="200"  cy="180" r="1.1"/>
-    <circle cx="370"  cy="50"  r="0.9"/>
-    <circle cx="380"  cy="170" r="1.0"/>
-    <circle cx="450"  cy="100" r="1.0"/>
-    <circle cx="300"  cy="210" r="0.9"/>
-    <circle cx="160"  cy="240" r="0.9"/>
-    <circle cx="220"  cy="60"  r="0.9"/>
-    <circle cx="50"   cy="330" r="1.0"/>
-    <circle cx="330"  cy="320" r="0.9"/>
-    <circle cx="480"  cy="300" r="0.9"/>
-    <circle cx="600"  cy="160" r="1.0"/>
-    <circle cx="580"  cy="210" r="0.9"/>
-    <circle cx="770"  cy="60"  r="0.9"/>
-    <circle cx="790"  cy="190" r="1.0"/>
-    <circle cx="900"  cy="260" r="0.9"/>
-    <circle cx="960"  cy="110" r="0.9"/>
-    <circle cx="880"  cy="330" r="0.9"/>
-    <circle cx="630"  cy="310" r="0.9"/>
-    <circle cx="540"  cy="180" r="0.9"/>
-    <circle cx="470"  cy="370" r="0.9"/>
-    <circle cx="990"  cy="310" r="0.9"/>
-    <circle cx="1050" cy="180" r="1.0"/>
-    <circle cx="1110" cy="110" r="0.9"/>
-    <circle cx="1190" cy="300" r="0.9"/>
-    <circle cx="1280" cy="210" r="1.0"/>
-    <circle cx="1310" cy="40"  r="0.9"/>
-    <circle cx="1410" cy="130" r="0.9"/>
-    <circle cx="1430" cy="30"  r="0.9"/>
-    <circle cx="1520" cy="370" r="0.9"/>
-    <circle cx="1570" cy="230" r="0.9"/>
-    <circle cx="1260" cy="340" r="0.9"/>
-    <circle cx="1050" cy="370" r="0.9"/>
-    <circle cx="380"  cy="350" r="0.9"/>
+  <!-- Polvo estelar muy discreto (solo 8 puntitos dispersos) -->
+  <g fill="#FFFFFF" opacity="0.35">
+    <circle cx="110"  cy="300" r="0.9"/>
+    <circle cx="380"  cy="60"  r="0.8"/>
+    <circle cx="680"  cy="340" r="0.8"/>
+    <circle cx="980"  cy="60"  r="0.9"/>
+    <circle cx="1300" cy="340" r="0.8"/>
+    <circle cx="1520" cy="280" r="0.8"/>
+    <circle cx="60"   cy="180" r="0.7"/>
+    <circle cx="1560" cy="80"  r="0.7"/>
   </g>
 </svg>
