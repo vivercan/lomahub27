@@ -1,34 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Overlay monocromo translúcido: constelación en tonos blanco/blanco-tenue.
+  Se superpone al color base del card (#0F172A Azul marino oscuro);
+  la red de nodos se nota pero el color base manda.
+-->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <!-- Fondo base: navy profundo a negro, más luz en el borde izquierdo -->
-    <linearGradient id="nightBg" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%"   stop-color="#0A1F6F"/>
-      <stop offset="25%"  stop-color="#061244"/>
-      <stop offset="55%"  stop-color="#020828"/>
-      <stop offset="100%" stop-color="#000510"/>
-    </linearGradient>
-
-    <!-- Glow de nodo brillante (halo radial) -->
     <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%"   stop-color="#6AB0FF" stop-opacity="0.85"/>
-      <stop offset="40%"  stop-color="#2A70E0" stop-opacity="0.35"/>
-      <stop offset="100%" stop-color="#0A2280" stop-opacity="0"/>
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="40%"  stop-color="#FFFFFF" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </radialGradient>
-
-    <!-- Glow pequeño (estrella secundaria) -->
     <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%"   stop-color="#BFDBFF" stop-opacity="0.9"/>
-      <stop offset="50%"  stop-color="#4A90E2" stop-opacity="0.25"/>
-      <stop offset="100%" stop-color="#0A2280" stop-opacity="0"/>
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.45"/>
+      <stop offset="50%"  stop-color="#FFFFFF" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
-  <!-- Fondo -->
-  <rect width="1600" height="400" fill="url(#nightBg)"/>
-
-  <!-- Líneas de red (constelación) — azul tenue, finas -->
-  <g stroke="#3E7FE0" stroke-width="0.7" stroke-opacity="0.55" fill="none">
+  <!-- Líneas de red -->
+  <g stroke="#FFFFFF" stroke-width="0.7" stroke-opacity="0.22" fill="none">
     <!-- Cluster izquierdo -->
     <line x1="60" y1="70" x2="180" y2="30"/>
     <line x1="180" y1="30" x2="250" y2="130"/>
@@ -45,7 +36,7 @@
     <line x1="410" y1="230" x2="320" y2="90"/>
     <line x1="140" y1="300" x2="220" y2="370"/>
 
-    <!-- Cluster central-derecha -->
+    <!-- Cluster central -->
     <line x1="520" y1="80" x2="640" y2="40"/>
     <line x1="640" y1="40" x2="730" y2="120"/>
     <line x1="730" y1="120" x2="520" y2="80"/>
@@ -88,7 +79,7 @@
     <line x1="1500" y1="300" x2="1450" y2="210"/>
   </g>
 
-  <!-- Halos de nodos brillantes (radiales grandes) -->
+  <!-- Halos grandes (nodos principales) -->
   <circle cx="180"  cy="30"  r="28" fill="url(#nodeGlow)"/>
   <circle cx="320"  cy="90"  r="22" fill="url(#nodeGlow)"/>
   <circle cx="140"  cy="300" r="24" fill="url(#nodeGlow)"/>
@@ -100,31 +91,33 @@
   <circle cx="1450" cy="210" r="22" fill="url(#nodeGlow)"/>
 
   <!-- Halos pequeños (estrellas secundarias) -->
-  <circle cx="60"   cy="70"  r="12" fill="url(#starGlow)"/>
-  <circle cx="250"  cy="130" r="12" fill="url(#starGlow)"/>
-  <circle cx="90"   cy="190" r="10" fill="url(#starGlow)"/>
-  <circle cx="260"  cy="260" r="11" fill="url(#starGlow)"/>
-  <circle cx="410"  cy="230" r="10" fill="url(#starGlow)"/>
-  <circle cx="220"  cy="370" r="9"  fill="url(#starGlow)"/>
-  <circle cx="520"  cy="80"  r="10" fill="url(#starGlow)"/>
-  <circle cx="640"  cy="40"  r="12" fill="url(#starGlow)"/>
-  <circle cx="730"  cy="120" r="11" fill="url(#starGlow)"/>
-  <circle cx="680"  cy="230" r="11" fill="url(#starGlow)"/>
-  <circle cx="940"  cy="190" r="9"  fill="url(#starGlow)"/>
-  <circle cx="560"  cy="290" r="10" fill="url(#starGlow)"/>
-  <circle cx="700"  cy="360" r="8"  fill="url(#starGlow)"/>
-  <circle cx="1020" cy="60"  r="10" fill="url(#starGlow)"/>
-  <circle cx="1240" cy="140" r="12" fill="url(#starGlow)"/>
-  <circle cx="1480" cy="60"  r="11" fill="url(#starGlow)"/>
-  <circle cx="1170" cy="230" r="11" fill="url(#starGlow)"/>
-  <circle cx="1550" cy="130" r="9"  fill="url(#starGlow)"/>
-  <circle cx="1080" cy="330" r="9"  fill="url(#starGlow)"/>
-  <circle cx="1220" cy="370" r="8"  fill="url(#starGlow)"/>
-  <circle cx="1390" cy="340" r="9"  fill="url(#starGlow)"/>
-  <circle cx="1500" cy="300" r="9"  fill="url(#starGlow)"/>
+  <g>
+    <circle cx="60"   cy="70"  r="12" fill="url(#starGlow)"/>
+    <circle cx="250"  cy="130" r="12" fill="url(#starGlow)"/>
+    <circle cx="90"   cy="190" r="10" fill="url(#starGlow)"/>
+    <circle cx="260"  cy="260" r="11" fill="url(#starGlow)"/>
+    <circle cx="410"  cy="230" r="10" fill="url(#starGlow)"/>
+    <circle cx="220"  cy="370" r="9"  fill="url(#starGlow)"/>
+    <circle cx="520"  cy="80"  r="10" fill="url(#starGlow)"/>
+    <circle cx="640"  cy="40"  r="12" fill="url(#starGlow)"/>
+    <circle cx="730"  cy="120" r="11" fill="url(#starGlow)"/>
+    <circle cx="680"  cy="230" r="11" fill="url(#starGlow)"/>
+    <circle cx="940"  cy="190" r="9"  fill="url(#starGlow)"/>
+    <circle cx="560"  cy="290" r="10" fill="url(#starGlow)"/>
+    <circle cx="700"  cy="360" r="8"  fill="url(#starGlow)"/>
+    <circle cx="1020" cy="60"  r="10" fill="url(#starGlow)"/>
+    <circle cx="1240" cy="140" r="12" fill="url(#starGlow)"/>
+    <circle cx="1480" cy="60"  r="11" fill="url(#starGlow)"/>
+    <circle cx="1170" cy="230" r="11" fill="url(#starGlow)"/>
+    <circle cx="1550" cy="130" r="9"  fill="url(#starGlow)"/>
+    <circle cx="1080" cy="330" r="9"  fill="url(#starGlow)"/>
+    <circle cx="1220" cy="370" r="8"  fill="url(#starGlow)"/>
+    <circle cx="1390" cy="340" r="9"  fill="url(#starGlow)"/>
+    <circle cx="1500" cy="300" r="9"  fill="url(#starGlow)"/>
+  </g>
 
-  <!-- Nodos (puntos duros, centro del halo) -->
-  <g fill="#BFDBFF">
+  <!-- Nodos duros principales -->
+  <g fill="#FFFFFF" opacity="0.85">
     <circle cx="180"  cy="30"  r="2.8"/>
     <circle cx="320"  cy="90"  r="2.5"/>
     <circle cx="140"  cy="300" r="2.6"/>
@@ -136,7 +129,8 @@
     <circle cx="1450" cy="210" r="2.5"/>
   </g>
 
-  <g fill="#8EC0FF">
+  <!-- Nodos secundarios -->
+  <g fill="#FFFFFF" opacity="0.65">
     <circle cx="60"   cy="70"  r="1.8"/>
     <circle cx="250"  cy="130" r="1.8"/>
     <circle cx="90"   cy="190" r="1.6"/>
@@ -161,8 +155,8 @@
     <circle cx="1500" cy="300" r="1.5"/>
   </g>
 
-  <!-- Partículas pequeñas dispersas (polvo estelar) -->
-  <g fill="#6AA0FF" opacity="0.55">
+  <!-- Polvo estelar -->
+  <g fill="#FFFFFF" opacity="0.35">
     <circle cx="30"   cy="150" r="0.9"/>
     <circle cx="115"  cy="110" r="0.8"/>
     <circle cx="200"  cy="180" r="0.9"/>
@@ -199,7 +193,4 @@
     <circle cx="1050" cy="370" r="0.7"/>
     <circle cx="380"  cy="350" r="0.7"/>
   </g>
-
-  <!-- Veil sutil en el tercio derecho para profundidad -->
-  <rect x="900" y="0" width="700" height="400" fill="#000510" opacity="0.18"/>
 </svg>
