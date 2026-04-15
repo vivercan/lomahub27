@@ -1,74 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Overlay estilizado tipo "dark tech": franjas diagonales con luz azul sutil.
-  Base: #0F172A (slate-900). Aesthetic: sobrio, minimalista, tipo Tesla/Linear.
-  Sin estrellas/constelaciones — solo bandas de luz en diagonal y un par
-  de hairlines azul brillante en los cortes.
+  Overlay estilo "dark metal premium": franjas diagonales sutiles en azul oscuro + gris plata.
+  Base del card: #0A1F44 (navy profundo). Inspiración: referencia del usuario con stripes
+  diagonales metálicas + halftone de puntos muy sutil. Todo a opacidades bajas (0.04-0.18)
+  para que NO domine sobre el color base — solo aporta textura.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <!-- Gradient para franjas oscuras (blue→black) -->
-    <linearGradient id="darkBand" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%"  stop-color="#1E3A8A" stop-opacity="0.35"/>
-      <stop offset="50%" stop-color="#0F172A" stop-opacity="0.15"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.55"/>
+    <!-- Gradient azul oscuro (banda ancha) -->
+    <linearGradient id="navyBand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#1E3A8A" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#1E40AF" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#1E3A8A" stop-opacity="0"/>
     </linearGradient>
 
-    <!-- Gradient para franjas azul medio brillantes -->
-    <linearGradient id="blueBand" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%"  stop-color="#1E40AF" stop-opacity="0"/>
-      <stop offset="50%" stop-color="#3B82F6" stop-opacity="0.45"/>
-      <stop offset="100%" stop-color="#1E40AF" stop-opacity="0"/>
+    <!-- Gradient gris plata (banda metálica) -->
+    <linearGradient id="silverBand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#94A3B8" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#CBD5E1" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#94A3B8" stop-opacity="0"/>
     </linearGradient>
 
-    <!-- Gradient para hairlines brillantes azul claro (acento) -->
-    <linearGradient id="hotLine" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%"  stop-color="#60A5FA" stop-opacity="0"/>
-      <stop offset="50%" stop-color="#93C5FD" stop-opacity="0.85"/>
-      <stop offset="100%" stop-color="#60A5FA" stop-opacity="0"/>
+    <!-- Hairline plata brillante (acento) -->
+    <linearGradient id="silverHair" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"  stop-color="#E2E8F0" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#F1F5F9" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#E2E8F0" stop-opacity="0"/>
     </linearGradient>
 
-    <!-- Gradient sombra inferior para profundidad -->
+    <!-- Halftone: patrón de puntos repetible -->
+    <pattern id="halftone" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
+      <circle cx="7" cy="7" r="1.1" fill="#CBD5E1" fill-opacity="0.10"/>
+    </pattern>
+
+    <!-- Sombra inferior para profundidad -->
     <linearGradient id="bottomShade" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%"  stop-color="#000000" stop-opacity="0"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.30"/>
     </linearGradient>
   </defs>
 
-  <!-- Viñeta inferior sutil para dar peso -->
+  <!-- Viñeta inferior para peso -->
   <rect width="1600" height="400" fill="url(#bottomShade)"/>
 
-  <!-- Banda oscura diagonal izquierda (grande) -->
-  <polygon points="-50,-50 480,-50 180,450 -50,450" fill="url(#darkBand)" opacity="0.85"/>
+  <!-- Zona de halftone sutil (esquina superior derecha, como en la referencia) -->
+  <rect x="900" y="0" width="700" height="260" fill="url(#halftone)" opacity="0.6"/>
 
-  <!-- Banda azul brillante diagonal media-izquierda -->
-  <polygon points="280,-50 420,-50 140,450 0,450" fill="url(#blueBand)"/>
+  <!-- Banda gris plata diagonal izquierda (ancha, sutil) -->
+  <polygon points="-50,-50 340,-50 80,450 -50,450" fill="url(#silverBand)" opacity="0.85"/>
 
-  <!-- Banda oscura central-izquierda delgada -->
-  <polygon points="500,-50 560,-50 280,450 220,450" fill="#000000" opacity="0.45"/>
+  <!-- Banda azul oscuro diagonal media-izquierda -->
+  <polygon points="280,-50 460,-50 200,450 20,450" fill="url(#navyBand)"/>
 
-  <!-- Hairline azul brillante en el corte entre banda oscura y azul -->
-  <polygon points="470,-50 478,-50 198,450 190,450" fill="url(#hotLine)"/>
+  <!-- Hairline plata brillante entre bandas (acento izq) -->
+  <polygon points="340,-50 344,-50 82,450 78,450" fill="url(#silverHair)" opacity="0.75"/>
 
-  <!-- Banda azul brillante central -->
-  <polygon points="720,-50 880,-50 600,450 440,450" fill="url(#blueBand)" opacity="0.75"/>
+  <!-- Banda gris plata central (muy diluida) -->
+  <polygon points="640,-50 780,-50 520,450 380,450" fill="url(#silverBand)" opacity="0.55"/>
 
-  <!-- Banda oscura diagonal central-derecha -->
-  <polygon points="920,-50 1060,-50 780,450 640,450" fill="url(#darkBand)" opacity="0.70"/>
+  <!-- Banda azul oscuro central-derecha -->
+  <polygon points="880,-50 1020,-50 760,450 620,450" fill="url(#navyBand)" opacity="0.70"/>
 
-  <!-- Hairline azul brillante largo (acento principal) -->
-  <polygon points="1040,-50 1046,-50 766,450 760,450" fill="url(#hotLine)" opacity="0.9"/>
+  <!-- Hairline plata brillante principal (acento central) -->
+  <polygon points="1000,-50 1004,-50 742,450 738,450" fill="url(#silverHair)" opacity="0.80"/>
 
-  <!-- Banda azul brillante derecha -->
-  <polygon points="1220,-50 1380,-50 1100,450 940,450" fill="url(#blueBand)" opacity="0.60"/>
+  <!-- Banda gris plata derecha -->
+  <polygon points="1180,-50 1340,-50 1080,450 920,450" fill="url(#silverBand)" opacity="0.50"/>
 
-  <!-- Banda oscura extrema derecha -->
-  <polygon points="1440,-50 1650,-50 1650,450 1170,450" fill="url(#darkBand)" opacity="0.80"/>
+  <!-- Banda azul oscuro extrema derecha -->
+  <polygon points="1400,-50 1650,-50 1650,450 1140,450" fill="url(#navyBand)" opacity="0.60"/>
 
-  <!-- Hairline azul brillante derecha (acento secundario, más sutil) -->
-  <polygon points="1400,-50 1404,-50 1124,450 1120,450" fill="url(#hotLine)" opacity="0.55"/>
-
-  <!-- Hairline superior sutil (tipo "top bar de panel") para darle personalidad -->
-  <line x1="0" y1="2" x2="1600" y2="2" stroke="#60A5FA" stroke-width="1" stroke-opacity="0.25"/>
-  <line x1="0" y1="0" x2="1600" y2="0" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.08"/>
+  <!-- Hairline top sutil (panel de control feel) -->
+  <line x1="0" y1="1" x2="1600" y2="1" stroke="#CBD5E1" stroke-width="1" stroke-opacity="0.15"/>
 </svg>
