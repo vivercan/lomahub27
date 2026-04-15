@@ -1078,7 +1078,7 @@ export default function HomeDashboard() {
             transform: isHovered ? 'translateX(360%) skewX(-14deg)' : 'translateX(0%) skewX(-14deg)',
             opacity: isHovered ? 1 : 0,
             transition: isHovered
-              ? 'transform 1.15s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease'
+              ? 'transform 1.44s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease'
               : 'transform 0s, opacity 0.25s ease',
             mixBlendMode: 'overlay',
             filter: 'blur(0.5px)',
