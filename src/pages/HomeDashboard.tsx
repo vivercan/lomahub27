@@ -56,7 +56,6 @@ export default function HomeDashboard() {
     tractosTotal: 0, cajasTotal: 0,
     cajasGPS: 0, thermosGPS: 0, // unidades reportando posición vía WidgeTech
   })
-  const [isLoadingKpis, setIsLoadingKpis] = useState(true)
 
   const fetchKpis = useCallback(async () => {
     try {
@@ -96,8 +95,6 @@ export default function HomeDashboard() {
       })
     } catch (err) {
       console.error('Error fetching KPIs:', err)
-    } finally {
-      setIsLoadingKpis(false)
     }
   }, [])
 
@@ -126,21 +123,17 @@ export default function HomeDashboard() {
     minHeight: 0,
     borderRadius: '20px',
     padding: '26px',
-    // Flujo direccional consistente en TODOS los cards:
-    // highlight blanco sutil top-left → color base dominante → oscurecimiento bottom-right.
-    // Esto hace que cada card respete el flujo visual "blue → black" del dashboard,
-    // y permite que los cards vecinos se "conecten" por sus esquinas.
-    // Operaciones #60A5FA tiene una viñeta top-left MÁS oscura para garantizar contraste
-    // WCAG AA con el texto blanco (en vez del highlight blanco).
+    // Fondo sobrio: gradiente base + viñeta muy sutil para profundidad premium.
+    // Para cards de fondo claro (Operaciones #60A5FA) se aplica una viñeta OSCURA
+    // en la zona del texto para garantizar contraste WCAG AA con texto blanco.
     background: card.id === 'operaciones'
       ? `
         radial-gradient(ellipse at 15% 10%, rgba(15,23,42,0.45) 0%, rgba(15,23,42,0.18) 35%, transparent 65%),
-        linear-gradient(135deg, transparent 0%, transparent 55%, rgba(0,0,0,0.20) 100%),
+        linear-gradient(180deg, rgba(15,23,42,0.12) 0%, transparent 50%),
         ${card.gradient}
       `
       : `
-        radial-gradient(ellipse at 18% 12%, rgba(255,255,255,0.10) 0%, transparent 45%),
-        linear-gradient(135deg, transparent 0%, transparent 50%, rgba(0,0,0,0.22) 100%),
+        radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.06) 0%, transparent 55%),
         ${card.gradient}
       `,
     // Hairline border visible en cards muy oscuras (config, control-equipo) sin afectar las claras
@@ -1204,36 +1197,22 @@ export default function HomeDashboard() {
           {card.label}
         </div>
         {card.kpiValue !== '' && (
-          isLoadingKpis ? (
-            <div
-              className="kpi-skeleton"
-              style={{
-                height: '39px',
-                width: '72px',
-                marginTop: '6px',
-                borderRadius: '8px',
-                position: 'relative',
-                zIndex: 2,
-              }}
-            />
-          ) : (
-            <div
-              className="kpi-value-num"
-              style={{
-              fontFamily: "'Montserrat', sans-serif",
-              fontSize: '39px',
-              fontWeight: 800,
-              color: textColor,
-              letterSpacing: '-1.2px',
-              textAlign: 'left', width: '100%', lineHeight: 1,
-              marginTop: '6px',
-              position: 'relative',
-              zIndex: 2,
-              textShadow: '0 1px 2px rgba(0,0,0,0.40), 0 3px 10px rgba(0,0,0,0.25)',
-            }}>
-              {card.kpiValue}
-            </div>
-          )
+          <div
+            className="kpi-value-num"
+            style={{
+            fontFamily: "'Montserrat', sans-serif",
+            fontSize: '39px',
+            fontWeight: 800,
+            color: textColor,
+            letterSpacing: '-1.2px',
+            textAlign: 'left', width: '100%', lineHeight: 1,
+            marginTop: '6px',
+            position: 'relative',
+            zIndex: 2,
+            textShadow: '0 1px 2px rgba(0,0,0,0.40), 0 3px 10px rgba(0,0,0,0.25)',
+          }}>
+            {card.kpiValue}
+          </div>
         )}
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
@@ -1281,18 +1260,16 @@ export default function HomeDashboard() {
         flexDirection: 'column',
         gap: '14px',
         overflow: 'hidden',
-        // Flujo visual azul marino (top-left) → negro profundo (bottom-right).
-        // Se ve entre los gaps de los cards y en el espacio debajo del grid,
-        // uniendo toda la pantalla como una sola superficie que transiciona de
-        // azul a negro. Coincide con la paleta de cards (#3B82F6 top-left → #020617 bottom-right).
         background: `
-          radial-gradient(ellipse 80% 90% at 15% 10%, rgba(59,130,246,0.22) 0%, transparent 55%),
-          linear-gradient(135deg,
-            #1E3A8A 0%,
-            #16284F 30%,
-            #0F172A 60%,
-            #050915 85%,
-            #020617 100%
+          radial-gradient(ellipse 75% 65% at 50% 40%, transparent 55%, rgba(0,0,0,0.22) 100%),
+          linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.10) 82%, rgba(0,0,0,0.20) 100%),
+          radial-gradient(ellipse 100% 80% at 50% 38%,
+            #ECECEC 0%,
+            #DEDEDE 20%,
+            #C8C8C8 45%,
+            #AEAEAE 70%,
+            #959595 92%,
+            #888888 100%
           )
         `,
       }}>

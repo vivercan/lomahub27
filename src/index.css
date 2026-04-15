@@ -111,22 +111,6 @@ body {
   50%      { opacity: 1; }
 }
 
-/* Skeleton shimmer para KPIs mientras cargan */
-@keyframes kpiShimmer {
-  0%   { background-position: -120px 0; }
-  100% { background-position: 320px 0; }
-}
-.kpi-skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(255,255,255,0.08) 0%,
-    rgba(255,255,255,0.22) 50%,
-    rgba(255,255,255,0.08) 100%
-  );
-  background-size: 200% 100%;
-  animation: kpiShimmer 1.3s ease-in-out infinite;
-}
-
 /* T4: Remove spinner arrows from numeric inputs */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
