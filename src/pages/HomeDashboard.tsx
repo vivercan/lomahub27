@@ -97,10 +97,10 @@ export default function HomeDashboard() {
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#02103A', gradient: 'linear-gradient(135deg, #031858 0%, #021244 50%, #010826 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
     { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#020718', gradient: 'linear-gradient(135deg, #030A22 0%, #010614 50%, #000308 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
     { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFB810', gradient: 'linear-gradient(135deg, #FFC820 0%, #FFA808 55%, #FF7A00 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
-    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #0930A0 0%, #0B3AB5 50%, #0F4AD0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
-    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'ingresos.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
+    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #1E55D0 0%, #0B3AB5 50%, #062478 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
+    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #3A85F5 0%, #1868E8 50%, #0A3BA0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'ingresos.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#061670', gradient: 'linear-gradient(135deg, #0A1E88 0%, #061670 50%, #020A40 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
-    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#15C814', gradient: 'linear-gradient(90deg, #8AE60E 0%, #15D818 40%, #0AC020 75%, #07A038 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'gps.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: kpis.cajasGPS > 0 || kpis.thermosGPS > 0 ? 'green' : 'gray', statusText: `Cajas ${kpis.cajasGPS} · Thermos ${kpis.thermosGPS}`, gridColumn: '1 / 3', gridRow: '3 / 4' },
+    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#15C814', gradient: 'linear-gradient(135deg, #7FE818 0%, #15C814 50%, #058028 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'gps.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: kpis.cajasGPS > 0 || kpis.thermosGPS > 0 ? 'green' : 'gray', statusText: `Cajas ${kpis.cajasGPS} · Thermos ${kpis.thermosGPS}`, gridColumn: '1 / 3', gridRow: '3 / 4' },
     { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0A0A0A', gradient: 'linear-gradient(135deg, #141414 0%, #0A0A0A 50%, #050505 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
@@ -234,6 +234,7 @@ export default function HomeDashboard() {
           pointerEvents: 'none',
           transition: baseTransition,
           transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+          opacity: 0.6,
         }}
       >
         <defs>
@@ -281,40 +282,48 @@ export default function HomeDashboard() {
       </svg>
     )
 
-    // Icon universal — watermark discreto, tamaño uniforme
-    // Config mantiene su tratamiento original (72px, emboss, iconOpacity original)
-    // Los otros 7 cards: agrandados 15%, ~62% opacity, normalizados visualmente
-    const isConfig = card.id === 'config'
-    // Iconos "fundidos" al card: mix-blend-mode overlay en vez de blanco puro
-    // → el icono tiñe la superficie subyacente en lugar de apilarse encima
-    const iconSize = isConfig ? 72 : 95 // más grande ahora que es watermark (antes 83)
-    // soft-light es más gentil, necesita opacidad alta para leerse
-    const iconOpacityFinal = isConfig ? card.iconOpacity : 0.85
-    // Compensación de tamaño visual basado en el fill-ratio interno de cada SVG
-    // (algunos SVGs tienen padding interno mayor; esto los normaliza)
-    const iconVisualScale = (() => {
-      if (isConfig) return 1
+    // Icon universal — TODOS los 8 cards con el mismo tratamiento:
+    //   · 95×95 px
+    //   · Blanco puro (brightness(0) invert(1))
+    //   · Drop-shadow emboss (highlight arriba + doble sombra abajo) → se ve "tallado" en la superficie
+    //   · Opacidad por-card según grosor de trazo (trazos finos necesitan más opacidad para leer igual)
+    const iconSize = 95
+    // Opacidad por grosor de trazo — busca "presencia visual uniforme" en lugar de "mismo número"
+    const iconOpacityFinal = (() => {
       switch (card.id) {
-        case 'oportunidades': return 1.18 // fill interno 0.845 → compensar
-        case 'comunicaciones': return 1.06 // fill interno 0.945 → compensar
-        case 'operaciones': return 1.22   // 1.06 × 1.15 extra (camión wide, llenar más)
-        case 'autofomento': return 1.00   // fill interno 0.996
+        case 'comunicaciones':    return 0.38 // teléfono — trazos muy finos
+        case 'autofomento':       return 0.36 // GPS pin — ondas y stroke delgado
+        case 'oportunidades':     return 0.34 // persona — detalles finos
+        case 'operaciones':       return 0.30 // camión — barras laterales finas
+        case 'ventas':            return 0.28 // chart + símbolo — medio-fino
+        case 'servicio-clientes': return 0.24 // auricular — masa sólida
+        case 'comercial':         return 0.24 // símbolo dólar — masa sólida
+        case 'config':            return 0.24 // engrane — masa sólida (antes 0.22)
+        default:                  return 0.28
+      }
+    })()
+    // Compensación de tamaño visual basado en el fill-ratio interno de cada SVG
+    const iconVisualScale = (() => {
+      switch (card.id) {
+        case 'oportunidades': return 1.18
+        case 'comunicaciones': return 1.06
+        case 'operaciones': return 1.22
+        case 'autofomento': return 1.00
         case 'servicio-clientes': return 1.00
         case 'comercial': return 1.00
         case 'ventas': return 1.00
+        case 'config': return 1.00
         default: return 1.00
       }
     })()
     const hoverScale = isHovered ? 1.04 : 1
     const combinedScale = hoverScale * iconVisualScale
-    // Per-card bottom offset (default 10px)
+    // Per-card bottom offset
     const iconBottom = (() => {
-      if (isConfig) return '10px'
-      if (card.id === 'oportunidades') return '5px'   // bajar 5px más
-      if (card.id === 'operaciones') return '-7px'    // camión más abajo (off-ras 7px)
+      if (card.id === 'oportunidades') return '5px'
+      if (card.id === 'operaciones') return '-7px'
       return '10px'
     })()
-    // Para el camión (wide SVG con mucho padding vertical interno), empujar contenido al fondo
     const iconObjectPosition = card.id === 'operaciones' ? 'right bottom' : 'center center'
     const icon = card.iconFile && card.iconOpacity > 0 ? (
       <div
@@ -338,12 +347,16 @@ export default function HomeDashboard() {
             objectFit: 'contain',
             objectPosition: iconObjectPosition,
             opacity: iconOpacityFinal,
-            // Config mantiene el look sólido blanco; los 7 cards usan overlay
-            // para que el icono se "funda" con el material del card (tiñe en vez de encimarse)
-            filter: 'brightness(0) invert(1)',
-            // soft-light → funde de verdad en fondos oscuros y claros por igual
-            // (overlay brillaba demasiado en los cards azul marino)
-            mixBlendMode: isConfig ? 'normal' : 'soft-light',
+            // Emboss uniforme tipo "tallado en la superficie" (mismo tratamiento en los 8 cards):
+            //   · brightness(0) invert(1) → icono blanco puro
+            //   · highlight superior sutil (simula luz arriba)
+            //   · doble sombra inferior (simula profundidad debajo)
+            filter: `
+              brightness(0) invert(1)
+              drop-shadow(0 1px 0 rgba(255,255,255,0.25))
+              drop-shadow(0 3px 8px rgba(0,0,0,0.55))
+              drop-shadow(0 1px 2px rgba(0,0,0,0.40))
+            `,
           }}
         />
       </div>
@@ -362,6 +375,7 @@ export default function HomeDashboard() {
               pointerEvents: 'none',
               transition: baseTransition,
               transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+              opacity: 0.6,
             }}
           >
             <defs>
@@ -445,6 +459,7 @@ export default function HomeDashboard() {
               pointerEvents: 'none',
               transition: baseTransition,
               transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+              opacity: 0.6,
             }}
           >
             <defs>
@@ -499,6 +514,7 @@ export default function HomeDashboard() {
               pointerEvents: 'none',
               transition: baseTransition,
               transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+              opacity: 0.6,
             }}
           >
             <defs>
@@ -583,6 +599,7 @@ export default function HomeDashboard() {
               pointerEvents: 'none',
               transition: baseTransition,
               transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+              opacity: 0.6,
             }}
           >
             <defs>
@@ -701,6 +718,7 @@ export default function HomeDashboard() {
                 pointerEvents: 'none',
                 transition: baseTransition,
                 transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+                opacity: 0.6,
               }}
             >
               <defs>
@@ -756,6 +774,7 @@ export default function HomeDashboard() {
                 pointerEvents: 'none',
                 transition: baseTransition,
                 transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+                opacity: 0.6,
               }}
             >
               <defs>
@@ -864,6 +883,7 @@ export default function HomeDashboard() {
                 pointerEvents: 'none',
                 transition: baseTransition,
                 transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+                opacity: 0.6,
               }}
             >
               <defs>
@@ -930,6 +950,7 @@ export default function HomeDashboard() {
                 pointerEvents: 'none',
                 transition: baseTransition,
                 transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+                opacity: 0.6,
               }}
             >
               <defs>
@@ -1059,6 +1080,18 @@ export default function HomeDashboard() {
         style={getCardStyle(isHovered, card)}
       >
         {renderDecor(card, isHovered)}
+        {/* Specular highlight — reflejo estudio en esquina superior (le da curvatura 3D al material) */}
+        <div style={{
+          position: 'absolute',
+          top: '-20%', right: '-10%',
+          width: '55%', height: '70%',
+          pointerEvents: 'none',
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.12) 25%, rgba(255,255,255,0) 65%)',
+          filter: 'blur(6px)',
+          zIndex: 1,
+          transition: 'opacity 0.5s ease',
+          opacity: isHovered ? 1 : 0.85,
+        }} />
         {/* Sheen sweep — banda de luz diagonal que recorre el card en hover (efecto premium) */}
         <div style={{
           position: 'absolute',
