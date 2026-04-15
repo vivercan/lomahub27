@@ -131,25 +131,27 @@ export default function HomeDashboard() {
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    transition: 'transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s cubic-bezier(0.16,1,0.3,1), border-color 0.3s ease',
+    transition: 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.55s cubic-bezier(0.16,1,0.3,1), border-color 0.3s ease',
     transform: isHovered
-      ? 'translateY(-6px)'
-      : 'translateY(0)',
-    // Sombras en dos capas + doble highlight interno (top + bottom) para acabado premium "cristal corporativo"
+      ? 'translateY(-10px) scale(1.012)'
+      : 'translateY(0) scale(1)',
+    // 3D premium: sombra ambiente profunda + contact shadow nítido + highlight interno top/bottom
     boxShadow: isHovered
       ? `
-        0 26px 50px -20px rgba(0,0,0,0.50),
-        0 14px 28px -12px rgba(0,0,0,0.32),
-        inset 0 1px 0 rgba(255,255,255,0.09),
-        inset 0 0 0 1px rgba(255,255,255,0.03),
-        inset 0 -1px 0 rgba(0,0,0,0.18)
+        0 40px 70px -24px rgba(0,0,0,0.55),
+        0 22px 38px -14px rgba(0,0,0,0.40),
+        0 8px 16px -6px rgba(0,0,0,0.28),
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 0 0 1px rgba(255,255,255,0.04),
+        inset 0 -1px 0 rgba(0,0,0,0.22)
       `
       : `
-        0 14px 30px -14px rgba(0,0,0,0.38),
-        0 7px 15px -7px rgba(0,0,0,0.24),
-        inset 0 1px 0 rgba(255,255,255,0.06),
-        inset 0 0 0 1px rgba(255,255,255,0.025),
-        inset 0 -1px 0 rgba(0,0,0,0.15)
+        0 22px 44px -18px rgba(0,0,0,0.48),
+        0 12px 22px -10px rgba(0,0,0,0.30),
+        0 4px 8px -2px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        inset 0 0 0 1px rgba(255,255,255,0.03),
+        inset 0 -1px 0 rgba(0,0,0,0.18)
       `,
   })
 
@@ -1053,6 +1055,31 @@ export default function HomeDashboard() {
         style={getCardStyle(isHovered, card)}
       >
         {renderDecor(card, isHovered)}
+        {/* Sheen sweep — banda de luz diagonal que recorre el card en hover (efecto premium) */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          overflow: 'hidden',
+          borderRadius: 'inherit',
+          zIndex: 4,
+        }}>
+          <div style={{
+            position: 'absolute',
+            top: '-60%',
+            left: '-90%',
+            width: '55%',
+            height: '220%',
+            background: 'linear-gradient(115deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.08) 60%, rgba(255,255,255,0) 100%)',
+            transform: isHovered ? 'translateX(360%) skewX(-14deg)' : 'translateX(0%) skewX(-14deg)',
+            opacity: isHovered ? 1 : 0,
+            transition: isHovered
+              ? 'transform 1.15s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease'
+              : 'transform 0s, opacity 0.25s ease',
+            mixBlendMode: 'overlay',
+            filter: 'blur(0.5px)',
+          }} />
+        </div>
         <div style={{
           position: 'absolute', top: '16px', right: '16px',
           width: '7px', height: '7px', borderRadius: '50%',
