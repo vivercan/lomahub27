@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Base navy profunda -->
+    <linearGradient id="navyBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#0A2080"/>
+      <stop offset="45%" stop-color="#071658"/>
+      <stop offset="100%" stop-color="#040E3C"/>
+    </linearGradient>
+    <!-- Cara iluminada del chevron -->
+    <linearGradient id="faceHi" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#1A3AB8"/>
+      <stop offset="60%" stop-color="#0E2290"/>
+      <stop offset="100%" stop-color="#061558"/>
+    </linearGradient>
+    <!-- Cara en sombra del chevron -->
+    <linearGradient id="faceLo" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#081A68"/>
+      <stop offset="100%" stop-color="#020726"/>
+    </linearGradient>
+    <!-- Pliegue (línea muy oscura donde se encuentran dos caras) -->
+    <linearGradient id="crease" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#020520" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.95"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo base -->
+  <rect width="1000" height="900" fill="url(#navyBase)"/>
+
+  <!-- Chevron superior mayor (de esquina sup-izq descendiendo a la derecha) -->
+  <polygon points="-20,0 540,0 860,300 860,440 -20,440" fill="url(#faceHi)" opacity="0.55"/>
+  <polygon points="540,0 580,0 880,300 860,300" fill="url(#crease)" opacity="0.90"/>
+  <!-- Su cara oscura complementaria -->
+  <polygon points="860,300 1020,300 1020,620 860,440" fill="url(#faceLo)" opacity="0.70"/>
+
+  <!-- Chevron secundario desde la derecha (cara más brillante, segmento más corto) -->
+  <polygon points="560,0 1020,0 1020,320 800,140" fill="url(#faceHi)" opacity="0.38"/>
+  <polygon points="560,0 600,0 820,140 800,140" fill="url(#crease)" opacity="0.70"/>
+
+  <!-- Chevron grande inferior apuntando hacia abajo-izq -->
+  <polygon points="-20,460 380,900 640,900 -20,580" fill="url(#faceHi)" opacity="0.42"/>
+  <polygon points="380,900 420,900 0,480 -20,480" fill="url(#crease)" opacity="0.80"/>
+
+  <!-- Cara oscura debajo del chevron central -->
+  <polygon points="-20,600 -20,900 360,900" fill="url(#faceLo)" opacity="0.55"/>
+
+  <!-- Chevron inferior-derecha (pequeño segmento brillante que viene del centro-derecha) -->
+  <polygon points="420,900 1020,900 1020,520 700,720" fill="url(#faceHi)" opacity="0.45"/>
+  <polygon points="420,900 460,900 720,720 700,720" fill="url(#crease)" opacity="0.80"/>
+
+  <!-- Highlight muy sutil centro-superior (reflejo especular) -->
+  <ellipse cx="500" cy="380" rx="340" ry="130" fill="#2A4AE0" opacity="0.08"/>
+
+  <!-- Grano vertical muy tenue (textura de lámina) -->
+  <g opacity="0.05">
+    <rect x="140" y="0" width="1" height="900" fill="#FFFFFF"/>
+    <rect x="310" y="0" width="1" height="900" fill="#FFFFFF"/>
+    <rect x="495" y="0" width="1" height="900" fill="#FFFFFF"/>
+    <rect x="675" y="0" width="1" height="900" fill="#FFFFFF"/>
+    <rect x="845" y="0" width="1" height="900" fill="#FFFFFF"/>
+  </g>
+</svg>

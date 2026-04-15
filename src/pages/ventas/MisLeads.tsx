@@ -50,7 +50,7 @@ const PIPELINE_STAGES = [
   { id: 'Nuevo', label: 'Nuevo', color: tokens.colors.blue },
   { id: 'Contactado', label: 'Contactado', color: tokens.colors.yellow },
   { id: 'Cotizado', label: 'Cotizado', color: tokens.colors.orange },
-  { id: 'Negociacion', label: 'NegociaciÃ³n', color: '#A855F7' },
+  { id: 'Negociacion', label: 'Negociación', color: '#A855F7' },
   { id: 'Cerrado Ganado', label: 'Cerrado Ganado', color: tokens.colors.green },
   { id: 'Cerrado Perdido', label: 'Cerrado Perdido', color: tokens.colors.red },
 ]
@@ -239,7 +239,7 @@ export default function MisLeads() {
 
           if (error) {
             console.error('Error invoking analysis function:', error)
-            alert('Error al analizar la cotizaciÃ³n. Intenta de nuevo.')
+            alert('Error al analizar la cotización. Intenta de nuevo.')
             setAnalyzing(false)
             setAnalyzingLead(null)
             return
@@ -250,7 +250,7 @@ export default function MisLeads() {
           }
         } catch (err) {
           console.error('Error calling analysis function:', err)
-          alert('Error al analizar la cotizaciÃ³n.')
+          alert('Error al analizar la cotización.')
           setAnalyzing(false)
           setAnalyzingLead(null)
         } finally {
@@ -1038,7 +1038,7 @@ export default function MisLeads() {
                             </button>
                             <button
                               style={s.actionBtn}
-                              title="MÃ¡s acciones"
+                              title="Más acciones"
                               onClick={e => { e.stopPropagation(); setActionsOpen(actionsOpen === lead.id ? null : lead.id) }}
                               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
                               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
@@ -1163,14 +1163,14 @@ export default function MisLeads() {
             {analyzing ? (
               <div style={s.loadingBox}>
                 <Loader size={32} style={{ color: tokens.colors.primary, animation: 'spin 1s linear infinite' }} />
-                <span style={s.loadingText}>Analizando cotizaciÃ³n con IA...</span>
+                <span style={s.loadingText}>Analizando cotización con IA...</span>
               </div>
             ) : analysisResult ? (
               <>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <div>
                     <div style={s.analysisTitle}>
-                      AnÃ¡lisis de CotizaciÃ³n
+                      Análisis de Cotización
                     </div>
                     <div style={{ fontSize: '12px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
                       {analyzingLead.empresa}
@@ -1216,7 +1216,7 @@ export default function MisLeads() {
 
                 {/* Confidence */}
                 <div style={{ marginBottom: '20px' }}>
-                  <div style={s.analysisLabel}>Confianza del AnÃ¡lisis</div>
+                  <div style={s.analysisLabel}>Confianza del Análisis</div>
                   <div style={s.progressBar}>
                     <div style={s.progressFill(analysisResult.confianza)} />
                   </div>
@@ -1225,7 +1225,7 @@ export default function MisLeads() {
 
                 {/* Resumen / Notas */}
                 <div style={s.analysisNotesBox}>
-                  <div style={s.analysisNotesLabel}>Resumen & AnÃ¡lisis</div>
+                  <div style={s.analysisNotesLabel}>Resumen & Análisis</div>
                   <div style={s.analysisNotesText}>{analysisResult.resumen}</div>
                 </div>
 

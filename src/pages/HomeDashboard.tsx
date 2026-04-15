@@ -25,6 +25,10 @@ interface CardConfig {
   gridRow: string
 }
 
+// Espacio reservado a la derecha del texto de status para no chocar con el icono de la card
+// (icon 83px + margen derecho 18px + padding ~9px → 110px)
+const CARD_STATUS_PADDING_RIGHT = '110px'
+
 const DOT_COLORS: Record<string, string> = {
   green: '#10B981', yellow: '#F59E0B', red: '#EF4444', gray: '#CBD5E1',
 }
@@ -103,22 +107,15 @@ export default function HomeDashboard() {
   const mainCards: CardConfig[] = [
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#02103A', gradient: 'linear-gradient(135deg, #031858 0%, #021244 50%, #010826 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'oportunidades.svg', iconOpacity: 0.18, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
     { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#0E1838', gradient: 'linear-gradient(135deg, #1C2C5A 0%, #0E1838 50%, #040A20 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.14, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#FFB810', gradient: 'linear-gradient(135deg, #FFC820 0%, #FFA808 55%, #FF7A00 100%)', decorType: 'silk', decorColor: 'rgba(255,180,0,0.20)', iconFile: 'comercial.svg', iconOpacity: 0.18, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#071658', gradient: "url('/icons/dashboard/bg-comercial.svg') center/cover no-repeat, linear-gradient(135deg, #0A2080 0%, #071658 50%, #040E3C 100%)", decorType: 'silk', decorColor: 'rgba(255,255,255,0.06)', iconFile: 'comercial.svg', iconOpacity: 0.16, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #1E55D0 0%, #0B3AB5 50%, #062478 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #3A85F5 0%, #1868E8 50%, #0A3BA0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'ingresos.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#061670', gradient: 'linear-gradient(135deg, #0A1E88 0%, #061670 50%, #020A40 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
-    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#15C814', gradient: 'linear-gradient(135deg, #7FE818 0%, #15C814 50%, #058028 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'gps.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: kpis.cajasGPS > 0 || kpis.thermosGPS > 0 ? 'green' : 'gray', statusText: `Cajas ${kpis.cajasGPS} · Thermos ${kpis.thermosGPS}`, gridColumn: '1 / 3', gridRow: '3 / 4' },
+    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#000000', gradient: "url('/icons/dashboard/bg-control-equipo.svg') center/cover no-repeat, #000000", decorType: 'silk', decorColor: 'rgba(255,255,255,0.05)', iconFile: 'gps.svg', iconOpacity: 0.20, kpiValue: '', kpiLabel: '', statusDot: kpis.cajasGPS > 0 || kpis.thermosGPS > 0 ? 'green' : 'gray', statusText: `Cajas ${kpis.cajasGPS} · Thermos ${kpis.thermosGPS}`, gridColumn: '1 / 3', gridRow: '3 / 4' },
     { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0A0A0A', gradient: 'linear-gradient(135deg, #141414 0%, #0A0A0A 50%, #050505 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
-  // Helper: convierte hex a rgba con alpha, para sombras teñidas del color del card
-  const hexToRgba = (hex: string, alpha: number): string => {
-    const h = hex.replace('#', '')
-    const r = parseInt(h.substring(0, 2), 16)
-    const g = parseInt(h.substring(2, 4), 16)
-    const b = parseInt(h.substring(4, 6), 16)
-    return `rgba(${r},${g},${b},${alpha})`
-  }
+  // (helper hexToRgba eliminado — fue dead code tras el rediseño premium)
 
   const getCardStyle = (isHovered: boolean, card: CardConfig): React.CSSProperties => ({
     gridColumn: card.gridColumn,
@@ -334,7 +331,8 @@ export default function HomeDashboard() {
     const iconObjectPosition = card.id === 'operaciones' ? 'right bottom' : 'center center'
     // Cards brillantes (yellow/green) → icono oscuro con multiply para "grabar" en el material
     // (blanco con emboss se ve encimado sobre fondos brillantes)
-    const isBrightBg = card.id === 'comercial' || card.id === 'autofomento'
+    // Nota: comercial y autofomento ahora usan fondos SVG oscuros — tratados como dark.
+    const isBrightBg = false
     const icon = card.iconFile && card.iconOpacity > 0 ? (
       <div
         style={{
@@ -377,6 +375,13 @@ export default function HomeDashboard() {
         />
       </div>
     ) : null
+
+    // Caso especial Control de equipo + Comercial: fondos SVG propios (bg-control-equipo.svg, bg-comercial.svg).
+    // Se suprimen los ribbons/chromeFolds para dejar la geometría limpia del SVG de fondo,
+    // pero SÍ renderizamos el icono para mantener jerarquía visual con el resto de cards.
+    if (card.id === 'autofomento' || card.id === 'comercial') {
+      return icon
+    }
 
     // Caso especial Configuración: rectángulos oscuros superpuestos — layers geométricos minimales
     if (card.id === 'config') {
@@ -1190,7 +1195,7 @@ export default function HomeDashboard() {
           marginTop: '6px',
           position: 'relative',
           zIndex: 3,
-          paddingRight: '110px', // reservar espacio para el icono (83px + 18px + margen)
+          paddingRight: CARD_STATUS_PADDING_RIGHT, // reservar espacio para el icono (83px + 18px + margen)
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',

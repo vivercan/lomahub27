@@ -67,8 +67,8 @@ export default function ControlEquipo() {
           }
           setConteo(next)
         }
-      } catch {
-        // silencioso — quedan ceros hasta que el módulo esté conectado
+      } catch (err) {
+        console.error('[ControlEquipo] fallo carga gps_tracking', err)
       }
       setLastSync(new Date())
       setLoading(false)
