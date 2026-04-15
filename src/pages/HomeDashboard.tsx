@@ -179,9 +179,12 @@ export default function HomeDashboard() {
   const renderDecor = (card: CardConfig, isHovered: boolean) => {
     const baseTransition = 'transform 1s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease'
     // Intensidad atenuada globalmente (-40%) para un look más tenue y premium
+    // Intensidades atenuadas — los chevrons de Servicio/Ventas/Comercial
+    // se veían como "logo de agua" demasiado dominante. Bajamos 30-40%.
     const intensity =
-      card.id === 'ventas' ? 1.1
-      : card.id === 'servicio-clientes' || card.id === 'comercial' ? 0.85
+      card.id === 'ventas' ? 0.65
+      : card.id === 'servicio-clientes' ? 0.55
+      : card.id === 'comercial' ? 0.60
       : card.id === 'autofomento' ? 0.65
       : 0.72
     // Cada card tiene SU propio recorrido de curva (ribbon + hairline). Nada repetido.
@@ -239,6 +242,14 @@ export default function HomeDashboard() {
     }
     const r = recipes[card.id] || recipes['oportunidades']
 
+    // Opacidad global de la capa de silk ribbon — atenuada en cards con
+    // chevrons muy dominantes para que no parezcan "logo de agua".
+    const foldsOpacity =
+      card.id === 'servicio-clientes' ? 0.38
+      : card.id === 'ventas' ? 0.42
+      : card.id === 'comercial' ? 0.42
+      : 0.6
+
     const chromeFolds = (
       <svg
         viewBox="0 0 400 240"
@@ -249,7 +260,7 @@ export default function HomeDashboard() {
           pointerEvents: 'none',
           transition: baseTransition,
           transform: isHovered ? 'scale(1.02)' : 'scale(1)',
-          opacity: 0.6,
+          opacity: foldsOpacity,
         }}
       >
         <defs>
@@ -340,10 +351,10 @@ export default function HomeDashboard() {
       return '10px'
     })()
     const iconObjectPosition = card.id === 'operaciones' ? 'right bottom' : 'center center'
-    // Cards brillantes (yellow/green) → icono oscuro con multiply para "grabar" en el material
-    // (blanco con emboss se ve encimado sobre fondos brillantes)
-    // Nota: comercial y autofomento ahora usan fondos SVG oscuros — tratados como dark.
-    const isBrightBg = false
+    // Cards brillantes (Operaciones #60A5FA) → icono oscuro con multiply para "grabar" en el material.
+    // Sobre fondo azul claro, el icono blanco con emboss se ve encimado y lava la silueta.
+    // Los demás cards usan blanco con emboss porque son oscuros.
+    const isBrightBg = card.id === 'operaciones'
     const icon = card.iconFile && card.iconOpacity > 0 ? (
       <div
         style={{

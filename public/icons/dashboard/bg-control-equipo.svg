@@ -68,10 +68,7 @@
   <!-- Hairline azul brillante derecha (acento secundario, más sutil) -->
   <polygon points="1400,-50 1404,-50 1124,450 1120,450" fill="url(#hotLine)" opacity="0.55"/>
 
-  <!-- Thin stripes para textura sutil tipo "lámina metálica cepillada" -->
-  <g opacity="0.06" fill="#FFFFFF">
-    <polygon points="-50,120 1650,-280 1650,-276 -50,124"/>
-    <polygon points="-50,280 1650,-120 1650,-116 -50,284"/>
-    <polygon points="-50,440 1650,40 1650,44 -50,444"/>
-  </g>
+  <!-- Hairline superior sutil (tipo "top bar de panel") para darle personalidad -->
+  <line x1="0" y1="2" x2="1600" y2="2" stroke="#60A5FA" stroke-width="1" stroke-opacity="0.25"/>
+  <line x1="0" y1="0" x2="1600" y2="0" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.08"/>
 </svg>
