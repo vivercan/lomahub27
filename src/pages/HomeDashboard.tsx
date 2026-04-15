@@ -50,6 +50,7 @@ export default function HomeDashboard() {
     segmentosDedicados: 0, cuentasCxc: 0, unidadesGps: 0,
     alertasHoy: 0, formatosActivos: 0, leadsPipeline: 0,
     tractosTotal: 0, cajasTotal: 0,
+    cajasGPS: 0, thermosGPS: 0, // unidades reportando posición vía WidgeTech
   })
 
   const fetchKpis = useCallback(async () => {
@@ -99,7 +100,7 @@ export default function HomeDashboard() {
     { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#0B3AB5', gradient: 'linear-gradient(135deg, #0930A0 0%, #0B3AB5 50%, #0F4AD0 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.16, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
     { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1868E8', gradient: 'linear-gradient(135deg, #0F56E0 0%, #1868E8 50%, #2A7AF2 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.22)', iconFile: 'ingresos.svg', iconOpacity: 0.13, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
     { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#061670', gradient: 'linear-gradient(135deg, #0A1E88 0%, #061670 50%, #020A40 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'comunicaciones.svg', iconOpacity: 0.18, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
-    { id: 'autofomento', label: 'Control de equipo', route: '/', bgColor: '#15C814', gradient: 'linear-gradient(90deg, #8AE60E 0%, #15D818 40%, #0AC020 75%, #07A038 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'gps.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: 'Próximamente', gridColumn: '1 / 3', gridRow: '3 / 4' },
+    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#15C814', gradient: 'linear-gradient(90deg, #8AE60E 0%, #15D818 40%, #0AC020 75%, #07A038 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.12)', iconFile: 'gps.svg', iconOpacity: 0.16, kpiValue: '', kpiLabel: '', statusDot: kpis.cajasGPS > 0 || kpis.thermosGPS > 0 ? 'green' : 'gray', statusText: `Cajas ${kpis.cajasGPS} · Thermos ${kpis.thermosGPS}`, gridColumn: '1 / 3', gridRow: '3 / 4' },
     { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0A0A0A', gradient: 'linear-gradient(135deg, #141414 0%, #0A0A0A 50%, #050505 100%)', decorType: 'gear', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'configuracion.svg', iconOpacity: 0.22, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
@@ -287,7 +288,8 @@ export default function HomeDashboard() {
     // Iconos "fundidos" al card: mix-blend-mode overlay en vez de blanco puro
     // → el icono tiñe la superficie subyacente en lugar de apilarse encima
     const iconSize = isConfig ? 72 : 95 // más grande ahora que es watermark (antes 83)
-    const iconOpacityFinal = isConfig ? card.iconOpacity : 0.55 // overlay necesita más opacidad
+    // soft-light es más gentil, necesita opacidad alta para leerse
+    const iconOpacityFinal = isConfig ? card.iconOpacity : 0.85
     // Compensación de tamaño visual basado en el fill-ratio interno de cada SVG
     // (algunos SVGs tienen padding interno mayor; esto los normaliza)
     const iconVisualScale = (() => {
@@ -339,7 +341,9 @@ export default function HomeDashboard() {
             // Config mantiene el look sólido blanco; los 7 cards usan overlay
             // para que el icono se "funda" con el material del card (tiñe en vez de encimarse)
             filter: 'brightness(0) invert(1)',
-            mixBlendMode: isConfig ? 'normal' : 'overlay',
+            // soft-light → funde de verdad en fondos oscuros y claros por igual
+            // (overlay brillaba demasiado en los cards azul marino)
+            mixBlendMode: isConfig ? 'normal' : 'soft-light',
           }}
         />
       </div>

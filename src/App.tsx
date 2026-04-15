@@ -87,6 +87,7 @@ import ProgramacionDedicados from './pages/operaciones/ProgramacionDedicados'
 import ConfigIntegraciones from './pages/admin/ConfigIntegraciones'
 import DocumentosCompania from './pages/admin/DocumentosCompania'
 import DashboardOperaciones from './pages/operaciones/DashboardOperaciones'
+import ControlEquipo from './pages/ControlEquipo'
 import DashboardComunicaciones from './pages/comunicaciones/DashboardComunicaciones'
 
 function App() {
@@ -236,6 +237,13 @@ function App() {
           <Route path="/operaciones/dashboard" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones', 'gerente_ops', 'direccion']}>
               <DashboardOperaciones />
+            </ProtectedRoute>
+          } />
+
+          {/* --- Control de Equipo (WidgeTech GPS) --- */}
+          <Route path="/control-equipo" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops', 'direccion']}>
+              <ControlEquipo />
             </ProtectedRoute>
           } />
 
