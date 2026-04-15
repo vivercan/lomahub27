@@ -276,6 +276,8 @@ export default function HomeDashboard() {
 
     // Icon universal — watermark discreto, tamaño fijo uniforme, bien alineado
     // Caja cuadrada de 72px (no porcentaje) → TODOS los cards tienen icons del MISMO tamaño absoluto
+    // Cards con icono BLANCO SOLIDO (full opacity, sin emboss): oportunidades, servicio, ventas, comunicaciones, comercial
+    const isSolidWhiteIcon = ['oportunidades', 'servicio-clientes', 'ventas', 'comunicaciones', 'comercial'].includes(card.id)
     const icon = card.iconFile && card.iconOpacity > 0 ? (
       <div
         style={{
@@ -295,14 +297,16 @@ export default function HomeDashboard() {
             width: '100%',
             height: '100%',
             objectFit: 'contain',
-            opacity: card.iconOpacity,
-            // Emboss sutil: highlight arriba + sombra suave + contacto
-            filter: `
-              brightness(0) invert(1)
-              drop-shadow(0 1px 0 rgba(255,255,255,0.15))
-              drop-shadow(0 3px 8px rgba(0,0,0,0.45))
-              drop-shadow(0 1px 2px rgba(0,0,0,0.30))
-            `,
+            opacity: isSolidWhiteIcon ? 1 : card.iconOpacity,
+            // Solid white: brillo pleno sin emboss; otros: emboss sutil
+            filter: isSolidWhiteIcon
+              ? 'brightness(0) invert(1)'
+              : `
+                brightness(0) invert(1)
+                drop-shadow(0 1px 0 rgba(255,255,255,0.15))
+                drop-shadow(0 3px 8px rgba(0,0,0,0.45))
+                drop-shadow(0 1px 2px rgba(0,0,0,0.30))
+              `,
           }}
         />
       </div>
