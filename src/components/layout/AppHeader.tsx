@@ -289,32 +289,42 @@ export default function AppHeader({
               onClick={() => setShowNotifPanel((p) => !p)}
               title="Notificaciones"
               style={{
-                width: 38,
-                height: 38,
-                background: 'linear-gradient(180deg, #FFFFFF 0%, #F0F0F0 50%, #E5E5E5 100%)',
-                border: '1px solid #D1D5DB',
+                width: 40,
+                height: 40,
+                background: 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 50%, #E5E7EB 100%)',
+                border: 'none',
                 borderRadius: '50%',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
-                transition: 'all 0.18s ease',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.12), 0 4px 10px -2px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.08)',
+                transition: 'all 0.14s cubic-bezier(0.23,1,0.32,1)',
+                boxShadow: `0 4px 0 rgba(0,0,0,0.20),
+                  0 5px 3px rgba(0,0,0,0.12),
+                  0 8px 12px -3px rgba(0,0,0,0.10),
+                  inset 0 2px 0 rgba(255,255,255,0.95),
+                  inset 0 -2px 0 rgba(0,0,0,0.12),
+                  inset 2px 0 0 rgba(255,255,255,0.50),
+                  inset -2px 0 0 rgba(0,0,0,0.06)`,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(180deg, #F8F8F8 0%, #E8E8E8 50%, #DDDDDD 100%)';
+                e.currentTarget.style.background = 'linear-gradient(180deg, #FAFAFA 0%, #ECECEC 50%, #DDDDDD 100%)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.22), 0 6px 4px rgba(0,0,0,0.14), 0 10px 16px -3px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.14), inset 2px 0 0 rgba(255,255,255,0.50), inset -2px 0 0 rgba(0,0,0,0.06)`;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(180deg, #FFFFFF 0%, #F0F0F0 50%, #E5E5E5 100%)';
+                e.currentTarget.style.background = 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 50%, #E5E7EB 100%)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = `0 4px 0 rgba(0,0,0,0.20), 0 5px 3px rgba(0,0,0,0.12), 0 8px 12px -3px rgba(0,0,0,0.10), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.12), inset 2px 0 0 rgba(255,255,255,0.50), inset -2px 0 0 rgba(0,0,0,0.06)`;
               }}
               onMouseDown={(e) => {
-                e.currentTarget.style.transform = 'translateY(1px) scale(0.96)';
-                e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.15), inset 0 -1px 0 rgba(255,255,255,0.60), inset 0 2px 4px rgba(0,0,0,0.12)';
+                e.currentTarget.style.transform = 'translateY(4px)';
+                e.currentTarget.style.boxShadow = `0 1px 0 rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15), inset 0 3px 5px rgba(0,0,0,0.18), inset 0 1px 2px rgba(0,0,0,0.25), inset 0 -1px 0 rgba(255,255,255,0.50)`;
               }}
               onMouseUp={(e) => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 4px 10px -2px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.08)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.22), 0 6px 4px rgba(0,0,0,0.14), 0 10px 16px -3px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.14), inset 2px 0 0 rgba(255,255,255,0.50), inset -2px 0 0 rgba(0,0,0,0.06)`;
               }}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E293B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -466,33 +476,41 @@ export default function AppHeader({
             onClick={onLogout}
             title="Cerrar sesión"
             style={{
-              width: 38,
-              height: 38,
-              background: 'linear-gradient(180deg, #FFFFFF 0%, #F0F0F0 50%, #E5E5E5 100%)',
-              border: '1px solid #D1D5DB',
+              width: 40,
+              height: 40,
+              background: 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 50%, #E5E7EB 100%)',
+              border: 'none',
               borderRadius: '50%',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'all 0.18s ease',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.12), 0 4px 10px -2px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.08)',
+              transition: 'all 0.14s cubic-bezier(0.23,1,0.32,1)',
+              boxShadow: `0 4px 0 rgba(0,0,0,0.20),
+                0 5px 3px rgba(0,0,0,0.12),
+                0 8px 12px -3px rgba(0,0,0,0.10),
+                inset 0 2px 0 rgba(255,255,255,0.95),
+                inset 0 -2px 0 rgba(0,0,0,0.12),
+                inset 2px 0 0 rgba(255,255,255,0.50),
+                inset -2px 0 0 rgba(0,0,0,0.06)`,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(180deg, #F8F8F8 0%, #E8E8E8 50%, #DDDDDD 100%)';
-              e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.06)';
+              e.currentTarget.style.background = 'linear-gradient(180deg, #FAFAFA 0%, #ECECEC 50%, #DDDDDD 100%)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.22), 0 6px 4px rgba(0,0,0,0.14), 0 10px 16px -3px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.14), inset 2px 0 0 rgba(255,255,255,0.50), inset -2px 0 0 rgba(0,0,0,0.06)`;
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(180deg, #FFFFFF 0%, #F0F0F0 50%, #E5E5E5 100%)';
-              e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 4px 10px -2px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.08)';
+              e.currentTarget.style.background = 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 50%, #E5E7EB 100%)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = `0 4px 0 rgba(0,0,0,0.20), 0 5px 3px rgba(0,0,0,0.12), 0 8px 12px -3px rgba(0,0,0,0.10), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.12), inset 2px 0 0 rgba(255,255,255,0.50), inset -2px 0 0 rgba(0,0,0,0.06)`;
             }}
             onMouseDown={(e) => {
-              e.currentTarget.style.transform = 'translateY(1px) scale(0.96)';
-              e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.15), inset 0 -1px 0 rgba(255,255,255,0.60), inset 0 2px 4px rgba(0,0,0,0.12)';
+              e.currentTarget.style.transform = 'translateY(4px)';
+              e.currentTarget.style.boxShadow = `0 1px 0 rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15), inset 0 3px 5px rgba(0,0,0,0.18), inset 0 1px 2px rgba(0,0,0,0.25), inset 0 -1px 0 rgba(255,255,255,0.50)`;
             }}
             onMouseUp={(e) => {
-              e.currentTarget.style.transform = 'translateY(0) scale(1)';
-              e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 4px 10px -2px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.08)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.22), 0 6px 4px rgba(0,0,0,0.14), 0 10px 16px -3px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.14), inset 2px 0 0 rgba(255,255,255,0.50), inset -2px 0 0 rgba(0,0,0,0.06)`;
             }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
