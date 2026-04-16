@@ -222,7 +222,7 @@ export default function Configuracion() {
   useEffect(() => { injectKeyframes() }, [])
 
   const getCardStyle = (isH: boolean, isP: boolean, card: ConfigCard): React.CSSProperties => ({
-    aspectRatio: '1 / 0.88',
+    aspectRatio: '1 / 0.79',
     borderRadius: '16px',
     padding: '18px 14px 14px',
     background: isH ? card.gradientHover : card.gradientBase,
@@ -352,7 +352,7 @@ export default function Configuracion() {
                 {/* Title */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
-                  fontSize: '15px',
+                  fontSize: '18px',
                   fontWeight: 800,
                   color: '#FFFFFF',
                   lineHeight: 1.2,
@@ -368,8 +368,8 @@ export default function Configuracion() {
                 {/* Subtitle */}
                 <div style={{
                   fontFamily: DASH.fontBody,
-                  fontSize: '11px',
-                  fontWeight: 500,
+                  fontSize: '13px',
+                  fontWeight: 600,
                   color: 'rgba(255,255,255,0.82)',
                   marginTop: '6px',
                   position: 'relative',
@@ -472,7 +472,7 @@ export default function Configuracion() {
 
                 <div style={{
                   fontFamily: DASH.fontFamily,
-                  fontSize: '15px',
+                  fontSize: '18px',
                   fontWeight: 800,
                   color: '#FFFFFF',
                   lineHeight: 1.2,
@@ -487,8 +487,8 @@ export default function Configuracion() {
 
                 <div style={{
                   fontFamily: DASH.fontBody,
-                  fontSize: '11px',
-                  fontWeight: 500,
+                  fontSize: '13px',
+                  fontWeight: 600,
                   color: 'rgba(255,255,255,0.82)',
                   marginTop: '6px',
                   position: 'relative',
