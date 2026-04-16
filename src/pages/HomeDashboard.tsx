@@ -439,17 +439,9 @@ export default function HomeDashboard() {
         default: return '14px'
       }
     })()
-    // Blind emboss real: NO hay ícono base visible.
-    // Solo 2 copias desplazadas (luz arriba-izq + sombra abajo-der)
-    // que crean el relieve 3D como prensa en tarjeta de presentación.
+    // Blind emboss con filtro SVG: solo bordes iluminados/sombreados.
+    // CERO relleno, cero color. Solo relieve de bordes.
     const iconSrc = card.iconFile ? `/icons/dashboard/${card.iconFile}` : null
-    const iconBaseStyle: React.CSSProperties = {
-      position: 'absolute',
-      top: 0, left: 0,
-      width: '100%', height: '100%',
-      objectFit: 'contain',
-      objectPosition: 'center center',
-    }
     const icon = iconSrc ? (
       <div
         style={{
@@ -465,34 +457,18 @@ export default function HomeDashboard() {
           zIndex: 2,
         }}
       >
-        {/* Capa 1: sombra oscura profunda — desplazada abajo-derecha */}
-        <img src={iconSrc} alt="" style={{
-          ...iconBaseStyle,
-          filter: 'brightness(0) blur(3px)',
-          opacity: 0.38,
-          transform: 'translate(5px, 5px)',
-        }} />
-        {/* Capa 2: sombra oscura suave — halo más difuso */}
-        <img src={iconSrc} alt="" style={{
-          ...iconBaseStyle,
-          filter: 'brightness(0) blur(6px)',
-          opacity: 0.18,
-          transform: 'translate(3px, 3px)',
-        }} />
-        {/* Capa 3: highlight claro — desplazada arriba-izquierda */}
-        <img src={iconSrc} alt="" style={{
-          ...iconBaseStyle,
-          filter: 'brightness(0) invert(1) blur(2.5px)',
-          opacity: 0.28,
-          transform: 'translate(-4px, -4px)',
-        }} />
-        {/* Capa 4: highlight suave — halo de luz más amplio */}
-        <img src={iconSrc} alt="" style={{
-          ...iconBaseStyle,
-          filter: 'brightness(0) invert(1) blur(5px)',
-          opacity: 0.12,
-          transform: 'translate(-2px, -2px)',
-        }} />
+        <img
+          src={iconSrc}
+          alt=""
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            objectPosition: 'center center',
+            filter: 'url(#blind-emboss)',
+            opacity: 0.95,
+          }}
+        />
       </div>
     ) : null
 
@@ -646,6 +622,31 @@ export default function HomeDashboard() {
       color: '#1E293B',
     }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');`}</style>
+      {/* Filtro SVG para blind emboss — solo bordes con luz/sombra, cero relleno */}
+      <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
+        <defs>
+          <filter id="blind-emboss" x="-20%" y="-20%" width="140%" height="140%" colorInterpolationFilters="sRGB">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="1.8" result="blur"/>
+            {/* Bordes iluminados (arriba-izquierda) — luz pega aquí */}
+            <feOffset in="blur" dx="4" dy="4" result="shiftDR"/>
+            <feComposite in="SourceAlpha" in2="shiftDR" operator="out" result="lightEdge"/>
+            <feFlood floodColor="white" floodOpacity="0.60" result="whiteFlood"/>
+            <feComposite in="whiteFlood" in2="lightEdge" operator="in" result="lightColored"/>
+            <feGaussianBlur in="lightColored" stdDeviation="0.8" result="lightFinal"/>
+            {/* Bordes sombreados (abajo-derecha) — sombra aquí */}
+            <feOffset in="blur" dx="-4" dy="-4" result="shiftUL"/>
+            <feComposite in="SourceAlpha" in2="shiftUL" operator="out" result="darkEdge"/>
+            <feFlood floodColor="black" floodOpacity="0.70" result="blackFlood"/>
+            <feComposite in="blackFlood" in2="darkEdge" operator="in" result="darkColored"/>
+            <feGaussianBlur in="darkColored" stdDeviation="0.8" result="darkFinal"/>
+            {/* Combinar solo los bordes — centro queda transparente */}
+            <feMerge>
+              <feMergeNode in="darkFinal"/>
+              <feMergeNode in="lightFinal"/>
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
       <AppHeader
         onLogout={handleLogout}
         userName={formatName(user?.email)}
