@@ -412,12 +412,11 @@ export default function HomeDashboard() {
       }
     })()
 
-    // Icono común — Operaciones camión +50% para compensar padding interno del SVG
-    const iconSize = 95
-    const iconVisualScale = card.id === 'operaciones' ? 1.50 : 1
-    const iconScale = (isHovered ? 1.04 : 1) * iconVisualScale
-    const iconBottom = card.id === 'operaciones' ? '-32px' : '10px'
-    const iconRight = card.id === 'operaciones' ? '8px' : '18px'
+    // Icono repujado/emboss — efecto 3D como empujado desde atrás
+    const iconSize = card.id === 'operaciones' ? 130 : 100
+    const iconScale = isHovered ? 1.06 : 1
+    const iconBottom = card.id === 'operaciones' ? '-10px' : '6px'
+    const iconRight = card.id === 'operaciones' ? '6px' : '14px'
     const icon = card.iconFile ? (
       <div
         style={{
@@ -441,8 +440,14 @@ export default function HomeDashboard() {
             height: '100%',
             objectFit: 'contain',
             objectPosition: 'center center',
-            filter: 'brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,122,0,0.30)) drop-shadow(0 0 22px rgba(255,122,0,0.18))',
-            opacity: 0.35,
+            // Repujado: luz arriba-izquierda, sombra abajo-derecha = volumen 3D
+            filter: `
+              brightness(0) invert(1)
+              drop-shadow(-3px -3px 2px rgba(255,255,255,0.25))
+              drop-shadow(4px 4px 3px rgba(0,0,0,0.50))
+              drop-shadow(0 0 12px rgba(255,255,255,0.08))
+            `,
+            opacity: 0.50,
           }}
         />
       </div>
