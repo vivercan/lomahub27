@@ -37,6 +37,7 @@ export default function HomeDashboard() {
   const navigate = useNavigate()
   const { user, logout } = useAuthContext()
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
+  const [pressedCard, setPressedCard] = useState<string | null>(null)
 
   const formatName = (email?: string) => {
     if (!email) return 'Usuario'
@@ -117,11 +118,58 @@ export default function HomeDashboard() {
 
   // (helper hexToRgba eliminado — fue dead code tras el rediseño premium)
 
-  const getCardStyle = (isHovered: boolean, card: CardConfig): React.CSSProperties => {
+  const getCardStyle = (isHovered: boolean, isPressed: boolean, card: CardConfig): React.CSSProperties => {
     // Comunicaciones: spec 6 → sombra interna extra solo lado derecho
     const extraShadow = card.id === 'comunicaciones'
       ? ', inset -24px 0 40px rgba(0,0,0,0.10)'
       : ''
+
+    // Determinar transform y boxShadow según estado: pressed > hovered > resting
+    let transform: string
+    let boxShadow: string
+
+    if (isPressed) {
+      // PRESSED — card se hunde, sombras mínimas, bisel invertido
+      transform = 'translateY(3px) scale(0.982)'
+      boxShadow = `
+        0 1px 2px rgba(0,0,0,0.50),
+        0 2px 6px rgba(0,0,0,0.40),
+        0 4px 12px -2px rgba(0,0,0,0.35),
+        inset 0 -1px 0 rgba(255,255,255,0.18),
+        inset -1px 0 0 rgba(255,255,255,0.06),
+        inset 0 3px 6px rgba(0,0,0,0.55),
+        inset 2px 0 0 rgba(0,0,0,0.15),
+        inset 0 8px 20px rgba(0,0,0,0.18)
+      `
+    } else if (isHovered) {
+      transform = 'translateY(-10px) scale(1.012)'
+      boxShadow = `
+        0 0 20px rgba(255,122,0,0.20),
+        0 4px 8px rgba(0,0,0,0.80),
+        0 18px 36px -6px rgba(0,0,0,0.60),
+        0 50px 90px -16px rgba(0,0,0,0.65),
+        inset 0 2px 0 rgba(255,255,255,0.35),
+        inset 2px 0 0 rgba(255,255,255,0.12),
+        inset 0 -2px 0 rgba(0,0,0,0.50),
+        inset -2px 0 0 rgba(0,0,0,0.25),
+        inset 0 0 30px rgba(0,0,0,0.20)
+      `
+    } else {
+      transform = 'translateY(0) scale(1)'
+      boxShadow = `
+        0 3px 6px rgba(0,0,0,0.40),
+        0 10px 20px rgba(0,0,0,0.30),
+        0 24px 48px -6px rgba(0,0,0,0.35),
+        0 48px 80px -16px rgba(0,0,0,0.25),
+        inset 0 2px 0 rgba(255,255,255,0.30),
+        inset 2px 0 0 rgba(255,255,255,0.10),
+        inset 0 -2px 0 rgba(0,0,0,0.45),
+        inset -2px 0 0 rgba(0,0,0,0.20),
+        inset 0 24px 40px rgba(255,255,255,0.05),
+        inset 0 -20px 30px rgba(0,0,0,0.22)${extraShadow}
+      `
+    }
+
     return ({
       gridColumn: card.gridColumn,
       gridRow: card.gridRow,
@@ -130,7 +178,7 @@ export default function HomeDashboard() {
       padding: '26px',
       background: card.gradient,
       border: 'none',
-      outline: isHovered
+      outline: isHovered || isPressed
         ? '1.5px solid rgba(255,140,0,0.60)'
         : '1.5px solid rgba(255,122,0,0.22)',
       outlineOffset: '-1px',
@@ -141,35 +189,9 @@ export default function HomeDashboard() {
       flexDirection: 'column',
       alignItems: 'flex-start',
       justifyContent: 'flex-start',
-      transition: 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.55s cubic-bezier(0.16,1,0.3,1), border-color 0.3s ease',
-      transform: isHovered
-        ? 'translateY(-10px) scale(1.012)'
-        : 'translateY(0) scale(1)',
-      // HOVER INTACTO — tokens de hover preservados sin cambios.
-      boxShadow: isHovered
-        ? `
-          0 0 20px rgba(255,122,0,0.20),
-          0 4px 8px rgba(0,0,0,0.80),
-          0 18px 36px -6px rgba(0,0,0,0.60),
-          0 50px 90px -16px rgba(0,0,0,0.65),
-          inset 0 2px 0 rgba(255,255,255,0.35),
-          inset 2px 0 0 rgba(255,255,255,0.12),
-          inset 0 -2px 0 rgba(0,0,0,0.50),
-          inset -2px 0 0 rgba(0,0,0,0.25),
-          inset 0 0 30px rgba(0,0,0,0.20)
-        `
-        : `
-          0 3px 6px rgba(0,0,0,0.40),
-          0 10px 20px rgba(0,0,0,0.30),
-          0 24px 48px -6px rgba(0,0,0,0.35),
-          0 48px 80px -16px rgba(0,0,0,0.25),
-          inset 0 2px 0 rgba(255,255,255,0.30),
-          inset 2px 0 0 rgba(255,255,255,0.10),
-          inset 0 -2px 0 rgba(0,0,0,0.45),
-          inset -2px 0 0 rgba(0,0,0,0.20),
-          inset 0 24px 40px rgba(255,255,255,0.05),
-          inset 0 -20px 30px rgba(0,0,0,0.22)${extraShadow}
-        `,
+      transition: 'transform 0.18s cubic-bezier(0.4,0,0.2,1), box-shadow 0.18s cubic-bezier(0.4,0,0.2,1), border-color 0.3s ease',
+      transform,
+      boxShadow,
     })
   }
 
@@ -473,6 +495,7 @@ export default function HomeDashboard() {
 
   const renderCard = (card: CardConfig) => {
     const isHovered = hoveredCard === card.id
+    const isPressed = pressedCard === card.id
     // Paleta tipográfica — colores integrados al material de la card
     const textColor = 'rgba(255,255,255,0.95)'
     const kpiColor = '#FFFFFF'
@@ -483,8 +506,10 @@ export default function HomeDashboard() {
         key={card.id}
         onClick={() => navigate(card.route)}
         onMouseEnter={() => setHoveredCard(card.id)}
-        onMouseLeave={() => setHoveredCard(null)}
-        style={getCardStyle(isHovered, card)}
+        onMouseLeave={() => { setHoveredCard(null); setPressedCard(null) }}
+        onMouseDown={() => setPressedCard(card.id)}
+        onMouseUp={() => setPressedCard(null)}
+        style={getCardStyle(isHovered, isPressed, card)}
       >
         {renderDecor(card, isHovered)}
         {/* Filo de luz superior — 2px brillante, más intenso */}
