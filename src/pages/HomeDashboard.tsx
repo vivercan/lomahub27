@@ -412,16 +412,18 @@ export default function HomeDashboard() {
       }
     })()
 
-    // Icono común — color rgba(245,247,250,0.24). Operaciones camión +20% (spec 6 excepción).
+    // Icono común — Operaciones camión +50% para compensar padding interno del SVG
     const iconSize = 95
-    const iconVisualScale = card.id === 'operaciones' ? 1.20 : 1
+    const iconVisualScale = card.id === 'operaciones' ? 1.50 : 1
     const iconScale = (isHovered ? 1.04 : 1) * iconVisualScale
+    const iconBottom = card.id === 'operaciones' ? '-4px' : '10px'
+    const iconRight = card.id === 'operaciones' ? '8px' : '18px'
     const icon = card.iconFile ? (
       <div
         style={{
           position: 'absolute',
-          right: '18px',
-          bottom: '10px',
+          right: iconRight,
+          bottom: iconBottom,
           width: `${iconSize}px`,
           height: `${iconSize}px`,
           pointerEvents: 'none',
