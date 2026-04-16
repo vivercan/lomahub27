@@ -444,7 +444,6 @@ export default function HomeDashboard() {
     return (
       <>
         {geometry}
-        {icon}
       </>
     )
   }
