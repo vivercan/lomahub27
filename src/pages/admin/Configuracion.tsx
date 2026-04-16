@@ -236,9 +236,9 @@ export default function Configuracion() {
     justifyContent: 'flex-start',
     transition: 'all 0.14s cubic-bezier(0.23,1,0.32,1)',
     transform: isP
-      ? 'translateY(7px) scale(0.985)'
+      ? 'translateY(9px) scale(0.985)'
       : isH
-        ? 'translateY(-2px) scale(1.01)'
+        ? 'translateY(-3px) scale(1.01)'
         : 'translateY(0) scale(1)',
     boxShadow: isP
       /* PRESSED — key fully sunk: almost no bottom wall, deep inset shadow */
@@ -249,21 +249,21 @@ export default function Configuracion() {
          inset 0 -1px 0 rgba(255,255,255,0.10)`
       : isH
         /* HOVER — key slightly raised */
-        ? `0 8px 0 rgba(0,0,0,0.40),
-           0 10px 6px rgba(0,0,0,0.25),
-           0 18px 28px -4px rgba(0,0,0,0.18),
+        ? `0 11px 0 rgba(0,0,0,0.50),
+           0 13px 7px rgba(0,0,0,0.30),
+           0 20px 32px -4px rgba(0,0,0,0.20),
+           inset 0 2px 0 rgba(255,255,255,0.38),
+           inset 0 -3px 0 rgba(0,0,0,0.45),
+           inset 3px 0 0 rgba(255,255,255,0.18),
+           inset -3px 0 0 rgba(0,0,0,0.20)`
+        /* DEFAULT — mechanical key: THICK 9px bottom wall for max depth */
+        : `0 9px 0 rgba(0,0,0,0.50),
+           0 11px 6px rgba(0,0,0,0.35),
+           0 16px 28px -4px rgba(0,0,0,0.22),
            inset 0 2px 0 rgba(255,255,255,0.35),
-           inset 0 -3px 0 rgba(0,0,0,0.40),
+           inset 0 -3px 0 rgba(0,0,0,0.42),
            inset 3px 0 0 rgba(255,255,255,0.15),
-           inset -3px 0 0 rgba(0,0,0,0.18)`
-        /* DEFAULT — mechanical key: THICK 7px bottom wall */
-        : `0 7px 0 rgba(0,0,0,0.45),
-           0 9px 5px rgba(0,0,0,0.30),
-           0 14px 22px -4px rgba(0,0,0,0.20),
-           inset 0 2px 0 rgba(255,255,255,0.32),
-           inset 0 -3px 0 rgba(0,0,0,0.38),
-           inset 3px 0 0 rgba(255,255,255,0.12),
-           inset -3px 0 0 rgba(0,0,0,0.15)`,
+           inset -3px 0 0 rgba(0,0,0,0.18)`,
     outline: 'none',
   })
 
@@ -303,36 +303,36 @@ export default function Configuracion() {
                   {card.geo}
                 </div>
 
-                {/* ═══ CONCAVE KEYCAP — sharp beveled edges ═══ */}
-                {/* Top bevel — sharp bright edge */}
+                {/* ═══ RAZOR KEYCAP — ultra-sharp bevel + deep dish ═══ */}
+                {/* Top bevel — razor bright */}
                 <div style={{
-                  position: 'absolute', left: 0, top: 0, right: 0, height: '2px',
-                  background: 'rgba(255,255,255,0.70)',
+                  position: 'absolute', left: 0, top: 0, right: 0, height: '3px',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.90) 0%, rgba(255,255,255,0.40) 100%)',
                   pointerEvents: 'none', borderRadius: '12px 12px 0 0', zIndex: 6,
                 }} />
-                {/* Left bevel — bright */}
+                {/* Left bevel — razor bright */}
                 <div style={{
-                  position: 'absolute', left: 0, top: 0, bottom: 0, width: '2px',
-                  background: 'linear-gradient(180deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.10) 100%)',
+                  position: 'absolute', left: 0, top: 0, bottom: 0, width: '3px',
+                  background: 'linear-gradient(90deg, rgba(255,255,255,0.80) 0%, rgba(255,255,255,0.20) 100%)',
                   pointerEvents: 'none', borderRadius: '12px 0 0 12px', zIndex: 6,
                 }} />
-                {/* Bottom bevel — dark sharp edge */}
+                {/* Bottom bevel — razor dark */}
                 <div style={{
-                  position: 'absolute', left: 0, bottom: 0, right: 0, height: '2.5px',
-                  background: 'rgba(0,0,0,0.55)',
+                  position: 'absolute', left: 0, bottom: 0, right: 0, height: '4px',
+                  background: 'linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.70) 100%)',
                   pointerEvents: 'none', borderRadius: '0 0 12px 12px', zIndex: 6,
                 }} />
-                {/* Right bevel — dark */}
+                {/* Right bevel — razor dark */}
                 <div style={{
-                  position: 'absolute', right: 0, top: 0, bottom: 0, width: '2px',
-                  background: 'linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.50) 100%)',
+                  position: 'absolute', right: 0, top: 0, bottom: 0, width: '3px',
+                  background: 'linear-gradient(90deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.70) 100%)',
                   pointerEvents: 'none', borderRadius: '0 12px 12px 0', zIndex: 6,
                 }} />
-                {/* Concave dish — sunken center surface */}
+                {/* Deep concave dish — heavily sunken center */}
                 <div style={{
-                  position: 'absolute', inset: '3px',
-                  borderRadius: '10px',
-                  boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.22), inset 0 -3px 6px rgba(255,255,255,0.15), inset 4px 0 8px rgba(0,0,0,0.12), inset -4px 0 8px rgba(255,255,255,0.08)',
+                  position: 'absolute', inset: '4px',
+                  borderRadius: '9px',
+                  boxShadow: 'inset 0 6px 14px rgba(0,0,0,0.30), inset 0 -4px 10px rgba(255,255,255,0.18), inset 6px 0 12px rgba(0,0,0,0.18), inset -6px 0 12px rgba(255,255,255,0.10)',
                   pointerEvents: 'none', zIndex: 3,
                 }} />
 
