@@ -259,8 +259,7 @@ export default function Configuracion() {
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(7, 1fr)',
-          gap: '14px',
-          maxWidth: '1200px',
+          gap: '16px',
         }}>
           {CARDS.slice(0, 7).map(card => {
             const isH = hovered === card.id
@@ -388,9 +387,8 @@ export default function Configuracion() {
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(7, 1fr)',
-          gap: '14px',
-          maxWidth: '1200px',
-          marginTop: '14px',
+          gap: '16px',
+          marginTop: '16px',
         }}>
           {CARDS.slice(7).map(card => {
             const isH = hovered === card.id
