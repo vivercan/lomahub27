@@ -955,7 +955,7 @@ export default function MisLeads() {
             <thead>
               <tr>
                 <th style={{ ...s.th, width: '50px', textAlign: 'center' as const }}>#</th>
-                <th style={s.th} onClick={() => handleSort('empresa')}>
+                <th style={{ ...s.th, minWidth: '220px' }} onClick={() => handleSort('empresa')}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     EMPRESA
                     <ArrowUpDown size={12} style={{ color: sortField === 'empresa' ? tokens.colors.primary : tokens.colors.textMuted }} />
@@ -969,7 +969,6 @@ export default function MisLeads() {
                 </th>
                 <th style={s.th}>CONTACTO</th>
                 <th style={s.th}>SERVICIO</th>
-                <th style={s.th}>EMAIL</th>
                 <th style={s.th}>VIAJE</th>
                 <th style={s.th} onClick={() => handleSort('proyectado_usd')}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -1022,7 +1021,6 @@ export default function MisLeads() {
                       <div style={{ color: tokens.colors.textPrimary }}>{lead.contacto || '—'}</div>
                     </td>
                     <td style={s.tdMuted}>{lead.tipo_carga || '—'}</td>
-                    <td style={s.tdMuted}>{lead.email || '—'}</td>
                     <td style={s.tdMuted}>{lead.tipo_viaje || '—'}</td>
                     <td style={{ ...s.td, fontWeight: 600, color: tokens.colors.green }}>
                       {formatCurrency(lead.proyectado_usd || lead.valor_estimado || 0)}
