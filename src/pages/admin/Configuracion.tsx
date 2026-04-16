@@ -234,17 +234,38 @@ export default function Configuracion() {
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    transition: 'all 0.32s cubic-bezier(0.23,1,0.32,1)',
+    transition: 'all 0.18s cubic-bezier(0.23,1,0.32,1)',
     transform: isP
-      ? 'translateY(3px) scale(0.975)'
+      ? 'translateY(5px) scale(0.982)'
       : isH
-        ? 'translateY(-8px) scale(1.03)'
+        ? 'translateY(-3px) scale(1.015)'
         : 'translateY(0) scale(1)',
     boxShadow: isP
-      ? `0 1px 2px rgba(0,0,0,0.45), inset 0 -1px 0 rgba(255,255,255,0.10), inset 0 4px 8px rgba(0,0,0,0.45)`
+      /* PRESSED — key sunk down: minimal bottom shadow, strong inset top shadow */
+      ? `0 1px 1px rgba(0,0,0,0.50),
+         0 2px 3px rgba(0,0,0,0.30),
+         inset 0 3px 6px rgba(0,0,0,0.40),
+         inset 0 1px 2px rgba(0,0,0,0.50),
+         inset 0 -1px 0 rgba(255,255,255,0.08)`
       : isH
-        ? `0 0 0 1.5px ${card.glowColor}, 0 0 20px ${card.glowColor}, 0 8px 16px rgba(0,0,0,0.40), 0 24px 48px -8px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -2px 0 rgba(0,0,0,0.30)`
-        : `0 2px 4px rgba(0,0,0,0.25), 0 8px 20px -4px rgba(0,0,0,0.22), 0 20px 40px -8px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -2px 0 rgba(0,0,0,0.28)`,
+        /* HOVER — key slightly lifted */
+        ? `0 6px 0 rgba(0,0,0,0.30),
+           0 8px 6px rgba(0,0,0,0.25),
+           0 16px 24px -4px rgba(0,0,0,0.20),
+           inset 0 2px 0 rgba(255,255,255,0.35),
+           inset 0 -3px 0 rgba(0,0,0,0.35),
+           inset 2px 0 0 rgba(255,255,255,0.12),
+           inset -2px 0 0 rgba(0,0,0,0.12),
+           0 0 0 1.5px ${card.glowColor},
+           0 0 16px ${card.glowColor}`
+        /* DEFAULT — mechanical key resting: thick bottom shadow = "wall" of the key */
+        : `0 5px 0 rgba(0,0,0,0.35),
+           0 7px 4px rgba(0,0,0,0.25),
+           0 12px 20px -4px rgba(0,0,0,0.20),
+           inset 0 2px 0 rgba(255,255,255,0.30),
+           inset 0 -3px 0 rgba(0,0,0,0.30),
+           inset 2px 0 0 rgba(255,255,255,0.10),
+           inset -2px 0 0 rgba(0,0,0,0.10)`,
     outline: 'none',
   })
 
@@ -352,7 +373,7 @@ export default function Configuracion() {
                 {/* Title */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
-                  fontSize: '22px',
+                  fontSize: '18px',
                   fontWeight: 800,
                   color: '#FFFFFF',
                   lineHeight: 1.2,
@@ -368,7 +389,7 @@ export default function Configuracion() {
                 {/* Subtitle */}
                 <div style={{
                   fontFamily: DASH.fontBody,
-                  fontSize: '14px',
+                  fontSize: '13px',
                   fontWeight: 600,
                   color: 'rgba(255,255,255,0.82)',
                   marginTop: '6px',
@@ -472,7 +493,7 @@ export default function Configuracion() {
 
                 <div style={{
                   fontFamily: DASH.fontFamily,
-                  fontSize: '22px',
+                  fontSize: '18px',
                   fontWeight: 800,
                   color: '#FFFFFF',
                   lineHeight: 1.2,
@@ -487,7 +508,7 @@ export default function Configuracion() {
 
                 <div style={{
                   fontFamily: DASH.fontBody,
-                  fontSize: '14px',
+                  fontSize: '13px',
                   fontWeight: 600,
                   color: 'rgba(255,255,255,0.82)',
                   marginTop: '6px',
