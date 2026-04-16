@@ -148,27 +148,27 @@ export default function HomeDashboard() {
       // HOVER INTACTO — tokens de hover preservados sin cambios.
       boxShadow: isHovered
         ? `
-          0 0 16px rgba(255,122,0,0.15),
-          0 4px 6px -1px rgba(0,0,0,0.75),
-          0 16px 30px -8px rgba(0,0,0,0.55),
-          0 44px 80px -20px rgba(0,0,0,0.60),
-          inset 0 1px 0 rgba(255,255,255,0.30),
-          inset 1px 0 0 rgba(255,255,255,0.10),
-          inset 0 -1px 0 rgba(0,0,0,0.40),
-          inset -1px 0 0 rgba(0,0,0,0.20),
-          inset 0 0 24px rgba(0,0,0,0.18)
+          0 0 20px rgba(255,122,0,0.20),
+          0 4px 8px rgba(0,0,0,0.80),
+          0 18px 36px -6px rgba(0,0,0,0.60),
+          0 50px 90px -16px rgba(0,0,0,0.65),
+          inset 0 2px 0 rgba(255,255,255,0.35),
+          inset 2px 0 0 rgba(255,255,255,0.12),
+          inset 0 -2px 0 rgba(0,0,0,0.50),
+          inset -2px 0 0 rgba(0,0,0,0.25),
+          inset 0 0 30px rgba(0,0,0,0.20)
         `
         : `
-          0 2px 4px rgba(0,0,0,0.30),
-          0 8px 16px rgba(0,0,0,0.20),
-          0 20px 40px -8px rgba(0,0,0,0.28),
-          0 40px 70px -20px rgba(0,0,0,0.18),
-          inset 0 1px 0 rgba(255,255,255,0.25),
-          inset 1px 0 0 rgba(255,255,255,0.08),
-          inset 0 -1px 0 rgba(0,0,0,0.35),
-          inset -1px 0 0 rgba(0,0,0,0.15),
-          inset 0 20px 30px rgba(255,255,255,0.03),
-          inset 0 -16px 24px rgba(0,0,0,0.15)${extraShadow}
+          0 3px 6px rgba(0,0,0,0.40),
+          0 10px 20px rgba(0,0,0,0.30),
+          0 24px 48px -6px rgba(0,0,0,0.35),
+          0 48px 80px -16px rgba(0,0,0,0.25),
+          inset 0 2px 0 rgba(255,255,255,0.30),
+          inset 2px 0 0 rgba(255,255,255,0.10),
+          inset 0 -2px 0 rgba(0,0,0,0.45),
+          inset -2px 0 0 rgba(0,0,0,0.20),
+          inset 0 24px 40px rgba(255,255,255,0.05),
+          inset 0 -20px 30px rgba(0,0,0,0.22)${extraShadow}
         `,
     })
   }
@@ -487,22 +487,41 @@ export default function HomeDashboard() {
         style={getCardStyle(isHovered, card)}
       >
         {renderDecor(card, isHovered)}
-        {/* Filo de luz superior — 1px brillante simula luz pegando arriba */}
+        {/* Filo de luz superior — 2px brillante, más intenso */}
         <div style={{
           position: 'absolute',
-          left: '1px', top: 0, right: '1px',
-          height: '1px',
-          background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 20%, rgba(255,255,255,0.40) 50%, rgba(255,255,255,0.35) 80%, rgba(255,255,255,0) 100%)',
+          left: '2px', top: 0, right: '2px',
+          height: '2px',
+          background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.50) 15%, rgba(255,255,255,0.60) 50%, rgba(255,255,255,0.50) 85%, rgba(255,255,255,0) 100%)',
           pointerEvents: 'none',
           borderRadius: '22px 22px 0 0',
           zIndex: 5,
         }} />
-        {/* Specular highlight — brillo gradiente superior para volumen */}
+        {/* Filo de luz izquierdo — sutil, completa el bisel */}
+        <div style={{
+          position: 'absolute',
+          left: 0, top: '2px', bottom: '2px',
+          width: '1px',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.20) 15%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.10) 85%, rgba(255,255,255,0) 100%)',
+          pointerEvents: 'none',
+          zIndex: 5,
+        }} />
+        {/* Specular highlight — gradiente fuerte para volumen de botón inflado */}
         <div style={{
           position: 'absolute',
           left: 0, top: 0,
-          width: '100%', height: '50%',
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 30%, rgba(255,255,255,0) 100%)',
+          width: '100%', height: '55%',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0) 100%)',
+          pointerEvents: 'none',
+          borderRadius: 'inherit',
+          zIndex: 1,
+        }} />
+        {/* Oscurecimiento inferior — da volumen de botón curvado */}
+        <div style={{
+          position: 'absolute',
+          left: 0, bottom: 0,
+          width: '100%', height: '40%',
+          background: 'linear-gradient(0deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.06) 40%, rgba(0,0,0,0) 100%)',
           pointerEvents: 'none',
           borderRadius: 'inherit',
           zIndex: 1,
