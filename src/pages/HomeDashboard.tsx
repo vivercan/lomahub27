@@ -148,15 +148,28 @@ export default function HomeDashboard() {
       // HOVER INTACTO — tokens de hover preservados sin cambios.
       boxShadow: isHovered
         ? `
-          0 0 12px rgba(255,122,0,0.12),
-          0 3px 5px -1px rgba(0,0,0,0.70),
-          0 14px 26px -8px rgba(0,0,0,0.48),
-          0 38px 76px -20px rgba(0,0,0,0.58),
-          inset 2px 2px 0 rgba(255,255,255,0.14),
-          inset -2px -2px 0 rgba(0,0,0,0.22),
+          0 0 16px rgba(255,122,0,0.15),
+          0 4px 6px -1px rgba(0,0,0,0.75),
+          0 16px 30px -8px rgba(0,0,0,0.55),
+          0 44px 80px -20px rgba(0,0,0,0.60),
+          inset 0 1px 0 rgba(255,255,255,0.30),
+          inset 1px 0 0 rgba(255,255,255,0.10),
+          inset 0 -1px 0 rgba(0,0,0,0.40),
+          inset -1px 0 0 rgba(0,0,0,0.20),
           inset 0 0 24px rgba(0,0,0,0.18)
         `
-        : `0 18px 34px rgba(0,0,0,0.24), 0 6px 12px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 18px 28px rgba(255,255,255,0.025), inset 0 -14px 20px rgba(0,0,0,0.12)${extraShadow}`,
+        : `
+          0 2px 4px rgba(0,0,0,0.30),
+          0 8px 16px rgba(0,0,0,0.20),
+          0 20px 40px -8px rgba(0,0,0,0.28),
+          0 40px 70px -20px rgba(0,0,0,0.18),
+          inset 0 1px 0 rgba(255,255,255,0.25),
+          inset 1px 0 0 rgba(255,255,255,0.08),
+          inset 0 -1px 0 rgba(0,0,0,0.35),
+          inset -1px 0 0 rgba(0,0,0,0.15),
+          inset 0 20px 30px rgba(255,255,255,0.03),
+          inset 0 -16px 24px rgba(0,0,0,0.15)${extraShadow}
+        `,
     })
   }
 
@@ -474,12 +487,22 @@ export default function HomeDashboard() {
         style={getCardStyle(isHovered, card)}
       >
         {renderDecor(card, isHovered)}
-        {/* Specular highlight — brillo de luz superior para profundidad */}
+        {/* Filo de luz superior — 1px brillante simula luz pegando arriba */}
+        <div style={{
+          position: 'absolute',
+          left: '1px', top: 0, right: '1px',
+          height: '1px',
+          background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 20%, rgba(255,255,255,0.40) 50%, rgba(255,255,255,0.35) 80%, rgba(255,255,255,0) 100%)',
+          pointerEvents: 'none',
+          borderRadius: '22px 22px 0 0',
+          zIndex: 5,
+        }} />
+        {/* Specular highlight — brillo gradiente superior para volumen */}
         <div style={{
           position: 'absolute',
           left: 0, top: 0,
-          width: '100%', height: '45%',
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 100%)',
+          width: '100%', height: '50%',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 30%, rgba(255,255,255,0) 100%)',
           pointerEvents: 'none',
           borderRadius: 'inherit',
           zIndex: 1,
