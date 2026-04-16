@@ -416,6 +416,7 @@ export default function HomeDashboard() {
     const iconSize = (() => {
       switch (card.id) {
         case 'operaciones': return 130
+        case 'comercial': return 115
         case 'comunicaciones': return 120
         case 'servicio-clientes': return 118
         case 'config': return 110
