@@ -447,10 +447,10 @@ export default function MisLeads() {
       transition: 'all 0.18s ease',
       whiteSpace: 'nowrap' as const,
       boxShadow: `
-        0 1px 3px rgba(0,0,0,0.10),
-        0 3px 8px -2px rgba(0,0,0,0.08),
-        inset 0 1px 0 rgba(255,255,255,0.80),
-        inset 0 -1px 0 rgba(0,0,0,0.06)
+        0 2px 4px rgba(0,0,0,0.14),
+        0 4px 10px -2px rgba(0,0,0,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.90),
+        inset 0 -2px 0 rgba(0,0,0,0.08)
       `,
     },
     toolbarBtnActive: {
@@ -574,14 +574,14 @@ export default function MisLeads() {
       fontWeight: 600,
       fontFamily: tokens.fonts.body,
       color: '#fff',
-      background: `linear-gradient(180deg, ${color} 0%, ${color}DD 100%)`,
+      background: `linear-gradient(180deg, ${color} 0%, ${color}CC 100%)`,
       border: 'none',
       whiteSpace: 'nowrap' as const,
       boxShadow: `
-        0 2px 4px rgba(0,0,0,0.25),
-        0 4px 8px -2px rgba(0,0,0,0.20),
-        inset 0 1px 0 rgba(255,255,255,0.30),
-        inset 0 -1px 0 rgba(0,0,0,0.20)
+        0 2px 5px rgba(0,0,0,0.30),
+        0 5px 10px -2px rgba(0,0,0,0.22),
+        inset 0 1px 0 rgba(255,255,255,0.35),
+        inset 0 -2px 0 rgba(0,0,0,0.25)
       `,
       textShadow: '0 1px 2px rgba(0,0,0,0.25)',
       transition: 'all 0.15s ease',
@@ -1013,9 +1013,8 @@ export default function MisLeads() {
                         )}
                       </div>
                     </td>
-                    <td style={s.td}>
+                    <td style={{ ...s.td, textAlign: 'center' as const }}>
                       <span style={s.stageBadge(stage.color)}>
-                        <span style={s.dot(stage.color)} />
                         {stage.label}
                       </span>
                     </td>
