@@ -416,7 +416,7 @@ export default function HomeDashboard() {
     const iconSize = 95
     const iconVisualScale = card.id === 'operaciones' ? 1.50 : 1
     const iconScale = (isHovered ? 1.04 : 1) * iconVisualScale
-    const iconBottom = card.id === 'operaciones' ? '-4px' : '10px'
+    const iconBottom = card.id === 'operaciones' ? '-18px' : '10px'
     const iconRight = card.id === 'operaciones' ? '8px' : '18px'
     const icon = card.iconFile ? (
       <div
