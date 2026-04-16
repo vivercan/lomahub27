@@ -468,7 +468,7 @@ export default function HomeDashboard() {
             objectFit: 'contain',
             objectPosition: 'center center',
             filter: 'url(#blind-emboss)',
-            opacity: 0.95,
+            opacity: 1,
           }}
         />
       </div>
@@ -668,8 +668,8 @@ export default function HomeDashboard() {
             <feComposite in="bH" in2="haloBotEdge" operator="in" result="haloDB"/>
             <feGaussianBlur in="haloDB" stdDeviation="1.8" result="haloDarkSoft"/>
 
-            {/* === RELLENO SUTIL === */}
-            <feFlood floodColor="white" floodOpacity="0.04" result="fill"/>
+            {/* === SUPERFICIE ELEVADA: relleno visible de toda la forma === */}
+            <feFlood floodColor="white" floodOpacity="0.13" result="fill"/>
             <feComposite in="fill" in2="SourceAlpha" operator="in" result="subtleFill"/>
 
             {/* === MERGE: sombras → relleno → highlights === */}
