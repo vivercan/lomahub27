@@ -417,7 +417,7 @@ export default function HomeDashboard() {
     const iconSize = (() => {
       switch (card.id) {
         case 'operaciones': return 140
-        case 'comunicaciones': return 128
+        case 'comunicaciones': return 138
         case 'servicio-clientes': return 126
         case 'config': return 115
         default: return 110
@@ -427,7 +427,7 @@ export default function HomeDashboard() {
     const iconBottom = (() => {
       switch (card.id) {
         case 'operaciones': return '-14px'
-        case 'comunicaciones': return '-4px'
+        case 'comunicaciones': return '-8px'
         case 'servicio-clientes': return '-4px'
         case 'config': return '-2px'
         default: return '0px'
@@ -624,45 +624,41 @@ export default function HomeDashboard() {
       color: '#1E293B',
     }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');`}</style>
-      {/* Filtro SVG premium blind emboss — multicapa: borde nítido + halo suave + relleno sutil */}
+      {/* Filtro SVG blind emboss premium — bordes duros 90° + halo de profundidad */}
       <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
         <defs>
           <filter id="blind-emboss" x="-30%" y="-30%" width="160%" height="160%" colorInterpolationFilters="sRGB">
-            {/* === CAPA 1: Bordes nítidos (relieve principal) === */}
-            <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur1"/>
-            {/* Highlight nítido — arriba-izquierda */}
-            <feOffset in="blur1" dx="3.5" dy="3.5" result="shDR1"/>
+            {/* === CAPA 1: Bordes DUROS (detección ajustada, sin blur final) === */}
+            <feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="tightBlur"/>
+            {/* Highlight duro — arriba-izquierda, luz directa */}
+            <feOffset in="tightBlur" dx="3" dy="3" result="shDR1"/>
             <feComposite in="SourceAlpha" in2="shDR1" operator="out" result="lEdge1"/>
-            <feFlood floodColor="white" floodOpacity="0.45" result="wF1"/>
-            <feComposite in="wF1" in2="lEdge1" operator="in" result="l1"/>
-            <feGaussianBlur in="l1" stdDeviation="0.5" result="lSharp"/>
-            {/* Sombra nítida — abajo-derecha */}
-            <feOffset in="blur1" dx="-3.5" dy="-3.5" result="shUL1"/>
+            <feFlood floodColor="white" floodOpacity="0.55" result="wF1"/>
+            <feComposite in="wF1" in2="lEdge1" operator="in" result="lSharp"/>
+            {/* Sombra dura — abajo-derecha */}
+            <feOffset in="tightBlur" dx="-3" dy="-3" result="shUL1"/>
             <feComposite in="SourceAlpha" in2="shUL1" operator="out" result="dEdge1"/>
-            <feFlood floodColor="black" floodOpacity="0.50" result="bF1"/>
-            <feComposite in="bF1" in2="dEdge1" operator="in" result="d1"/>
-            <feGaussianBlur in="d1" stdDeviation="0.5" result="dSharp"/>
+            <feFlood floodColor="black" floodOpacity="0.60" result="bF1"/>
+            <feComposite in="bF1" in2="dEdge1" operator="in" result="dSharp"/>
 
-            {/* === CAPA 2: Halo suave (volumen difuso, da grosor al relieve) === */}
-            <feGaussianBlur in="SourceAlpha" stdDeviation="3.5" result="blur2"/>
-            {/* Halo de luz suave */}
-            <feOffset in="blur2" dx="6" dy="6" result="shDR2"/>
+            {/* === CAPA 2: Halo de profundidad (suave, detrás del borde duro) === */}
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="wideBlur"/>
+            <feOffset in="wideBlur" dx="5" dy="5" result="shDR2"/>
             <feComposite in="SourceAlpha" in2="shDR2" operator="out" result="lEdge2"/>
-            <feFlood floodColor="white" floodOpacity="0.18" result="wF2"/>
+            <feFlood floodColor="white" floodOpacity="0.15" result="wF2"/>
             <feComposite in="wF2" in2="lEdge2" operator="in" result="l2"/>
-            <feGaussianBlur in="l2" stdDeviation="2.5" result="lSoft"/>
-            {/* Halo de sombra suave */}
-            <feOffset in="blur2" dx="-6" dy="-6" result="shUL2"/>
+            <feGaussianBlur in="l2" stdDeviation="2" result="lSoft"/>
+            <feOffset in="wideBlur" dx="-5" dy="-5" result="shUL2"/>
             <feComposite in="SourceAlpha" in2="shUL2" operator="out" result="dEdge2"/>
-            <feFlood floodColor="black" floodOpacity="0.22" result="bF2"/>
+            <feFlood floodColor="black" floodOpacity="0.20" result="bF2"/>
             <feComposite in="bF2" in2="dEdge2" operator="in" result="d2"/>
-            <feGaussianBlur in="d2" stdDeviation="2.5" result="dSoft"/>
+            <feGaussianBlur in="d2" stdDeviation="2" result="dSoft"/>
 
-            {/* === CAPA 3: Relleno sutilísimo (3% blanco, da cuerpo sin color visible) === */}
-            <feFlood floodColor="white" floodOpacity="0.03" result="fillFlood"/>
+            {/* === CAPA 3: Relleno sutil (4% blanco, cuerpo mínimo) === */}
+            <feFlood floodColor="white" floodOpacity="0.04" result="fillFlood"/>
             <feComposite in="fillFlood" in2="SourceAlpha" operator="in" result="subtleFill"/>
 
-            {/* === MERGE: sombras atrás → relleno → highlights adelante === */}
+            {/* === MERGE === */}
             <feMerge>
               <feMergeNode in="dSoft"/>
               <feMergeNode in="dSharp"/>
