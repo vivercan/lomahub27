@@ -412,11 +412,33 @@ export default function HomeDashboard() {
       }
     })()
 
-    // Icono repujado/emboss — efecto 3D como empujado desde atrás
-    const iconSize = card.id === 'operaciones' ? 130 : 100
+    // Icono repujado/emboss — efecto 3D como empujado desde atrás (letterpress)
+    // Per-card size overrides: comunicaciones y servicio-clientes tienen SVGs con más whitespace
+    const iconSize = (() => {
+      switch (card.id) {
+        case 'operaciones': return 130
+        case 'comunicaciones': return 120
+        case 'servicio-clientes': return 118
+        default: return 100
+      }
+    })()
     const iconScale = isHovered ? 1.06 : 1
-    const iconBottom = card.id === 'operaciones' ? '-10px' : '6px'
-    const iconRight = card.id === 'operaciones' ? '6px' : '14px'
+    const iconBottom = (() => {
+      switch (card.id) {
+        case 'operaciones': return '-10px'
+        case 'comunicaciones': return '0px'
+        case 'servicio-clientes': return '0px'
+        default: return '6px'
+      }
+    })()
+    const iconRight = (() => {
+      switch (card.id) {
+        case 'operaciones': return '6px'
+        case 'comunicaciones': return '8px'
+        case 'servicio-clientes': return '8px'
+        default: return '14px'
+      }
+    })()
     const icon = card.iconFile ? (
       <div
         style={{
@@ -440,14 +462,16 @@ export default function HomeDashboard() {
             height: '100%',
             objectFit: 'contain',
             objectPosition: 'center center',
-            // Repujado: luz arriba-izquierda, sombra abajo-derecha = volumen 3D
+            // Repujado intenso: múltiples capas de sombra para relieve profundo tipo letterpress
             filter: `
               brightness(0) invert(1)
-              drop-shadow(-3px -3px 2px rgba(255,255,255,0.25))
-              drop-shadow(4px 4px 3px rgba(0,0,0,0.50))
-              drop-shadow(0 0 12px rgba(255,255,255,0.08))
+              drop-shadow(-4px -4px 2px rgba(255,255,255,0.35))
+              drop-shadow(5px 5px 3px rgba(0,0,0,0.60))
+              drop-shadow(-2px -2px 6px rgba(255,255,255,0.18))
+              drop-shadow(3px 3px 8px rgba(0,0,0,0.40))
+              drop-shadow(0 0 14px rgba(255,255,255,0.10))
             `,
-            opacity: 0.50,
+            opacity: 0.55,
           }}
         />
       </div>
