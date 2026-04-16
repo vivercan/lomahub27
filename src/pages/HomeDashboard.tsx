@@ -129,9 +129,11 @@ export default function HomeDashboard() {
       borderRadius: '22px',
       padding: '26px',
       background: card.gradient,
-      border: isHovered
-        ? '1px solid rgba(255,140,0,0.50)'
-        : '1px solid rgba(255,122,0,0.18)',
+      border: 'none',
+      outline: isHovered
+        ? '1.5px solid rgba(255,140,0,0.60)'
+        : '1.5px solid rgba(255,122,0,0.22)',
+      outlineOffset: '-1px',
       cursor: 'pointer',
       position: 'relative',
       overflow: 'hidden',
@@ -512,46 +514,47 @@ export default function HomeDashboard() {
           boxShadow: '0 0 10px rgba(255,122,0,0.50)',
           zIndex: 3,
         }} />
-        {/* Title row with small inline icon */}
+        {/* Title row with icon badge */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
+          gap: '12px',
           marginBottom: 'auto',
           width: '100%',
           position: 'relative',
           zIndex: 2,
         }}>
-          {/* Small icon badge — integrated, not overlay */}
+          {/* Icon badge — 42px, glass + orange glow */}
           <div style={{
-            width: '28px', height: '28px',
-            borderRadius: '8px',
+            width: '42px', height: '42px',
+            borderRadius: '12px',
             background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.10)',
+            border: '1px solid rgba(255,255,255,0.12)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
+            boxShadow: '0 0 14px rgba(255,122,0,0.12), inset 0 1px 0 rgba(255,255,255,0.10)',
           }}>
             <img
               src={`/icons/dashboard/${card.iconFile}`}
               alt=""
               style={{
-                width: '16px', height: '16px',
+                width: '24px', height: '24px',
                 objectFit: 'contain',
-                filter: 'brightness(0) invert(1)',
-                opacity: 0.70,
+                filter: 'brightness(0) invert(1) drop-shadow(0 0 4px rgba(255,122,0,0.30))',
+                opacity: 0.90,
               }}
             />
           </div>
           <span style={{
             fontFamily: "'Montserrat', sans-serif",
-            fontSize: '15px',
-            fontWeight: 600,
-            color: textColor,
-            letterSpacing: '0.3px',
+            fontSize: '16px',
+            fontWeight: 700,
+            color: '#FFFFFF',
+            letterSpacing: '0.6px',
             lineHeight: 1.2,
-            textShadow: 'none',
+            textShadow: '0 1px 3px rgba(0,0,0,0.30)',
             textTransform: 'uppercase' as const,
           }}>
             {card.label}
@@ -562,24 +565,24 @@ export default function HomeDashboard() {
             className="kpi-value-num"
             style={{
             fontFamily: "'Montserrat', sans-serif",
-            fontSize: '38px',
+            fontSize: '44px',
             fontWeight: 800,
-            color: kpiColor,
-            letterSpacing: '-1.4px',
+            color: '#FFFFFF',
+            letterSpacing: '-1.6px',
             textAlign: 'left', width: '100%', lineHeight: 1,
             marginTop: '6px',
             position: 'relative',
             zIndex: 2,
-            textShadow: '0 1px 2px rgba(0,0,0,0.20)',
+            textShadow: '0 2px 8px rgba(0,0,0,0.35), 0 0 20px rgba(255,255,255,0.06)',
           }}>
             {card.kpiValue}
             {card.kpiLabel && (
               <span style={{
-                fontSize: '13px',
-                fontWeight: 500,
-                color: labelColor,
-                letterSpacing: '0.5px',
-                marginLeft: '8px',
+                fontSize: '15px',
+                fontWeight: 600,
+                color: 'rgba(255,255,255,0.50)',
+                letterSpacing: '0.4px',
+                marginLeft: '10px',
                 textShadow: 'none',
                 textTransform: 'lowercase' as const,
               }}>
@@ -590,10 +593,10 @@ export default function HomeDashboard() {
         )}
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
-          fontSize: '11px',
-          fontWeight: 500,
-          color: mutedColor,
-          letterSpacing: '0.4px',
+          fontSize: '12px',
+          fontWeight: 600,
+          color: 'rgba(255,255,255,0.50)',
+          letterSpacing: '0.3px',
           textAlign: 'left', width: '100%',
           marginTop: '6px',
           position: 'relative',
