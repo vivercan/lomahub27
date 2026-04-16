@@ -99,7 +99,6 @@ export default function HomeDashboard() {
   ]
 
   const getCardStyle = (isHovered: boolean, card: CardConfig): React.CSSProperties => ({
-    aspectRatio: '1 / 0.75',
     borderRadius: '22px',
     padding: '22px',
     background: card.gradient,
@@ -274,15 +273,15 @@ export default function HomeDashboard() {
       <div style={{
         flex: '1 1 auto',
         padding: '26px 28px',
-        display: 'flex',
-        flexDirection: 'column',
+        display: 'grid',
+        gridTemplateRows: '1fr 1fr',
         gap: '14px',
         overflow: 'hidden',
       }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px', minHeight: 0 }}>
           {mainCards.map(renderCard)}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px', minHeight: 0 }}>
           <div style={{ gridColumn: '6 / 7' }}>{renderCard(row2Cards[0])}</div>
           <div style={{ gridColumn: '7 / 8' }}>{renderCard(row2Cards[1])}</div>
         </div>
