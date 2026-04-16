@@ -1,4 +1,4 @@
-// HomeDashboard V27k - Intense gradients, integrated text, small icons
+// HomeDashboard V27L - Dark fintech cards, light gray background
 // AppHeader, banner, layout 7+2, KPIs, rutas = INTACTO
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -104,32 +104,29 @@ export default function HomeDashboard() {
     return () => clearInterval(interval)
   }, [fetchKpis])
 
+  // Dark fintech palette — near-black with subtle navy undertones per card
   const mainCards: CardConfig[] = [
-    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#1B4DB5', gradient: 'linear-gradient(138deg, #1B4DB5 0%, #143A8E 40%, #0B2157 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'oportunidades.svg', iconOpacity: 0.24, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#0D2B52', gradient: 'linear-gradient(142deg, #133667 0%, #0D2B52 40%, #04101F 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.24, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#2458A8', gradient: 'linear-gradient(145deg, #2E6ABF 0%, #1C4F96 40%, #0E2D5C 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comercial.svg', iconOpacity: 0.24, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
-    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#2B6FD4', gradient: 'linear-gradient(136deg, #3580E8 0%, #2260B8 40%, #143D78 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.16)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.24, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
-    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1E5CB0', gradient: 'linear-gradient(140deg, #2868C4 0%, #1B4FA0 40%, #0F3268 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'ingresos.svg', iconOpacity: 0.24, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#3A6A9E', gradient: 'linear-gradient(148deg, #3D72AE 0%, #2A5585 40%, #152B45 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comunicaciones.svg', iconOpacity: 0.24, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
-    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#184A80', gradient: 'linear-gradient(152deg, #1E5694 0%, #14406E 40%, #091E38 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'gps.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: kpis.cajasGPS > 0 || kpis.thermosGPS > 0 ? 'green' : 'gray', statusText: `Cajas ${kpis.cajasGPS} · Thermos ${kpis.thermosGPS}`, gridColumn: '1 / 3', gridRow: '3 / 4' },
-    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#080F1C', gradient: 'linear-gradient(144deg, #0C1628 0%, #080F1C 40%, #1A3A6A 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'configuracion.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
+    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#111827', gradient: 'linear-gradient(145deg, #171F2E 0%, #111827 50%, #0C1220 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'oportunidades.svg', iconOpacity: 0.24, kpiValue: kpis.leadsActivos, kpiLabel: 'leads', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '1 / 2', gridRow: '1 / 2' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#0F1726', gradient: 'linear-gradient(142deg, #151D2E 0%, #0F1726 50%, #0A1019 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.24, kpiValue: kpis.clientes.toLocaleString(), kpiLabel: 'clientes', statusDot: 'green', statusText: '3 submódulos', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#131B2A', gradient: 'linear-gradient(145deg, #192233 0%, #131B2A 50%, #0D1420 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comercial.svg', iconOpacity: 0.24, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: '11 submódulos', gridColumn: '4 / 5', gridRow: '1 / 3' },
+    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#10192A', gradient: 'linear-gradient(136deg, #162136 0%, #10192A 50%, #0B1220 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.16)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.24, kpiValue: kpis.viajesActivos, kpiLabel: 'viajes', statusDot: kpis.viajesActivos > 0 ? 'green' : 'gray', statusText: kpis.viajesActivos > 0 ? 'Operando' : 'Sin viajes', gridColumn: '1 / 2', gridRow: '2 / 3' },
+    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#121A28', gradient: 'linear-gradient(140deg, #182232 0%, #121A28 50%, #0C131E 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'ingresos.svg', iconOpacity: 0.24, kpiValue: kpis.formatosActivos.toLocaleString(), kpiLabel: 'formatos', statusDot: 'green', statusText: 'Pipeline activo', gridColumn: '2 / 3', gridRow: '2 / 3' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#141C2B', gradient: 'linear-gradient(148deg, #1A2435 0%, #141C2B 50%, #0E1520 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comunicaciones.svg', iconOpacity: 0.24, kpiValue: '5', kpiLabel: 'canales', statusDot: 'green', statusText: 'Activo', gridColumn: '3 / 4', gridRow: '2 / 4' },
+    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#0F1825', gradient: 'linear-gradient(152deg, #151F30 0%, #0F1825 50%, #0A111C 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'gps.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: kpis.cajasGPS > 0 || kpis.thermosGPS > 0 ? 'green' : 'gray', statusText: `Cajas ${kpis.cajasGPS} · Thermos ${kpis.thermosGPS}`, gridColumn: '1 / 3', gridRow: '3 / 4' },
+    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#0B1018', gradient: 'linear-gradient(144deg, #111823 0%, #0B1018 50%, #070C12 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'configuracion.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: 'admin', statusDot: 'gray', statusText: 'Sistema', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
   // (helper hexToRgba eliminado — fue dead code tras el rediseño premium)
 
   const getCardStyle = (isHovered: boolean, card: CardConfig): React.CSSProperties => {
-    // Comunicaciones: spec 6 → sombra interna extra solo lado derecho
-    const extraShadow = card.id === 'comunicaciones'
-      ? ', inset -24px 0 40px rgba(0,0,0,0.10)'
-      : ''
     return ({
       gridColumn: card.gridColumn,
       gridRow: card.gridRow,
       minHeight: 0,
-      borderRadius: '22px',
-      padding: '26px',
+      borderRadius: '18px',
+      padding: '24px',
       background: card.gradient,
-      border: '1px solid rgba(255,255,255,0.10)',
+      border: '1px solid rgba(255,255,255,0.06)',
       cursor: 'pointer',
       position: 'relative',
       overflow: 'hidden',
@@ -139,19 +136,17 @@ export default function HomeDashboard() {
       justifyContent: 'flex-start',
       transition: 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.55s cubic-bezier(0.16,1,0.3,1), border-color 0.3s ease',
       transform: isHovered
-        ? 'translateY(-10px) scale(1.012)'
+        ? 'translateY(-8px) scale(1.008)'
         : 'translateY(0) scale(1)',
-      // HOVER INTACTO — tokens de hover preservados sin cambios.
       boxShadow: isHovered
         ? `
-          0 3px 5px -1px rgba(0,0,0,0.70),
-          0 14px 26px -8px rgba(0,0,0,0.48),
-          0 38px 76px -20px rgba(0,0,0,0.58),
-          inset 2px 2px 0 rgba(255,255,255,0.14),
-          inset -2px -2px 0 rgba(0,0,0,0.22),
-          inset 0 0 24px rgba(0,0,0,0.18)
+          0 4px 8px -2px rgba(0,0,0,0.50),
+          0 16px 32px -8px rgba(0,0,0,0.40),
+          0 32px 64px -16px rgba(0,0,0,0.35),
+          inset 0 1px 0 rgba(255,255,255,0.08),
+          inset 0 0 20px rgba(255,255,255,0.03)
         `
-        : `0 18px 34px rgba(0,0,0,0.24), 0 6px 12px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 18px 28px rgba(255,255,255,0.025), inset 0 -14px 20px rgba(0,0,0,0.12)${extraShadow}`,
+        : `0 8px 24px rgba(0,0,0,0.28), 0 3px 8px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.05)`,
     })
   }
 
@@ -451,11 +446,7 @@ export default function HomeDashboard() {
 
   const renderCard = (card: CardConfig) => {
     const isHovered = hoveredCard === card.id
-    // Paleta tipográfica — colores integrados al material de la card
-    const textColor = 'rgba(255,255,255,0.95)'
-    const kpiColor = '#FFFFFF'
-    const mutedColor = 'rgba(255,255,255,0.55)'
-    const labelColor = 'rgba(255,255,255,0.40)'
+    // Paleta tipográfica — dark fintech: pure white on near-black
     return (
       <div
         key={card.id}
@@ -465,12 +456,12 @@ export default function HomeDashboard() {
         style={getCardStyle(isHovered, card)}
       >
         {renderDecor(card, isHovered)}
-        {/* Specular highlight — brillo de luz superior para profundidad */}
+        {/* Specular highlight — very subtle top edge light */}
         <div style={{
           position: 'absolute',
           left: 0, top: 0,
-          width: '100%', height: '45%',
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 100%)',
+          width: '100%', height: '35%',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)',
           pointerEvents: 'none',
           borderRadius: 'inherit',
           zIndex: 1,
@@ -509,22 +500,22 @@ export default function HomeDashboard() {
           boxShadow: '0 0 10px rgba(255,122,0,0.50)',
           zIndex: 3,
         }} />
-        {/* Title row with small inline icon */}
+        {/* Title row with fintech-style icon */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
+          gap: '12px',
           marginBottom: 'auto',
           width: '100%',
           position: 'relative',
           zIndex: 2,
         }}>
-          {/* Small icon badge — integrated, not overlay */}
+          {/* Icon badge — 36px, dark glass, like fintech logos */}
           <div style={{
-            width: '28px', height: '28px',
-            borderRadius: '8px',
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.10)',
+            width: '36px', height: '36px',
+            borderRadius: '10px',
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.08)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -534,19 +525,19 @@ export default function HomeDashboard() {
               src={`/icons/dashboard/${card.iconFile}`}
               alt=""
               style={{
-                width: '16px', height: '16px',
+                width: '20px', height: '20px',
                 objectFit: 'contain',
                 filter: 'brightness(0) invert(1)',
-                opacity: 0.70,
+                opacity: 0.75,
               }}
             />
           </div>
           <span style={{
             fontFamily: "'Montserrat', sans-serif",
-            fontSize: '15px',
+            fontSize: '13px',
             fontWeight: 600,
-            color: textColor,
-            letterSpacing: '0.3px',
+            color: 'rgba(255,255,255,0.60)',
+            letterSpacing: '1.2px',
             lineHeight: 1.2,
             textShadow: 'none',
             textTransform: 'uppercase' as const,
@@ -559,25 +550,24 @@ export default function HomeDashboard() {
             className="kpi-value-num"
             style={{
             fontFamily: "'Montserrat', sans-serif",
-            fontSize: '38px',
+            fontSize: '44px',
             fontWeight: 800,
-            color: kpiColor,
-            letterSpacing: '-1.4px',
+            color: '#FFFFFF',
+            letterSpacing: '-1.6px',
             textAlign: 'left', width: '100%', lineHeight: 1,
-            marginTop: '6px',
+            marginTop: '4px',
             position: 'relative',
             zIndex: 2,
-            textShadow: '0 1px 2px rgba(0,0,0,0.20)',
+            textShadow: 'none',
           }}>
             {card.kpiValue}
             {card.kpiLabel && (
               <span style={{
-                fontSize: '13px',
+                fontSize: '14px',
                 fontWeight: 500,
-                color: labelColor,
-                letterSpacing: '0.5px',
-                marginLeft: '8px',
-                textShadow: 'none',
+                color: 'rgba(255,255,255,0.35)',
+                letterSpacing: '0.3px',
+                marginLeft: '10px',
                 textTransform: 'lowercase' as const,
               }}>
                 {card.kpiLabel}
@@ -589,17 +579,16 @@ export default function HomeDashboard() {
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '11px',
           fontWeight: 500,
-          color: mutedColor,
-          letterSpacing: '0.4px',
+          color: 'rgba(255,255,255,0.30)',
+          letterSpacing: '0.3px',
           textAlign: 'left', width: '100%',
-          marginTop: '6px',
+          marginTop: '8px',
           position: 'relative',
           zIndex: 3,
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           boxSizing: 'border-box',
-          textShadow: 'none',
         }}>
           {card.statusText}
         </div>
@@ -613,7 +602,7 @@ export default function HomeDashboard() {
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      background: '#F4F5F8', // fondo ligeramente más claro — premium light
+      background: '#F5F6F9', // fondo claro premium — contraste máximo con dark cards
       fontFamily: "'Montserrat', sans-serif",
       color: '#1E293B',
     }}>
@@ -632,15 +621,15 @@ export default function HomeDashboard() {
         gap: '14px',
         overflow: 'hidden',
         background: `
-          radial-gradient(ellipse 75% 65% at 50% 40%, transparent 55%, rgba(0,0,0,0.14) 100%),
-          linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.06) 82%, rgba(0,0,0,0.12) 100%),
+          radial-gradient(ellipse 75% 65% at 50% 40%, transparent 55%, rgba(0,0,0,0.08) 100%),
+          linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.03) 82%, rgba(0,0,0,0.06) 100%),
           radial-gradient(ellipse 100% 80% at 50% 38%,
-            #F2F3F6 0%,
-            #E8E9ED 20%,
-            #D6D8DE 45%,
-            #C0C2C9 70%,
-            #AAACB4 92%,
-            #9FA1A9 100%
+            #F5F6F9 0%,
+            #EEEFF3 20%,
+            #E2E4E9 45%,
+            #D4D6DC 70%,
+            #C4C6CD 92%,
+            #BABCC3 100%
           )
         `,
       }}>
