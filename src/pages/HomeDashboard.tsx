@@ -412,39 +412,20 @@ export default function HomeDashboard() {
       }
     })()
 
-    // Icono repujado/emboss — efecto 3D como empujado desde atrás (letterpress)
-    // Per-card size overrides para presencia uniforme del relieve
+    // Íconos planos, integrados al material del card — sin emboss
     const iconSize = (() => {
       switch (card.id) {
-        case 'operaciones': return 140
-        case 'comunicaciones': return 138
-        case 'servicio-clientes': return 126
-        case 'config': return 115
-        default: return 110
+        case 'operaciones': return 130
+        case 'comunicaciones': return 120
+        case 'servicio-clientes': return 118
+        case 'config': return 110
+        default: return 100
       }
     })()
-    const iconScale = isHovered ? 1.06 : 1
-    const iconBottom = (() => {
-      switch (card.id) {
-        case 'operaciones': return '-14px'
-        case 'comunicaciones': return '-8px'
-        case 'servicio-clientes': return '-4px'
-        case 'config': return '-2px'
-        default: return '0px'
-      }
-    })()
-    const iconRight = (() => {
-      switch (card.id) {
-        case 'operaciones': return '2px'
-        case 'comunicaciones': return '4px'
-        case 'servicio-clientes': return '4px'
-        default: return '8px'
-      }
-    })()
-    // Blind emboss con filtro SVG: solo bordes iluminados/sombreados.
-    // CERO relleno, cero color. Solo relieve de bordes.
-    const iconSrc = card.iconFile ? `/icons/dashboard/${card.iconFile}` : null
-    const icon = iconSrc ? (
+    const iconScale = isHovered ? 1.05 : 1
+    const iconBottom = card.id === 'operaciones' ? '-10px' : '6px'
+    const iconRight = card.id === 'operaciones' ? '6px' : '14px'
+    const icon = card.iconFile ? (
       <div
         style={{
           position: 'absolute',
@@ -460,15 +441,15 @@ export default function HomeDashboard() {
         }}
       >
         <img
-          src={iconSrc}
+          src={`/icons/dashboard/${card.iconFile}`}
           alt=""
           style={{
             width: '100%',
             height: '100%',
             objectFit: 'contain',
             objectPosition: 'center center',
-            filter: 'url(#blind-emboss)',
-            opacity: 1,
+            filter: 'brightness(0) invert(1)',
+            opacity: 0.18,
           }}
         />
       </div>
@@ -624,69 +605,6 @@ export default function HomeDashboard() {
       color: '#1E293B',
     }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');`}</style>
-      {/* Filtro SVG blind emboss 90° — luz arriba+izquierda, sombra abajo+derecha */}
-      <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
-        <defs>
-          <filter id="blind-emboss" x="-30%" y="-30%" width="160%" height="160%" colorInterpolationFilters="sRGB">
-            {/* Dilatar alpha para convertir líneas/contornos en formas sólidas */}
-            <feMorphology in="SourceAlpha" operator="dilate" radius="2.5" result="solidAlpha"/>
-            <feGaussianBlur in="solidAlpha" stdDeviation="0.8" result="tight"/>
-
-            {/* === LUZ SUPERIOR (borde top) === */}
-            <feOffset in="tight" dx="0" dy="3" result="shDown"/>
-            <feComposite in="solidAlpha" in2="shDown" operator="out" result="topEdge"/>
-            <feFlood floodColor="white" floodOpacity="0.55" result="wT"/>
-            <feComposite in="wT" in2="topEdge" operator="in" result="lightTop"/>
-
-            {/* === LUZ IZQUIERDA (borde left) === */}
-            <feOffset in="tight" dx="3" dy="0" result="shRight"/>
-            <feComposite in="solidAlpha" in2="shRight" operator="out" result="leftEdge"/>
-            <feFlood floodColor="white" floodOpacity="0.45" result="wL"/>
-            <feComposite in="wL" in2="leftEdge" operator="in" result="lightLeft"/>
-
-            {/* === SOMBRA INFERIOR (borde bottom) === */}
-            <feOffset in="tight" dx="0" dy="-3" result="shUp"/>
-            <feComposite in="solidAlpha" in2="shUp" operator="out" result="bottomEdge"/>
-            <feFlood floodColor="black" floodOpacity="0.60" result="bB"/>
-            <feComposite in="bB" in2="bottomEdge" operator="in" result="darkBottom"/>
-
-            {/* === SOMBRA DERECHA (borde right) === */}
-            <feOffset in="tight" dx="-3" dy="0" result="shLeft"/>
-            <feComposite in="solidAlpha" in2="shLeft" operator="out" result="rightEdge"/>
-            <feFlood floodColor="black" floodOpacity="0.50" result="bR"/>
-            <feComposite in="bR" in2="rightEdge" operator="in" result="darkRight"/>
-
-            {/* === HALO PROFUNDIDAD (suave, detrás de bordes duros) === */}
-            <feGaussianBlur in="solidAlpha" stdDeviation="2.8" result="wide"/>
-            <feOffset in="wide" dx="0" dy="4" result="haloDown"/>
-            <feComposite in="solidAlpha" in2="haloDown" operator="out" result="haloTopEdge"/>
-            <feFlood floodColor="white" floodOpacity="0.14" result="wH"/>
-            <feComposite in="wH" in2="haloTopEdge" operator="in" result="haloLT"/>
-            <feGaussianBlur in="haloLT" stdDeviation="1.8" result="haloLightSoft"/>
-
-            <feOffset in="wide" dx="0" dy="-4" result="haloUp"/>
-            <feComposite in="solidAlpha" in2="haloUp" operator="out" result="haloBotEdge"/>
-            <feFlood floodColor="black" floodOpacity="0.18" result="bH"/>
-            <feComposite in="bH" in2="haloBotEdge" operator="in" result="haloDB"/>
-            <feGaussianBlur in="haloDB" stdDeviation="1.8" result="haloDarkSoft"/>
-
-            {/* === SUPERFICIE ELEVADA: relleno visible de toda la forma === */}
-            <feFlood floodColor="white" floodOpacity="0.16" result="fill"/>
-            <feComposite in="fill" in2="solidAlpha" operator="in" result="subtleFill"/>
-
-            {/* === MERGE: sombras → relleno → highlights === */}
-            <feMerge>
-              <feMergeNode in="haloDarkSoft"/>
-              <feMergeNode in="darkBottom"/>
-              <feMergeNode in="darkRight"/>
-              <feMergeNode in="subtleFill"/>
-              <feMergeNode in="lightTop"/>
-              <feMergeNode in="lightLeft"/>
-              <feMergeNode in="haloLightSoft"/>
-            </feMerge>
-          </filter>
-        </defs>
-      </svg>
       <AppHeader
         onLogout={handleLogout}
         userName={formatName(user?.email)}
