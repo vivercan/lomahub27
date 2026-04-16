@@ -439,8 +439,8 @@ export default function HomeDashboard() {
             height: '100%',
             objectFit: 'contain',
             objectPosition: 'center center',
-            filter: 'brightness(0) invert(1) drop-shadow(0 0 8px rgba(255,122,0,0.28)) drop-shadow(0 0 18px rgba(255,122,0,0.15))',
-            opacity: 0.30,
+            filter: 'brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,122,0,0.30)) drop-shadow(0 0 22px rgba(255,122,0,0.18))',
+            opacity: 0.35,
           }}
         />
       </div>
@@ -449,6 +449,7 @@ export default function HomeDashboard() {
     return (
       <>
         {geometry}
+        {icon}
       </>
     )
   }
@@ -514,51 +515,22 @@ export default function HomeDashboard() {
           boxShadow: '0 0 10px rgba(255,122,0,0.50)',
           zIndex: 3,
         }} />
-        {/* Title row with icon badge */}
+        {/* Title */}
         <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
+          fontFamily: "'Montserrat', sans-serif",
+          fontSize: '22px',
+          fontWeight: 700,
+          color: '#FFFFFF',
+          letterSpacing: '-0.2px',
+          lineHeight: 1.15,
           marginBottom: 'auto',
+          textAlign: 'left',
           width: '100%',
           position: 'relative',
           zIndex: 2,
+          textShadow: '0 2px 6px rgba(0,0,0,0.35)',
         }}>
-          {/* Icon badge — 42px, glass + orange glow */}
-          <div style={{
-            width: '42px', height: '42px',
-            borderRadius: '12px',
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            boxShadow: '0 0 14px rgba(255,122,0,0.12), inset 0 1px 0 rgba(255,255,255,0.10)',
-          }}>
-            <img
-              src={`/icons/dashboard/${card.iconFile}`}
-              alt=""
-              style={{
-                width: '24px', height: '24px',
-                objectFit: 'contain',
-                filter: 'brightness(0) invert(1) drop-shadow(0 0 4px rgba(255,122,0,0.30))',
-                opacity: 0.90,
-              }}
-            />
-          </div>
-          <span style={{
-            fontFamily: "'Montserrat', sans-serif",
-            fontSize: '16px',
-            fontWeight: 700,
-            color: '#FFFFFF',
-            letterSpacing: '0.6px',
-            lineHeight: 1.2,
-            textShadow: '0 1px 3px rgba(0,0,0,0.30)',
-            textTransform: 'uppercase' as const,
-          }}>
-            {card.label}
-          </span>
+          {card.label}
         </div>
         {card.kpiValue !== '' && (
           <div
