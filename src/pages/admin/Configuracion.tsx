@@ -41,104 +41,103 @@ function injectKeyframes() {
   document.head.appendChild(style)
 }
 
-/* –– Geometric SVGs — large, elegant –– */
+/* –– Themed SVG Icons — subtle, same size as before –– */
 const geoWrap: React.CSSProperties = {
   position: 'absolute', top: 0, right: 0, width: '100%', height: '100%',
   pointerEvents: 'none', overflow: 'hidden', borderRadius: '16px',
 }
-
 const geoSvg: React.CSSProperties = {
   position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.22,
 }
+const S = 'rgba(255,255,255,0.6)'
+const S2 = 'rgba(255,255,255,0.45)'
 
-const GeoUsuarios = () => (
-  <div style={geoWrap}>
-    <svg viewBox="0 0 200 140" style={geoSvg}>
-      <circle cx="100" cy="42" r="30" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="1.6" />
-      <circle cx="142" cy="68" r="22" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <circle cx="62" cy="72" r="20" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
-      <path d="M50,112 Q100,82 150,112" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="1.3" />
-    </svg>
-  </div>
+/* Usuarios — people / team */
+const IcoUsuarios = () => (
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="100" cy="38" r="22" stroke={S} strokeWidth="2" />
+    <path d="M58,115 C58,85 76,72 100,72 C124,72 142,85 142,115" stroke={S} strokeWidth="2" />
+    <circle cx="155" cy="48" r="14" stroke={S2} strokeWidth="1.5" />
+    <path d="M135,110 C135,92 142,84 155,84 C168,84 175,92 175,110" stroke={S2} strokeWidth="1.5" />
+    <circle cx="48" cy="50" r="13" stroke={S2} strokeWidth="1.5" />
+    <path d="M28,108 C28,92 36,85 48,85 C60,85 68,92 68,108" stroke={S2} strokeWidth="1.5" />
+  </svg></div>
 )
 
-const GeoCatalogos = () => (
-  <div style={geoWrap}>
-    <svg viewBox="0 0 200 140" style={geoSvg}>
-      <rect x="48" y="14" width="78" height="56" rx="6" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="1.6" />
-      <rect x="68" y="34" width="78" height="56" rx="6" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <line x1="58" y1="34" x2="116" y2="34" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
-      <line x1="58" y1="47" x2="110" y2="47" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
-    </svg>
-  </div>
+/* Catálogos — grid / list */
+const IcoCatalogos = () => (
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round">
+    <rect x="38" y="15" width="52" height="46" rx="6" stroke={S} strokeWidth="2" />
+    <rect x="108" y="15" width="52" height="46" rx="6" stroke={S} strokeWidth="2" />
+    <rect x="38" y="78" width="52" height="46" rx="6" stroke={S} strokeWidth="2" />
+    <rect x="108" y="78" width="52" height="46" rx="6" stroke={S2} strokeWidth="1.5" />
+    <line x1="52" y1="32" x2="76" y2="32" stroke={S2} strokeWidth="1.5" />
+    <line x1="52" y1="42" x2="68" y2="42" stroke={S2} strokeWidth="1.2" />
+    <line x1="122" y1="32" x2="146" y2="32" stroke={S2} strokeWidth="1.5" />
+    <line x1="122" y1="42" x2="138" y2="42" stroke={S2} strokeWidth="1.2" />
+  </svg></div>
 )
 
-const GeoParametros = () => (
-  <div style={geoWrap}>
-    <svg viewBox="0 0 200 140" style={geoSvg}>
-      <line x1="45" y1="35" x2="175" y2="35" stroke="rgba(255,255,255,0.55)" strokeWidth="1.5" />
-      <circle cx="112" cy="35" r="9" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="2" />
-      <line x1="45" y1="65" x2="175" y2="65" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <circle cx="142" cy="65" r="9" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="2" />
-      <line x1="45" y1="95" x2="175" y2="95" stroke="rgba(255,255,255,0.45)" strokeWidth="1" />
-      <circle cx="78" cy="95" r="9" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2" />
-    </svg>
-  </div>
+/* Parámetros — sliders / settings */
+const IcoParametros = () => (
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round">
+    <line x1="40" y1="35" x2="160" y2="35" stroke={S2} strokeWidth="2" />
+    <circle cx="105" cy="35" r="10" stroke={S} strokeWidth="2.5" fill="rgba(255,255,255,0.08)" />
+    <line x1="40" y1="70" x2="160" y2="70" stroke={S2} strokeWidth="2" />
+    <circle cx="70" cy="70" r="10" stroke={S} strokeWidth="2.5" fill="rgba(255,255,255,0.08)" />
+    <line x1="40" y1="105" x2="160" y2="105" stroke={S2} strokeWidth="2" />
+    <circle cx="135" cy="105" r="10" stroke={S} strokeWidth="2.5" fill="rgba(255,255,255,0.08)" />
+  </svg></div>
 )
 
-const GeoIntegraciones = () => (
-  <div style={geoWrap}>
-    <svg viewBox="0 0 200 140" style={geoSvg}>
-      <circle cx="78" cy="48" r="26" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="1.6" />
-      <circle cx="148" cy="48" r="26" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <line x1="104" y1="48" x2="122" y2="48" stroke="rgba(255,255,255,0.65)" strokeWidth="2.2" strokeDasharray="5 4" />
-      <circle cx="113" cy="92" r="17" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1" />
-    </svg>
-  </div>
+/* Integraciones — puzzle / link */
+const IcoIntegraciones = () => (
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M60,55 L60,30 Q60,20 70,20 L105,20 Q105,8 120,8 Q135,8 135,20 L160,20 Q170,20 170,30 L170,55" stroke={S} strokeWidth="2" />
+    <path d="M170,65 L170,100 Q170,110 160,110 L130,110 Q130,122 115,122 Q100,122 100,110 L70,110 Q60,110 60,100 L60,65" stroke={S} strokeWidth="2" />
+    <line x1="60" y1="55" x2="60" y2="65" stroke={S2} strokeWidth="2" strokeDasharray="4 3" />
+    <line x1="170" y1="55" x2="170" y2="65" stroke={S2} strokeWidth="2" strokeDasharray="4 3" />
+  </svg></div>
 )
 
-const GeoAuditoria = () => (
-  <div style={geoWrap}>
-    <svg viewBox="0 0 200 140" style={geoSvg}>
-      <path d="M100,12 L142,38 L130,88 L70,88 L58,38 Z" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="1.6" />
-      <path d="M80,54 L96,70 L130,38" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="2.2" strokeLinecap="round" />
-    </svg>
-  </div>
+/* Auditoría — shield / check */
+const IcoAuditoria = () => (
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M100,12 L155,35 L155,72 Q155,105 100,128 Q45,105 45,72 L45,35 Z" stroke={S} strokeWidth="2" />
+    <path d="M78,65 L92,82 L125,50" stroke={S} strokeWidth="3" />
+  </svg></div>
 )
 
-const GeoPlantillas = () => (
-  <div style={geoWrap}>
-    <svg viewBox="0 0 200 140" style={geoSvg}>
-      <rect x="42" y="12" width="62" height="94" rx="5" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="1.6" />
-      <rect x="68" y="26" width="62" height="94" rx="5" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <line x1="52" y1="36" x2="94" y2="36" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
-      <line x1="52" y1="50" x2="88" y2="50" stroke="rgba(255,255,255,0.45)" strokeWidth="0.8" />
-      <line x1="52" y1="64" x2="82" y2="64" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
-    </svg>
-  </div>
+/* Plantillas — file / template */
+const IcoPlantillas = () => (
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M65,15 L65,125 Q65,130 70,130 L150,130 Q155,130 155,125 L155,42 L128,15 Z" stroke={S} strokeWidth="2" />
+    <path d="M128,15 L128,42 L155,42" stroke={S} strokeWidth="2" />
+    <line x1="82" y1="60" x2="138" y2="60" stroke={S2} strokeWidth="1.5" />
+    <line x1="82" y1="76" x2="138" y2="76" stroke={S2} strokeWidth="1.5" />
+    <line x1="82" y1="92" x2="120" y2="92" stroke={S2} strokeWidth="1.5" />
+    <line x1="82" y1="108" x2="110" y2="108" stroke={S2} strokeWidth="1.2" />
+  </svg></div>
 )
 
-const GeoDocumentos = () => (
-  <div style={geoWrap}>
-    <svg viewBox="0 0 200 140" style={geoSvg}>
-      <path d="M62,18 L62,108 Q62,118 72,118 L142,118 Q152,118 152,108 L152,44 L126,18 L72,18 Q62,18 62,24 Z" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="1.6" />
-      <line x1="78" y1="48" x2="138" y2="48" stroke="rgba(255,255,255,0.55)" strokeWidth="1.2" />
-      <line x1="78" y1="64" x2="138" y2="64" stroke="rgba(255,255,255,0.45)" strokeWidth="1" />
-      <line x1="78" y1="80" x2="126" y2="80" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
-    </svg>
-  </div>
+/* Documentos — folder / briefcase */
+const IcoDocumentos = () => (
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M35,40 L35,115 Q35,122 42,122 L158,122 Q165,122 165,115 L165,40 Q165,33 158,33 L115,33 L105,18 L42,18 Q35,18 35,25 Z" stroke={S} strokeWidth="2" />
+    <line x1="35" y1="55" x2="165" y2="55" stroke={S2} strokeWidth="1.5" />
+    <rect x="75" y="42" width="50" height="22" rx="4" stroke={S2} strokeWidth="1.5" />
+  </svg></div>
 )
 
-const GeoCerebro = () => (
-  <div style={geoWrap}>
-    <svg viewBox="0 0 200 140" style={geoSvg}>
-      <circle cx="100" cy="55" r="35" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="1.6" />
-      <path d="M80,40 Q90,25 110,30 Q125,35 120,55 Q130,65 120,78 Q110,90 95,85 Q78,88 75,72 Q65,60 80,40 Z" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <circle cx="95" cy="52" r="3" fill="rgba(255,255,255,0.5)" />
-      <circle cx="108" cy="58" r="3" fill="rgba(255,255,255,0.5)" />
-      <line x1="95" y1="52" x2="108" y2="58" stroke="rgba(255,255,255,0.45)" strokeWidth="1" />
-    </svg>
-  </div>
+/* Cerebro Tarifario — brain / dollar */
+const IcoCerebro = () => (
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="100" cy="60" r="42" stroke={S} strokeWidth="2" />
+    <path d="M100,30 L100,90" stroke={S} strokeWidth="2.5" />
+    <path d="M82,42 Q82,36 92,36 L108,36 Q118,36 118,44 Q118,52 106,52 L94,52 Q82,52 82,60 Q82,68 92,68 L108,68 Q118,68 118,62" stroke={S} strokeWidth="2" />
+    <line x1="100" y1="26" x2="100" y2="30" stroke={S2} strokeWidth="2" />
+    <line x1="100" y1="90" x2="100" y2="94" stroke={S2} strokeWidth="2" />
+  </svg></div>
 )
 
 /* –– Card definitions –– */
@@ -160,56 +159,56 @@ const CARDS: ConfigCard[] = [
     subtitle: 'Roles y permisos', accent: '#2563EB',
     gradientBase: 'linear-gradient(155deg, #4B83F7 0%, #2563EB 35%, #1A4FCC 70%, #152F7A 100%)',
     gradientHover: 'linear-gradient(155deg, #5A90FF 0%, #3070F0 35%, #2060DD 70%, #1A3A90 100%)',
-    glowColor: 'rgba(59,130,246,0.5)', geo: <GeoUsuarios />,
+    glowColor: 'rgba(59,130,246,0.5)', geo: <IcoUsuarios />,
   },
   {
     id: 'catalogos', label: 'Catálogos', route: '/admin/configuracion/catalogos',
     subtitle: 'Tipos y estados', accent: '#059669',
     gradientBase: 'linear-gradient(155deg, #34D399 0%, #059669 35%, #047857 70%, #064E3B 100%)',
     gradientHover: 'linear-gradient(155deg, #45E0A5 0%, #0AAA78 35%, #058A64 70%, #075B45 100%)',
-    glowColor: 'rgba(16,185,129,0.5)', geo: <GeoCatalogos />,
+    glowColor: 'rgba(16,185,129,0.5)', geo: <IcoCatalogos />,
   },
   {
     id: 'parametros', label: 'Parámetros', route: '/admin/configuracion/parametros',
     subtitle: 'Tarifas y costos', accent: '#D97706',
     gradientBase: 'linear-gradient(155deg, #FBBF24 0%, #D97706 35%, #B45309 70%, #78350F 100%)',
     gradientHover: 'linear-gradient(155deg, #FCC93A 0%, #E08510 35%, #C46015 70%, #8A4012 100%)',
-    glowColor: 'rgba(245,158,11,0.5)', geo: <GeoParametros />,
+    glowColor: 'rgba(245,158,11,0.5)', geo: <IcoParametros />,
   },
   {
     id: 'integraciones', label: 'Integraciones', route: '/admin/configuracion/integraciones',
     subtitle: 'ANODOS · GPS · WA', accent: '#7C3AED',
     gradientBase: 'linear-gradient(155deg, #A78BFA 0%, #7C3AED 35%, #6D28D9 70%, #4C1D95 100%)',
     gradientHover: 'linear-gradient(155deg, #B89EFF 0%, #8B4DF5 35%, #7A35E5 70%, #5A25A8 100%)',
-    glowColor: 'rgba(139,92,246,0.5)', geo: <GeoIntegraciones />,
+    glowColor: 'rgba(139,92,246,0.5)', geo: <IcoIntegraciones />,
   },
   {
     id: 'auditoria', label: 'Auditoría', route: '/admin/configuracion/auditoria',
     subtitle: 'Actividad del sistema', accent: '#DC2626',
     gradientBase: 'linear-gradient(155deg, #F87171 0%, #DC2626 35%, #B91C1C 70%, #7F1D1D 100%)',
     gradientHover: 'linear-gradient(155deg, #FF8585 0%, #E83535 35%, #C82828 70%, #922525 100%)',
-    glowColor: 'rgba(239,68,68,0.5)', geo: <GeoAuditoria />,
+    glowColor: 'rgba(239,68,68,0.5)', geo: <IcoAuditoria />,
   },
   {
     id: 'plantillas', label: 'Plantillas', route: '/admin/configuracion/plantillas',
     subtitle: 'Formatos y templates', accent: '#DB2777',
     gradientBase: 'linear-gradient(155deg, #F472B6 0%, #DB2777 35%, #BE185D 70%, #831843 100%)',
     gradientHover: 'linear-gradient(155deg, #FF85C5 0%, #E83888 35%, #CC256B 70%, #952250 100%)',
-    glowColor: 'rgba(236,72,153,0.5)', geo: <GeoPlantillas />,
+    glowColor: 'rgba(236,72,153,0.5)', geo: <IcoPlantillas />,
   },
   {
     id: 'documentos', label: 'Documentos', route: '/admin/configuracion/documentos',
     subtitle: 'Legales y actas', accent: '#0891B2',
     gradientBase: 'linear-gradient(155deg, #22D3EE 0%, #0891B2 35%, #0E7490 70%, #164E63 100%)',
     gradientHover: 'linear-gradient(155deg, #38DFF5 0%, #12A2C5 35%, #1585A0 70%, #1D5C72 100%)',
-    glowColor: 'rgba(34,211,238,0.5)', geo: <GeoDocumentos />,
+    glowColor: 'rgba(34,211,238,0.5)', geo: <IcoDocumentos />,
   },
   {
     id: 'cerebro', label: 'Cerebro Tarifario', route: '/pricing/cerebro-tarifario',
     subtitle: 'Tarifas y pricing', accent: '#EA580C',
     gradientBase: 'linear-gradient(155deg, #FB923C 0%, #EA580C 35%, #C2410C 70%, #7C2D12 100%)',
     gradientHover: 'linear-gradient(155deg, #FFA350 0%, #F06818 35%, #D45018 70%, #8E3518 100%)',
-    glowColor: 'rgba(251,146,60,0.5)', geo: <GeoCerebro />,
+    glowColor: 'rgba(251,146,60,0.5)', geo: <IcoCerebro />,
   },
 ]
 
@@ -345,11 +344,12 @@ export default function Configuracion() {
                 {/* Title */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
-                  fontSize: '28px',
+                  fontSize: '19px',
                   fontWeight: 800,
                   color: '#FFFFFF',
                   lineHeight: 1.15,
                   letterSpacing: '-0.02em',
+                  whiteSpace: 'nowrap',
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
@@ -361,7 +361,7 @@ export default function Configuracion() {
                 {/* Subtitle */}
                 <div style={{
                   fontFamily: DASH.fontBody,
-                  fontSize: '16px',
+                  fontSize: '13px',
                   fontWeight: 600,
                   color: 'rgba(255,255,255,0.85)',
                   marginTop: '6px',
@@ -434,11 +434,12 @@ export default function Configuracion() {
                 {/* Title */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
-                  fontSize: '28px',
+                  fontSize: '19px',
                   fontWeight: 800,
                   color: '#FFFFFF',
                   lineHeight: 1.15,
                   letterSpacing: '-0.02em',
+                  whiteSpace: 'nowrap',
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
@@ -450,7 +451,7 @@ export default function Configuracion() {
                 {/* Subtitle */}
                 <div style={{
                   fontFamily: DASH.fontBody,
-                  fontSize: '16px',
+                  fontSize: '13px',
                   fontWeight: 600,
                   color: 'rgba(255,255,255,0.85)',
                   marginTop: '6px',
