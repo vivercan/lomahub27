@@ -439,7 +439,18 @@ export default function HomeDashboard() {
         default: return '14px'
       }
     })()
-    const icon = card.iconFile ? (
+    // Blind emboss real: NO hay ícono base visible.
+    // Solo 2 copias desplazadas (luz arriba-izq + sombra abajo-der)
+    // que crean el relieve 3D como prensa en tarjeta de presentación.
+    const iconSrc = card.iconFile ? `/icons/dashboard/${card.iconFile}` : null
+    const iconBaseStyle: React.CSSProperties = {
+      position: 'absolute',
+      top: 0, left: 0,
+      width: '100%', height: '100%',
+      objectFit: 'contain',
+      objectPosition: 'center center',
+    }
+    const icon = iconSrc ? (
       <div
         style={{
           position: 'absolute',
@@ -454,29 +465,34 @@ export default function HomeDashboard() {
           zIndex: 2,
         }}
       >
-        <img
-          src={`/icons/dashboard/${card.iconFile}`}
-          alt=""
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain',
-            objectPosition: 'center center',
-            // Blind emboss / repujado ciego: ícono sin color propio,
-            // mismo tono del card, visible solo por relieve luz/sombra.
-            // soft-light blend funde el blanco en el gradiente del card.
-            filter: `
-              brightness(0) invert(1)
-              drop-shadow(-5px -5px 2px rgba(255,255,255,0.60))
-              drop-shadow(6px 6px 3px rgba(0,0,0,0.85))
-              drop-shadow(-2px -2px 5px rgba(255,255,255,0.30))
-              drop-shadow(3px 3px 7px rgba(0,0,0,0.55))
-              drop-shadow(0 0 12px rgba(0,0,0,0.15))
-            `,
-            opacity: 0.45,
-            mixBlendMode: 'soft-light' as const,
-          }}
-        />
+        {/* Capa 1: sombra oscura profunda — desplazada abajo-derecha */}
+        <img src={iconSrc} alt="" style={{
+          ...iconBaseStyle,
+          filter: 'brightness(0) blur(3px)',
+          opacity: 0.38,
+          transform: 'translate(5px, 5px)',
+        }} />
+        {/* Capa 2: sombra oscura suave — halo más difuso */}
+        <img src={iconSrc} alt="" style={{
+          ...iconBaseStyle,
+          filter: 'brightness(0) blur(6px)',
+          opacity: 0.18,
+          transform: 'translate(3px, 3px)',
+        }} />
+        {/* Capa 3: highlight claro — desplazada arriba-izquierda */}
+        <img src={iconSrc} alt="" style={{
+          ...iconBaseStyle,
+          filter: 'brightness(0) invert(1) blur(2.5px)',
+          opacity: 0.28,
+          transform: 'translate(-4px, -4px)',
+        }} />
+        {/* Capa 4: highlight suave — halo de luz más amplio */}
+        <img src={iconSrc} alt="" style={{
+          ...iconBaseStyle,
+          filter: 'brightness(0) invert(1) blur(5px)',
+          opacity: 0.12,
+          transform: 'translate(-2px, -2px)',
+        }} />
       </div>
     ) : null
 
