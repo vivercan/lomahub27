@@ -434,8 +434,8 @@ export default function HomeDashboard() {
             height: '100%',
             objectFit: 'contain',
             objectPosition: 'center center',
-            filter: 'brightness(0) invert(1) drop-shadow(0 0 6px rgba(255,122,0,0.22)) drop-shadow(0 0 14px rgba(255,122,0,0.12))',
-            opacity: 0.24,
+            filter: 'brightness(0) invert(1) drop-shadow(0 0 8px rgba(255,122,0,0.28)) drop-shadow(0 0 18px rgba(255,122,0,0.15))',
+            opacity: 0.30,
           }}
         />
       </div>
@@ -464,6 +464,16 @@ export default function HomeDashboard() {
         style={getCardStyle(isHovered, card)}
       >
         {renderDecor(card, isHovered)}
+        {/* Specular highlight — brillo de luz superior para profundidad */}
+        <div style={{
+          position: 'absolute',
+          left: 0, top: 0,
+          width: '100%', height: '45%',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0) 100%)',
+          pointerEvents: 'none',
+          borderRadius: 'inherit',
+          zIndex: 1,
+        }} />
         {/* Sheen sweep — banda de luz diagonal solo visible en hover (HOVER INTACTO) */}
         <div style={{
           position: 'absolute',
@@ -507,7 +517,7 @@ export default function HomeDashboard() {
           lineHeight: 1.15,
           marginBottom: 'auto',
           textAlign: 'left', width: '100%',
-          textShadow: '0 1px 2px rgba(0,0,0,0.35)',
+          textShadow: '0 2px 4px rgba(0,0,0,0.40), 0 0 12px rgba(0,0,0,0.15)',
           position: 'relative',
           zIndex: 2,
         }}>
@@ -526,7 +536,7 @@ export default function HomeDashboard() {
             marginTop: '6px',
             position: 'relative',
             zIndex: 2,
-            textShadow: '0 1px 2px rgba(0,0,0,0.35)',
+            textShadow: '0 2px 6px rgba(0,0,0,0.45), 0 0 20px rgba(0,0,0,0.12)',
           }}>
             {card.kpiValue}
           </div>
