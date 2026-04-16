@@ -462,16 +462,19 @@ export default function HomeDashboard() {
             height: '100%',
             objectFit: 'contain',
             objectPosition: 'center center',
-            // Repujado intenso: múltiples capas de sombra para relieve profundo tipo letterpress
+            // Blind emboss / repujado ciego: ícono sin color propio,
+            // mismo tono del card, visible solo por relieve luz/sombra.
+            // soft-light blend funde el blanco en el gradiente del card.
             filter: `
               brightness(0) invert(1)
-              drop-shadow(-4px -4px 2px rgba(255,255,255,0.35))
-              drop-shadow(5px 5px 3px rgba(0,0,0,0.60))
-              drop-shadow(-2px -2px 6px rgba(255,255,255,0.18))
-              drop-shadow(3px 3px 8px rgba(0,0,0,0.40))
-              drop-shadow(0 0 14px rgba(255,255,255,0.10))
+              drop-shadow(-5px -5px 2px rgba(255,255,255,0.60))
+              drop-shadow(6px 6px 3px rgba(0,0,0,0.85))
+              drop-shadow(-2px -2px 5px rgba(255,255,255,0.30))
+              drop-shadow(3px 3px 7px rgba(0,0,0,0.55))
+              drop-shadow(0 0 12px rgba(0,0,0,0.15))
             `,
-            opacity: 0.55,
+            opacity: 0.45,
+            mixBlendMode: 'soft-light' as const,
           }}
         />
       </div>
