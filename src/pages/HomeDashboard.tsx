@@ -628,49 +628,51 @@ export default function HomeDashboard() {
       <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
         <defs>
           <filter id="blind-emboss" x="-30%" y="-30%" width="160%" height="160%" colorInterpolationFilters="sRGB">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="tight"/>
+            {/* Dilatar alpha para convertir líneas/contornos en formas sólidas */}
+            <feMorphology in="SourceAlpha" operator="dilate" radius="2.5" result="solidAlpha"/>
+            <feGaussianBlur in="solidAlpha" stdDeviation="0.8" result="tight"/>
 
             {/* === LUZ SUPERIOR (borde top) === */}
             <feOffset in="tight" dx="0" dy="3" result="shDown"/>
-            <feComposite in="SourceAlpha" in2="shDown" operator="out" result="topEdge"/>
+            <feComposite in="solidAlpha" in2="shDown" operator="out" result="topEdge"/>
             <feFlood floodColor="white" floodOpacity="0.55" result="wT"/>
             <feComposite in="wT" in2="topEdge" operator="in" result="lightTop"/>
 
             {/* === LUZ IZQUIERDA (borde left) === */}
             <feOffset in="tight" dx="3" dy="0" result="shRight"/>
-            <feComposite in="SourceAlpha" in2="shRight" operator="out" result="leftEdge"/>
+            <feComposite in="solidAlpha" in2="shRight" operator="out" result="leftEdge"/>
             <feFlood floodColor="white" floodOpacity="0.45" result="wL"/>
             <feComposite in="wL" in2="leftEdge" operator="in" result="lightLeft"/>
 
             {/* === SOMBRA INFERIOR (borde bottom) === */}
             <feOffset in="tight" dx="0" dy="-3" result="shUp"/>
-            <feComposite in="SourceAlpha" in2="shUp" operator="out" result="bottomEdge"/>
+            <feComposite in="solidAlpha" in2="shUp" operator="out" result="bottomEdge"/>
             <feFlood floodColor="black" floodOpacity="0.60" result="bB"/>
             <feComposite in="bB" in2="bottomEdge" operator="in" result="darkBottom"/>
 
             {/* === SOMBRA DERECHA (borde right) === */}
             <feOffset in="tight" dx="-3" dy="0" result="shLeft"/>
-            <feComposite in="SourceAlpha" in2="shLeft" operator="out" result="rightEdge"/>
+            <feComposite in="solidAlpha" in2="shLeft" operator="out" result="rightEdge"/>
             <feFlood floodColor="black" floodOpacity="0.50" result="bR"/>
             <feComposite in="bR" in2="rightEdge" operator="in" result="darkRight"/>
 
             {/* === HALO PROFUNDIDAD (suave, detrás de bordes duros) === */}
-            <feGaussianBlur in="SourceAlpha" stdDeviation="2.8" result="wide"/>
+            <feGaussianBlur in="solidAlpha" stdDeviation="2.8" result="wide"/>
             <feOffset in="wide" dx="0" dy="4" result="haloDown"/>
-            <feComposite in="SourceAlpha" in2="haloDown" operator="out" result="haloTopEdge"/>
+            <feComposite in="solidAlpha" in2="haloDown" operator="out" result="haloTopEdge"/>
             <feFlood floodColor="white" floodOpacity="0.14" result="wH"/>
             <feComposite in="wH" in2="haloTopEdge" operator="in" result="haloLT"/>
             <feGaussianBlur in="haloLT" stdDeviation="1.8" result="haloLightSoft"/>
 
             <feOffset in="wide" dx="0" dy="-4" result="haloUp"/>
-            <feComposite in="SourceAlpha" in2="haloUp" operator="out" result="haloBotEdge"/>
+            <feComposite in="solidAlpha" in2="haloUp" operator="out" result="haloBotEdge"/>
             <feFlood floodColor="black" floodOpacity="0.18" result="bH"/>
             <feComposite in="bH" in2="haloBotEdge" operator="in" result="haloDB"/>
             <feGaussianBlur in="haloDB" stdDeviation="1.8" result="haloDarkSoft"/>
 
             {/* === SUPERFICIE ELEVADA: relleno visible de toda la forma === */}
-            <feFlood floodColor="white" floodOpacity="0.13" result="fill"/>
-            <feComposite in="fill" in2="SourceAlpha" operator="in" result="subtleFill"/>
+            <feFlood floodColor="white" floodOpacity="0.16" result="fill"/>
+            <feComposite in="fill" in2="solidAlpha" operator="in" result="subtleFill"/>
 
             {/* === MERGE: sombras → relleno → highlights === */}
             <feMerge>
