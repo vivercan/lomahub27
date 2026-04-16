@@ -345,15 +345,15 @@ export default function Configuracion() {
                 {/* Title */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
-                  fontSize: '18px',
+                  fontSize: '28px',
                   fontWeight: 800,
                   color: '#FFFFFF',
-                  lineHeight: 1.2,
-                  letterSpacing: '-0.01em',
+                  lineHeight: 1.15,
+                  letterSpacing: '-0.02em',
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 2px 6px rgba(0,0,0,0.35)',
+                  textShadow: '0 2px 8px rgba(0,0,0,0.40)',
                 }}>
                   {card.label}
                 </div>
@@ -361,9 +361,9 @@ export default function Configuracion() {
                 {/* Subtitle */}
                 <div style={{
                   fontFamily: DASH.fontBody,
-                  fontSize: '13px',
+                  fontSize: '16px',
                   fontWeight: 600,
-                  color: 'rgba(255,255,255,0.82)',
+                  color: 'rgba(255,255,255,0.85)',
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
@@ -396,6 +396,7 @@ export default function Configuracion() {
                 onMouseUp={() => setPressed(null)}
                 onClick={() => navigate(card.route)}
               >
+                {/* Geo SVG */}
                 <div style={{
                   ...geoWrap,
                   transition: 'transform 0.5s cubic-bezier(0.23,1,0.32,1)',
@@ -405,34 +406,7 @@ export default function Configuracion() {
                   {card.geo}
                 </div>
 
-                {/* ═══ CONCAVE KEYCAP — sharp beveled edges ═══ */}
-                <div style={{
-                  position: 'absolute', left: 0, top: 0, right: 0, height: '2px',
-                  background: 'rgba(255,255,255,0.70)',
-                  pointerEvents: 'none', borderRadius: '12px 12px 0 0', zIndex: 6,
-                }} />
-                <div style={{
-                  position: 'absolute', left: 0, top: 0, bottom: 0, width: '2px',
-                  background: 'linear-gradient(180deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.10) 100%)',
-                  pointerEvents: 'none', borderRadius: '12px 0 0 12px', zIndex: 6,
-                }} />
-                <div style={{
-                  position: 'absolute', left: 0, bottom: 0, right: 0, height: '2.5px',
-                  background: 'rgba(0,0,0,0.55)',
-                  pointerEvents: 'none', borderRadius: '0 0 12px 12px', zIndex: 6,
-                }} />
-                <div style={{
-                  position: 'absolute', right: 0, top: 0, bottom: 0, width: '2px',
-                  background: 'linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.50) 100%)',
-                  pointerEvents: 'none', borderRadius: '0 12px 12px 0', zIndex: 6,
-                }} />
-                <div style={{
-                  position: 'absolute', inset: '3px',
-                  borderRadius: '10px',
-                  boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.22), inset 0 -3px 6px rgba(255,255,255,0.15), inset 4px 0 8px rgba(0,0,0,0.12), inset -4px 0 8px rgba(255,255,255,0.08)',
-                  pointerEvents: 'none', zIndex: 3,
-                }} />
-
+                {/* Shimmer */}
                 <div style={{
                   position: 'absolute', left: 0, top: 0, width: '100%', height: '100%',
                   pointerEvents: 'none', borderRadius: 'inherit', zIndex: 6,
@@ -447,16 +421,7 @@ export default function Configuracion() {
                   )}
                 </div>
 
-                {isH && (
-                  <div style={{
-                    position: 'absolute', inset: '-1px',
-                    borderRadius: '17px',
-                    border: `1.5px solid ${card.glowColor}`,
-                    animation: 'cfgGlow 2s ease-in-out infinite',
-                    pointerEvents: 'none', zIndex: 7,
-                  }} />
-                )}
-
+                {/* Noise */}
                 <div style={{
                   position: 'absolute', left: 0, top: 0, width: '150%', height: '150%',
                   opacity: 0.035,
@@ -466,30 +431,32 @@ export default function Configuracion() {
                   animation: 'cfgGrainDrift 8s linear infinite',
                 }} />
 
+                {/* Title */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
-                  fontSize: '18px',
+                  fontSize: '28px',
                   fontWeight: 800,
                   color: '#FFFFFF',
-                  lineHeight: 1.2,
-                  letterSpacing: '-0.01em',
+                  lineHeight: 1.15,
+                  letterSpacing: '-0.02em',
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 2px 6px rgba(0,0,0,0.35)',
+                  textShadow: '0 2px 8px rgba(0,0,0,0.40)',
                 }}>
                   {card.label}
                 </div>
 
+                {/* Subtitle */}
                 <div style={{
                   fontFamily: DASH.fontBody,
-                  fontSize: '13px',
+                  fontSize: '16px',
                   fontWeight: 600,
-                  color: 'rgba(255,255,255,0.82)',
+                  color: 'rgba(255,255,255,0.85)',
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 1px 3px rgba(0,0,0,0.30)',
+                  textShadow: '0 1px 4px rgba(0,0,0,0.35)',
                 }}>
                   {card.subtitle}
                 </div>
