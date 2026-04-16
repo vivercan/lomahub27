@@ -439,13 +439,19 @@ export default function MisLeads() {
       padding: '8px 14px',
       borderRadius: tokens.radius.md,
       border: `1px solid ${tokens.colors.border}`,
-      background: tokens.colors.bgHover,
+      background: `linear-gradient(180deg, #FFFFFF 0%, ${tokens.colors.bgHover} 100%)`,
       color: tokens.colors.textSecondary,
       fontSize: '13px',
       fontFamily: tokens.fonts.body,
       cursor: 'pointer',
-      transition: 'all 0.15s',
+      transition: 'all 0.18s ease',
       whiteSpace: 'nowrap' as const,
+      boxShadow: `
+        0 1px 3px rgba(0,0,0,0.10),
+        0 3px 8px -2px rgba(0,0,0,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.80),
+        inset 0 -1px 0 rgba(0,0,0,0.06)
+      `,
     },
     toolbarBtnActive: {
       display: 'flex',
@@ -454,28 +460,42 @@ export default function MisLeads() {
       padding: '8px 14px',
       borderRadius: tokens.radius.md,
       border: `1px solid ${tokens.colors.primary}`,
-      background: `${tokens.colors.primary}22`,
+      background: `linear-gradient(180deg, ${tokens.colors.primary}33 0%, ${tokens.colors.primary}22 100%)`,
       color: tokens.colors.primary,
       fontSize: '13px',
       fontFamily: tokens.fonts.body,
       cursor: 'pointer',
-      transition: 'all 0.15s',
+      transition: 'all 0.18s ease',
       whiteSpace: 'nowrap' as const,
+      boxShadow: `
+        0 1px 3px rgba(59,108,231,0.15),
+        0 3px 8px -2px rgba(59,108,231,0.10),
+        inset 0 1px 0 rgba(255,255,255,0.60),
+        inset 0 -1px 0 rgba(59,108,231,0.12)
+      `,
     },
     addBtn: {
       display: 'flex',
       alignItems: 'center',
       gap: '6px',
-      padding: '8px 16px',
+      padding: '9px 18px',
       borderRadius: tokens.radius.md,
       border: 'none',
-      background: tokens.colors.primary,
+      background: `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 50%, #2F5BC4 100%)`,
       color: '#FFF',
       fontSize: '13px',
       fontWeight: 600,
       fontFamily: tokens.fonts.body,
       cursor: 'pointer',
-      transition: 'all 0.15s',
+      transition: 'all 0.18s ease',
+      boxShadow: `
+        0 2px 4px rgba(59,108,231,0.30),
+        0 6px 14px -3px rgba(59,108,231,0.25),
+        0 10px 24px -6px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.28),
+        inset 0 -1px 0 rgba(0,0,0,0.18)
+      `,
+      textShadow: '0 1px 2px rgba(0,0,0,0.20)',
     },
     selectDropdown: {
       padding: '8px 12px',
@@ -546,16 +566,25 @@ export default function MisLeads() {
     stageBadge: (color: string) => ({
       display: 'inline-flex',
       alignItems: 'center',
+      justifyContent: 'center',
       gap: '6px',
-      padding: '3px 10px',
+      padding: '4px 12px',
       borderRadius: tokens.radius.full,
       fontSize: '11px',
       fontWeight: 600,
       fontFamily: tokens.fonts.body,
       color: '#fff',
-      background: color,
+      background: `linear-gradient(180deg, ${color} 0%, ${color}DD 100%)`,
       border: 'none',
       whiteSpace: 'nowrap' as const,
+      boxShadow: `
+        0 2px 4px rgba(0,0,0,0.25),
+        0 4px 8px -2px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.30),
+        inset 0 -1px 0 rgba(0,0,0,0.20)
+      `,
+      textShadow: '0 1px 2px rgba(0,0,0,0.25)',
+      transition: 'all 0.15s ease',
     }),
     dot: (color: string) => ({
       width: '6px',
@@ -874,18 +903,28 @@ export default function MisLeads() {
         </button>
 
         {/* View Toggle */}
-          <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', border: '1px solid ' + tokens.colors.border }}>
+          <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', border: '1px solid ' + tokens.colors.border, boxShadow: '0 1px 3px rgba(0,0,0,0.10), 0 3px 8px -2px rgba(0,0,0,0.08)' }}>
             <button onClick={() => setViewMode('table')} style={{
               ...s.toolbarBtn,
-              background: viewMode === 'table' ? tokens.colors.primary : 'transparent',
+              background: viewMode === 'table'
+                ? `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 50%, #2F5BC4 100%)`
+                : 'linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%)',
               color: viewMode === 'table' ? '#fff' : tokens.colors.textSecondary,
-              borderRadius: 0, border: 'none', padding: '6px 10px'
+              borderRadius: 0, border: 'none', padding: '6px 10px',
+              boxShadow: viewMode === 'table'
+                ? 'inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.18)'
+                : 'inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.06)',
             }}><List size={14} /></button>
             <button onClick={() => setViewMode('kanban')} style={{
               ...s.toolbarBtn,
-              background: viewMode === 'kanban' ? tokens.colors.primary : 'transparent',
+              background: viewMode === 'kanban'
+                ? `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 50%, #2F5BC4 100%)`
+                : 'linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%)',
               color: viewMode === 'kanban' ? '#fff' : tokens.colors.textSecondary,
-              borderRadius: 0, border: 'none', padding: '6px 10px'
+              borderRadius: 0, border: 'none', padding: '6px 10px',
+              boxShadow: viewMode === 'kanban'
+                ? 'inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.18)'
+                : 'inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.06)',
             }}><LayoutGrid size={14} /></button>
           </div>
           {/* Exportar */}
@@ -946,8 +985,7 @@ export default function MisLeads() {
                   </span>
                 </th>
                 <th style={s.th}>ACTUALIZADO</th>
-                <th style={{ ...s.th, width: '50px', textAlign: 'center' as const }}>COT.</th>
-                <th style={{ ...s.th, width: '80px', textAlign: 'center' as const }}>ACCIONES</th>
+                <th style={{ ...s.th, width: '70px', textAlign: 'center' as const }}>ACCIONES</th>
               </tr>
             </thead>
             <tbody>
@@ -997,17 +1035,8 @@ export default function MisLeads() {
                     </td>
                     <td style={s.tdMuted}>{formatDate(lead.fecha_creacion)}</td>
               <td style={s.td}>{lead.updated_at ? formatDate(lead.updated_at) : '—'}</td>
-                    <td style={{ ...s.td, textAlign: 'center' as const, width: '50px' }}>
-                      <button
-                        style={{ ...s.actionBtn, color: lead.cotizacion_url ? tokens.colors.green : tokens.colors.textMuted }}
-                        title={lead.cotizacion_url ? 'Cotización adjunta — clic para reemplazar' : 'Subir Cotización PDF'}
-                        onClick={e => { e.stopPropagation(); handleAttachQuotation(lead) }}
-                      >
-                        <FileText size={15} />
-                      </button>
-                    </td>
-                    <td style={{ ...s.td, textAlign: 'center' as const, width: '80px', position: 'relative' as const }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
+                    <td style={{ ...s.td, textAlign: 'center' as const, width: '70px', position: 'relative' as const }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
                         {showDeleted ? (
                           <button
                             style={s.actionBtn}
@@ -1030,55 +1059,21 @@ export default function MisLeads() {
                               <Eye size={15} />
                             </button>
                             <button
-                              style={{ ...s.actionBtn, color: '#DC2626' }}
+                              style={{ ...s.actionBtn, color: '#DC2626', position: 'relative' }}
                               title="Subir Cotización PDF"
-                              onClick={() => handleAttachQuotation(lead)}
+                              onClick={e => { e.stopPropagation(); handleAttachQuotation(lead) }}
                             >
-                              <FileText size={15} />
-                            </button>
-                            <button
-                              style={s.actionBtn}
-                              title="Más acciones"
-                              onClick={e => { e.stopPropagation(); setActionsOpen(actionsOpen === lead.id ? null : lead.id) }}
-                              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
-                              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
-                            >
-                              <MoreHorizontal size={14} />
+                              {/* Solid PDF-style icon */}
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 2C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2H6Z" fill="#DC2626" />
+                                <path d="M14 2V8H20" fill="#B91C1C" />
+                                <path d="M14 2L20 8H14V2Z" fill="#EF4444" />
+                                <text x="12" y="17" textAnchor="middle" fill="white" fontSize="6" fontWeight="bold" fontFamily="Arial">PDF</text>
+                              </svg>
                             </button>
                           </>
                         )}
                       </div>
-                      {/* Actions dropdown */}
-                      {actionsOpen === lead.id && !showDeleted && (
-                        <div style={s.actionsMenu}>
-                          <button
-                            style={s.actionsMenuItem}
-                            onClick={e => { e.stopPropagation(); navigate(`/ventas/leads/${lead.id}`) }}
-                            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
-                          >
-                            <Eye size={13} style={{ color: '#2563EB' }} /> <span style={{ color: '#2563EB' }}>Ver Ficha</span>
-                          </button>
-                          <button
-                            style={s.actionsMenuItem}
-                            onClick={e => { e.stopPropagation(); handleAttachQuotation(lead) }}
-                            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
-                          >
-                            <FileText size={13} style={{ color: '#DC2626' }} />
-                            <span style={{ color: '#DC2626' }}>Subir Cotización</span>
-                          </button>
-                          <button
-                            style={s.actionsMenuItem}
-                            onClick={e => { e.stopPropagation(); handleSoftDelete(lead) }}
-                            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
-                          >
-                            <Trash2 size={13} style={{ color: tokens.colors.red }} />
-                            <span style={{ color: tokens.colors.red }}>Eliminar</span>
-                          </button>
-                        </div>
-                      )}
                     </td>
                   </tr>
                 )
