@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Search, ChevronDown, ChevronLeft, ChevronRight, Trash2, Filter, Download, Plus, MoreHorizontal,
-  Loader, Eye, Edit3, Zap, Upload, ArrowUpDown, X, RotateCcw, FileText, LayoutGrid, List
+  Loader, Eye, Edit3, Zap, Upload, ArrowUpDown, X, RotateCcw, FileText, LayoutGrid, List, FolderOpen
 } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
@@ -1050,12 +1050,12 @@ export default function MisLeads() {
                           <>
                             <button
                               style={{ ...s.actionBtn, color: '#2563EB' }}
-                              title="Ver ficha"
+                              title="Abrir expediente"
                               onClick={e => { e.stopPropagation(); navigate(`/ventas/leads/${lead.id}`) }}
                               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
                               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
                             >
-                              <Eye size={15} />
+                              <FolderOpen size={15} />
                             </button>
                             <button
                               style={{ ...s.actionBtn, color: '#DC2626', position: 'relative' }}

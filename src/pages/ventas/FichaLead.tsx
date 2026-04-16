@@ -58,7 +58,13 @@ export default function FichaLead() {
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [converting, setConverting] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const showToast = (msg: string) => {
+    setToast(msg)
+    setTimeout(() => setToast(null), 4000)
+  }
 
   useEffect(() => {
     const fetchLead = async () => {
@@ -234,10 +240,16 @@ export default function FichaLead() {
       fontSize: '12px',
       fontWeight: 700,
       fontFamily: tokens.fonts.body,
-      background: active ? color : tokens.colors.bgHover,
+      background: active
+        ? `linear-gradient(180deg, ${color} 0%, ${color}CC 100%)`
+        : 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%)',
       color: active ? '#FFF' : tokens.colors.textMuted,
       border: `2px solid ${active ? color : tokens.colors.border}`,
       transition: 'all 0.2s',
+      boxShadow: active
+        ? `0 2px 6px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.15)`
+        : '0 1px 3px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.04)',
+      textShadow: active ? '0 1px 1px rgba(0,0,0,0.20)' : 'none',
     }),
     stageLine: (active: boolean, color: string) => ({
       flex: 1,
@@ -501,22 +513,44 @@ export default function FichaLead() {
 
             {/* Acciones */}
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <button style={s.primaryBtn}>
+              <button style={s.primaryBtn}
+                onClick={() => showToast('Módulo de actividades en desarrollo. Próximamente podrás registrar llamadas, visitas y seguimientos aquí.')}>
                 <Plus size={14} /> Registrar Actividad
               </button>
-              <button style={s.actionBtn}>
+              <button style={s.actionBtn}
+                onClick={() => navigate(`/cotizador/nueva?lead_id=${lead.id}&empresa=${encodeURIComponent(lead.empresa || '')}`)}>
                 <FileText size={14} /> Crear Cotización
               </button>
-              <button style={s.actionBtn}>
-                <UserCheck size={14} /> Convertir a Cliente
+              <button style={s.actionBtn}
+                onClick={handleConvertToClient}
+                disabled={converting || lead.estado === 'Cerrado Ganado'}>
+                <UserCheck size={14} /> {lead.estado === 'Cerrado Ganado' ? 'Ya es Cliente' : converting ? 'Convirtiendo...' : 'Convertir a Cliente'}
               </button>
-              <button style={s.actionBtn}>
+              <button style={s.actionBtn}
+                onClick={() => navigate(`/ventas/leads/nuevo?edit=${lead.id}`)}>
                 <Edit3 size={14} /> Editar Lead
               </button>
-              <button style={s.actionBtn}>
+              <button style={s.actionBtn}
+                onClick={handleWhatsApp}>
                 <MessageSquare size={14} /> WhatsApp
               </button>
             </div>
+
+            {/* Toast notification */}
+            {toast && (
+              <div style={{
+                position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
+                background: 'linear-gradient(180deg, #1E293B 0%, #0F172A 100%)',
+                color: '#fff', padding: '12px 24px', borderRadius: '12px', fontSize: '13px',
+                fontFamily: tokens.fonts.body, zIndex: 9999, maxWidth: '480px', textAlign: 'center',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.30), 0 12px 32px -4px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.10)',
+                animation: 'fadeSlideUp 0.3s ease',
+                display: 'flex', alignItems: 'center', gap: '10px',
+              }}>
+                <span style={{ color: '#FBBF24', fontSize: '16px' }}>⚠</span>
+                {toast}
+              </div>
+            )}
           </div>
         </div>
       </div>
