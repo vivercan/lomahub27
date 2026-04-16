@@ -136,7 +136,7 @@ export default function HomeDashboard() {
       outlineOffset: '-1px',
       cursor: 'pointer',
       position: 'relative',
-      overflow: 'hidden',
+      overflow: 'visible',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-start',
@@ -412,47 +412,60 @@ export default function HomeDashboard() {
       }
     })()
 
-    // Icono común — Operaciones camión +50% para compensar padding interno del SVG
-    const iconSize = 95
-    const iconVisualScale = card.id === 'operaciones' ? 1.50 : 1
-    const iconScale = (isHovered ? 1.04 : 1) * iconVisualScale
-    const iconBottom = card.id === 'operaciones' ? '-32px' : '10px'
-    const iconRight = card.id === 'operaciones' ? '8px' : '18px'
-    const icon = card.iconFile ? (
-      <div
-        style={{
-          position: 'absolute',
-          right: iconRight,
-          bottom: iconBottom,
-          width: `${iconSize}px`,
-          height: `${iconSize}px`,
-          pointerEvents: 'none',
-          transition: baseTransition,
-          transform: `scale(${iconScale})`,
-          transformOrigin: 'bottom right',
-          zIndex: 2,
-        }}
-      >
+    return (
+      <>
+        {geometry}
+      </>
+    )
+  }
+
+  // ─── Emboss / Pop-out icon ───
+  // Disco neumórfico que se sale del borde inferior-derecho de la card
+  const renderPopOutIcon = (card: CardConfig, isHovered: boolean) => {
+    if (!card.iconFile) return null
+    const discSize = card.id === 'operaciones' ? 88 : 76
+    const imgSize = card.id === 'operaciones' ? 44 : 36
+    // Posición: mitad dentro, mitad fuera del card
+    const overflowPx = discSize * 0.30 // 30% se sale
+    return (
+      <div style={{
+        position: 'absolute',
+        right: '20px',
+        bottom: `-${overflowPx}px`,
+        width: `${discSize}px`,
+        height: `${discSize}px`,
+        borderRadius: '50%',
+        // Fondo ligeramente más claro que la card — "elevado"
+        background: `linear-gradient(145deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 100%), ${card.bgColor}`,
+        // Neumorphism: luz arriba-izquierda, sombra abajo-derecha
+        boxShadow: `
+          -4px -4px 10px rgba(255,255,255,0.10),
+          4px 4px 12px rgba(0,0,0,0.40),
+          0 0 20px rgba(255,122,0,0.12),
+          inset 0 1px 2px rgba(255,255,255,0.15),
+          inset 0 -1px 2px rgba(0,0,0,0.20)
+        `,
+        border: '1px solid rgba(255,255,255,0.10)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        pointerEvents: 'none',
+        zIndex: 5,
+        transition: 'transform 0.6s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s ease',
+        transform: isHovered ? 'scale(1.08) translateY(-4px)' : 'scale(1) translateY(0)',
+      }}>
         <img
           src={`/icons/dashboard/${card.iconFile}`}
           alt=""
           style={{
-            width: '100%',
-            height: '100%',
+            width: `${imgSize}px`,
+            height: `${imgSize}px`,
             objectFit: 'contain',
-            objectPosition: 'center center',
-            filter: 'brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,122,0,0.30)) drop-shadow(0 0 22px rgba(255,122,0,0.18))',
-            opacity: 0.35,
+            filter: 'brightness(0) invert(1) drop-shadow(0 0 6px rgba(255,255,255,0.25))',
+            opacity: 0.90,
           }}
         />
       </div>
-    ) : null
-
-    return (
-      <>
-        {geometry}
-        {icon}
-      </>
     )
   }
 
@@ -472,17 +485,21 @@ export default function HomeDashboard() {
         onMouseLeave={() => setHoveredCard(null)}
         style={getCardStyle(isHovered, card)}
       >
-        {renderDecor(card, isHovered)}
-        {/* Specular highlight — brillo de luz superior para profundidad */}
-        <div style={{
-          position: 'absolute',
-          left: 0, top: 0,
-          width: '100%', height: '45%',
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 100%)',
-          pointerEvents: 'none',
-          borderRadius: 'inherit',
-          zIndex: 1,
-        }} />
+        {/* Clip container for internal decorations */}
+        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', borderRadius: 'inherit', pointerEvents: 'none' }}>
+          {renderDecor(card, isHovered)}
+          {/* Specular highlight */}
+          <div style={{
+            position: 'absolute',
+            left: 0, top: 0,
+            width: '100%', height: '45%',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 100%)',
+            borderRadius: 'inherit',
+            zIndex: 1,
+          }} />
+        </div>
+        {/* Emboss pop-out icon — breaks out of card edge */}
+        {renderPopOutIcon(card, isHovered)}
         {/* Sheen sweep — banda de luz diagonal solo visible en hover (HOVER INTACTO) */}
         <div style={{
           position: 'absolute',
