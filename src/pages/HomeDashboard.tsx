@@ -624,47 +624,63 @@ export default function HomeDashboard() {
       color: '#1E293B',
     }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');`}</style>
-      {/* Filtro SVG blind emboss premium — bordes duros 90° + halo de profundidad */}
+      {/* Filtro SVG blind emboss 90° — luz arriba+izquierda, sombra abajo+derecha */}
       <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
         <defs>
           <filter id="blind-emboss" x="-30%" y="-30%" width="160%" height="160%" colorInterpolationFilters="sRGB">
-            {/* === CAPA 1: Bordes DUROS (detección ajustada, sin blur final) === */}
-            <feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="tightBlur"/>
-            {/* Highlight duro — arriba-izquierda, luz directa */}
-            <feOffset in="tightBlur" dx="3" dy="3" result="shDR1"/>
-            <feComposite in="SourceAlpha" in2="shDR1" operator="out" result="lEdge1"/>
-            <feFlood floodColor="white" floodOpacity="0.55" result="wF1"/>
-            <feComposite in="wF1" in2="lEdge1" operator="in" result="lSharp"/>
-            {/* Sombra dura — abajo-derecha */}
-            <feOffset in="tightBlur" dx="-3" dy="-3" result="shUL1"/>
-            <feComposite in="SourceAlpha" in2="shUL1" operator="out" result="dEdge1"/>
-            <feFlood floodColor="black" floodOpacity="0.60" result="bF1"/>
-            <feComposite in="bF1" in2="dEdge1" operator="in" result="dSharp"/>
+            <feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="tight"/>
 
-            {/* === CAPA 2: Halo de profundidad (suave, detrás del borde duro) === */}
-            <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="wideBlur"/>
-            <feOffset in="wideBlur" dx="5" dy="5" result="shDR2"/>
-            <feComposite in="SourceAlpha" in2="shDR2" operator="out" result="lEdge2"/>
-            <feFlood floodColor="white" floodOpacity="0.15" result="wF2"/>
-            <feComposite in="wF2" in2="lEdge2" operator="in" result="l2"/>
-            <feGaussianBlur in="l2" stdDeviation="2" result="lSoft"/>
-            <feOffset in="wideBlur" dx="-5" dy="-5" result="shUL2"/>
-            <feComposite in="SourceAlpha" in2="shUL2" operator="out" result="dEdge2"/>
-            <feFlood floodColor="black" floodOpacity="0.20" result="bF2"/>
-            <feComposite in="bF2" in2="dEdge2" operator="in" result="d2"/>
-            <feGaussianBlur in="d2" stdDeviation="2" result="dSoft"/>
+            {/* === LUZ SUPERIOR (borde top) === */}
+            <feOffset in="tight" dx="0" dy="3" result="shDown"/>
+            <feComposite in="SourceAlpha" in2="shDown" operator="out" result="topEdge"/>
+            <feFlood floodColor="white" floodOpacity="0.55" result="wT"/>
+            <feComposite in="wT" in2="topEdge" operator="in" result="lightTop"/>
 
-            {/* === CAPA 3: Relleno sutil (4% blanco, cuerpo mínimo) === */}
-            <feFlood floodColor="white" floodOpacity="0.04" result="fillFlood"/>
-            <feComposite in="fillFlood" in2="SourceAlpha" operator="in" result="subtleFill"/>
+            {/* === LUZ IZQUIERDA (borde left) === */}
+            <feOffset in="tight" dx="3" dy="0" result="shRight"/>
+            <feComposite in="SourceAlpha" in2="shRight" operator="out" result="leftEdge"/>
+            <feFlood floodColor="white" floodOpacity="0.45" result="wL"/>
+            <feComposite in="wL" in2="leftEdge" operator="in" result="lightLeft"/>
 
-            {/* === MERGE === */}
+            {/* === SOMBRA INFERIOR (borde bottom) === */}
+            <feOffset in="tight" dx="0" dy="-3" result="shUp"/>
+            <feComposite in="SourceAlpha" in2="shUp" operator="out" result="bottomEdge"/>
+            <feFlood floodColor="black" floodOpacity="0.60" result="bB"/>
+            <feComposite in="bB" in2="bottomEdge" operator="in" result="darkBottom"/>
+
+            {/* === SOMBRA DERECHA (borde right) === */}
+            <feOffset in="tight" dx="-3" dy="0" result="shLeft"/>
+            <feComposite in="SourceAlpha" in2="shLeft" operator="out" result="rightEdge"/>
+            <feFlood floodColor="black" floodOpacity="0.50" result="bR"/>
+            <feComposite in="bR" in2="rightEdge" operator="in" result="darkRight"/>
+
+            {/* === HALO PROFUNDIDAD (suave, detrás de bordes duros) === */}
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2.8" result="wide"/>
+            <feOffset in="wide" dx="0" dy="4" result="haloDown"/>
+            <feComposite in="SourceAlpha" in2="haloDown" operator="out" result="haloTopEdge"/>
+            <feFlood floodColor="white" floodOpacity="0.14" result="wH"/>
+            <feComposite in="wH" in2="haloTopEdge" operator="in" result="haloLT"/>
+            <feGaussianBlur in="haloLT" stdDeviation="1.8" result="haloLightSoft"/>
+
+            <feOffset in="wide" dx="0" dy="-4" result="haloUp"/>
+            <feComposite in="SourceAlpha" in2="haloUp" operator="out" result="haloBotEdge"/>
+            <feFlood floodColor="black" floodOpacity="0.18" result="bH"/>
+            <feComposite in="bH" in2="haloBotEdge" operator="in" result="haloDB"/>
+            <feGaussianBlur in="haloDB" stdDeviation="1.8" result="haloDarkSoft"/>
+
+            {/* === RELLENO SUTIL === */}
+            <feFlood floodColor="white" floodOpacity="0.04" result="fill"/>
+            <feComposite in="fill" in2="SourceAlpha" operator="in" result="subtleFill"/>
+
+            {/* === MERGE: sombras → relleno → highlights === */}
             <feMerge>
-              <feMergeNode in="dSoft"/>
-              <feMergeNode in="dSharp"/>
+              <feMergeNode in="haloDarkSoft"/>
+              <feMergeNode in="darkBottom"/>
+              <feMergeNode in="darkRight"/>
               <feMergeNode in="subtleFill"/>
-              <feMergeNode in="lSharp"/>
-              <feMergeNode in="lSoft"/>
+              <feMergeNode in="lightTop"/>
+              <feMergeNode in="lightLeft"/>
+              <feMergeNode in="haloLightSoft"/>
             </feMerge>
           </filter>
         </defs>
