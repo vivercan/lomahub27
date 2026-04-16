@@ -223,7 +223,7 @@ export default function Configuracion() {
 
   const getCardStyle = (isH: boolean, isP: boolean, card: ConfigCard): React.CSSProperties => ({
     aspectRatio: '1 / 0.79',
-    borderRadius: '16px',
+    borderRadius: '12px',
     padding: '18px 14px 14px',
     background: isH ? card.gradientHover : card.gradientBase,
     border: 'none',
@@ -303,48 +303,37 @@ export default function Configuracion() {
                   {card.geo}
                 </div>
 
-                {/* ═══ CONCAVE KEYCAP SURFACE ═══ */}
-                {/* Center sunken — darker in the middle, lighter at edges */}
+                {/* ═══ CONCAVE KEYCAP — sharp beveled edges ═══ */}
+                {/* Top bevel — sharp bright edge */}
                 <div style={{
-                  position: 'absolute', inset: 0,
-                  background: 'radial-gradient(ellipse 80% 70% at 50% 50%, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.06) 50%, rgba(0,0,0,0) 75%)',
-                  pointerEvents: 'none', borderRadius: 'inherit', zIndex: 1,
+                  position: 'absolute', left: 0, top: 0, right: 0, height: '2px',
+                  background: 'rgba(255,255,255,0.70)',
+                  pointerEvents: 'none', borderRadius: '12px 12px 0 0', zIndex: 6,
                 }} />
-
-                {/* Top edge — sharp bright rim (light catching the raised edge) */}
+                {/* Left bevel — bright */}
                 <div style={{
-                  position: 'absolute', left: 0, top: 0, right: 0, height: '3px',
-                  background: 'linear-gradient(90deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.55) 15%, rgba(255,255,255,0.70) 50%, rgba(255,255,255,0.55) 85%, rgba(255,255,255,0.15) 100%)',
-                  pointerEvents: 'none', borderRadius: '16px 16px 0 0', zIndex: 5,
+                  position: 'absolute', left: 0, top: 0, bottom: 0, width: '2px',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.10) 100%)',
+                  pointerEvents: 'none', borderRadius: '12px 0 0 12px', zIndex: 6,
                 }} />
-
-                {/* Left edge — bright rim */}
+                {/* Bottom bevel — dark sharp edge */}
                 <div style={{
-                  position: 'absolute', left: 0, top: 0, bottom: 0, width: '3px',
-                  background: 'linear-gradient(180deg, rgba(255,255,255,0.50) 0%, rgba(255,255,255,0.30) 30%, rgba(255,255,255,0.15) 70%, rgba(255,255,255,0.05) 100%)',
-                  pointerEvents: 'none', borderRadius: '16px 0 0 16px', zIndex: 5,
+                  position: 'absolute', left: 0, bottom: 0, right: 0, height: '2.5px',
+                  background: 'rgba(0,0,0,0.55)',
+                  pointerEvents: 'none', borderRadius: '0 0 12px 12px', zIndex: 6,
                 }} />
-
-                {/* Bottom edge — dark sharp rim (shadow side of raised edge) */}
+                {/* Right bevel — dark */}
                 <div style={{
-                  position: 'absolute', left: 0, bottom: 0, right: 0, height: '4px',
-                  background: 'linear-gradient(90deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.35) 15%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.35) 85%, rgba(0,0,0,0.10) 100%)',
-                  pointerEvents: 'none', borderRadius: '0 0 16px 16px', zIndex: 5,
+                  position: 'absolute', right: 0, top: 0, bottom: 0, width: '2px',
+                  background: 'linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.50) 100%)',
+                  pointerEvents: 'none', borderRadius: '0 12px 12px 0', zIndex: 6,
                 }} />
-
-                {/* Right edge — dark rim */}
+                {/* Concave dish — sunken center surface */}
                 <div style={{
-                  position: 'absolute', right: 0, top: 0, bottom: 0, width: '3px',
-                  background: 'linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 30%, rgba(0,0,0,0.28) 70%, rgba(0,0,0,0.35) 100%)',
-                  pointerEvents: 'none', borderRadius: '0 16px 16px 0', zIndex: 5,
-                }} />
-
-                {/* Inner concave shadow — the "dish" scoop on the surface */}
-                <div style={{
-                  position: 'absolute', inset: '4px',
-                  borderRadius: '13px',
-                  boxShadow: 'inset 0 3px 6px rgba(0,0,0,0.15), inset 0 -2px 4px rgba(255,255,255,0.12), inset 3px 0 5px rgba(0,0,0,0.08), inset -3px 0 5px rgba(255,255,255,0.06)',
-                  pointerEvents: 'none', zIndex: 2,
+                  position: 'absolute', inset: '3px',
+                  borderRadius: '10px',
+                  boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.22), inset 0 -3px 6px rgba(255,255,255,0.15), inset 4px 0 8px rgba(0,0,0,0.12), inset -4px 0 8px rgba(255,255,255,0.08)',
+                  pointerEvents: 'none', zIndex: 3,
                 }} />
 
                 {/* Shimmer sweep on hover */}
@@ -446,37 +435,32 @@ export default function Configuracion() {
                   {card.geo}
                 </div>
 
-                {/* ═══ CONCAVE KEYCAP SURFACE ═══ */}
+                {/* ═══ CONCAVE KEYCAP — sharp beveled edges ═══ */}
                 <div style={{
-                  position: 'absolute', inset: 0,
-                  background: 'radial-gradient(ellipse 80% 70% at 50% 50%, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.06) 50%, rgba(0,0,0,0) 75%)',
-                  pointerEvents: 'none', borderRadius: 'inherit', zIndex: 1,
+                  position: 'absolute', left: 0, top: 0, right: 0, height: '2px',
+                  background: 'rgba(255,255,255,0.70)',
+                  pointerEvents: 'none', borderRadius: '12px 12px 0 0', zIndex: 6,
                 }} />
                 <div style={{
-                  position: 'absolute', left: 0, top: 0, right: 0, height: '3px',
-                  background: 'linear-gradient(90deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.55) 15%, rgba(255,255,255,0.70) 50%, rgba(255,255,255,0.55) 85%, rgba(255,255,255,0.15) 100%)',
-                  pointerEvents: 'none', borderRadius: '16px 16px 0 0', zIndex: 5,
+                  position: 'absolute', left: 0, top: 0, bottom: 0, width: '2px',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.10) 100%)',
+                  pointerEvents: 'none', borderRadius: '12px 0 0 12px', zIndex: 6,
                 }} />
                 <div style={{
-                  position: 'absolute', left: 0, top: 0, bottom: 0, width: '3px',
-                  background: 'linear-gradient(180deg, rgba(255,255,255,0.50) 0%, rgba(255,255,255,0.30) 30%, rgba(255,255,255,0.15) 70%, rgba(255,255,255,0.05) 100%)',
-                  pointerEvents: 'none', borderRadius: '16px 0 0 16px', zIndex: 5,
+                  position: 'absolute', left: 0, bottom: 0, right: 0, height: '2.5px',
+                  background: 'rgba(0,0,0,0.55)',
+                  pointerEvents: 'none', borderRadius: '0 0 12px 12px', zIndex: 6,
                 }} />
                 <div style={{
-                  position: 'absolute', left: 0, bottom: 0, right: 0, height: '4px',
-                  background: 'linear-gradient(90deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.35) 15%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.35) 85%, rgba(0,0,0,0.10) 100%)',
-                  pointerEvents: 'none', borderRadius: '0 0 16px 16px', zIndex: 5,
+                  position: 'absolute', right: 0, top: 0, bottom: 0, width: '2px',
+                  background: 'linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.50) 100%)',
+                  pointerEvents: 'none', borderRadius: '0 12px 12px 0', zIndex: 6,
                 }} />
                 <div style={{
-                  position: 'absolute', right: 0, top: 0, bottom: 0, width: '3px',
-                  background: 'linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 30%, rgba(0,0,0,0.28) 70%, rgba(0,0,0,0.35) 100%)',
-                  pointerEvents: 'none', borderRadius: '0 16px 16px 0', zIndex: 5,
-                }} />
-                <div style={{
-                  position: 'absolute', inset: '4px',
-                  borderRadius: '13px',
-                  boxShadow: 'inset 0 3px 6px rgba(0,0,0,0.15), inset 0 -2px 4px rgba(255,255,255,0.12), inset 3px 0 5px rgba(0,0,0,0.08), inset -3px 0 5px rgba(255,255,255,0.06)',
-                  pointerEvents: 'none', zIndex: 2,
+                  position: 'absolute', inset: '3px',
+                  borderRadius: '10px',
+                  boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.22), inset 0 -3px 6px rgba(255,255,255,0.15), inset 4px 0 8px rgba(0,0,0,0.12), inset -4px 0 8px rgba(255,255,255,0.08)',
+                  pointerEvents: 'none', zIndex: 3,
                 }} />
 
                 <div style={{
