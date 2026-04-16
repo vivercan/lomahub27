@@ -423,7 +423,7 @@ export default function HomeDashboard() {
       }
     })()
     const iconScale = isHovered ? 1.05 : 1
-    const iconBottom = card.id === 'operaciones' ? '-10px' : '6px'
+    const iconBottom = card.id === 'operaciones' ? '-18px' : '6px'
     const iconRight = card.id === 'operaciones' ? '6px' : '14px'
     const icon = card.iconFile ? (
       <div
