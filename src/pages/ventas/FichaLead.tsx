@@ -153,15 +153,18 @@ export default function FichaLead() {
       display: 'flex',
       alignItems: 'center',
       gap: '6px',
-      padding: '6px 12px',
+      padding: '7px 14px',
       borderRadius: tokens.radius.md,
-      border: '1px solid #CC3700',
-      background: '#FF4500',
+      border: '1px solid #B03000',
+      background: 'linear-gradient(180deg, #FF5C1A 0%, #FF4500 50%, #CC3700 100%)',
       color: '#FFFFFF',
       fontSize: '13px',
       fontWeight: 600,
       fontFamily: tokens.fonts.body,
       cursor: 'pointer',
+      boxShadow: '0 2px 4px rgba(255,69,0,0.30), 0 6px 14px -3px rgba(255,69,0,0.25), 0 10px 24px -6px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.20)',
+      textShadow: '0 1px 2px rgba(0,0,0,0.25)',
+      transition: 'all 0.18s ease',
       transition: 'all 0.15s',
     },
     card: {
@@ -305,8 +308,8 @@ export default function FichaLead() {
         <button
           style={s.backBtn}
           onClick={() => navigate('/ventas/mis-leads')}
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#CC3700' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FF4500' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(180deg, #FF4500 0%, #CC3700 100%)' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(180deg, #FF5C1A 0%, #FF4500 50%, #CC3700 100%)' }}
         >
           <ArrowLeft size={14} /> Volver
         </button>
