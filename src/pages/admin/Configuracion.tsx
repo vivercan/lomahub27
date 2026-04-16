@@ -223,10 +223,13 @@ export default function Configuracion() {
 
   const getCardStyle = (isH: boolean, isP: boolean, card: ConfigCard): React.CSSProperties => ({
     aspectRatio: '1 / 0.79',
-    borderRadius: '12px',
+    borderRadius: '10px',
     padding: '18px 14px 14px',
     background: isH ? card.gradientHover : card.gradientBase,
-    border: 'none',
+    borderTop: '3px solid rgba(255,255,255,0.75)',
+    borderLeft: '3px solid rgba(255,255,255,0.45)',
+    borderBottom: '4px solid rgba(0,0,0,0.60)',
+    borderRight: '3px solid rgba(0,0,0,0.40)',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
@@ -303,36 +306,11 @@ export default function Configuracion() {
                   {card.geo}
                 </div>
 
-                {/* ═══ RAZOR KEYCAP — ultra-sharp bevel + deep dish ═══ */}
-                {/* Top bevel — razor bright */}
+                {/* ═══ DEEP CONCAVE DISH — sunken center ═══ */}
                 <div style={{
-                  position: 'absolute', left: 0, top: 0, right: 0, height: '3px',
-                  background: 'linear-gradient(180deg, rgba(255,255,255,0.90) 0%, rgba(255,255,255,0.40) 100%)',
-                  pointerEvents: 'none', borderRadius: '12px 12px 0 0', zIndex: 6,
-                }} />
-                {/* Left bevel — razor bright */}
-                <div style={{
-                  position: 'absolute', left: 0, top: 0, bottom: 0, width: '3px',
-                  background: 'linear-gradient(90deg, rgba(255,255,255,0.80) 0%, rgba(255,255,255,0.20) 100%)',
-                  pointerEvents: 'none', borderRadius: '12px 0 0 12px', zIndex: 6,
-                }} />
-                {/* Bottom bevel — razor dark */}
-                <div style={{
-                  position: 'absolute', left: 0, bottom: 0, right: 0, height: '4px',
-                  background: 'linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.70) 100%)',
-                  pointerEvents: 'none', borderRadius: '0 0 12px 12px', zIndex: 6,
-                }} />
-                {/* Right bevel — razor dark */}
-                <div style={{
-                  position: 'absolute', right: 0, top: 0, bottom: 0, width: '3px',
-                  background: 'linear-gradient(90deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.70) 100%)',
-                  pointerEvents: 'none', borderRadius: '0 12px 12px 0', zIndex: 6,
-                }} />
-                {/* Deep concave dish — heavily sunken center */}
-                <div style={{
-                  position: 'absolute', inset: '4px',
-                  borderRadius: '9px',
-                  boxShadow: 'inset 0 6px 14px rgba(0,0,0,0.30), inset 0 -4px 10px rgba(255,255,255,0.18), inset 6px 0 12px rgba(0,0,0,0.18), inset -6px 0 12px rgba(255,255,255,0.10)',
+                  position: 'absolute', inset: 0,
+                  borderRadius: 'inherit',
+                  boxShadow: 'inset 0 8px 16px rgba(0,0,0,0.30), inset 0 -5px 12px rgba(255,255,255,0.15), inset 6px 0 14px rgba(0,0,0,0.18), inset -6px 0 14px rgba(255,255,255,0.10)',
                   pointerEvents: 'none', zIndex: 3,
                 }} />
 
