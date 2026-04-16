@@ -417,11 +417,13 @@ export default function UsuariosPermisos() {
                 onClick={handleSave}
                 disabled={saving || !selectedUser}
                 style={{
-                  padding: '8px 20px', borderRadius: '8px', border: 'none',
-                  background: tokens.colors.primary, color: '#FFFFFF',
+                  padding: '9px 22px', borderRadius: '8px', border: 'none',
+                  background: `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 50%, #2F5BC4 100%)`, color: '#FFFFFF',
                   fontWeight: 600, fontSize: '0.9rem', cursor: saving ? 'wait' : 'pointer',
                   fontFamily: 'Montserrat, sans-serif', opacity: saving ? 0.7 : 1,
-                  transition: 'opacity 0.2s ease',
+                  transition: 'all 0.18s ease',
+                  boxShadow: '0 2px 4px rgba(59,108,231,0.30), 0 6px 14px -3px rgba(59,108,231,0.25), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.18)',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.20)',
                 }}
               >
                 {saving ? 'Guardando...' : 'Guardar Permisos'}

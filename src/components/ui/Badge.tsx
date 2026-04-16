@@ -20,7 +20,12 @@ export function Badge({ children, color = 'primary' }: BadgeProps) {
   return (
     <span
       className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-      style={{ background: style.bg, color: style.text, fontFamily: tokens.fonts.body }}
+      style={{
+        background: style.bg,
+        color: style.text,
+        fontFamily: tokens.fonts.body,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.10), 0 2px 6px -1px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.50), inset 0 -1px 0 rgba(0,0,0,0.04)',
+      }}
     >
       {children}
     </span>

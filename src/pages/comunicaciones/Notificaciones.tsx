@@ -102,7 +102,10 @@ export default function Notificaciones() {
             style={{
               padding: '6px 14px', borderRadius: tokens.radius.md, fontSize: '12px',
               fontFamily: tokens.fonts.body, fontWeight: 600, border: 'none', cursor: 'pointer',
-              background: tokens.colors.primary, color: '#fff',
+              background: `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 100%)`, color: '#fff',
+              transition: 'all 0.18s ease',
+              boxShadow: '0 2px 4px rgba(59,108,231,0.30), 0 6px 14px -3px rgba(59,108,231,0.25), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.18)',
+              textShadow: '0 1px 2px rgba(0,0,0,0.20)',
             }}
           >
             <CheckCircle size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} />

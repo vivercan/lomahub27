@@ -641,7 +641,7 @@ export default function CatalogosTab() {
               setEditingId(null);
             }}
             style={{
-              background: '#3B6CE7',
+              background: 'linear-gradient(180deg, #4A7AF0 0%, #3B6CE7 50%, #2F5BC4 100%)',
               border: '1px solid #2F5BC4',
               borderRadius: 8,
               padding: '8px 12px',
@@ -653,13 +653,15 @@ export default function CatalogosTab() {
               ...styles.body,
               fontSize: 13,
               fontWeight: 600,
-              transition: 'all 0.2s',
+              transition: 'all 0.18s ease',
+              boxShadow: '0 2px 4px rgba(59,108,231,0.30), 0 6px 14px -3px rgba(59,108,231,0.25), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.18)',
+              textShadow: '0 1px 2px rgba(0,0,0,0.20)',
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = '#2F5BC4';
+              (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(180deg, #3B6CE7 0%, #2F5BC4 100%)';
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = '#3B6CE7';
+              (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(180deg, #4A7AF0 0%, #3B6CE7 50%, #2F5BC4 100%)';
             }}
           >
             <ArrowLeft size={16} />
@@ -736,10 +738,10 @@ export default function CatalogosTab() {
             <button
               onClick={startAdd}
               style={{
-                background: styles.primary,
+                background: 'linear-gradient(180deg, #4A7AF0 0%, #3B6CE7 50%, #2F5BC4 100%)',
                 border: 'none',
                 borderRadius: 10,
-                padding: '8px 16px',
+                padding: '9px 18px',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -748,13 +750,15 @@ export default function CatalogosTab() {
                 ...styles.body,
                 fontSize: 13,
                 fontWeight: 600,
-                transition: 'background 0.2s',
+                transition: 'all 0.18s ease',
+                boxShadow: '0 2px 4px rgba(59,108,231,0.30), 0 6px 14px -3px rgba(59,108,231,0.25), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.18)',
+                textShadow: '0 1px 2px rgba(0,0,0,0.20)',
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = styles.primaryHover;
+                (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(180deg, #3B6CE7 0%, #2F5BC4 100%)';
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = styles.primary;
+                (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(180deg, #4A7AF0 0%, #3B6CE7 50%, #2F5BC4 100%)';
               }}
             >
               <Plus size={16} />

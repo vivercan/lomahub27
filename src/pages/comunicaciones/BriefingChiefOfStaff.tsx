@@ -316,6 +316,7 @@ const PendienteCard: React.FC<{ pendiente: Pendiente; index: number }> = ({ pend
                 fontSize: '12px',
                 fontWeight: 600,
                 textTransform: 'capitalize',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.10), 0 2px 6px -1px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.50), inset 0 -1px 0 rgba(0,0,0,0.04)',
               }}
             >
               {pendiente.status}

@@ -23,14 +23,20 @@ export function Pagination({ currentPage, totalPages, totalItems, pageSize, onPa
     height: '36px',
     borderRadius: '8px',
     border: active ? `2px solid ${tokens.colors.primary}` : `1px solid ${tokens.colors.border}`,
-    background: active ? tokens.colors.primary : 'transparent',
+    background: active
+      ? `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 50%, #2F5BC4 100%)`
+      : 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%)',
     color: active ? '#fff' : disabled ? tokens.colors.textMuted : tokens.colors.textPrimary,
     cursor: disabled ? 'not-allowed' : 'pointer',
     opacity: disabled ? 0.4 : 1,
     fontFamily: tokens.fonts.body,
     fontSize: '13px',
     fontWeight: active ? 700 : 500,
-    transition: '0.15s',
+    transition: 'all 0.18s ease',
+    boxShadow: active
+      ? '0 2px 4px rgba(59,108,231,0.30), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.18)'
+      : '0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.05)',
+    textShadow: active ? '0 1px 2px rgba(0,0,0,0.20)' : 'none',
   })
 
   const pages: (number | string)[] = []

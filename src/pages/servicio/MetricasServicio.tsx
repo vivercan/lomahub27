@@ -402,8 +402,8 @@ export default function MetricasServicio(): ReactElement {
               Detalle de Tickets {canalFilter ? `— ${CANALES.find(c => c.key === canalFilter)?.label}` : ''}
             </p>
             {canalFilter && (
-              <button onClick={() => setCanalFilter(null)} style={{ padding: '2px 10px', borderRadius: tokens.radius.full, fontSize: '11px',
-                fontFamily: tokens.fonts.body, border: 'none', cursor: 'pointer', background: tokens.colors.primary, color: '#fff' }}>
+              <button onClick={() => setCanalFilter(null)} style={{ padding: '3px 12px', borderRadius: tokens.radius.full, fontSize: '11px',
+                fontFamily: tokens.fonts.body, border: 'none', cursor: 'pointer', background: `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 100%)`, color: '#fff', transition: 'all 0.18s ease', boxShadow: '0 2px 4px rgba(59,108,231,0.25), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.15)', textShadow: '0 1px 1px rgba(0,0,0,0.18)' }}>
                 Ver todos
               </button>
             )}

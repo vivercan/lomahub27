@@ -9,22 +9,24 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles = {
   primary: {
-    background: tokens.colors.primary,
+    background: `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 50%, #2F5BC4 100%)`,
     color: '#fff',
     border: 'none',
-    boxShadow: tokens.effects.glowPrimary,
+    boxShadow: '0 2px 4px rgba(59,108,231,0.30), 0 6px 14px -3px rgba(59,108,231,0.25), 0 10px 24px -6px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.18)',
+    textShadow: '0 1px 2px rgba(0,0,0,0.20)',
   },
   secondary: {
-    background: 'transparent',
+    background: 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%)',
     color: tokens.colors.textPrimary,
     border: `1px solid ${tokens.colors.border}`,
-    boxShadow: 'none',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.12), 0 4px 10px -2px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.90), inset 0 -2px 0 rgba(0,0,0,0.06)',
   },
   danger: {
-    background: tokens.colors.red,
+    background: 'linear-gradient(180deg, #EF4444 0%, #DC2626 50%, #B91C1C 100%)',
     color: '#fff',
     border: 'none',
-    boxShadow: tokens.effects.glowRed,
+    boxShadow: '0 2px 4px rgba(220,38,38,0.30), 0 6px 14px -3px rgba(220,38,38,0.25), 0 10px 24px -6px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.20)',
+    textShadow: '0 1px 2px rgba(0,0,0,0.20)',
   },
   ghost: {
     background: 'transparent',

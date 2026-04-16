@@ -200,7 +200,7 @@ export default function ParametrosConfig() {
       fontSize: '14px',
       fontWeight: 600,
       color: '#FFFFFF',
-      background: saved ? '#0D9668' : tokens.colors.primary,
+      background: saved ? 'linear-gradient(180deg, #34D399 0%, #0D9668 50%, #047857 100%)' : `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 50%, #2F5BC4 100%)`,
       border: 'none',
       borderRadius: '12px',
       padding: '12px 28px',
@@ -208,8 +208,12 @@ export default function ParametrosConfig() {
       display: 'flex',
       alignItems: 'center',
       gap: '8px',
-      transition: 'all 0.2s',
+      transition: 'all 0.18s ease',
       marginLeft: 'auto',
+      boxShadow: saved
+        ? '0 2px 4px rgba(13,150,104,0.30), 0 6px 14px -3px rgba(13,150,104,0.25), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.18)'
+        : '0 2px 4px rgba(59,108,231,0.30), 0 6px 14px -3px rgba(59,108,231,0.25), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.18)',
+      textShadow: '0 1px 2px rgba(0,0,0,0.20)',
     } as React.CSSProperties,
     actions: {
       display: 'flex',

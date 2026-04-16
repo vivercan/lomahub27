@@ -302,9 +302,11 @@ const selStyle: React.CSSProperties = {
   padding: `${tokens.spacing.xs} ${tokens.spacing.md}`, fontFamily: tokens.fonts.body, fontSize: '13px',
 }
 const actionBtn: React.CSSProperties = {
-  background: 'transparent', border: `1px solid ${tokens.colors.border}`,
+  background: 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%)', border: `1px solid ${tokens.colors.border}`,
   borderRadius: tokens.radius.sm, padding: '6px', cursor: 'pointer',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
+  transition: 'all 0.18s ease',
+  boxShadow: '0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.05)',
 }
 const detailLabel: React.CSSProperties = {
   fontSize: '12px', fontWeight: 700, color: tokens.colors.textMuted,

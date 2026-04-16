@@ -296,8 +296,8 @@ export default function PortalAltaReview() {
                   ))}
                 </div>
                 <div style={{ display: 'flex', gap: 10 }}>
-                  <button onClick={handleAssignCSR} disabled={!selectedCSR || acting} style={{ padding: '10px 28px', fontSize: 14, fontWeight: 700, color: '#fff', background: selectedCSR ? C.green : C.textMuted, border: 'none', borderRadius: 8, cursor: selectedCSR ? 'pointer' : 'not-allowed' }}>Asignar CSR</button>
-                  <button onClick={() => setShowReject(true)} style={{ padding: '10px 20px', fontSize: 13, fontWeight: 600, color: C.red, background: 'transparent', border: `1px solid ${C.red}`, borderRadius: 8, cursor: 'pointer' }}><Ban size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />Rechazar</button>
+                  <button onClick={handleAssignCSR} disabled={!selectedCSR || acting} style={{ padding: '10px 28px', fontSize: 14, fontWeight: 700, color: '#fff', background: selectedCSR ? `linear-gradient(180deg, #34D399 0%, ${C.green} 50%, #059669 100%)` : C.textMuted, border: 'none', borderRadius: 8, cursor: selectedCSR ? 'pointer' : 'not-allowed', transition: 'all 0.18s ease', boxShadow: selectedCSR ? '0 2px 4px rgba(16,185,129,0.30), 0 6px 14px -3px rgba(16,185,129,0.25), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.18)' : 'none', textShadow: selectedCSR ? '0 1px 2px rgba(0,0,0,0.20)' : 'none' }}>Asignar CSR</button>
+                  <button onClick={() => setShowReject(true)} style={{ padding: '10px 20px', fontSize: 13, fontWeight: 600, color: C.red, background: `linear-gradient(180deg, rgba(239,68,68,0.08) 0%, rgba(239,68,68,0.04) 100%)`, border: `1px solid ${C.red}`, borderRadius: 8, cursor: 'pointer', transition: 'all 0.18s ease', boxShadow: '0 2px 4px rgba(239,68,68,0.15), inset 0 1px 0 rgba(255,255,255,0.50), inset 0 -1px 0 rgba(239,68,68,0.06)' }}><Ban size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />Rechazar</button>
                 </div>
               </div>
             )}
@@ -356,8 +356,8 @@ export default function PortalAltaReview() {
                 </div>
 
                 <div style={{ display: 'flex', gap: 10 }}>
-                  <button onClick={handleAssignCXC} disabled={!selectedCXC || acting} style={{ padding: '10px 28px', fontSize: 14, fontWeight: 700, color: '#fff', background: selectedCXC ? C.purple : C.textMuted, border: 'none', borderRadius: 8, cursor: selectedCXC ? 'pointer' : 'not-allowed' }}>Asignar CxC ({diasCredito === 0 ? 'Contado' : `${diasCredito}d ${divisa}`})</button>
-                  <button onClick={() => setShowReject(true)} style={{ padding: '10px 20px', fontSize: 13, fontWeight: 600, color: C.red, background: 'transparent', border: `1px solid ${C.red}`, borderRadius: 8, cursor: 'pointer' }}><Ban size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />Rechazar</button>
+                  <button onClick={handleAssignCXC} disabled={!selectedCXC || acting} style={{ padding: '10px 28px', fontSize: 14, fontWeight: 700, color: '#fff', background: selectedCXC ? `linear-gradient(180deg, #A78BFA 0%, ${C.purple} 50%, #7C3AED 100%)` : C.textMuted, border: 'none', borderRadius: 8, cursor: selectedCXC ? 'pointer' : 'not-allowed', transition: 'all 0.18s ease', boxShadow: selectedCXC ? '0 2px 4px rgba(139,92,246,0.30), 0 6px 14px -3px rgba(139,92,246,0.25), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.18)' : 'none', textShadow: selectedCXC ? '0 1px 2px rgba(0,0,0,0.20)' : 'none' }}>Asignar CxC ({diasCredito === 0 ? 'Contado' : `${diasCredito}d ${divisa}`})</button>
+                  <button onClick={() => setShowReject(true)} style={{ padding: '10px 20px', fontSize: 13, fontWeight: 600, color: C.red, background: `linear-gradient(180deg, rgba(239,68,68,0.08) 0%, rgba(239,68,68,0.04) 100%)`, border: `1px solid ${C.red}`, borderRadius: 8, cursor: 'pointer', transition: 'all 0.18s ease', boxShadow: '0 2px 4px rgba(239,68,68,0.15), inset 0 1px 0 rgba(255,255,255,0.50), inset 0 -1px 0 rgba(239,68,68,0.06)' }}><Ban size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />Rechazar</button>
                 </div>
               </div>
             )}
@@ -371,8 +371,8 @@ export default function PortalAltaReview() {
                 </p>
                 <p style={{ margin: '0 0 20px', fontSize: 13, color: C.textSec }}>Al confirmar, se enviará correo a todo el equipo y al cliente notificando que el alta está completa.</p>
                 <div style={{ display: 'flex', gap: 10 }}>
-                  <button onClick={handleComplete} disabled={acting} style={{ padding: '12px 32px', fontSize: 14, fontWeight: 700, color: '#fff', background: C.green, border: 'none', borderRadius: 8, cursor: 'pointer' }}>Completar Alta</button>
-                  <button onClick={() => setShowReject(true)} style={{ padding: '10px 20px', fontSize: 13, fontWeight: 600, color: C.red, background: 'transparent', border: `1px solid ${C.red}`, borderRadius: 8, cursor: 'pointer' }}>Rechazar</button>
+                  <button onClick={handleComplete} disabled={acting} style={{ padding: '12px 32px', fontSize: 14, fontWeight: 700, color: '#fff', background: `linear-gradient(180deg, #34D399 0%, ${C.green} 50%, #059669 100%)`, border: 'none', borderRadius: 8, cursor: 'pointer', transition: 'all 0.18s ease', boxShadow: '0 2px 4px rgba(16,185,129,0.30), 0 6px 14px -3px rgba(16,185,129,0.25), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.18)', textShadow: '0 1px 2px rgba(0,0,0,0.20)' }}>Completar Alta</button>
+                  <button onClick={() => setShowReject(true)} style={{ padding: '10px 20px', fontSize: 13, fontWeight: 600, color: C.red, background: `linear-gradient(180deg, rgba(239,68,68,0.08) 0%, rgba(239,68,68,0.04) 100%)`, border: `1px solid ${C.red}`, borderRadius: 8, cursor: 'pointer', transition: 'all 0.18s ease', boxShadow: '0 2px 4px rgba(239,68,68,0.15), inset 0 1px 0 rgba(255,255,255,0.50), inset 0 -1px 0 rgba(239,68,68,0.06)' }}>Rechazar</button>
                 </div>
               </div>
             )}
@@ -386,8 +386,8 @@ export default function PortalAltaReview() {
               <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 700, color: C.text }}>Rechazar Solicitud</h3>
               <textarea value={rejectNotes} onChange={e => setRejectNotes(e.target.value)} rows={4} placeholder="Motivo del rechazo..." style={{ width: '100%', padding: 12, fontSize: 14, border: `1px solid ${C.border}`, borderRadius: 8, resize: 'vertical', outline: 'none', color: C.text, background: C.bg, marginBottom: 16 }} />
               <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-                <button onClick={() => setShowReject(false)} style={{ padding: '8px 20px', fontSize: 13, color: C.textSec, background: 'transparent', border: `1px solid ${C.border}`, borderRadius: 8, cursor: 'pointer' }}>Cancelar</button>
-                <button onClick={handleReject} disabled={!rejectNotes.trim() || acting} style={{ padding: '8px 24px', fontSize: 13, fontWeight: 700, color: '#fff', background: rejectNotes.trim() ? C.red : C.textMuted, border: 'none', borderRadius: 8, cursor: rejectNotes.trim() ? 'pointer' : 'not-allowed' }}>Confirmar Rechazo</button>
+                <button onClick={() => setShowReject(false)} style={{ padding: '8px 20px', fontSize: 13, color: C.textSec, background: 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%)', border: `1px solid ${C.border}`, borderRadius: 8, cursor: 'pointer', transition: 'all 0.18s ease', boxShadow: '0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.05)' }}>Cancelar</button>
+                <button onClick={handleReject} disabled={!rejectNotes.trim() || acting} style={{ padding: '8px 24px', fontSize: 13, fontWeight: 700, color: '#fff', background: rejectNotes.trim() ? 'linear-gradient(180deg, #EF4444 0%, #DC2626 50%, #B91C1C 100%)' : C.textMuted, border: 'none', borderRadius: 8, cursor: rejectNotes.trim() ? 'pointer' : 'not-allowed', transition: 'all 0.18s ease', boxShadow: rejectNotes.trim() ? '0 2px 4px rgba(220,38,38,0.30), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.18)' : 'none', textShadow: rejectNotes.trim() ? '0 1px 2px rgba(0,0,0,0.20)' : 'none' }}>Confirmar Rechazo</button>
               </div>
             </div>
           </div>

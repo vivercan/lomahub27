@@ -395,10 +395,12 @@ const selStyle: React.CSSProperties = {
 }
 
 const actionBtnStyle: React.CSSProperties = {
-  background: 'transparent', border: `1px solid ${tokens.colors.border}`,
+  background: 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%)', border: `1px solid ${tokens.colors.border}`,
   borderRadius: tokens.radius.sm, padding: `${tokens.spacing.xs} ${tokens.spacing.sm}`,
   cursor: 'pointer', display: 'flex', alignItems: 'center', gap: tokens.spacing.xs,
   color: tokens.colors.textPrimary, fontFamily: tokens.fonts.body, fontSize: '13px',
+  transition: 'all 0.18s ease',
+  boxShadow: '0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.05)',
 }
 
 const detailLabel: React.CSSProperties = {

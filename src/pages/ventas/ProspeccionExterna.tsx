@@ -459,7 +459,7 @@ const tdStyle: React.CSSProperties = {
 }
 
 const actionBtn: React.CSSProperties = {
-  background: 'transparent',
+  background: 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%)',
   border: `1px solid ${tokens.colors.border}`,
   borderRadius: tokens.radius.sm,
   padding: '6px',
@@ -467,4 +467,6 @@ const actionBtn: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  transition: 'all 0.18s ease',
+  boxShadow: '0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.05)',
 }

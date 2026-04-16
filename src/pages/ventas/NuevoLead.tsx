@@ -279,10 +279,17 @@ export default function NuevoLead(): ReactElement {
     fontSize: '10px',
     fontWeight: 600,
     cursor: 'pointer',
-    background: prioridad === val ? color : tokens.colors.bgHover,
+    background: prioridad === val
+      ? `linear-gradient(180deg, ${color} 0%, ${color}DD 100%)`
+      : 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%)',
     color: prioridad === val ? '#fff' : tokens.colors.textSecondary,
     border: '1px solid ' + (prioridad === val ? color : tokens.colors.border),
     fontFamily: tokens.fonts.body,
+    transition: 'all 0.18s ease',
+    boxShadow: prioridad === val
+      ? `0 2px 4px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.18)`
+      : '0 1px 2px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.04)',
+    textShadow: prioridad === val ? '0 1px 1px rgba(0,0,0,0.20)' : 'none',
   })
 
   const selectBase: React.CSSProperties = { ...inputBase, appearance: 'auto' as const }
@@ -640,11 +647,12 @@ export default function NuevoLead(): ReactElement {
             width: '100%', padding: '12px', fontSize: '13px', fontWeight: 700,
             fontFamily: tokens.fonts.heading, textTransform: 'uppercase' as const,
             letterSpacing: '1px', color: '#fff',
-            background: saving || success ? tokens.colors.bgHover : tokens.colors.primary,
+            background: saving || success ? tokens.colors.bgHover : `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 50%, #2F5BC4 100%)`,
             border: 'none', borderRadius: tokens.radius.md, cursor: saving || success ? 'default' : 'pointer',
-            boxShadow: tokens.effects.glowPrimary,
+            boxShadow: saving || success ? 'none' : '0 2px 4px rgba(59,108,231,0.30), 0 6px 14px -3px rgba(59,108,231,0.25), 0 10px 24px -6px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.18)',
+            textShadow: '0 1px 2px rgba(0,0,0,0.20)',
             opacity: saving || success ? 0.6 : 1,
-            transition: 'all 0.15s',
+            transition: 'all 0.18s ease',
           }}>
             <Save size={14} />
             {saving ? 'GUARDANDO...' : 'GUARDAR LEAD'}

@@ -186,17 +186,23 @@ export default function AddLeadModal({ open, onClose, onSaved }: AddLeadModalPro
   const chipStyle = (active: boolean): React.CSSProperties => ({
     padding: '6px 14px', borderRadius: tokens.radius.full,
     fontSize: '12px', fontWeight: 500, cursor: 'pointer',
-    background: active ? tokens.colors.primary : tokens.colors.bgHover,
+    background: active
+      ? `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 100%)`
+      : 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%)',
     color: active ? '#fff' : tokens.colors.textSecondary,
     border: '1px solid ' + (active ? tokens.colors.primary : tokens.colors.border),
-    transition: 'all 0.15s ease',
+    transition: 'all 0.18s ease',
     fontFamily: tokens.fonts.body,
+    boxShadow: active
+      ? '0 2px 4px rgba(59,108,231,0.25), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.15)'
+      : '0 1px 2px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.04)',
+    textShadow: active ? '0 1px 1px rgba(0,0,0,0.18)' : 'none',
   })
 
   const btnBase: React.CSSProperties = {
     padding: '10px 24px', borderRadius: tokens.radius.md,
     fontSize: '13px', fontWeight: 600, cursor: 'pointer',
-    fontFamily: tokens.fonts.body, transition: 'all 0.15s ease',
+    fontFamily: tokens.fonts.body, transition: 'all 0.18s ease',
     display: 'inline-flex', alignItems: 'center', gap: '8px',
   }
 
@@ -465,14 +471,15 @@ export default function AddLeadModal({ open, onClose, onSaved }: AddLeadModalPro
             Vendedor: {user?.email || '—'} · {new Date().toLocaleDateString('es-MX')}
           </span>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <button style={{ ...btnBase, background: 'transparent', color: tokens.colors.textSecondary, border: '1px solid ' + tokens.colors.border }}
+            <button style={{ ...btnBase, background: 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%)', color: tokens.colors.textSecondary, border: '1px solid ' + tokens.colors.border, boxShadow: '0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.05)' }}
               onClick={onClose} disabled={saving} type="button">
               Cancelar
             </button>
             <button style={{
               ...btnBase,
-              background: tokens.colors.primary, color: '#fff', border: 'none',
-              boxShadow: tokens.effects.glowPrimary,
+              background: `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 50%, #2F5BC4 100%)`, color: '#fff', border: 'none',
+              boxShadow: '0 2px 4px rgba(59,108,231,0.30), 0 6px 14px -3px rgba(59,108,231,0.25), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.18)',
+              textShadow: '0 1px 2px rgba(0,0,0,0.20)',
               opacity: saving || success ? 0.6 : 1,
             }}
               onClick={handleSave} disabled={saving || success} type="button">

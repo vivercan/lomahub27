@@ -74,15 +74,22 @@ const sBtn = (variant: 'primary' | 'ghost' = 'primary'): React.CSSProperties => 
   display: 'inline-flex',
   alignItems: 'center',
   gap: '6px',
-  padding: variant === 'primary' ? '8px 16px' : '6px 10px',
+  padding: variant === 'primary' ? '9px 18px' : '6px 10px',
   borderRadius: tokens.radius.md,
   border: variant === 'primary' ? 'none' : `1px solid ${tokens.colors.border}`,
-  background: variant === 'primary' ? tokens.colors.primary : 'transparent',
+  background: variant === 'primary'
+    ? `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 50%, #2F5BC4 100%)`
+    : 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%)',
   color: variant === 'primary' ? '#fff' : tokens.colors.textSecondary,
   cursor: 'pointer',
   fontSize: '13px',
   fontWeight: 600,
   fontFamily: tokens.fonts.heading,
+  transition: 'all 0.18s ease',
+  boxShadow: variant === 'primary'
+    ? '0 2px 4px rgba(59,108,231,0.30), 0 6px 14px -3px rgba(59,108,231,0.25), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.18)'
+    : '0 1px 3px rgba(0,0,0,0.10), 0 3px 8px -2px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.05)',
+  textShadow: variant === 'primary' ? '0 1px 2px rgba(0,0,0,0.20)' : 'none',
 });
 
 const sInput: React.CSSProperties = {

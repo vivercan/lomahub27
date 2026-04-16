@@ -319,6 +319,8 @@ export default function AltaClienteWorkflow(): ReactElement {
       borderRadius: tokens.radius.md, fontSize: '12px', fontWeight: 600,
       fontFamily: tokens.fonts.body, cursor: isTransitioning ? 'wait' : 'pointer',
       opacity: isTransitioning ? 0.6 : 1,
+      transition: 'all 0.18s ease',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.12), 0 4px 8px -2px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.50), inset 0 -1px 0 rgba(0,0,0,0.06)',
     })
 
     switch (r.estado) {
@@ -825,14 +827,19 @@ const modalCard: React.CSSProperties = {
 }
 const cancelBtnStyle: React.CSSProperties = {
   padding: `${tokens.spacing.sm} ${tokens.spacing.lg}`,
-  background: 'transparent', color: tokens.colors.textSecondary,
+  background: 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%)', color: tokens.colors.textSecondary,
   border: `1px solid ${tokens.colors.border}`, borderRadius: tokens.radius.md,
   fontFamily: tokens.fonts.body, fontSize: '14px', cursor: 'pointer',
+  transition: 'all 0.18s ease',
+  boxShadow: '0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(0,0,0,0.05)',
 }
 const confirmBtnStyle: React.CSSProperties = {
   padding: `${tokens.spacing.sm} ${tokens.spacing.lg}`,
   color: '#fff', border: 'none', borderRadius: tokens.radius.md,
   fontFamily: tokens.fonts.body, fontSize: '14px', fontWeight: 600,
+  transition: 'all 0.18s ease',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.20), 0 6px 14px -3px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.18)',
+  textShadow: '0 1px 2px rgba(0,0,0,0.20)',
 }
 
 /* ── Workflow notification email HTML ── */

@@ -171,7 +171,7 @@ export default function AltaCliente(): ReactElement {
 
   const estadoBadge = (estado: string) => {
     const cfg = ESTADO_COLORS[estado] || { color: tokens.colors.textMuted, bg: 'transparent', label: estado }
-    return <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: tokens.radius.full, fontSize: '11px', fontWeight: 600, color: cfg.color, background: cfg.bg }}>{cfg.label}</span>
+    return <span style={{ display: 'inline-block', padding: '3px 12px', borderRadius: tokens.radius.full, fontSize: '11px', fontWeight: 600, color: cfg.color, background: cfg.bg, boxShadow: '0 1px 3px rgba(0,0,0,0.10), 0 2px 6px -1px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.50), inset 0 -1px 0 rgba(0,0,0,0.04)' }}>{cfg.label}</span>
   }
 
   const ps = {

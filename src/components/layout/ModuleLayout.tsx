@@ -92,13 +92,14 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
                 width: '32px',
                 height: '32px',
                 padding: 0,
-                background: '#3B6CE7',
+                background: 'linear-gradient(180deg, #4A7AF0 0%, #3B6CE7 50%, #2F5BC4 100%)',
                 border: '1px solid #2F5BC4',
                 borderRadius: '8px',
                 color: '#FFFFFF',
                 cursor: 'pointer',
                 fontFamily: tokens.fonts.body,
-                transition: 'all 0.15s ease'
+                transition: 'all 0.18s ease',
+                boxShadow: '0 2px 4px rgba(59,108,231,0.30), 0 6px 14px -3px rgba(59,108,231,0.25), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.18)'
               }}
               title="Volver"
             >
