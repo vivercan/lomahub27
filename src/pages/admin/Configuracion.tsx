@@ -223,13 +223,10 @@ export default function Configuracion() {
 
   const getCardStyle = (isH: boolean, isP: boolean, card: ConfigCard): React.CSSProperties => ({
     aspectRatio: '1 / 0.79',
-    borderRadius: '10px',
+    borderRadius: '16px',
     padding: '18px 14px 14px',
     background: isH ? card.gradientHover : card.gradientBase,
-    borderTop: '3px solid rgba(255,255,255,0.75)',
-    borderLeft: '3px solid rgba(255,255,255,0.45)',
-    borderBottom: '4px solid rgba(0,0,0,0.60)',
-    borderRight: '3px solid rgba(0,0,0,0.40)',
+    border: 'none',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
@@ -237,36 +234,38 @@ export default function Configuracion() {
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    transition: 'all 0.14s cubic-bezier(0.23,1,0.32,1)',
+    transition: 'all 0.22s cubic-bezier(0.23,1,0.32,1)',
     transform: isP
-      ? 'translateY(9px) scale(0.985)'
+      ? 'translateY(3px) scale(0.982)'
       : isH
-        ? 'translateY(-3px) scale(1.01)'
+        ? 'translateY(-10px) scale(1.012)'
         : 'translateY(0) scale(1)',
     boxShadow: isP
-      /* PRESSED — key fully sunk: almost no bottom wall, deep inset shadow */
-      ? `0 1px 0 rgba(0,0,0,0.60),
-         0 1px 2px rgba(0,0,0,0.40),
-         inset 0 4px 8px rgba(0,0,0,0.50),
-         inset 0 2px 3px rgba(0,0,0,0.60),
-         inset 0 -1px 0 rgba(255,255,255,0.10)`
+      ? `0 1px 2px rgba(0,0,0,0.50),
+         0 2px 6px rgba(0,0,0,0.40),
+         0 4px 12px -2px rgba(0,0,0,0.35),
+         inset 0 -1px 0 rgba(255,255,255,0.18),
+         inset 0 3px 6px rgba(0,0,0,0.55),
+         inset 0 8px 20px rgba(0,0,0,0.18)`
       : isH
-        /* HOVER — key slightly raised */
-        ? `0 11px 0 rgba(0,0,0,0.50),
-           0 13px 7px rgba(0,0,0,0.30),
-           0 20px 32px -4px rgba(0,0,0,0.20),
-           inset 0 2px 0 rgba(255,255,255,0.38),
-           inset 0 -3px 0 rgba(0,0,0,0.45),
-           inset 3px 0 0 rgba(255,255,255,0.18),
-           inset -3px 0 0 rgba(0,0,0,0.20)`
-        /* DEFAULT — mechanical key: THICK 9px bottom wall for max depth */
-        : `0 9px 0 rgba(0,0,0,0.50),
-           0 11px 6px rgba(0,0,0,0.35),
-           0 16px 28px -4px rgba(0,0,0,0.22),
+        ? `0 4px 8px rgba(0,0,0,0.80),
+           0 18px 36px -6px rgba(0,0,0,0.60),
+           0 50px 90px -16px rgba(0,0,0,0.65),
            inset 0 2px 0 rgba(255,255,255,0.35),
-           inset 0 -3px 0 rgba(0,0,0,0.42),
-           inset 3px 0 0 rgba(255,255,255,0.15),
-           inset -3px 0 0 rgba(0,0,0,0.18)`,
+           inset 2px 0 0 rgba(255,255,255,0.12),
+           inset 0 -2px 0 rgba(0,0,0,0.50),
+           inset -2px 0 0 rgba(0,0,0,0.25),
+           inset 0 0 30px rgba(0,0,0,0.20)`
+        : `0 3px 6px rgba(0,0,0,0.40),
+           0 10px 20px rgba(0,0,0,0.30),
+           0 24px 48px -6px rgba(0,0,0,0.35),
+           0 48px 80px -16px rgba(0,0,0,0.25),
+           inset 0 2px 0 rgba(255,255,255,0.30),
+           inset 2px 0 0 rgba(255,255,255,0.10),
+           inset 0 -2px 0 rgba(0,0,0,0.45),
+           inset -2px 0 0 rgba(0,0,0,0.20),
+           inset 0 24px 40px rgba(255,255,255,0.05),
+           inset 0 -20px 30px rgba(0,0,0,0.22)`,
     outline: 'none',
   })
 
@@ -306,13 +305,6 @@ export default function Configuracion() {
                   {card.geo}
                 </div>
 
-                {/* ═══ DEEP CONCAVE DISH — sunken center ═══ */}
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  borderRadius: 'inherit',
-                  boxShadow: 'inset 0 8px 16px rgba(0,0,0,0.30), inset 0 -5px 12px rgba(255,255,255,0.15), inset 6px 0 14px rgba(0,0,0,0.18), inset -6px 0 14px rgba(255,255,255,0.10)',
-                  pointerEvents: 'none', zIndex: 3,
-                }} />
 
                 {/* Shimmer sweep on hover */}
                 <div style={{
