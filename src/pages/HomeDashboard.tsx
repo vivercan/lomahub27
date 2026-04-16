@@ -183,15 +183,6 @@ export default function HomeDashboard() {
                   pointerEvents: 'none',
                 }} />
               ))}
-              <div style={{
-                position: 'absolute',
-                right: '26px', bottom: '24px',
-                width: '43px', height: '53px',
-                backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.10) 1.5px, transparent 1.6px)',
-                backgroundSize: '10px 10px',
-                backgroundPosition: '0 0',
-                pointerEvents: 'none',
-              }} />
             </>
           )
         // CARD 2 — Servicio al Cliente: 2 planos diagonales grandes, 26°
