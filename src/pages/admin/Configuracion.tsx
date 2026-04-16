@@ -2,192 +2,184 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { tokens } from '../../lib/tokens'
-import {
-  Users, BookOpen, SlidersHorizontal, Plug, ShieldCheck
-} from 'lucide-react'
 
-/* –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
-   CONFIGURACIÓN — Landing Page (estilo Dashboard V27f)
-   5 cards: Usuarios, Catálogos, Parámetros, Integraciones, Auditoría
-   ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+   CONFIGURACIÓN — Landing Page (estilo Dashboard V27k premium)
+   8 cards con efecto 3D, iconos grandes, y profundidad
+   ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 const DASH = {
-  bg: '#E8EBF0',
   fontFamily: tokens.fonts.heading,
   fontBody: tokens.fonts.body,
-  cardBg: 'linear-gradient(180deg, #FFFFFF 0%, #F6F7FA 100%)',
-  cardBorder: '1px solid #CDD5E1',
-  cardRadius: '14px',
-  cardPadding: '22px',
-  cardShadow: '0 2px 4px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.9)',
-  cardHoverShadow: '0 4px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.08), 0 16px 48px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.95)',
-  titleSize: '20px',
-  titleWeight: 800,
-  titleColor: '#0F172A',
-  subSize: '9px',
-  subColor: '#64748B',
-  dotSize: '6px',
 } as const
 
-const DOT: Record<string, string> = {
-  green: '#0D9668', blue: '#3B6CE7', yellow: '#B8860B',
-  purple: '#8B5CF6', red: '#C53030', gray: '#CBD5E1',
-}
-
-/* –– Geometric SVGs (matching dashboard style) –– */
+/* –– Geometric SVGs — 3x bigger, higher opacity –– */
 const geoStyle: React.CSSProperties = {
   position: 'absolute', top: 0, right: 0, width: '100%', height: '100%',
-  pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px',
+  pointerEvents: 'none', overflow: 'hidden', borderRadius: '18px',
   transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
 }
 
 const GeoUsuarios = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
-      <circle cx="100" cy="45" r="22" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <circle cx="130" cy="65" r="18" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
-      <circle cx="75" cy="70" r="16" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
-      <path d="M70,100 Q100,80 130,100" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5%', bottom: '-10%', width: '85%', height: '90%', opacity: 0.18 }}>
+      <circle cx="100" cy="45" r="28" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="1.5" />
+      <circle cx="140" cy="70" r="22" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
+      <circle cx="65" cy="75" r="20" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
+      <path d="M55,110 Q100,85 145,110" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
     </svg>
   </div>
 )
 
 const GeoCatalogos = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
-      <rect x="65" y="25" width="60" height="45" rx="4" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <rect x="80" y="40" width="60" height="45" rx="4" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
-      <line x1="75" y1="42" x2="115" y2="42" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
-      <line x1="75" y1="50" x2="110" y2="50" stroke="rgba(255,255,255,0.5)" strokeWidth="0.6" />
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5%', bottom: '-10%', width: '85%', height: '90%', opacity: 0.18 }}>
+      <rect x="50" y="15" width="75" height="55" rx="5" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="1.5" />
+      <rect x="70" y="35" width="75" height="55" rx="5" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
+      <line x1="60" y1="35" x2="115" y2="35" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
+      <line x1="60" y1="47" x2="110" y2="47" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
     </svg>
   </div>
 )
 
 const GeoParametros = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
-      <line x1="70" y1="40" x2="160" y2="40" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <circle cx="110" cy="40" r="6" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
-      <line x1="70" y1="65" x2="160" y2="65" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
-      <circle cx="130" cy="65" r="6" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
-      <line x1="70" y1="90" x2="160" y2="90" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
-      <circle cx="90" cy="90" r="6" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5%', bottom: '-10%', width: '85%', height: '90%', opacity: 0.18 }}>
+      <line x1="50" y1="35" x2="170" y2="35" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
+      <circle cx="110" cy="35" r="8" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2" />
+      <line x1="50" y1="65" x2="170" y2="65" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
+      <circle cx="140" cy="65" r="8" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2" />
+      <line x1="50" y1="95" x2="170" y2="95" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
+      <circle cx="80" cy="95" r="8" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" />
     </svg>
   </div>
 )
 
 const GeoIntegraciones = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
-      <circle cx="90" cy="55" r="18" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <circle cx="140" cy="55" r="18" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
-      <line x1="108" y1="55" x2="122" y2="55" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeDasharray="4 3" />
-      <circle cx="115" cy="85" r="12" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5%', bottom: '-10%', width: '85%', height: '90%', opacity: 0.18 }}>
+      <circle cx="80" cy="50" r="24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="1.5" />
+      <circle cx="145" cy="50" r="24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
+      <line x1="104" y1="50" x2="121" y2="50" stroke="rgba(255,255,255,0.6)" strokeWidth="2" strokeDasharray="5 4" />
+      <circle cx="112" cy="90" r="16" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
     </svg>
   </div>
 )
 
 const GeoAuditoria = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
-      <path d="M100,25 L130,45 L120,80 L80,80 L70,45 Z" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <path d="M90,55 L100,65 L120,45" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5%', bottom: '-10%', width: '85%', height: '90%', opacity: 0.18 }}>
+      <path d="M100,15 L140,40 L128,85 L72,85 L60,40 Z" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="1.5" />
+      <path d="M82,55 L97,70 L128,40" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2" strokeLinecap="round" />
     </svg>
   </div>
 )
 
 const GeoPlantillas = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
-      <rect x="60" y="30" width="50" height="70" rx="3" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <rect x="78" y="40" width="50" height="70" rx="3" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
-      <line x1="70" y1="48" x2="100" y2="48" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
-      <line x1="70" y1="56" x2="95" y2="56" stroke="rgba(255,255,255,0.5)" strokeWidth="0.6" />
-      <line x1="70" y1="64" x2="90" y2="64" stroke="rgba(255,255,255,0.5)" strokeWidth="0.6" />
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5%', bottom: '-10%', width: '85%', height: '90%', opacity: 0.18 }}>
+      <rect x="45" y="15" width="60" height="90" rx="4" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="1.5" />
+      <rect x="70" y="28" width="60" height="90" rx="4" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
+      <line x1="55" y1="38" x2="95" y2="38" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
+      <line x1="55" y1="50" x2="90" y2="50" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
+      <line x1="55" y1="62" x2="85" y2="62" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
     </svg>
   </div>
 )
 
 const GeoDocumentos = () => (
   <div style={geoStyle}>
-    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '0', bottom: '0', width: '52%', height: '60%', opacity: 0.20 }}>
-      <path d="M75,35 L75,95 Q75,105 85,105 L130,105 Q140,105 140,95 L140,50 L120,30 Q115,30 110,30 L85,30 Q75,30 75,35 Z" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
-      <line x1="85" y1="50" x2="130" y2="50" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
-      <line x1="85" y1="60" x2="130" y2="60" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
-      <line x1="85" y1="70" x2="125" y2="70" stroke="rgba(255,255,255,0.5)" strokeWidth="0.6" />
+    <svg viewBox="0 0 200 140" style={{ position: 'absolute', right: '-5%', bottom: '-10%', width: '85%', height: '90%', opacity: 0.18 }}>
+      <path d="M65,20 L65,105 Q65,115 75,115 L140,115 Q150,115 150,105 L150,45 L125,20 L75,20 Q65,20 65,25 Z" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="1.5" />
+      <line x1="80" y1="48" x2="135" y2="48" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
+      <line x1="80" y1="62" x2="135" y2="62" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
+      <line x1="80" y1="76" x2="125" y2="76" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
     </svg>
   </div>
 )
 
-/* –– Card definitions –– */
+/* –– Card definitions –– */
 interface ConfigCard {
   id: string
   label: string
   route: string
   subtitle: string
-  dot: string
   accent: string
+  gradient: string
   geo: React.ReactNode
 }
 
 const CARDS: ConfigCard[] = [
-  { id: 'usuarios', label: 'Usuarios', route: '/admin/configuracion/usuarios', subtitle: 'Roles y permisos', dot: 'blue', accent: '#2563EB', geo: <GeoUsuarios /> },
-  { id: 'catalogos', label: 'Catálogos', route: '/admin/configuracion/catalogos', subtitle: 'Tipos y estados', dot: 'green', accent: '#059669', geo: <GeoCatalogos /> },
-  { id: 'parametros', label: 'Parámetros', route: '/admin/configuracion/parametros', subtitle: 'Tarifas y costos', dot: 'yellow', accent: '#D97706', geo: <GeoParametros /> },
-  { id: 'integraciones', label: 'Integraciones', route: '/admin/configuracion/integraciones', subtitle: 'ANODOS, GPS, WhatsApp', dot: 'purple', accent: '#7C3AED', geo: <GeoIntegraciones /> },
-  { id: 'auditoria', label: 'Auditoría', route: '/admin/configuracion/auditoria', subtitle: 'Actividad del sistema', dot: 'red', accent: '#DC2626', geo: <GeoAuditoria /> },
-  { id: 'plantillas', label: 'Plantillas', route: '/admin/configuracion/plantillas', subtitle: 'Formatos y templates', dot: 'purple', accent: '#7C3AED', geo: <GeoPlantillas /> },
-  { id: 'documentos', label: 'Documentos', route: '/admin/configuracion/documentos', subtitle: 'Acta constitutiva y legales', dot: 'green', accent: '#0891B2', geo: <GeoDocumentos /> },
-  { id: 'cerebro', label: 'Cerebro Tarifario', route: '/pricing/cerebro-tarifario', subtitle: 'Tarifas y pricing', dot: 'yellow', accent: '#EA580C', geo: <GeoParametros /> },
+  { id: 'usuarios', label: 'Usuarios', route: '/admin/configuracion/usuarios', subtitle: 'Roles y permisos', accent: '#2563EB', gradient: 'linear-gradient(145deg, #3B82F6 0%, #2563EB 40%, #1D4ED8 100%)', geo: <GeoUsuarios /> },
+  { id: 'catalogos', label: 'Catálogos', route: '/admin/configuracion/catalogos', subtitle: 'Tipos y estados', accent: '#059669', gradient: 'linear-gradient(145deg, #10B981 0%, #059669 40%, #047857 100%)', geo: <GeoCatalogos /> },
+  { id: 'parametros', label: 'Parámetros', route: '/admin/configuracion/parametros', subtitle: 'Tarifas y costos', accent: '#D97706', gradient: 'linear-gradient(145deg, #F59E0B 0%, #D97706 40%, #B45309 100%)', geo: <GeoParametros /> },
+  { id: 'integraciones', label: 'Integraciones', route: '/admin/configuracion/integraciones', subtitle: 'ANODOS, GPS, WhatsApp', accent: '#7C3AED', gradient: 'linear-gradient(145deg, #8B5CF6 0%, #7C3AED 40%, #6D28D9 100%)', geo: <GeoIntegraciones /> },
+  { id: 'auditoria', label: 'Auditoría', route: '/admin/configuracion/auditoria', subtitle: 'Actividad del sistema', accent: '#DC2626', gradient: 'linear-gradient(145deg, #EF4444 0%, #DC2626 40%, #B91C1C 100%)', geo: <GeoAuditoria /> },
+  { id: 'plantillas', label: 'Plantillas', route: '/admin/configuracion/plantillas', subtitle: 'Formatos y templates', accent: '#7C3AED', gradient: 'linear-gradient(145deg, #A78BFA 0%, #7C3AED 40%, #6D28D9 100%)', geo: <GeoPlantillas /> },
+  { id: 'documentos', label: 'Documentos', route: '/admin/configuracion/documentos', subtitle: 'Acta constitutiva y legales', accent: '#0891B2', gradient: 'linear-gradient(145deg, #22D3EE 0%, #0891B2 40%, #0E7490 100%)', geo: <GeoDocumentos /> },
+  { id: 'cerebro', label: 'Cerebro Tarifario', route: '/pricing/cerebro-tarifario', subtitle: 'Tarifas y pricing', accent: '#EA580C', gradient: 'linear-gradient(145deg, #FB923C 0%, #EA580C 40%, #C2410C 100%)', geo: <GeoParametros /> },
 ]
 
-/* –– Component –– */
+/* –– Component –– */
 export default function Configuracion() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
+  const [pressed, setPressed] = useState<string | null>(null)
 
-  const getCardStyle = (isH: boolean, accent: string): React.CSSProperties => ({
-    aspectRatio: '1 / 0.75',
-    borderRadius: DASH.cardRadius,
-    padding: DASH.cardPadding,
-    background: accent,
+  const getCardStyle = (isH: boolean, isP: boolean, card: ConfigCard): React.CSSProperties => ({
+    aspectRatio: '1 / 0.82',
+    borderRadius: '18px',
+    padding: '24px',
+    background: card.gradient,
     border: 'none',
+    outline: isH
+      ? '1.5px solid rgba(255,140,0,0.55)'
+      : '1.5px solid rgba(0,0,0,0.08)',
+    outlineOffset: '-1px',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-    transform: isH ? 'translateY(-3px)' : 'translateY(0)',
-    boxShadow: isH ? '0 6px 12px rgba(0,0,0,0.15), 0 12px 32px rgba(0,0,0,0.1)' : '0 2px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06)',
+    transition: 'transform 0.18s cubic-bezier(0.4,0,0.2,1), box-shadow 0.18s cubic-bezier(0.4,0,0.2,1)',
+    transform: isP
+      ? 'translateY(2px) scale(0.985)'
+      : isH
+        ? 'translateY(-6px) scale(1.01)'
+        : 'translateY(0) scale(1)',
+    boxShadow: isP
+      ? `0 1px 2px rgba(0,0,0,0.40), inset 0 -1px 0 rgba(255,255,255,0.15), inset 0 3px 6px rgba(0,0,0,0.40)`
+      : isH
+        ? `0 0 16px rgba(255,122,0,0.15), 0 4px 8px rgba(0,0,0,0.40), 0 16px 32px -6px rgba(0,0,0,0.45), inset 0 2px 0 rgba(255,255,255,0.30), inset 0 -2px 0 rgba(0,0,0,0.35)`
+        : `0 2px 4px rgba(0,0,0,0.30), 0 8px 16px -4px rgba(0,0,0,0.25), 0 20px 40px -8px rgba(0,0,0,0.20), inset 0 2px 0 rgba(255,255,255,0.25), inset 0 -2px 0 rgba(0,0,0,0.30)`,
   })
 
   return (
     <ModuleLayout titulo="Configuración" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=${tokens.fonts.heading}:wght@400;500;600;700;800&display=swap');
-      `}</style>
-
       <div style={{
-        background: DASH.bg,
+        background: '#E8EBF0',
         minHeight: 'calc(100vh - 140px)',
-        padding: '32px 40px',
+        padding: '36px 44px',
       }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(7, 1fr)',
-          gap: '14px',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: '18px',
+          maxWidth: '1100px',
         }}>
           {CARDS.map(card => {
             const isH = hovered === card.id
+            const isP = pressed === card.id
             return (
               <div
                 key={card.id}
-                style={getCardStyle(isH, card.accent)}
+                style={getCardStyle(isH, isP, card)}
                 onMouseEnter={() => setHovered(card.id)}
-                onMouseLeave={() => setHovered(null)}
+                onMouseLeave={() => { setHovered(null); setPressed(null) }}
+                onMouseDown={() => setPressed(card.id)}
+                onMouseUp={() => setPressed(null)}
                 onClick={() => navigate(card.route)}
               >
                 {/* Geometric SVG background */}
@@ -198,36 +190,52 @@ export default function Configuracion() {
                   {card.geo}
                 </div>
 
-                {/* Status dot */}
+                {/* Specular highlight — top shine */}
                 <div style={{
-                  position: 'absolute', top: '14px', right: '14px',
-                  width: DASH.dotSize, height: DASH.dotSize, borderRadius: '50%',
-                  backgroundColor: DOT[card.dot] || DOT.gray,
+                  position: 'absolute', left: 0, top: 0, width: '100%', height: '50%',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 30%, rgba(255,255,255,0) 100%)',
+                  pointerEvents: 'none', borderRadius: 'inherit', zIndex: 1,
+                }} />
+
+                {/* Top light edge */}
+                <div style={{
+                  position: 'absolute', left: '2px', top: 0, right: '2px', height: '2px',
+                  background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.45) 15%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0.45) 85%, rgba(255,255,255,0) 100%)',
+                  pointerEvents: 'none', borderRadius: '18px 18px 0 0', zIndex: 5,
+                }} />
+
+                {/* Bottom darkening */}
+                <div style={{
+                  position: 'absolute', left: 0, bottom: 0, width: '100%', height: '40%',
+                  background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.18) 100%)',
+                  pointerEvents: 'none', borderRadius: 'inherit', zIndex: 1,
                 }} />
 
                 {/* Title */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
-                  fontSize: DASH.titleSize,
-                  fontWeight: DASH.titleWeight,
+                  fontSize: '22px',
+                  fontWeight: 800,
                   color: '#FFFFFF',
                   lineHeight: 1.2,
                   marginBottom: 'auto',
                   position: 'relative',
-                  zIndex: 1,
-                  textAlign: 'center',
+                  zIndex: 2,
+                  textShadow: '0 2px 4px rgba(0,0,0,0.25)',
                 }}>
                   {card.label}
                 </div>
 
                 {/* Subtitle */}
                 <div style={{
-                  fontFamily: DASH.fontFamily,
-                  fontSize: DASH.subSize,
-                  color: 'rgba(255,255,255,0.7)',
-                  marginTop: '6px',
+                  fontFamily: DASH.fontBody,
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: 'rgba(255,255,255,0.80)',
+                  marginTop: '8px',
                   position: 'relative',
-                  zIndex: 1,
+                  zIndex: 2,
+                  textShadow: '0 1px 2px rgba(0,0,0,0.20)',
                 }}>
                   {card.subtitle}
                 </div>
