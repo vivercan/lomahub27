@@ -128,7 +128,7 @@ export default function DashboardCS() {
   useEffect(() => { fetchKpis() }, [fetchKpis])
 
   return (
-    <ModuleLayout titulo="Servicio a Clientes" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
+    <ModuleLayout titulo="Servicio a Clientes">
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '20px' }}>
           {CARDS.map(card => {
