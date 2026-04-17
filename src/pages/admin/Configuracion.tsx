@@ -50,127 +50,126 @@ const geoSvg: React.CSSProperties = {
   position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.55,
   filter: 'drop-shadow(0 2px 0 rgba(255,255,255,0.35)) drop-shadow(0 -1px 0 rgba(0,0,0,0.40))',
 }
-const S = 'rgba(0,0,0,0.70)'
-const S2 = 'rgba(0,0,0,0.55)'
+const S = 'rgba(0,0,0,0.65)'
+const S2 = 'rgba(0,0,0,0.48)'
 
 /* Usuarios — people / team */
 const IcoUsuarios = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="100" cy="38" r="22" stroke={S} strokeWidth="2" />
-    <path d="M58,115 C58,85 76,72 100,72 C124,72 142,85 142,115" stroke={S} strokeWidth="2" />
-    <circle cx="155" cy="48" r="14" stroke={S2} strokeWidth="1.5" />
-    <path d="M135,110 C135,92 142,84 155,84 C168,84 175,92 175,110" stroke={S2} strokeWidth="1.5" />
-    <circle cx="48" cy="50" r="13" stroke={S2} strokeWidth="1.5" />
-    <path d="M28,108 C28,92 36,85 48,85 C60,85 68,92 68,108" stroke={S2} strokeWidth="1.5" />
+    <circle cx="100" cy="38" r="22" stroke={S} strokeWidth="1.5" />
+    <path d="M58,115 C58,85 76,72 100,72 C124,72 142,85 142,115" stroke={S} strokeWidth="1.5" />
+    <circle cx="155" cy="48" r="14" stroke={S2} strokeWidth="1.2" />
+    <path d="M135,110 C135,92 142,84 155,84 C168,84 175,92 175,110" stroke={S2} strokeWidth="1.2" />
+    <circle cx="48" cy="50" r="13" stroke={S2} strokeWidth="1.2" />
+    <path d="M28,108 C28,92 36,85 48,85 C60,85 68,92 68,108" stroke={S2} strokeWidth="1.2" />
   </svg></div>
 )
 
 /* Catálogos — grid / list */
 const IcoCatalogos = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round">
-    <rect x="38" y="15" width="52" height="46" rx="6" stroke={S} strokeWidth="2" />
-    <rect x="108" y="15" width="52" height="46" rx="6" stroke={S} strokeWidth="2" />
-    <rect x="38" y="78" width="52" height="46" rx="6" stroke={S} strokeWidth="2" />
-    <rect x="108" y="78" width="52" height="46" rx="6" stroke={S2} strokeWidth="1.5" />
-    <line x1="52" y1="32" x2="76" y2="32" stroke={S2} strokeWidth="1.5" />
-    <line x1="52" y1="42" x2="68" y2="42" stroke={S2} strokeWidth="1.2" />
-    <line x1="122" y1="32" x2="146" y2="32" stroke={S2} strokeWidth="1.5" />
-    <line x1="122" y1="42" x2="138" y2="42" stroke={S2} strokeWidth="1.2" />
+    <rect x="38" y="15" width="52" height="46" rx="6" stroke={S} strokeWidth="1.5" />
+    <rect x="108" y="15" width="52" height="46" rx="6" stroke={S} strokeWidth="1.5" />
+    <rect x="38" y="78" width="52" height="46" rx="6" stroke={S} strokeWidth="1.5" />
+    <rect x="108" y="78" width="52" height="46" rx="6" stroke={S2} strokeWidth="1.2" />
+    <line x1="52" y1="32" x2="76" y2="32" stroke={S2} strokeWidth="1.2" />
+    <line x1="52" y1="42" x2="68" y2="42" stroke={S2} strokeWidth="1" />
+    <line x1="122" y1="32" x2="146" y2="32" stroke={S2} strokeWidth="1.2" />
+    <line x1="122" y1="42" x2="138" y2="42" stroke={S2} strokeWidth="1" />
   </svg></div>
 )
 
-/* Parámetros — sliders / settings — medium-dark card */
+/* Parámetros — sliders / settings */
 const IcoParametros = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round">
-    <line x1="40" y1="35" x2="160" y2="35" stroke={S} strokeWidth="2.5" />
-    <circle cx="105" cy="35" r="12" stroke={S} strokeWidth="3" />
-    <line x1="40" y1="70" x2="160" y2="70" stroke={S} strokeWidth="2.5" />
-    <circle cx="70" cy="70" r="12" stroke={S} strokeWidth="3" />
-    <line x1="40" y1="105" x2="160" y2="105" stroke={S} strokeWidth="2.5" />
-    <circle cx="135" cy="105" r="12" stroke={S} strokeWidth="3" />
+    <line x1="40" y1="35" x2="160" y2="35" stroke={S2} strokeWidth="1.5" />
+    <circle cx="105" cy="35" r="10" stroke={S} strokeWidth="1.8" />
+    <line x1="40" y1="70" x2="160" y2="70" stroke={S2} strokeWidth="1.5" />
+    <circle cx="70" cy="70" r="10" stroke={S} strokeWidth="1.8" />
+    <line x1="40" y1="105" x2="160" y2="105" stroke={S2} strokeWidth="1.5" />
+    <circle cx="135" cy="105" r="10" stroke={S} strokeWidth="1.8" />
   </svg></div>
 )
 
 /* Integraciones — 2 puzzle pieces interlocking */
 const IcoIntegraciones = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    {/* Left piece */}
-    <path d="M25,20 L90,20 L90,45 Q105,45 105,60 Q105,75 90,75 L90,100 L25,100 L25,75 Q10,75 10,60 Q10,45 25,45 Z" stroke={S} strokeWidth="2.5" />
-    {/* Right piece — interlocked */}
-    <path d="M96,20 L170,20 L170,45 Q185,45 185,60 Q185,75 170,75 L170,100 L96,100 L96,75 Q111,75 111,60 Q111,45 96,45 Z" stroke={S} strokeWidth="2.5" />
-    {/* Connection dots */}
-    <circle cx="100" cy="60" r="3" fill={S} />
+    <path d="M25,20 L90,20 L90,45 Q105,45 105,60 Q105,75 90,75 L90,100 L25,100 L25,75 Q10,75 10,60 Q10,45 25,45 Z" stroke={S} strokeWidth="1.5" />
+    <path d="M96,20 L170,20 L170,45 Q185,45 185,60 Q185,75 170,75 L170,100 L96,100 L96,75 Q111,75 111,60 Q111,45 96,45 Z" stroke={S} strokeWidth="1.5" />
+    <circle cx="100" cy="60" r="2.5" fill={S2} />
   </svg></div>
 )
 
 /* Auditoría — shield / check — dark card, use light strokes */
-const L = 'rgba(255,255,255,0.65)'
-const L2 = 'rgba(255,255,255,0.50)'
-const geoSvgLight: React.CSSProperties = {
-  ...geoSvg, filter: 'drop-shadow(0 2px 0 rgba(255,255,255,0.18)) drop-shadow(0 -1px 0 rgba(0,0,0,0.70))',
+/* Dark card etched style — darker strokes + stronger highlight below */
+const geoSvgDark: React.CSSProperties = {
+  position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.50,
+  filter: 'drop-shadow(0 2px 0 rgba(255,255,255,0.22)) drop-shadow(0 -1px 0 rgba(0,0,0,0.55))',
 }
+const D = 'rgba(0,0,0,0.75)'
+const D2 = 'rgba(0,0,0,0.55)'
 const IcoAuditoria = () => (
-  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvgLight} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M100,12 L155,35 L155,72 Q155,105 100,128 Q45,105 45,72 L45,35 Z" stroke={L} strokeWidth="2.5" />
-    <path d="M78,65 L92,82 L125,50" stroke={L} strokeWidth="3.5" />
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvgDark} fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M100,12 L155,35 L155,72 Q155,105 100,128 Q45,105 45,72 L45,35 Z" stroke={D} strokeWidth="1.5" />
+    <path d="M78,65 L92,82 L125,50" stroke={D} strokeWidth="2" />
   </svg></div>
 )
 
 /* Plantillas — file / template */
 const IcoPlantillas = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M65,15 L65,125 Q65,130 70,130 L150,130 Q155,130 155,125 L155,42 L128,15 Z" stroke={S} strokeWidth="2.5" />
-    <path d="M128,15 L128,42 L155,42" stroke={S} strokeWidth="2.5" />
-    <line x1="82" y1="60" x2="138" y2="60" stroke={S} strokeWidth="2" />
-    <line x1="82" y1="76" x2="138" y2="76" stroke={S} strokeWidth="2" />
-    <line x1="82" y1="92" x2="120" y2="92" stroke={S2} strokeWidth="1.8" />
-    <line x1="82" y1="108" x2="110" y2="108" stroke={S2} strokeWidth="1.5" />
+    <path d="M65,15 L65,125 Q65,130 70,130 L150,130 Q155,130 155,125 L155,42 L128,15 Z" stroke={S} strokeWidth="1.5" />
+    <path d="M128,15 L128,42 L155,42" stroke={S} strokeWidth="1.5" />
+    <line x1="82" y1="60" x2="138" y2="60" stroke={S2} strokeWidth="1.2" />
+    <line x1="82" y1="76" x2="138" y2="76" stroke={S2} strokeWidth="1.2" />
+    <line x1="82" y1="92" x2="120" y2="92" stroke={S2} strokeWidth="1" />
+    <line x1="82" y1="108" x2="110" y2="108" stroke={S2} strokeWidth="1" />
   </svg></div>
 )
 
 /* Documentos — folder / briefcase */
 const IcoDocumentos = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M35,40 L35,115 Q35,122 42,122 L158,122 Q165,122 165,115 L165,40 Q165,33 158,33 L115,33 L105,18 L42,18 Q35,18 35,25 Z" stroke={S} strokeWidth="2.5" />
-    <line x1="35" y1="55" x2="165" y2="55" stroke={S} strokeWidth="2" />
-    <rect x="75" y="42" width="50" height="22" rx="4" stroke={S} strokeWidth="2" />
+    <path d="M35,40 L35,115 Q35,122 42,122 L158,122 Q165,122 165,115 L165,40 Q165,33 158,33 L115,33 L105,18 L42,18 Q35,18 35,25 Z" stroke={S} strokeWidth="1.5" />
+    <line x1="35" y1="55" x2="165" y2="55" stroke={S2} strokeWidth="1.2" />
+    <rect x="75" y="42" width="50" height="22" rx="4" stroke={S2} strokeWidth="1.2" />
   </svg></div>
 )
 
-/* Cerebro Tarifario — chip / AI brain — dark card, light strokes */
+/* Cerebro Tarifario — chip / AI brain — dark card, deep etch */
 const IcoCerebro = () => (
-  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvgLight} fill="none" strokeLinecap="round" strokeLinejoin="round">
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvgDark} fill="none" strokeLinecap="round" strokeLinejoin="round">
     {/* Central chip square */}
-    <rect x="62" y="32" width="76" height="76" rx="12" stroke={L} strokeWidth="2.5" />
+    <rect x="62" y="32" width="76" height="76" rx="12" stroke={D} strokeWidth="1.5" />
     {/* Inner circuit */}
-    <circle cx="100" cy="70" r="18" stroke={L} strokeWidth="2" />
-    <path d="M100,52 L100,58 M100,82 L100,88" stroke={L2} strokeWidth="2" />
-    <path d="M82,70 L88,70 M112,70 L118,70" stroke={L2} strokeWidth="2" />
+    <circle cx="100" cy="70" r="18" stroke={D} strokeWidth="1.3" />
+    <path d="M100,52 L100,58 M100,82 L100,88" stroke={D2} strokeWidth="1.2" />
+    <path d="M82,70 L88,70 M112,70 L118,70" stroke={D2} strokeWidth="1.2" />
     {/* AI dot center */}
-    <circle cx="100" cy="70" r="4.5" fill={L2} />
+    <circle cx="100" cy="70" r="3.5" fill={D2} />
     {/* Traces — left */}
-    <line x1="62" y1="50" x2="42" y2="50" stroke={L2} strokeWidth="2" />
-    <line x1="62" y1="70" x2="38" y2="70" stroke={L2} strokeWidth="2" />
-    <line x1="62" y1="90" x2="42" y2="90" stroke={L2} strokeWidth="2" />
+    <line x1="62" y1="50" x2="42" y2="50" stroke={D2} strokeWidth="1.2" />
+    <line x1="62" y1="70" x2="38" y2="70" stroke={D2} strokeWidth="1.2" />
+    <line x1="62" y1="90" x2="42" y2="90" stroke={D2} strokeWidth="1.2" />
     {/* Traces — right */}
-    <line x1="138" y1="50" x2="158" y2="50" stroke={L2} strokeWidth="2" />
-    <line x1="138" y1="70" x2="162" y2="70" stroke={L2} strokeWidth="2" />
-    <line x1="138" y1="90" x2="158" y2="90" stroke={L2} strokeWidth="2" />
+    <line x1="138" y1="50" x2="158" y2="50" stroke={D2} strokeWidth="1.2" />
+    <line x1="138" y1="70" x2="162" y2="70" stroke={D2} strokeWidth="1.2" />
+    <line x1="138" y1="90" x2="158" y2="90" stroke={D2} strokeWidth="1.2" />
     {/* Traces — top */}
-    <line x1="82" y1="32" x2="82" y2="16" stroke={L2} strokeWidth="2" />
-    <line x1="100" y1="32" x2="100" y2="12" stroke={L2} strokeWidth="2" />
-    <line x1="118" y1="32" x2="118" y2="16" stroke={L2} strokeWidth="2" />
+    <line x1="82" y1="32" x2="82" y2="16" stroke={D2} strokeWidth="1.2" />
+    <line x1="100" y1="32" x2="100" y2="12" stroke={D2} strokeWidth="1.2" />
+    <line x1="118" y1="32" x2="118" y2="16" stroke={D2} strokeWidth="1.2" />
     {/* Traces — bottom */}
-    <line x1="82" y1="108" x2="82" y2="124" stroke={L2} strokeWidth="2" />
-    <line x1="100" y1="108" x2="100" y2="128" stroke={L2} strokeWidth="2" />
-    <line x1="118" y1="108" x2="118" y2="124" stroke={L2} strokeWidth="2" />
+    <line x1="82" y1="108" x2="82" y2="124" stroke={D2} strokeWidth="1.2" />
+    <line x1="100" y1="108" x2="100" y2="128" stroke={D2} strokeWidth="1.2" />
+    <line x1="118" y1="108" x2="118" y2="124" stroke={D2} strokeWidth="1.2" />
     {/* Trace endpoints */}
-    <circle cx="42" cy="50" r="2.5" fill={L2} />
-    <circle cx="38" cy="70" r="2.5" fill={L2} />
-    <circle cx="42" cy="90" r="2.5" fill={L2} />
-    <circle cx="158" cy="50" r="2.5" fill={L2} />
-    <circle cx="162" cy="70" r="2.5" fill={L2} />
-    <circle cx="158" cy="90" r="2.5" fill={L2} />
+    <circle cx="42" cy="50" r="2" fill={D2} />
+    <circle cx="38" cy="70" r="2" fill={D2} />
+    <circle cx="42" cy="90" r="2" fill={D2} />
+    <circle cx="158" cy="50" r="2" fill={D2} />
+    <circle cx="162" cy="70" r="2" fill={D2} />
+    <circle cx="158" cy="90" r="2" fill={D2} />
   </svg></div>
 )
 
