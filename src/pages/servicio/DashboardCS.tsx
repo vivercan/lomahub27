@@ -60,8 +60,8 @@ const IconTickets     = () => <IcoImg set="bi" name="ticket-perforated" />
 const IconClientes    = () => <IcoImg set="gridicons" name="multiple-users" />
 const IconImpo        = () => <IcoImg set="ion" name="cloud-upload" />
 const IconExpo        = () => <IcoImg set="ion" name="cloud-download" />
-const IconDespachoIA  = () => <IcoImg set="ion" name="hardware-chip" />
-const IconMetricas    = () => <IcoImg set="ion" name="stats-chart" />
+const IconDespachoIA  = () => <IcoImg set="streamline" name="brain" />
+const IconMetricas    = () => <IcoImg set="bi" name="graph-up" />
 const IconActividades = () => <IcoImg set="bi" name="list-check" />
 
 /* —— Card Config —— */
