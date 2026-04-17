@@ -56,13 +56,13 @@ const IcoImg = ({ set, name }: { set: string; name: string }) => {
   )
 }
 
-const IconTickets     = () => <IcoImg set="solar" name="headphones-round-sound-broken" />
-const IconClientes    = () => <IcoImg set="solar" name="users-group-rounded-broken" />
-const IconImpo        = () => <IcoImg set="solar" name="upload-minimalistic-broken" />
-const IconExpo        = () => <IcoImg set="solar" name="download-minimalistic-broken" />
-const IconDespachoIA  = () => <IcoImg set="solar" name="cpu-bolt-broken" />
-const IconMetricas    = () => <IcoImg set="solar" name="graph-up-broken" />
-const IconActividades = () => <IcoImg set="solar" name="checklist-minimalistic-broken" />
+const IconTickets     = () => <IcoImg set="bi" name="ticket-perforated" />
+const IconClientes    = () => <IcoImg set="gridicons" name="multiple-users" />
+const IconImpo        = () => <IcoImg set="ion" name="cloud-upload" />
+const IconExpo        = () => <IcoImg set="ion" name="cloud-download" />
+const IconDespachoIA  = () => <IcoImg set="ion" name="hardware-chip" />
+const IconMetricas    = () => <IcoImg set="ion" name="stats-chart" />
+const IconActividades = () => <IcoImg set="bi" name="list-check" />
 
 /* —— Card Config —— */
 interface LandingCard {
