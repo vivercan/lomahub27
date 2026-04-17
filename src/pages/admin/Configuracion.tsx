@@ -115,15 +115,21 @@ const IcoAuditoria = () => (
   </svg></div>
 )
 
-/* Plantillas — file / template */
+/* Plantillas — file / template — lighter card needs stronger strokes */
+const P = 'rgba(0,0,0,0.78)'
+const P2 = 'rgba(0,0,0,0.58)'
+const geoSvgPlantillas: React.CSSProperties = {
+  position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.62,
+  filter: 'drop-shadow(0 2px 0 rgba(255,255,255,0.40)) drop-shadow(0 -1px 0 rgba(0,0,0,0.50))',
+}
 const IcoPlantillas = () => (
-  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M65,15 L65,125 Q65,130 70,130 L150,130 Q155,130 155,125 L155,42 L128,15 Z" stroke={S} strokeWidth="1.5" />
-    <path d="M128,15 L128,42 L155,42" stroke={S} strokeWidth="1.5" />
-    <line x1="82" y1="60" x2="138" y2="60" stroke={S2} strokeWidth="1.2" />
-    <line x1="82" y1="76" x2="138" y2="76" stroke={S2} strokeWidth="1.2" />
-    <line x1="82" y1="92" x2="120" y2="92" stroke={S2} strokeWidth="1" />
-    <line x1="82" y1="108" x2="110" y2="108" stroke={S2} strokeWidth="1" />
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvgPlantillas} fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M65,15 L65,125 Q65,130 70,130 L150,130 Q155,130 155,125 L155,42 L128,15 Z" stroke={P} strokeWidth="1.5" />
+    <path d="M128,15 L128,42 L155,42" stroke={P} strokeWidth="1.5" />
+    <line x1="82" y1="60" x2="138" y2="60" stroke={P2} strokeWidth="1.2" />
+    <line x1="82" y1="76" x2="138" y2="76" stroke={P2} strokeWidth="1.2" />
+    <line x1="82" y1="92" x2="120" y2="92" stroke={P2} strokeWidth="1" />
+    <line x1="82" y1="108" x2="110" y2="108" stroke={P2} strokeWidth="1" />
   </svg></div>
 )
 
@@ -385,7 +391,7 @@ export default function Configuracion() {
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -2px 1px rgba(0,0,0,0.85), 0 2px 0 rgba(255,255,255,0.30), 0 0 6px rgba(0,0,0,0.25)',
+                  textShadow: '0 -3px 2px rgba(0,0,0,0.95), 0 2px 0 rgba(255,255,255,0.38), 0 0 8px rgba(0,0,0,0.35)',
                 }}>
                   {card.label}
                 </div>
@@ -399,7 +405,7 @@ export default function Configuracion() {
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -2px 1px rgba(0,0,0,0.75), 0 2px 0 rgba(255,255,255,0.25), 0 0 5px rgba(0,0,0,0.20)',
+                  textShadow: '0 -3px 2px rgba(0,0,0,0.90), 0 2px 0 rgba(255,255,255,0.32), 0 0 7px rgba(0,0,0,0.28)',
                 }}>
                   {card.subtitle}
                 </div>
@@ -474,7 +480,7 @@ export default function Configuracion() {
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -2px 1px rgba(0,0,0,0.85), 0 2px 0 rgba(255,255,255,0.30), 0 0 6px rgba(0,0,0,0.25)',
+                  textShadow: '0 -3px 2px rgba(0,0,0,0.95), 0 2px 0 rgba(255,255,255,0.38), 0 0 8px rgba(0,0,0,0.35)',
                 }}>
                   {card.label}
                 </div>
@@ -488,7 +494,7 @@ export default function Configuracion() {
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -2px 1px rgba(0,0,0,0.75), 0 2px 0 rgba(255,255,255,0.25), 0 0 5px rgba(0,0,0,0.20)',
+                  textShadow: '0 -3px 2px rgba(0,0,0,0.90), 0 2px 0 rgba(255,255,255,0.32), 0 0 7px rgba(0,0,0,0.28)',
                 }}>
                   {card.subtitle}
                 </div>
