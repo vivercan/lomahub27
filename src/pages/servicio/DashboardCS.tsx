@@ -35,23 +35,21 @@ function adjustColor(hex: string, amount: number): string {
 
 const ICO_OPACITY = 0.22
 
-/* Iconify API — Phosphor Thin icons (ultra-delicate 1px strokes) */
-const icoUrl = (name: string) =>
-  `https://api.iconify.design/ph:${name}-thin.svg?color=%23ffffff`
-
-const IcoImg = ({ name }: { name: string }) => (
+/* Iconify API — Solar Linear icons (premium, modern, distinctive) */
+const IcoImg = ({ set, name }: { set: string; name: string }) => (
   <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    <img src={icoUrl(name)} alt="" style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }} />
+    <img src={`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`} alt=""
+      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }} />
   </div>
 )
 
-const IconTickets    = () => <IcoImg name="headset" />
-const IconClientes   = () => <IcoImg name="users-three" />
-const IconImpo       = () => <IcoImg name="arrow-circle-up" />
-const IconExpo       = () => <IcoImg name="arrow-circle-down" />
-const IconDespachoIA = () => <IcoImg name="cpu" />
-const IconMetricas   = () => <IcoImg name="chart-line-up" />
-const IconActividades = () => <IcoImg name="clipboard-text" />
+const IconTickets     = () => <IcoImg set="solar" name="headphones-round-sound-linear" />
+const IconClientes    = () => <IcoImg set="solar" name="users-group-rounded-linear" />
+const IconImpo        = () => <IcoImg set="solar" name="upload-minimalistic-linear" />
+const IconExpo        = () => <IcoImg set="solar" name="download-minimalistic-linear" />
+const IconDespachoIA  = () => <IcoImg set="solar" name="cpu-bolt-linear" />
+const IconMetricas    = () => <IcoImg set="solar" name="graph-up-linear" />
+const IconActividades = () => <IcoImg set="solar" name="checklist-minimalistic-linear" />
 
 /* —— Card Config —— */
 interface LandingCard {
