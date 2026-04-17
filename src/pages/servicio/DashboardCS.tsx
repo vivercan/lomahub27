@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
-// Loader2 removed — cards render instantly, KPIs load in background
 import { tokens } from '../../lib/tokens'
 
 /* ———————————————————————————————————————————————————————————————
@@ -25,25 +24,105 @@ const D = {
   dotSize: '6px',
 } as const
 
-const ICO_OPACITY = 0.20
+/* Darken/lighten a hex color by amount */
+function adjustColor(hex: string, amount: number): string {
+  const h = hex.replace('#', '')
+  const r = Math.max(0, Math.min(255, parseInt(h.substring(0, 2), 16) + amount))
+  const g = Math.max(0, Math.min(255, parseInt(h.substring(2, 4), 16) + amount))
+  const b = Math.max(0, Math.min(255, parseInt(h.substring(4, 6), 16) + amount))
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
+}
 
-const ico = (path: string, style: React.CSSProperties) => (
-  <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
-)
+const ICO_OPACITY = 0.18
 
-const compose = (main: string) => () => (
+/* Custom thin-line SVG icon components — strokeWidth 1.2 for delicate feel */
+const IconTickets = () => (
   <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    {ico(main, { position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' })}
+    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
+      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
+      <path d="M2 9V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3" />
+      <path d="M2 15v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3" />
+      <path d="M2 9a3 3 0 0 0 3 3 3 3 0 0 0-3 3" />
+      <path d="M22 9a3 3 0 0 1-3 3 3 3 0 0 1 3 3" />
+      <line x1="9" y1="4" x2="9" y2="8" strokeDasharray="2 2" />
+      <line x1="9" y1="16" x2="9" y2="20" strokeDasharray="2 2" />
+    </svg>
   </div>
 )
 
-const IconTickets = compose('hugeicons:ticket-01')
-const IconClientes = compose('hugeicons:user-multiple')
-const IconImpo = compose('hugeicons:package-moving')
-const IconExpo = compose('hugeicons:package-delivered')
-const IconDespachoIA = compose('hugeicons:satellite-02')
-const IconMetricas = compose('hugeicons:chart-bar-line')
-const IconActividades = compose('hugeicons:task-01')
+const IconClientes = () => (
+  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
+      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
+      <circle cx="9" cy="7" r="3.5" />
+      <path d="M2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2" />
+      <circle cx="18" cy="8" r="2.5" />
+      <path d="M18 14c2.5 0 4 1.5 4 4v2" />
+    </svg>
+  </div>
+)
+
+/* Importación = flecha arriba + caja */
+const IconImpo = () => (
+  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
+      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
+      <path d="M3 14v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5" />
+      <polyline points="8,8 12,3 16,8" />
+      <line x1="12" y1="3" x2="12" y2="16" />
+    </svg>
+  </div>
+)
+
+/* Exportación = flecha abajo + caja */
+const IconExpo = () => (
+  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
+      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
+      <path d="M3 14v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5" />
+      <polyline points="8,10 12,16 16,10" />
+      <line x1="12" y1="2" x2="12" y2="16" />
+    </svg>
+  </div>
+)
+
+const IconDespachoIA = () => (
+  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
+      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 1v4" /><path d="M12 19v4" />
+      <path d="M4.22 4.22l2.83 2.83" /><path d="M16.95 16.95l2.83 2.83" />
+      <path d="M1 12h4" /><path d="M19 12h4" />
+      <path d="M4.22 19.78l2.83-2.83" /><path d="M16.95 7.05l2.83-2.83" />
+    </svg>
+  </div>
+)
+
+const IconMetricas = () => (
+  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
+      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
+      <line x1="4" y1="20" x2="4" y2="12" />
+      <line x1="8" y1="20" x2="8" y2="8" />
+      <line x1="12" y1="20" x2="12" y2="14" />
+      <line x1="16" y1="20" x2="16" y2="6" />
+      <line x1="20" y1="20" x2="20" y2="10" />
+      <polyline points="2,10 8,4 14,9 22,3" />
+    </svg>
+  </div>
+)
+
+const IconActividades = () => (
+  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
+      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <path d="M8 12l2.5 2.5L16 9" />
+      <line x1="3" y1="8" x2="21" y2="8" />
+    </svg>
+  </div>
+)
 
 /* —— Card Config —— */
 interface LandingCard {
@@ -144,7 +223,7 @@ export default function DashboardCS() {
     aspectRatio: '1 / 0.75',
     borderRadius: D.cardRadius,
     padding: '22px',
-    background: accent,
+    background: `linear-gradient(145deg, ${accent} 0%, ${accent} 40%, ${adjustColor(accent, -25)} 100%)`,
     border: 'none',
     cursor: 'pointer',
     position: 'relative',
@@ -153,8 +232,10 @@ export default function DashboardCS() {
     flexDirection: 'column',
     justifyContent: 'space-between',
     transition: 'transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s cubic-bezier(0.23,1,0.32,1)',
-    transform: isH ? 'translateY(-3px)' : 'none',
-    boxShadow: isH ? '0 6px 12px rgba(0,0,0,0.15), 0 12px 32px rgba(0,0,0,0.1)' : '0 2px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06)',
+    transform: isH ? 'translateY(-4px)' : 'none',
+    boxShadow: isH
+      ? `0 8px 16px rgba(0,0,0,0.20), 0 16px 40px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.20), inset 0 -1px 0 rgba(0,0,0,0.15)`
+      : `0 3px 6px rgba(0,0,0,0.12), 0 6px 20px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.12)`,
   })
 
   return (
@@ -171,6 +252,8 @@ export default function DashboardCS() {
                 onMouseLeave={() => setHovered(null)}
                 onClick={() => navigate(card.route)}
               >
+                {/* Top-edge light catch for 3D depth */}
+                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: '14px', background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 40%, rgba(0,0,0,0.08) 100%)' }} />
                 <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px', transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)', transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none' }}>
                   {card.icon}
                 </div>
