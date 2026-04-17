@@ -131,17 +131,17 @@ export default function DashboardCS() {
                   aspectRatio: '1 / 0.9',
                   borderRadius: '16px',
                   padding: '20px',
-                  /* Navy gradient background */
-                  background: isH
-                    ? 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)'
-                    : 'linear-gradient(180deg, #1a2332 0%, #0d1117 100%)',
-                  /* Keycap border — light top, dark bottom */
+                  /* Solid navy — matches reference */
+                  background: '#161d2f',
+                  /* Keycap bevel border — light top/left, dark bottom/right */
                   borderTop: isH
-                    ? `1px solid rgba(${AMBER},0.45)`
-                    : '1px solid rgba(255,255,255,0.12)',
-                  borderLeft: '1px solid rgba(255,255,255,0.06)',
-                  borderRight: '1px solid rgba(0,0,0,0.20)',
-                  borderBottom: '1px solid rgba(0,0,0,0.30)',
+                    ? `1.5px solid rgba(${AMBER},0.45)`
+                    : '1.5px solid rgba(255,255,255,0.10)',
+                  borderLeft: isH
+                    ? `1.5px solid rgba(${AMBER},0.25)`
+                    : '1.5px solid rgba(255,255,255,0.06)',
+                  borderRight: '1.5px solid rgba(0,0,0,0.40)',
+                  borderBottom: '1.5px solid rgba(0,0,0,0.50)',
                   cursor: 'pointer',
                   position: 'relative',
                   overflow: 'hidden',
@@ -154,13 +154,13 @@ export default function DashboardCS() {
                   /* Keycap: raised by default, sinks on press */
                   transform: isP ? 'translateY(3px)' : isH ? 'translateY(-2px)' : 'none',
                   boxShadow: isP
-                    /* Pressed — flat, no elevation */
-                    ? `0 1px 2px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.05)`
+                    /* Pressed — flat, sinks in */
+                    ? `0 1px 0 #080b12, 0 1px 3px rgba(0,0,0,0.30), inset 0 2px 4px rgba(0,0,0,0.25)`
                     : isH
                     /* Hovered — lifted with orange glow */
-                    ? `0 4px 0 #0a0e17, 0 6px 16px rgba(0,0,0,0.45), 0 0 20px rgba(${AMBER},0.12), 0 0 40px rgba(${AMBER},0.06), inset 0 1px 0 rgba(255,255,255,0.10)`
-                    /* Default — keycap base shadow */
-                    : `0 4px 0 #080b12, 0 6px 14px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.08)`,
+                    ? `0 5px 0 #080b12, 0 8px 20px rgba(0,0,0,0.50), 0 0 24px rgba(${AMBER},0.14), 0 0 48px rgba(${AMBER},0.07), inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.20)`
+                    /* Default — keycap base shadow (thick + spread) */
+                    : `0 4px 0 #080b12, 0 6px 12px rgba(0,0,0,0.40), 0 10px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.20)`,
                 }}
                 onMouseEnter={() => setHovered(card.id)}
                 onMouseLeave={() => { setHovered(null); setPressed(null) }}
@@ -177,10 +177,10 @@ export default function DashboardCS() {
                   filter: isH ? `drop-shadow(0 0 6px rgba(${AMBER},0.50))` : 'none',
                 }} />
 
-                {/* Subtle glass reflection */}
+                {/* Subtle top reflection */}
                 <div style={{
                   position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: '16px',
-                  background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 40%)',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 25%, transparent 85%, rgba(0,0,0,0.10) 100%)',
                 }} />
 
                 {/* Label — at TOP */}
