@@ -97,7 +97,6 @@ export default function DashboardCS() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
   const [pressed, setPressed] = useState<string | null>(null)
-  const [backHover, setBackHover] = useState(false)
   const [kpis, setKpis] = useState<Record<string, number>>({ tickets: 0, clientes: 0, impo: 0, expo: 0 })
   const [loading, setLoading] = useState(true)
 
@@ -120,37 +119,7 @@ export default function DashboardCS() {
 
   return (
     <ModuleLayout titulo="Servicio a Clientes" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
-      <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px', position: 'relative' }}>
-
-        {/* ── Back button — top right ── */}
-        <div
-          style={{
-            position: 'absolute', top: '32px', right: '40px', zIndex: 10,
-            width: '44px', height: '44px', borderRadius: '10px',
-            backgroundImage: backHover
-              ? 'linear-gradient(155deg, rgba(28,48,82,1) 0%, rgba(20,35,62,1) 100%), linear-gradient(135deg, rgba(240,160,80,0.65) 0%, rgba(70,110,170,0.4) 50%, rgba(240,160,80,0.65) 100%)'
-              : 'linear-gradient(155deg, rgba(18,32,58,0.96) 0%, rgba(6,12,24,1) 100%), linear-gradient(135deg, rgba(180,100,50,0.28) 0%, rgba(60,90,140,0.25) 50%, rgba(180,100,50,0.28) 100%)',
-            backgroundOrigin: 'border-box',
-            backgroundClip: 'padding-box, border-box',
-            border: '2px solid transparent',
-            boxShadow: backHover
-              ? '0 4px 8px rgba(0,0,0,0.4), 0 0 20px rgba(240,160,80,0.12)'
-              : '0 2px 4px rgba(0,0,0,0.3), 0 6px 16px rgba(0,0,0,0.5)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer',
-            transform: backHover ? 'translateY(-3px)' : 'none',
-            transition: 'all 0.3s ease',
-          }}
-          onMouseEnter={() => setBackHover(true)}
-          onMouseLeave={() => setBackHover(false)}
-          onClick={() => navigate('/dashboard')}
-          title="Regresar al Dashboard"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={backHover ? '#f0a050' : '#e0e8f0'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'stroke 0.3s ease' }}>
-            <path d="M19 12H5" /><path d="M12 19l-7-7 7-7" />
-          </svg>
-        </div>
-
+      <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '20px' }}>
           {CARDS.map(card => {
             const isH = hovered === card.id
