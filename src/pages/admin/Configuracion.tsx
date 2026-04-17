@@ -379,33 +379,33 @@ export default function Configuracion() {
                   animation: 'cfgGrainDrift 12s linear infinite',
                 }} />
 
-                {/* Title */}
+                {/* Title — true engraved: dark text + light edge below */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
                   fontSize: '22px',
                   fontWeight: 800,
-                  color: 'rgba(255,255,255,0.75)',
+                  color: 'rgba(0,0,0,0.45)',
                   lineHeight: 1.15,
                   letterSpacing: '-0.02em',
                   whiteSpace: 'nowrap',
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -3px 2px rgba(0,0,0,0.95), 0 2px 0 rgba(255,255,255,0.38), 0 0 8px rgba(0,0,0,0.35)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.60), 0 2px 0 rgba(255,255,255,0.45), 0 0 4px rgba(0,0,0,0.15)',
                 }}>
                   {card.label}
                 </div>
 
-                {/* Subtitle */}
+                {/* Subtitle — true engraved */}
                 <div style={{
                   fontFamily: DASH.fontBody,
                   fontSize: '15px',
                   fontWeight: 700,
-                  color: 'rgba(255,255,255,0.68)',
+                  color: 'rgba(0,0,0,0.40)',
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -3px 2px rgba(0,0,0,0.90), 0 2px 0 rgba(255,255,255,0.32), 0 0 7px rgba(0,0,0,0.28)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.55), 0 2px 0 rgba(255,255,255,0.40), 0 0 3px rgba(0,0,0,0.12)',
                 }}>
                   {card.subtitle}
                 </div>
@@ -468,33 +468,33 @@ export default function Configuracion() {
                   animation: 'cfgGrainDrift 12s linear infinite',
                 }} />
 
-                {/* Title */}
+                {/* Title — true engraved: dark text + light edge below */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
                   fontSize: '22px',
                   fontWeight: 800,
-                  color: 'rgba(255,255,255,0.75)',
+                  color: 'rgba(0,0,0,0.45)',
                   lineHeight: 1.15,
                   letterSpacing: '-0.02em',
                   whiteSpace: 'nowrap',
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -3px 2px rgba(0,0,0,0.95), 0 2px 0 rgba(255,255,255,0.38), 0 0 8px rgba(0,0,0,0.35)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.60), 0 2px 0 rgba(255,255,255,0.45), 0 0 4px rgba(0,0,0,0.15)',
                 }}>
                   {card.label}
                 </div>
 
-                {/* Subtitle */}
+                {/* Subtitle — true engraved */}
                 <div style={{
                   fontFamily: DASH.fontBody,
                   fontSize: '15px',
                   fontWeight: 700,
-                  color: 'rgba(255,255,255,0.68)',
+                  color: 'rgba(0,0,0,0.40)',
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -3px 2px rgba(0,0,0,0.90), 0 2px 0 rgba(255,255,255,0.32), 0 0 7px rgba(0,0,0,0.28)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.55), 0 2px 0 rgba(255,255,255,0.40), 0 0 3px rgba(0,0,0,0.12)',
                 }}>
                   {card.subtitle}
                 </div>
