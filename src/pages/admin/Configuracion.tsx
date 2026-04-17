@@ -101,13 +101,13 @@ const IcoIntegraciones = () => (
 )
 
 /* Auditoría — shield / check — dark card, use light strokes */
-/* Dark card etched style — darker strokes + stronger highlight below */
+/* Dark card etched style — light edge-catch on dark surface */
 const geoSvgDark: React.CSSProperties = {
-  position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.50,
-  filter: 'drop-shadow(0 2px 0 rgba(255,255,255,0.22)) drop-shadow(0 -1px 0 rgba(0,0,0,0.55))',
+  position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.70,
+  filter: 'drop-shadow(0 2px 0 rgba(255,255,255,0.30)) drop-shadow(0 -1px 0 rgba(0,0,0,0.70))',
 }
-const D = 'rgba(0,0,0,0.75)'
-const D2 = 'rgba(0,0,0,0.55)'
+const D = 'rgba(180,180,180,0.32)'
+const D2 = 'rgba(160,160,160,0.25)'
 const IcoAuditoria = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvgDark} fill="none" strokeLinecap="round" strokeLinejoin="round">
     <path d="M100,12 L155,35 L155,72 Q155,105 100,128 Q45,105 45,72 L45,35 Z" stroke={D} strokeWidth="1.5" />
