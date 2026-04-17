@@ -35,7 +35,9 @@ function adjustColor(hex: string, amount: number): string {
 
 const ICO_OPACITY = 0.22
 
-/* Iconify API — Solar Linear icons (premium, modern, distinctive) */
+/* Iconify API — Solar Linear icons (premium, modern, distinctive)
+   stroke-width reduced 30% via CSS transform scaleX/Y trick won't work on raster,
+   so we use Solar's "broken" variant which has thinner lines */
 const IcoImg = ({ set, name }: { set: string; name: string }) => (
   <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
     <img src={`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`} alt=""
@@ -43,13 +45,13 @@ const IcoImg = ({ set, name }: { set: string; name: string }) => (
   </div>
 )
 
-const IconTickets     = () => <IcoImg set="solar" name="headphones-round-sound-linear" />
-const IconClientes    = () => <IcoImg set="solar" name="users-group-rounded-linear" />
-const IconImpo        = () => <IcoImg set="solar" name="upload-minimalistic-linear" />
-const IconExpo        = () => <IcoImg set="solar" name="download-minimalistic-linear" />
-const IconDespachoIA  = () => <IcoImg set="solar" name="cpu-bolt-linear" />
-const IconMetricas    = () => <IcoImg set="solar" name="graph-up-linear" />
-const IconActividades = () => <IcoImg set="solar" name="checklist-minimalistic-linear" />
+const IconTickets     = () => <IcoImg set="solar" name="headphones-round-sound-broken" />
+const IconClientes    = () => <IcoImg set="solar" name="users-group-rounded-broken" />
+const IconImpo        = () => <IcoImg set="solar" name="upload-minimalistic-broken" />
+const IconExpo        = () => <IcoImg set="solar" name="download-minimalistic-broken" />
+const IconDespachoIA  = () => <IcoImg set="solar" name="cpu-bolt-broken" />
+const IconMetricas    = () => <IcoImg set="solar" name="graph-up-broken" />
+const IconActividades = () => <IcoImg set="solar" name="checklist-minimalistic-broken" />
 
 /* —— Card Config —— */
 interface LandingCard {
