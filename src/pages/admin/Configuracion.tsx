@@ -244,7 +244,7 @@ const CARDS: ConfigCard[] = [
     subtitle: 'ANODOS · GPS · WA', accent: '#D1D5DB',
     gradientBase: 'linear-gradient(155deg, #9CA3AF 0%, #6B7280 35%, #4B5563 70%, #374151 100%)',
     gradientHover: 'linear-gradient(155deg, #D1D5DB 0%, #9CA3AF 35%, #6B7280 70%, #4B5563 100%)',
-    glowColor: 'rgba(209,213,219,0.3)', geo: <IcoIntegraciones />, tone: 'light' as CardTone,
+    glowColor: 'rgba(209,213,219,0.3)', geo: <IcoIntegraciones />, tone: 'medium' as CardTone,
   },
   {
     id: 'auditoria', label: 'Auditoría', route: '/admin/configuracion/auditoria',
