@@ -35,7 +35,7 @@ const IcoCenter = ({ set, name, hovered }: { set: string; name: string; hovered?
       .then(raw => setSrcWhite(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
       .catch(() => {})
 
-    fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ff7800`)
+    fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ff9940`)
       .then(r => r.text())
       .then(raw => setSrcOrange(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
       .catch(() => {})
@@ -43,7 +43,7 @@ const IcoCenter = ({ set, name, hovered }: { set: string; name: string; hovered?
 
   return (
     <img src={hovered ? srcOrange : srcWhite} alt=""
-      style={{ width: '79px', height: '79px', opacity: 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))', transition: 'filter 0.3s ease' }} />
+      style={{ width: '79px', height: '79px', opacity: hovered ? 0.55 : 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))', transition: 'opacity 0.3s ease' }} />
   )
 }
 
