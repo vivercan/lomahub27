@@ -291,7 +291,7 @@ export default function AppHeader({
               style={{
                 width: 40,
                 height: 40,
-                background: 'linear-gradient(180deg, #E8ECF3 0%, #D5DBE5 50%, #C8D0DC 100%)',
+                background: 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 50%, #E5E7EB 100%)',
                 border: 'none',
                 borderRadius: '50%',
                 cursor: 'pointer',
@@ -300,34 +300,34 @@ export default function AppHeader({
                 justifyContent: 'center',
                 position: 'relative',
                 transition: 'all 0.14s cubic-bezier(0.23,1,0.32,1)',
-                boxShadow: `0 3px 0 rgba(30,41,59,0.18),
-                  0 4px 3px rgba(30,41,59,0.10),
-                  0 6px 10px -3px rgba(30,41,59,0.08),
-                  inset 0 2px 0 rgba(255,255,255,0.60),
-                  inset 0 -1px 0 rgba(30,41,59,0.10),
-                  inset 1px 0 0 rgba(255,255,255,0.30),
-                  inset -1px 0 0 rgba(30,41,59,0.05)`,
+                boxShadow: `0 4px 0 rgba(0,0,0,0.20),
+                  0 5px 3px rgba(0,0,0,0.12),
+                  0 8px 12px -3px rgba(0,0,0,0.10),
+                  inset 0 2px 0 rgba(255,255,255,0.95),
+                  inset 0 -2px 0 rgba(0,0,0,0.12),
+                  inset 2px 0 0 rgba(255,255,255,0.50),
+                  inset -2px 0 0 rgba(0,0,0,0.06)`,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(180deg, #DDE3ED 0%, #CDD4E0 50%, #C0C8D6 100%)';
+                e.currentTarget.style.background = 'linear-gradient(180deg, #FAFAFA 0%, #ECECEC 50%, #DDDDDD 100%)';
                 e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.boxShadow = `0 4px 0 rgba(30,41,59,0.20), 0 5px 4px rgba(30,41,59,0.12), 0 8px 14px -3px rgba(30,41,59,0.10), inset 0 2px 0 rgba(255,255,255,0.60), inset 0 -1px 0 rgba(30,41,59,0.12), inset 1px 0 0 rgba(255,255,255,0.30), inset -1px 0 0 rgba(30,41,59,0.05)`;
+                e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.22), 0 6px 4px rgba(0,0,0,0.14), 0 10px 16px -3px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.14), inset 2px 0 0 rgba(255,255,255,0.50), inset -2px 0 0 rgba(0,0,0,0.06)`;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(180deg, #E8ECF3 0%, #D5DBE5 50%, #C8D0DC 100%)';
+                e.currentTarget.style.background = 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 50%, #E5E7EB 100%)';
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = `0 3px 0 rgba(30,41,59,0.18), 0 4px 3px rgba(30,41,59,0.10), 0 6px 10px -3px rgba(30,41,59,0.08), inset 0 2px 0 rgba(255,255,255,0.60), inset 0 -1px 0 rgba(30,41,59,0.10), inset 1px 0 0 rgba(255,255,255,0.30), inset -1px 0 0 rgba(30,41,59,0.05)`;
+                e.currentTarget.style.boxShadow = `0 4px 0 rgba(0,0,0,0.20), 0 5px 3px rgba(0,0,0,0.12), 0 8px 12px -3px rgba(0,0,0,0.10), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.12), inset 2px 0 0 rgba(255,255,255,0.50), inset -2px 0 0 rgba(0,0,0,0.06)`;
               }}
               onMouseDown={(e) => {
-                e.currentTarget.style.transform = 'translateY(3px)';
-                e.currentTarget.style.boxShadow = `0 1px 0 rgba(30,41,59,0.22), 0 1px 2px rgba(30,41,59,0.12), inset 0 2px 4px rgba(30,41,59,0.15), inset 0 1px 2px rgba(30,41,59,0.20), inset 0 -1px 0 rgba(255,255,255,0.35)`;
+                e.currentTarget.style.transform = 'translateY(4px)';
+                e.currentTarget.style.boxShadow = `0 1px 0 rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15), inset 0 3px 5px rgba(0,0,0,0.18), inset 0 1px 2px rgba(0,0,0,0.25), inset 0 -1px 0 rgba(255,255,255,0.50)`;
               }}
               onMouseUp={(e) => {
                 e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.boxShadow = `0 4px 0 rgba(30,41,59,0.20), 0 5px 4px rgba(30,41,59,0.12), 0 8px 14px -3px rgba(30,41,59,0.10), inset 0 2px 0 rgba(255,255,255,0.60), inset 0 -1px 0 rgba(30,41,59,0.12), inset 1px 0 0 rgba(255,255,255,0.30), inset -1px 0 0 rgba(30,41,59,0.05)`;
+                e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.22), 0 6px 4px rgba(0,0,0,0.14), 0 10px 16px -3px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.14), inset 2px 0 0 rgba(255,255,255,0.50), inset -2px 0 0 rgba(0,0,0,0.06)`;
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E293B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
               </svg>
@@ -471,14 +471,14 @@ export default function AppHeader({
             )}
           </div>
 
-          {/* Logout — Subtle slate-blue 3D button */}
+          {/* Logout — White 3D button with red power icon */}
           <button
             onClick={onLogout}
             title="Cerrar sesión"
             style={{
               width: 40,
               height: 40,
-              background: 'linear-gradient(180deg, #E8ECF3 0%, #D5DBE5 50%, #C8D0DC 100%)',
+              background: 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 50%, #E5E7EB 100%)',
               border: 'none',
               borderRadius: '50%',
               cursor: 'pointer',
@@ -486,34 +486,34 @@ export default function AppHeader({
               alignItems: 'center',
               justifyContent: 'center',
               transition: 'all 0.14s cubic-bezier(0.23,1,0.32,1)',
-              boxShadow: `0 3px 0 rgba(30,41,59,0.18),
-                0 4px 3px rgba(30,41,59,0.10),
-                0 6px 10px -3px rgba(30,41,59,0.08),
-                inset 0 2px 0 rgba(255,255,255,0.60),
-                inset 0 -1px 0 rgba(30,41,59,0.10),
-                inset 1px 0 0 rgba(255,255,255,0.30),
-                inset -1px 0 0 rgba(30,41,59,0.05)`,
+              boxShadow: `0 4px 0 rgba(0,0,0,0.20),
+                0 5px 3px rgba(0,0,0,0.12),
+                0 8px 12px -3px rgba(0,0,0,0.10),
+                inset 0 2px 0 rgba(255,255,255,0.95),
+                inset 0 -2px 0 rgba(0,0,0,0.12),
+                inset 2px 0 0 rgba(255,255,255,0.50),
+                inset -2px 0 0 rgba(0,0,0,0.06)`,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(180deg, #DDE3ED 0%, #CDD4E0 50%, #C0C8D6 100%)';
+              e.currentTarget.style.background = 'linear-gradient(180deg, #FAFAFA 0%, #ECECEC 50%, #DDDDDD 100%)';
               e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = `0 4px 0 rgba(30,41,59,0.20), 0 5px 4px rgba(30,41,59,0.12), 0 8px 14px -3px rgba(30,41,59,0.10), inset 0 2px 0 rgba(255,255,255,0.60), inset 0 -1px 0 rgba(30,41,59,0.12), inset 1px 0 0 rgba(255,255,255,0.30), inset -1px 0 0 rgba(30,41,59,0.05)`;
+              e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.22), 0 6px 4px rgba(0,0,0,0.14), 0 10px 16px -3px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.14), inset 2px 0 0 rgba(255,255,255,0.50), inset -2px 0 0 rgba(0,0,0,0.06)`;
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(180deg, #E8ECF3 0%, #D5DBE5 50%, #C8D0DC 100%)';
+              e.currentTarget.style.background = 'linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 50%, #E5E7EB 100%)';
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = `0 3px 0 rgba(30,41,59,0.18), 0 4px 3px rgba(30,41,59,0.10), 0 6px 10px -3px rgba(30,41,59,0.08), inset 0 2px 0 rgba(255,255,255,0.60), inset 0 -1px 0 rgba(30,41,59,0.10), inset 1px 0 0 rgba(255,255,255,0.30), inset -1px 0 0 rgba(30,41,59,0.05)`;
+              e.currentTarget.style.boxShadow = `0 4px 0 rgba(0,0,0,0.20), 0 5px 3px rgba(0,0,0,0.12), 0 8px 12px -3px rgba(0,0,0,0.10), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.12), inset 2px 0 0 rgba(255,255,255,0.50), inset -2px 0 0 rgba(0,0,0,0.06)`;
             }}
             onMouseDown={(e) => {
-              e.currentTarget.style.transform = 'translateY(3px)';
-              e.currentTarget.style.boxShadow = `0 1px 0 rgba(30,41,59,0.22), 0 1px 2px rgba(30,41,59,0.12), inset 0 2px 4px rgba(30,41,59,0.15), inset 0 1px 2px rgba(30,41,59,0.20), inset 0 -1px 0 rgba(255,255,255,0.35)`;
+              e.currentTarget.style.transform = 'translateY(4px)';
+              e.currentTarget.style.boxShadow = `0 1px 0 rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15), inset 0 3px 5px rgba(0,0,0,0.18), inset 0 1px 2px rgba(0,0,0,0.25), inset 0 -1px 0 rgba(255,255,255,0.50)`;
             }}
             onMouseUp={(e) => {
               e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = `0 4px 0 rgba(30,41,59,0.20), 0 5px 4px rgba(30,41,59,0.12), 0 8px 14px -3px rgba(30,41,59,0.10), inset 0 2px 0 rgba(255,255,255,0.60), inset 0 -1px 0 rgba(30,41,59,0.12), inset 1px 0 0 rgba(255,255,255,0.30), inset -1px 0 0 rgba(30,41,59,0.05)`;
+              e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.22), 0 6px 4px rgba(0,0,0,0.14), 0 10px 16px -3px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.95), inset 0 -2px 0 rgba(0,0,0,0.14), inset 2px 0 0 rgba(255,255,255,0.50), inset -2px 0 0 rgba(0,0,0,0.06)`;
             }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
               <line x1="12" y1="2" x2="12" y2="12" />
             </svg>
