@@ -47,11 +47,11 @@ const geoWrap: React.CSSProperties = {
   pointerEvents: 'none', overflow: 'hidden', borderRadius: '16px',
 }
 const geoSvg: React.CSSProperties = {
-  position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.14,
-  filter: 'drop-shadow(0 1px 0 rgba(255,255,255,0.12))',
+  position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.28,
+  filter: 'drop-shadow(0 1px 0 rgba(255,255,255,0.15))',
 }
-const S = 'rgba(0,0,0,0.45)'
-const S2 = 'rgba(0,0,0,0.30)'
+const S = 'rgba(0,0,0,0.55)'
+const S2 = 'rgba(0,0,0,0.40)'
 
 /* Usuarios — people / team */
 const IcoUsuarios = () => (
@@ -390,8 +390,8 @@ export default function Configuracion() {
                 <div style={{
                   fontFamily: DASH.fontBody,
                   fontSize: '15px',
-                  fontWeight: 600,
-                  color: 'rgba(255,255,255,0.55)',
+                  fontWeight: 700,
+                  color: 'rgba(255,255,255,0.68)',
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
@@ -479,8 +479,8 @@ export default function Configuracion() {
                 <div style={{
                   fontFamily: DASH.fontBody,
                   fontSize: '15px',
-                  fontWeight: 600,
-                  color: 'rgba(255,255,255,0.55)',
+                  fontWeight: 700,
+                  color: 'rgba(255,255,255,0.68)',
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
