@@ -5,39 +5,23 @@ import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 
 /* ———————————————————————————————————————————————————————————————
-SERVICIO A CLIENTES — Landing Page (alineada a plantilla madre)
-4 cards: Tickets, Clientes Activos, Importacion, Exportacion
-KPIs reales: tickets + clientes de Supabase, IMPO/EXPO de viajes_anodos
-Icono único white-stroke: principal 12% | secondary 8%
+SERVICIO A CLIENTES — Landing Page
+Dark glass cards with amber hover glow — premium AAA style
 —————————————————————————————————————————————————————————————— */
 
 const D = {
   bg: '#E8EBF0',
   font: tokens.fonts.heading,
   fontBody: tokens.fonts.body,
-  cardRadius: '14px',
-  titleSize: '20px',
-  titleWeight: 800,
-  kpiSize: '28px',
-  kpiWeight: 600,
-  subSize: '11px',
-  dotSize: '6px',
 } as const
 
-/* Darken/lighten a hex color by amount */
-function adjustColor(hex: string, amount: number): string {
-  const h = hex.replace('#', '')
-  const r = Math.max(0, Math.min(255, parseInt(h.substring(0, 2), 16) + amount))
-  const g = Math.max(0, Math.min(255, parseInt(h.substring(2, 4), 16) + amount))
-  const b = Math.max(0, Math.min(255, parseInt(h.substring(4, 6), 16) + amount))
-  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
-}
+/* ── Amber glow color for hover ── */
+const AMBER = '218,140,28'
 
-const ICO_OPACITY = 0.22
-const STROKE_SCALE = 0.8  // 20% thinner lines
+/* ── Icon component — centered, prominent, thin-stroke ── */
+const STROKE_SCALE = 0.75
 
-/* Iconify API — fetches SVG, reduces stroke-width 20%, same icon size */
-const IcoImg = ({ set, name }: { set: string; name: string }) => {
+const IcoCenter = ({ set, name }: { set: string; name: string }) => {
   const [src, setSrc] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
   useEffect(() => {
     fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
@@ -50,63 +34,46 @@ const IcoImg = ({ set, name }: { set: string; name: string }) => {
       .catch(() => {})
   }, [set, name])
   return (
-    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-      <img src={src} alt="" style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }} />
-    </div>
+    <img src={src} alt=""
+      style={{ width: '54px', height: '54px', opacity: 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }} />
   )
 }
 
-const IconTickets     = () => <IcoImg set="bi" name="ticket-perforated" />
-const IconClientes    = () => <IcoImg set="gridicons" name="multiple-users" />
-const IconImpo        = () => <IcoImg set="ion" name="cloud-upload" />
-const IconExpo        = () => <IcoImg set="ion" name="cloud-download" />
-const IconDespachoIA  = () => <IcoImg set="bi" name="robot" />
-const IconMetricas    = () => <IcoImg set="bi" name="graph-up" />
-const IconActividades = () => <IcoImg set="bi" name="list-check" />
-
-/* —— Card Config —— */
-interface LandingCard {
+/* ── Card config ── */
+interface CardDef {
   id: string
   label: string
   route: string
   kpiLabel: string
-  icon: React.ReactNode
-  accent: string      // primary color
-  accent2: string     // secondary gradient color
-  glow: string        // shadow glow color
+  iconSet: string
+  iconName: string
 }
 
-const CARDS: LandingCard[] = [
-  { id: 'tickets', label: 'Tickets', route: '/servicio/tickets', kpiLabel: 'Activos', icon: <IconTickets />, accent: '#2563EB', accent2: '#1e40af', glow: '37,99,235' },
-  { id: 'clientes', label: 'Clientes Activos', route: '/clientes/corporativos', kpiLabel: 'Clientes', icon: <IconClientes />, accent: '#059669', accent2: '#065f46', glow: '5,150,105' },
-  { id: 'impo', label: 'Importación', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO (30d)', icon: <IconImpo />, accent: '#7C3AED', accent2: '#5b21b6', glow: '124,58,237' },
-  { id: 'expo', label: 'Exportación', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO (30d)', icon: <IconExpo />, accent: '#D97706', accent2: '#b45309', glow: '217,119,6' },
-  { id: 'despacho_ia', label: 'Despacho IA', route: '/operaciones/torre-control', kpiLabel: 'Viajes activos', icon: <IconDespachoIA />, accent: '#15803D', accent2: '#064e3b', glow: '21,128,61' },
-  { id: 'metricas', label: 'Métricas Servicio', route: '/servicio/metricas', kpiLabel: 'Dashboard', icon: <IconMetricas />, accent: '#6366F1', accent2: '#4338ca', glow: '99,102,241' },
-  { id: 'actividades', label: 'Actividades', route: '/actividades', kpiLabel: 'Pendientes', icon: <IconActividades />, accent: '#0891B2', accent2: '#155e75', glow: '8,145,178' },
+const CARDS: CardDef[] = [
+  { id: 'tickets',      label: 'Tickets',           route: '/servicio/tickets',         kpiLabel: 'Activos',         iconSet: 'bi',        iconName: 'ticket-perforated' },
+  { id: 'clientes',     label: 'Clientes Activos',  route: '/clientes/corporativos',    kpiLabel: 'Clientes',        iconSet: 'gridicons',  iconName: 'multiple-users' },
+  { id: 'impo',         label: 'Importación',       route: '/servicio/importacion',     kpiLabel: 'Viajes IMPO (30d)', iconSet: 'ion',      iconName: 'cloud-download' },
+  { id: 'expo',         label: 'Exportación',       route: '/servicio/exportacion',     kpiLabel: 'Viajes EXPO (30d)', iconSet: 'ion',      iconName: 'cloud-upload' },
+  { id: 'despacho_ia',  label: 'Despacho IA',       route: '/operaciones/torre-control', kpiLabel: 'Viajes activos',  iconSet: 'streamline', iconName: 'artificial-intelligence-spark' },
+  { id: 'metricas',     label: 'Métricas Servicio', route: '/servicio/metricas',        kpiLabel: 'Dashboard',       iconSet: 'bi',        iconName: 'graph-up' },
+  { id: 'actividades',  label: 'Actividades',       route: '/actividades',              kpiLabel: 'Pendientes',      iconSet: 'bi',        iconName: 'list-check' },
 ]
 
-/* —— Helper: count viajes_anodos by tipo with pagination —— */
+/* ── Supabase helpers ── */
 async function countViajesAnodosByTipo(tipoViaje: number): Promise<number> {
   const hace30d = new Date()
   hace30d.setDate(hace30d.getDate() - 30)
   const desde = hace30d.toISOString()
 
-  // Try inicia_viaje first
   const { count, error } = await supabase
     .from('viajes_anodos')
     .select('*', { count: 'exact', head: true })
     .eq('tipo_viaje', tipoViaje)
     .gte('inicia_viaje', desde)
 
-  if (error) {
-    console.error(`viajes_anodos tipo ${tipoViaje}:`, error)
-    return 0
-  }
-
+  if (error) { console.error(`viajes_anodos tipo ${tipoViaje}:`, error); return 0 }
   if (count && count > 0) return count
 
-  // Fallback to fecha_crea
   const { count: c2, error: e2 } = await supabase
     .from('viajes_anodos')
     .select('*', { count: 'exact', head: true })
@@ -117,106 +84,112 @@ async function countViajesAnodosByTipo(tipoViaje: number): Promise<number> {
   return c2 || 0
 }
 
-/* —— Component —— */
+/* ── Component ── */
 export default function DashboardCS() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
-  const [kpis, setKpis] = useState<Record<string, number>>({
-    tickets: 0,
-    clientes: 0,
-    impo: 0,
-    expo: 0,
-  })
+  const [kpis, setKpis] = useState<Record<string, number>>({ tickets: 0, clientes: 0, impo: 0, expo: 0 })
   const [loading, setLoading] = useState(true)
 
   const fetchKpis = useCallback(async () => {
     try {
-      // Tickets y clientes desde tablas directas
       const [tix, cli] = await Promise.all([
         supabase.from('tickets').select('*', { count: 'exact', head: true }).is('deleted_at', null).in('estado', ['abierto', 'en_proceso']),
         supabase.from('clientes').select('*', { count: 'exact', head: true }).is('deleted_at', null),
       ])
-
-      // IMPO y EXPO desde viajes_anodos (datos reales ANODOS)
-      // TipoViaje mapping: 2=EXPO, 3=IMPO, 4=NAC, 7=VACIO
       const [impoCount, expoCount] = await Promise.all([
-        countViajesAnodosByTipo(3), // IMPO
-        countViajesAnodosByTipo(2), // EXPO
+        countViajesAnodosByTipo(3),
+        countViajesAnodosByTipo(2),
       ])
-
-      setKpis({
-        tickets: tix.count ?? 0,
-        clientes: cli.count ?? 0,
-        impo: impoCount,
-        expo: expoCount,
-      })
-    } catch (e) {
-      console.error('KPI fetch error:', e)
-    } finally {
-      setLoading(false)
-    }
+      setKpis({ tickets: tix.count ?? 0, clientes: cli.count ?? 0, impo: impoCount, expo: expoCount })
+    } catch (e) { console.error('KPI fetch error:', e) }
+    finally { setLoading(false) }
   }, [])
 
-  useEffect(() => {
-    fetchKpis()
-  }, [fetchKpis])
-
-  const getCardStyle = (isH: boolean, card: LandingCard): React.CSSProperties => ({
-    aspectRatio: '1 / 0.75',
-    borderRadius: '16px',
-    padding: '22px',
-    /* Multi-stop gradient: bright top-left → base → deep bottom-right */
-    background: `linear-gradient(145deg, ${adjustColor(card.accent, 20)} 0%, ${card.accent} 30%, ${card.accent2} 70%, ${adjustColor(card.accent2, -15)} 100%)`,
-    /* Glass edge border */
-    border: '1px solid rgba(255,255,255,0.15)',
-    cursor: 'pointer',
-    position: 'relative',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    transition: 'all 0.5s cubic-bezier(0.23,1,0.32,1)',
-    transform: isH ? 'translateY(-6px) scale(1.02)' : 'none',
-    /* Colored shadows — glow matches card color */
-    boxShadow: isH
-      ? `0 8px 20px rgba(${card.glow},0.35), 0 20px 50px rgba(${card.glow},0.20), 0 0 0 1px rgba(255,255,255,0.10), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.20)`
-      : `0 4px 12px rgba(${card.glow},0.25), 0 12px 32px rgba(${card.glow},0.15), 0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.20), inset 0 -1px 0 rgba(0,0,0,0.15)`,
-  })
+  useEffect(() => { fetchKpis() }, [fetchKpis])
 
   return (
     <ModuleLayout titulo="Servicio a Clientes" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '16px' }}>
           {CARDS.map(card => {
             const isH = hovered === card.id
             return (
               <div
                 key={card.id}
-                style={getCardStyle(isH, card)}
+                style={{
+                  aspectRatio: '1 / 1',
+                  borderRadius: '16px',
+                  padding: '20px',
+                  /* Dark glass background */
+                  background: isH
+                    ? 'linear-gradient(160deg, rgba(30,38,58,0.97) 0%, rgba(18,24,42,0.99) 100%)'
+                    : 'linear-gradient(160deg, rgba(24,32,52,0.95) 0%, rgba(14,20,36,0.98) 100%)',
+                  /* Glass border — amber glow on hover */
+                  border: isH
+                    ? `1px solid rgba(${AMBER},0.50)`
+                    : '1px solid rgba(255,255,255,0.07)',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '12px',
+                  transition: 'all 0.4s cubic-bezier(0.23,1,0.32,1)',
+                  transform: isH ? 'translateY(-4px)' : 'none',
+                  boxShadow: isH
+                    ? `0 0 20px rgba(${AMBER},0.15), 0 0 40px rgba(${AMBER},0.08), 0 8px 24px rgba(0,0,0,0.40), 0 16px 48px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08)`
+                    : `0 4px 12px rgba(0,0,0,0.25), 0 8px 32px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.06)`,
+                }}
                 onMouseEnter={() => setHovered(card.id)}
                 onMouseLeave={() => setHovered(null)}
                 onClick={() => navigate(card.route)}
               >
-                {/* Glass shine — top-left highlight */}
-                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.05) 30%, transparent 60%, rgba(0,0,0,0.10) 100%)' }} />
-                {/* Subtle noise texture for depth */}
-                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: '16px', opacity: 0.03, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")', backgroundSize: '150px 150px' }} />
-                {/* Icon */}
-                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', borderRadius: '16px', transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)', transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none' }}>
-                  {card.icon}
+                {/* Top amber glow line on hover */}
+                <div style={{
+                  position: 'absolute', top: 0, left: '15%', right: '15%', height: '2px',
+                  background: isH ? `linear-gradient(90deg, transparent, rgba(${AMBER},0.70), transparent)` : 'transparent',
+                  transition: 'background 0.4s ease',
+                  borderRadius: '0 0 2px 2px',
+                  filter: isH ? `drop-shadow(0 0 6px rgba(${AMBER},0.50))` : 'none',
+                }} />
+
+                {/* Subtle glass reflection */}
+                <div style={{
+                  position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: '16px',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 40%)',
+                }} />
+
+                {/* Icon — centered, prominent */}
+                <div style={{ position: 'relative', zIndex: 1, transition: 'transform 0.4s ease', transform: isH ? 'scale(1.08)' : 'none' }}>
+                  <IcoCenter set={card.iconSet} name={card.iconName} />
                 </div>
-                {/* Status dot */}
-                <div style={{ position: 'absolute', top: 14, right: 14, width: '7px', height: '7px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.40)', boxShadow: '0 0 4px rgba(255,255,255,0.30)' }} />
-                {/* Title */}
-                <div style={{ fontFamily: D.font, fontSize: D.titleSize, fontWeight: D.titleWeight, color: '#FFFFFF', lineHeight: 1.2, position: 'relative', zIndex: 1, textAlign: 'center', textShadow: '0 1px 2px rgba(0,0,0,0.20)', letterSpacing: '-0.01em' }}>
+
+                {/* Label */}
+                <div style={{
+                  fontFamily: D.font, fontSize: '13px', fontWeight: 700, color: 'rgba(255,255,255,0.88)',
+                  textAlign: 'center', position: 'relative', zIndex: 1, letterSpacing: '-0.01em',
+                  lineHeight: 1.2,
+                }}>
                   {card.label}
                 </div>
-                {/* KPI */}
-                <div>
-                  <div style={{ fontFamily: D.font, fontSize: D.kpiSize, fontWeight: D.kpiWeight, color: '#FFFFFF', lineHeight: 1, position: 'relative', zIndex: 1, textShadow: '0 2px 4px rgba(0,0,0,0.15)' }}>
+
+                {/* KPI + sublabel */}
+                <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                  <div style={{
+                    fontFamily: D.font, fontSize: '22px', fontWeight: 600,
+                    color: isH ? `rgba(${AMBER},1)` : 'rgba(255,255,255,0.95)',
+                    lineHeight: 1, transition: 'color 0.3s ease',
+                  }}>
                     {loading ? '—' : (kpis[card.id] ?? 0).toLocaleString()}
                   </div>
-                  <div style={{ fontFamily: D.font, fontSize: D.subSize, color: 'rgba(255,255,255,0.75)', marginTop: 4, position: 'relative', zIndex: 1, fontWeight: 500, letterSpacing: '0.02em' }}>
+                  <div style={{
+                    fontFamily: D.font, fontSize: '10px', fontWeight: 500,
+                    color: 'rgba(255,255,255,0.45)', marginTop: 3, letterSpacing: '0.03em',
+                    textTransform: 'uppercase',
+                  }}>
                     {card.kpiLabel}
                   </div>
                 </div>
