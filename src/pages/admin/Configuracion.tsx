@@ -405,7 +405,7 @@ export default function Configuracion() {
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -3px 2px rgba(0,0,0,1), 0 3px 1px rgba(255,255,255,0.50), 0 0 10px rgba(0,0,0,0.45)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.90), 0 1px 0 rgba(255,255,255,0.35), 0 0 4px rgba(0,0,0,0.25)',
                 }}>
                   {card.subtitle}
                 </div>
@@ -494,7 +494,7 @@ export default function Configuracion() {
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -3px 2px rgba(0,0,0,1), 0 3px 1px rgba(255,255,255,0.50), 0 0 10px rgba(0,0,0,0.45)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.90), 0 1px 0 rgba(255,255,255,0.35), 0 0 4px rgba(0,0,0,0.25)',
                 }}>
                   {card.subtitle}
                 </div>
