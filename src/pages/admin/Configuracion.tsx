@@ -180,6 +180,30 @@ const IcoCerebro = () => (
 )
 
 /* –– Card definitions –– */
+type CardTone = 'light' | 'medium' | 'dark'
+
+/* Per-tone laser-etch text shadows */
+const titleShadow: Record<CardTone, string> = {
+  light:  '0 -1px 0 rgba(0,0,0,0.50), 0 1px 0 rgba(255,255,255,0.90), 1px 0 0 rgba(0,0,0,0.18), -1px 0 0 rgba(0,0,0,0.18)',
+  medium: '0 -1px 0 rgba(0,0,0,1), 0 1px 0 rgba(255,255,255,0.60), 1px 0 0 rgba(0,0,0,0.40), -1px 0 0 rgba(0,0,0,0.40), 0 0 2px rgba(0,0,0,0.35)',
+  dark:   '0 -1px 0 rgba(0,0,0,1), 0 1px 0 rgba(255,255,255,0.70), 1px 0 0 rgba(0,0,0,0.45), -1px 0 0 rgba(0,0,0,0.45), 0 0 3px rgba(0,0,0,0.40)',
+}
+const subtitleShadow: Record<CardTone, string> = {
+  light:  '0 -1px 0 rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.85), 1px 0 0 rgba(0,0,0,0.15), -1px 0 0 rgba(0,0,0,0.15)',
+  medium: '0 -1px 0 rgba(0,0,0,0.95), 0 1px 0 rgba(255,255,255,0.55), 1px 0 0 rgba(0,0,0,0.35), -1px 0 0 rgba(0,0,0,0.35), 0 0 2px rgba(0,0,0,0.30)',
+  dark:   '0 -1px 0 rgba(0,0,0,1), 0 1px 0 rgba(255,255,255,0.65), 1px 0 0 rgba(0,0,0,0.40), -1px 0 0 rgba(0,0,0,0.40), 0 0 3px rgba(0,0,0,0.35)',
+}
+const titleColor: Record<CardTone, string> = {
+  light:  'rgba(255,255,255,0.92)',
+  medium: 'rgba(255,255,255,0.75)',
+  dark:   'rgba(255,255,255,0.80)',
+}
+const subtitleColor: Record<CardTone, string> = {
+  light:  'rgba(255,255,255,0.85)',
+  medium: 'rgba(255,255,255,0.68)',
+  dark:   'rgba(255,255,255,0.72)',
+}
+
 interface ConfigCard {
   id: string
   label: string
@@ -190,6 +214,7 @@ interface ConfigCard {
   gradientHover: string
   glowColor: string
   geo: React.ReactNode
+  tone: CardTone
 }
 
 const CARDS: ConfigCard[] = [
@@ -198,56 +223,56 @@ const CARDS: ConfigCard[] = [
     subtitle: 'Roles y permisos', accent: '#6B7280',
     gradientBase: 'linear-gradient(155deg, #4B5563 0%, #374151 35%, #1F2937 70%, #111827 100%)',
     gradientHover: 'linear-gradient(155deg, #6B7280 0%, #4B5563 35%, #374151 70%, #1F2937 100%)',
-    glowColor: 'rgba(107,114,128,0.4)', geo: <IcoUsuarios />,
+    glowColor: 'rgba(107,114,128,0.4)', geo: <IcoUsuarios />, tone: 'medium' as CardTone,
   },
   {
     id: 'catalogos', label: 'Catálogos', route: '/admin/configuracion/catalogos',
     subtitle: 'Tipos y estados', accent: '#9CA3AF',
     gradientBase: 'linear-gradient(155deg, #6B7280 0%, #4B5563 35%, #374151 70%, #1F2937 100%)',
     gradientHover: 'linear-gradient(155deg, #9CA3AF 0%, #6B7280 35%, #4B5563 70%, #374151 100%)',
-    glowColor: 'rgba(156,163,175,0.4)', geo: <IcoCatalogos />,
+    glowColor: 'rgba(156,163,175,0.4)', geo: <IcoCatalogos />, tone: 'medium' as CardTone,
   },
   {
     id: 'parametros', label: 'Parámetros', route: '/admin/configuracion/parametros',
     subtitle: 'Tarifas y costos', accent: '#374151',
     gradientBase: 'linear-gradient(155deg, #374151 0%, #1F2937 35%, #111827 70%, #030712 100%)',
     gradientHover: 'linear-gradient(155deg, #4B5563 0%, #374151 35%, #1F2937 70%, #111827 100%)',
-    glowColor: 'rgba(55,65,81,0.4)', geo: <IcoParametros />,
+    glowColor: 'rgba(55,65,81,0.4)', geo: <IcoParametros />, tone: 'medium' as CardTone,
   },
   {
     id: 'integraciones', label: 'Integraciones', route: '/admin/configuracion/integraciones',
     subtitle: 'ANODOS · GPS · WA', accent: '#D1D5DB',
     gradientBase: 'linear-gradient(155deg, #9CA3AF 0%, #6B7280 35%, #4B5563 70%, #374151 100%)',
     gradientHover: 'linear-gradient(155deg, #D1D5DB 0%, #9CA3AF 35%, #6B7280 70%, #4B5563 100%)',
-    glowColor: 'rgba(209,213,219,0.3)', geo: <IcoIntegraciones />,
+    glowColor: 'rgba(209,213,219,0.3)', geo: <IcoIntegraciones />, tone: 'light' as CardTone,
   },
   {
     id: 'auditoria', label: 'Auditoría', route: '/admin/configuracion/auditoria',
     subtitle: 'Actividad del sistema', accent: '#1F2937',
     gradientBase: 'linear-gradient(155deg, #1F2937 0%, #111827 35%, #030712 70%, #000000 100%)',
     gradientHover: 'linear-gradient(155deg, #374151 0%, #1F2937 35%, #111827 70%, #030712 100%)',
-    glowColor: 'rgba(31,41,55,0.4)', geo: <IcoAuditoria />,
+    glowColor: 'rgba(31,41,55,0.4)', geo: <IcoAuditoria />, tone: 'dark' as CardTone,
   },
   {
     id: 'plantillas', label: 'Plantillas', route: '/admin/configuracion/plantillas',
     subtitle: 'Formatos y templates', accent: '#E5E7EB',
     gradientBase: 'linear-gradient(155deg, #D1D5DB 0%, #9CA3AF 35%, #6B7280 70%, #4B5563 100%)',
     gradientHover: 'linear-gradient(155deg, #E5E7EB 0%, #D1D5DB 35%, #9CA3AF 70%, #6B7280 100%)',
-    glowColor: 'rgba(229,231,235,0.3)', geo: <IcoPlantillas />,
+    glowColor: 'rgba(229,231,235,0.3)', geo: <IcoPlantillas />, tone: 'light' as CardTone,
   },
   {
     id: 'documentos', label: 'Documentos', route: '/admin/configuracion/documentos',
     subtitle: 'Legales y actas', accent: '#4B5563',
     gradientBase: 'linear-gradient(155deg, #4B5563 0%, #374151 35%, #1F2937 70%, #111827 100%)',
     gradientHover: 'linear-gradient(155deg, #6B7280 0%, #4B5563 35%, #374151 70%, #1F2937 100%)',
-    glowColor: 'rgba(75,85,99,0.4)', geo: <IcoDocumentos />,
+    glowColor: 'rgba(75,85,99,0.4)', geo: <IcoDocumentos />, tone: 'medium' as CardTone,
   },
   {
     id: 'cerebro', label: 'Cerebro Tarifario', route: '/pricing/cerebro-tarifario',
     subtitle: 'Tarifas y pricing', accent: '#111827',
     gradientBase: 'linear-gradient(155deg, #1F2937 0%, #111827 35%, #030712 70%, #000000 100%)',
     gradientHover: 'linear-gradient(155deg, #374151 0%, #1F2937 35%, #111827 70%, #030712 100%)',
-    glowColor: 'rgba(17,24,39,0.4)', geo: <IcoCerebro />,
+    glowColor: 'rgba(17,24,39,0.4)', geo: <IcoCerebro />, tone: 'dark' as CardTone,
   },
 ]
 
@@ -379,33 +404,33 @@ export default function Configuracion() {
                   animation: 'cfgGrainDrift 12s linear infinite',
                 }} />
 
-                {/* Title — white debossed deep */}
+                {/* Title — per-tone laser etch */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
                   fontSize: '22px',
                   fontWeight: 800,
-                  color: 'rgba(255,255,255,0.75)',
+                  color: titleColor[card.tone],
                   lineHeight: 1.15,
                   letterSpacing: '-0.02em',
                   whiteSpace: 'nowrap',
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 0 rgba(0,0,0,1), 0 1px 0 rgba(255,255,255,0.60), 1px 0 0 rgba(0,0,0,0.40), -1px 0 0 rgba(0,0,0,0.40), 0 0 2px rgba(0,0,0,0.35)',
+                  textShadow: titleShadow[card.tone],
                 }}>
                   {card.label}
                 </div>
 
-                {/* Subtitle — white debossed deep */}
+                {/* Subtitle — per-tone laser etch */}
                 <div style={{
                   fontFamily: DASH.fontBody,
                   fontSize: '15px',
                   fontWeight: 700,
-                  color: 'rgba(255,255,255,0.68)',
+                  color: subtitleColor[card.tone],
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 0 rgba(0,0,0,0.95), 0 1px 0 rgba(255,255,255,0.55), 1px 0 0 rgba(0,0,0,0.35), -1px 0 0 rgba(0,0,0,0.35), 0 0 2px rgba(0,0,0,0.30)',
+                  textShadow: subtitleShadow[card.tone],
                 }}>
                   {card.subtitle}
                 </div>
@@ -468,33 +493,33 @@ export default function Configuracion() {
                   animation: 'cfgGrainDrift 12s linear infinite',
                 }} />
 
-                {/* Title — white debossed deep */}
+                {/* Title — per-tone laser etch */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
                   fontSize: '22px',
                   fontWeight: 800,
-                  color: 'rgba(255,255,255,0.75)',
+                  color: titleColor[card.tone],
                   lineHeight: 1.15,
                   letterSpacing: '-0.02em',
                   whiteSpace: 'nowrap',
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 0 rgba(0,0,0,1), 0 1px 0 rgba(255,255,255,0.60), 1px 0 0 rgba(0,0,0,0.40), -1px 0 0 rgba(0,0,0,0.40), 0 0 2px rgba(0,0,0,0.35)',
+                  textShadow: titleShadow[card.tone],
                 }}>
                   {card.label}
                 </div>
 
-                {/* Subtitle — white debossed deep */}
+                {/* Subtitle — per-tone laser etch */}
                 <div style={{
                   fontFamily: DASH.fontBody,
                   fontSize: '15px',
                   fontWeight: 700,
-                  color: 'rgba(255,255,255,0.68)',
+                  color: subtitleColor[card.tone],
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 0 rgba(0,0,0,0.95), 0 1px 0 rgba(255,255,255,0.55), 1px 0 0 rgba(0,0,0,0.35), -1px 0 0 rgba(0,0,0,0.35), 0 0 2px rgba(0,0,0,0.30)',
+                  textShadow: subtitleShadow[card.tone],
                 }}>
                   {card.subtitle}
                 </div>
