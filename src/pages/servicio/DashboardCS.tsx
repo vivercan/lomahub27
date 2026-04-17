@@ -120,23 +120,31 @@ export default function DashboardCS() {
   return (
     <ModuleLayout titulo="Servicio a Clientes" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '20px' }}>
           {CARDS.map(card => {
             const isH = hovered === card.id
             const isP = pressed === card.id
+
+            /* ── Double-layer gradient (from tokens.ts pattern) ── */
+            const bgNormal =
+              'linear-gradient(155deg, rgba(18,32,58,0.96) 0%, rgba(12,22,42,0.98) 35%, rgba(8,16,32,1) 70%, rgba(6,12,24,1) 100%), ' +
+              'linear-gradient(135deg, rgba(180,100,50,0.28) 0%, rgba(60,90,140,0.25) 50%, rgba(180,100,50,0.28) 100%)'
+            const bgHover =
+              'linear-gradient(155deg, rgba(28,48,82,1) 0%, rgba(20,35,62,1) 35%, rgba(14,24,45,1) 70%, rgba(10,18,35,1) 100%), ' +
+              'linear-gradient(135deg, rgba(240,160,80,0.65) 0%, rgba(220,140,70,0.6) 25%, rgba(70,110,170,0.4) 50%, rgba(220,140,70,0.6) 75%, rgba(240,160,80,0.65) 100%)'
+
             return (
               <div
                 key={card.id}
                 style={{
                   aspectRatio: '1 / 0.9',
-                  borderRadius: '16px',
-                  padding: '20px',
-                  /* Solid navy — matches reference */
-                  background: '#161d2f',
-                  /* Contour border — visible blue, orange on hover */
-                  border: isH
-                    ? `1.5px solid rgba(${AMBER},0.50)`
-                    : '1.5px solid rgba(90,140,220,0.40)',
+                  borderRadius: '10px',
+                  padding: '24px 20px',
+                  /* Double gradient: layer1=card bg, layer2=border gradient */
+                  backgroundImage: isH ? bgHover : bgNormal,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                  border: '2px solid transparent',
                   cursor: 'pointer',
                   position: 'relative',
                   overflow: 'hidden',
@@ -145,17 +153,14 @@ export default function DashboardCS() {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   gap: '0px',
-                  transition: 'all 0.15s cubic-bezier(0.23,1,0.32,1)',
-                  /* Keycap: raised by default, sinks on press */
-                  transform: isP ? 'translateY(3px)' : isH ? 'translateY(-2px)' : 'none',
+                  transition: 'all 0.3s ease',
+                  transform: isP ? 'translateY(0px)' : isH ? 'translateY(-6px)' : 'translateY(0)',
                   boxShadow: isP
-                    /* Pressed — flat, sinks in */
-                    ? `0 1px 0 #080b12, 0 1px 3px rgba(0,0,0,0.30), inset 0 2px 4px rgba(0,0,0,0.25)`
+                    ? '0 1px 2px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(0,0,0,0.2)'
                     : isH
-                    /* Hovered — lifted with orange glow */
-                    ? `0 5px 0 #080b12, 0 8px 20px rgba(0,0,0,0.50), 0 0 24px rgba(${AMBER},0.14), 0 0 48px rgba(${AMBER},0.07), inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.20)`
-                    /* Default — keycap base shadow (thick + spread) */
-                    : `0 4px 0 #080b12, 0 6px 12px rgba(0,0,0,0.40), 0 10px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.20)`,
+                    ? '0 4px 8px rgba(0,0,0,0.4), 0 10px 24px rgba(0,0,0,0.6), 0 0 30px rgba(240,160,80,0.15), inset 0 1px 0 rgba(255,255,255,0.05)'
+                    : '0 2px 4px rgba(0,0,0,0.3), 0 6px 16px rgba(0,0,0,0.5), inset -2px -2px 4px rgba(0,0,0,0.2)',
+                  fontFamily: D.font,
                 }}
                 onMouseEnter={() => setHovered(card.id)}
                 onMouseLeave={() => { setHovered(null); setPressed(null) }}
@@ -163,32 +168,26 @@ export default function DashboardCS() {
                 onMouseUp={() => setPressed(null)}
                 onClick={() => navigate(card.route)}
               >
-                {/* Top amber glow line on hover */}
+                {/* Top shine — glass reflection (35% height like reference) */}
                 <div style={{
-                  position: 'absolute', top: 0, left: '15%', right: '15%', height: '2px',
-                  background: isH ? `linear-gradient(90deg, transparent, rgba(${AMBER},0.70), transparent)` : 'transparent',
-                  transition: 'background 0.4s ease',
-                  borderRadius: '0 0 2px 2px',
-                  filter: isH ? `drop-shadow(0 0 6px rgba(${AMBER},0.50))` : 'none',
-                }} />
-
-                {/* Subtle top reflection */}
-                <div style={{
-                  position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: '16px',
-                  background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 25%, transparent 85%, rgba(0,0,0,0.10) 100%)',
+                  position: 'absolute', top: 0, left: 0, right: 0, height: '35%',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%)',
+                  borderTopLeftRadius: '10px', borderTopRightRadius: '10px',
+                  pointerEvents: 'none', opacity: isH ? 0.5 : 0.3,
+                  transition: 'opacity 0.3s ease',
                 }} />
 
                 {/* Label — at TOP */}
                 <div style={{
-                  fontFamily: D.font, fontSize: '17px', fontWeight: 700, color: 'rgba(255,255,255,0.88)',
-                  textAlign: 'center', position: 'relative', zIndex: 1, letterSpacing: '-0.01em',
-                  lineHeight: 1.2, paddingTop: '4px',
+                  fontFamily: D.font, fontSize: '17px', fontWeight: 600, color: '#ffffff',
+                  textAlign: 'center', position: 'relative', zIndex: 1, letterSpacing: '0.02em',
+                  lineHeight: 1.2, paddingTop: '2px',
                 }}>
                   {card.label}
                 </div>
 
                 {/* Icon — centered, prominent */}
-                <div style={{ position: 'relative', zIndex: 1, transition: 'transform 0.4s ease', transform: isH ? 'scale(1.08)' : 'none' }}>
+                <div style={{ position: 'relative', zIndex: 1, transition: 'transform 0.3s ease', transform: isH ? 'scale(1.05)' : 'none' }}>
                   <IcoCenter set={card.iconSet} name={card.iconName} hovered={isH} />
                 </div>
 
@@ -196,14 +195,14 @@ export default function DashboardCS() {
                 <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
                   <div style={{
                     fontFamily: D.font, fontSize: '22px', fontWeight: 600,
-                    color: isH ? `rgba(${AMBER},1)` : 'rgba(255,255,255,0.95)',
+                    color: isH ? 'rgba(240,160,80,1)' : 'rgba(255,255,255,0.95)',
                     lineHeight: 1, transition: 'color 0.3s ease',
                   }}>
                     {loading ? '—' : (kpis[card.id] ?? 0).toLocaleString()}
                   </div>
                   <div style={{
                     fontFamily: D.font, fontSize: '10px', fontWeight: 500,
-                    color: 'rgba(255,255,255,0.45)', marginTop: 3, letterSpacing: '0.03em',
+                    color: 'rgba(255,255,255,0.50)', marginTop: 3, letterSpacing: '0.03em',
                     textTransform: 'uppercase',
                   }}>
                     {card.kpiLabel}
