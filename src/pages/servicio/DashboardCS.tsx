@@ -60,7 +60,7 @@ const IconTickets     = () => <IcoImg set="bi" name="ticket-perforated" />
 const IconClientes    = () => <IcoImg set="gridicons" name="multiple-users" />
 const IconImpo        = () => <IcoImg set="ion" name="cloud-upload" />
 const IconExpo        = () => <IcoImg set="ion" name="cloud-download" />
-const IconDespachoIA  = () => <IcoImg set="streamline" name="brain" />
+const IconDespachoIA  = () => <IcoImg set="streamline" name="route-turn-right" />
 const IconMetricas    = () => <IcoImg set="bi" name="graph-up" />
 const IconActividades = () => <IcoImg set="bi" name="list-check" />
 
@@ -71,17 +71,19 @@ interface LandingCard {
   route: string
   kpiLabel: string
   icon: React.ReactNode
-  accent: string
+  accent: string      // primary color
+  accent2: string     // secondary gradient color
+  glow: string        // shadow glow color
 }
 
 const CARDS: LandingCard[] = [
-  { id: 'tickets', label: 'Tickets', route: '/servicio/tickets', kpiLabel: 'Activos', icon: <IconTickets />, accent: '#2563EB' },
-  { id: 'clientes', label: 'Clientes Activos', route: '/clientes/corporativos', kpiLabel: 'Clientes', icon: <IconClientes />, accent: '#059669' },
-  { id: 'impo', label: 'Importación', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO (30d)', icon: <IconImpo />, accent: '#7C3AED' },
-  { id: 'expo', label: 'Exportación', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO (30d)', icon: <IconExpo />, accent: '#D97706' },
-  { id: 'despacho_ia', label: 'Despacho IA', route: '/operaciones/torre-control', kpiLabel: 'Viajes activos', icon: <IconDespachoIA />, accent: '#15803D' },
-  { id: 'metricas', label: 'Métricas Servicio', route: '/servicio/metricas', kpiLabel: 'Dashboard', icon: <IconMetricas />, accent: '#6366F1' },
-  { id: 'actividades', label: 'Actividades', route: '/actividades', kpiLabel: 'Pendientes', icon: <IconActividades />, accent: '#0891B2' },
+  { id: 'tickets', label: 'Tickets', route: '/servicio/tickets', kpiLabel: 'Activos', icon: <IconTickets />, accent: '#2563EB', accent2: '#1e40af', glow: '37,99,235' },
+  { id: 'clientes', label: 'Clientes Activos', route: '/clientes/corporativos', kpiLabel: 'Clientes', icon: <IconClientes />, accent: '#059669', accent2: '#065f46', glow: '5,150,105' },
+  { id: 'impo', label: 'Importación', route: '/servicio/importacion', kpiLabel: 'Viajes IMPO (30d)', icon: <IconImpo />, accent: '#7C3AED', accent2: '#5b21b6', glow: '124,58,237' },
+  { id: 'expo', label: 'Exportación', route: '/servicio/exportacion', kpiLabel: 'Viajes EXPO (30d)', icon: <IconExpo />, accent: '#D97706', accent2: '#b45309', glow: '217,119,6' },
+  { id: 'despacho_ia', label: 'Despacho IA', route: '/operaciones/torre-control', kpiLabel: 'Viajes activos', icon: <IconDespachoIA />, accent: '#15803D', accent2: '#064e3b', glow: '21,128,61' },
+  { id: 'metricas', label: 'Métricas Servicio', route: '/servicio/metricas', kpiLabel: 'Dashboard', icon: <IconMetricas />, accent: '#6366F1', accent2: '#4338ca', glow: '99,102,241' },
+  { id: 'actividades', label: 'Actividades', route: '/actividades', kpiLabel: 'Pendientes', icon: <IconActividades />, accent: '#0891B2', accent2: '#155e75', glow: '8,145,178' },
 ]
 
 /* —— Helper: count viajes_anodos by tipo with pagination —— */
@@ -159,23 +161,26 @@ export default function DashboardCS() {
     fetchKpis()
   }, [fetchKpis])
 
-  const getCardStyle = (isH: boolean, accent: string): React.CSSProperties => ({
+  const getCardStyle = (isH: boolean, card: LandingCard): React.CSSProperties => ({
     aspectRatio: '1 / 0.75',
-    borderRadius: D.cardRadius,
+    borderRadius: '16px',
     padding: '22px',
-    background: `linear-gradient(155deg, ${adjustColor(accent, 12)} 0%, ${accent} 35%, ${adjustColor(accent, -35)} 100%)`,
-    border: 'none',
+    /* Multi-stop gradient: bright top-left → base → deep bottom-right */
+    background: `linear-gradient(145deg, ${adjustColor(card.accent, 20)} 0%, ${card.accent} 30%, ${card.accent2} 70%, ${adjustColor(card.accent2, -15)} 100%)`,
+    /* Glass edge border */
+    border: '1px solid rgba(255,255,255,0.15)',
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    transition: 'transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s cubic-bezier(0.23,1,0.32,1)',
-    transform: isH ? 'translateY(-4px)' : 'none',
+    transition: 'all 0.5s cubic-bezier(0.23,1,0.32,1)',
+    transform: isH ? 'translateY(-6px) scale(1.02)' : 'none',
+    /* Colored shadows — glow matches card color */
     boxShadow: isH
-      ? `0 12px 24px rgba(0,0,0,0.25), 0 24px 48px rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -2px 0 rgba(0,0,0,0.20)`
-      : `0 6px 14px rgba(0,0,0,0.20), 0 14px 36px rgba(0,0,0,0.14), 0 1px 3px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -2px 0 rgba(0,0,0,0.15)`,
+      ? `0 8px 20px rgba(${card.glow},0.35), 0 20px 50px rgba(${card.glow},0.20), 0 0 0 1px rgba(255,255,255,0.10), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.20)`
+      : `0 4px 12px rgba(${card.glow},0.25), 0 12px 32px rgba(${card.glow},0.15), 0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.20), inset 0 -1px 0 rgba(0,0,0,0.15)`,
   })
 
   return (
@@ -187,25 +192,31 @@ export default function DashboardCS() {
             return (
               <div
                 key={card.id}
-                style={getCardStyle(isH, card.accent)}
+                style={getCardStyle(isH, card)}
                 onMouseEnter={() => setHovered(card.id)}
                 onMouseLeave={() => setHovered(null)}
                 onClick={() => navigate(card.route)}
               >
-                {/* Top-edge light catch for 3D depth */}
-                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: '14px', background: 'linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 35%, rgba(0,0,0,0.12) 100%)' }} />
-                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px', transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)', transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none' }}>
+                {/* Glass shine — top-left highlight */}
+                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.05) 30%, transparent 60%, rgba(0,0,0,0.10) 100%)' }} />
+                {/* Subtle noise texture for depth */}
+                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: '16px', opacity: 0.03, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")', backgroundSize: '150px 150px' }} />
+                {/* Icon */}
+                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', borderRadius: '16px', transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)', transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none' }}>
                   {card.icon}
                 </div>
-                <div style={{ position: 'absolute', top: 14, right: 14, width: D.dotSize, height: D.dotSize, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.35)' }} />
-                <div style={{ fontFamily: D.font, fontSize: D.titleSize, fontWeight: D.titleWeight, color: '#FFFFFF', lineHeight: 1.2, position: 'relative', zIndex: 1, textAlign: 'center' }}>
+                {/* Status dot */}
+                <div style={{ position: 'absolute', top: 14, right: 14, width: '7px', height: '7px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.40)', boxShadow: '0 0 4px rgba(255,255,255,0.30)' }} />
+                {/* Title */}
+                <div style={{ fontFamily: D.font, fontSize: D.titleSize, fontWeight: D.titleWeight, color: '#FFFFFF', lineHeight: 1.2, position: 'relative', zIndex: 1, textAlign: 'center', textShadow: '0 1px 2px rgba(0,0,0,0.20)', letterSpacing: '-0.01em' }}>
                   {card.label}
                 </div>
+                {/* KPI */}
                 <div>
-                  <div style={{ fontFamily: D.font, fontSize: D.kpiSize, fontWeight: D.kpiWeight, color: '#FFFFFF', lineHeight: 1, position: 'relative', zIndex: 1 }}>
+                  <div style={{ fontFamily: D.font, fontSize: D.kpiSize, fontWeight: D.kpiWeight, color: '#FFFFFF', lineHeight: 1, position: 'relative', zIndex: 1, textShadow: '0 2px 4px rgba(0,0,0,0.15)' }}>
                     {loading ? '—' : (kpis[card.id] ?? 0).toLocaleString()}
                   </div>
-                  <div style={{ fontFamily: D.font, fontSize: D.subSize, color: 'rgba(255,255,255,0.7)', marginTop: 3, position: 'relative', zIndex: 1 }}>
+                  <div style={{ fontFamily: D.font, fontSize: D.subSize, color: 'rgba(255,255,255,0.75)', marginTop: 4, position: 'relative', zIndex: 1, fontWeight: 500, letterSpacing: '0.02em' }}>
                     {card.kpiLabel}
                   </div>
                 </div>
