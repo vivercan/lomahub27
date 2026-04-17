@@ -21,21 +21,29 @@ const AMBER = '255,120,0'
 /* ── Icon component — centered, prominent, thin-stroke ── */
 const STROKE_SCALE = 0.75
 
-const IcoCenter = ({ set, name }: { set: string; name: string }) => {
-  const [src, setSrc] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
+const IcoCenter = ({ set, name, hovered }: { set: string; name: string; hovered?: boolean }) => {
+  const [srcWhite, setSrcWhite] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
+  const [srcOrange, setSrcOrange] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ff7800`)
+
   useEffect(() => {
+    const thinify = (raw: string) =>
+      raw.replace(/stroke-width="([^"]+)"/g, (_, w) =>
+        `stroke-width="${(parseFloat(w) * STROKE_SCALE).toFixed(2)}"`)
+
     fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
       .then(r => r.text())
-      .then(raw => {
-        const thin = raw.replace(/stroke-width="([^"]+)"/g, (_, w) =>
-          `stroke-width="${(parseFloat(w) * STROKE_SCALE).toFixed(2)}"`)
-        setSrc(`data:image/svg+xml,${encodeURIComponent(thin)}`)
-      })
+      .then(raw => setSrcWhite(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
+      .catch(() => {})
+
+    fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ff7800`)
+      .then(r => r.text())
+      .then(raw => setSrcOrange(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
       .catch(() => {})
   }, [set, name])
+
   return (
-    <img src={src} alt=""
-      style={{ width: '79px', height: '79px', opacity: 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }} />
+    <img src={hovered ? srcOrange : srcWhite} alt=""
+      style={{ width: '79px', height: '79px', opacity: 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))', transition: 'filter 0.3s ease' }} />
   )
 }
 
@@ -173,7 +181,7 @@ export default function DashboardCS() {
 
                 {/* Icon — centered, prominent */}
                 <div style={{ position: 'relative', zIndex: 1, transition: 'transform 0.4s ease', transform: isH ? 'scale(1.08)' : 'none' }}>
-                  <IcoCenter set={card.iconSet} name={card.iconName} />
+                  <IcoCenter set={card.iconSet} name={card.iconName} hovered={isH} />
                 </div>
 
                 {/* KPI + sublabel */}
