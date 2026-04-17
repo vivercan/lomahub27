@@ -35,7 +35,7 @@ const IcoCenter = ({ set, name }: { set: string; name: string }) => {
   }, [set, name])
   return (
     <img src={src} alt=""
-      style={{ width: '54px', height: '54px', opacity: 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }} />
+      style={{ width: '72px', height: '72px', opacity: 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }} />
   )
 }
 
@@ -54,7 +54,7 @@ const CARDS: CardDef[] = [
   { id: 'clientes',     label: 'Clientes Activos',  route: '/clientes/corporativos',    kpiLabel: 'Clientes',        iconSet: 'gridicons',  iconName: 'multiple-users' },
   { id: 'impo',         label: 'Importación',       route: '/servicio/importacion',     kpiLabel: 'Viajes IMPO (30d)', iconSet: 'ion',      iconName: 'cloud-download' },
   { id: 'expo',         label: 'Exportación',       route: '/servicio/exportacion',     kpiLabel: 'Viajes EXPO (30d)', iconSet: 'ion',      iconName: 'cloud-upload' },
-  { id: 'despacho_ia',  label: 'Despacho IA',       route: '/operaciones/torre-control', kpiLabel: 'Viajes activos',  iconSet: 'streamline', iconName: 'artificial-intelligence-spark' },
+  { id: 'despacho_ia',  label: 'Despacho IA',       route: '/operaciones/torre-control', kpiLabel: 'Viajes activos',  iconSet: 'bi',         iconName: 'cpu' },
   { id: 'metricas',     label: 'Métricas Servicio', route: '/servicio/metricas',        kpiLabel: 'Dashboard',       iconSet: 'bi',        iconName: 'graph-up' },
   { id: 'actividades',  label: 'Actividades',       route: '/actividades',              kpiLabel: 'Pendientes',      iconSet: 'bi',        iconName: 'list-check' },
 ]
