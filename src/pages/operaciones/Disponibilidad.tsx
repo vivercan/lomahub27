@@ -250,7 +250,7 @@ export default function Disponibilidad(): ReactElement {
 
   // ─── RENDER ─────────────────────────────────────────────────────────
   return (
-    <ModuleLayout titulo="Disponibilidad de Flota" subtitulo="Visibilidad por Plaza y Tipo de Equipo">
+    <ModuleLayout titulo="Disponibilidad de Flota" subtitulo="Visibilidad por Plaza y Tipo de Equipo" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
       <div className="space-y-6">
 
         {/* Refresh bar */}

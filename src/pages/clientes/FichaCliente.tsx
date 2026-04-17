@@ -79,7 +79,7 @@ export default function FichaCliente(): ReactElement {
 
   if (notFound) {
     return (
-      <ModuleLayout titulo="Cliente">
+      <ModuleLayout titulo="Cliente" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
         <Card>
           <div style={{ textAlign: 'center', padding: tokens.spacing.lg }}>
             <p style={{ color: tokens.colors.textPrimary, fontSize: '18px', marginBottom: tokens.spacing.md }}>
@@ -96,7 +96,7 @@ export default function FichaCliente(): ReactElement {
 
   if (!cliente) {
     return (
-      <ModuleLayout titulo="Cliente">
+      <ModuleLayout titulo="Cliente" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
         <Card>
           <div style={{ textAlign: 'center', padding: tokens.spacing.lg }}>
             <p style={{ color: tokens.colors.textSecondary }}>Cargando...</p>
@@ -134,7 +134,7 @@ export default function FichaCliente(): ReactElement {
   ];
 
   return (
-    <ModuleLayout titulo={`Cliente — ${cliente.razon_social}`}>
+    <ModuleLayout titulo={`Cliente — ${cliente.razon_social}`} moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: tokens.spacing.lg }}>
         {/* Left Column: Datos Maestros */}
         <Card>

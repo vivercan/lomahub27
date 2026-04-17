@@ -108,7 +108,7 @@ export default function Cartera() {
   ];
 
   return (
-    <ModuleLayout titulo="CXC — Cartera de Clientes">
+    <ModuleLayout titulo="CXC — Cartera de Clientes" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
       <div
         style={{
           display: 'grid',

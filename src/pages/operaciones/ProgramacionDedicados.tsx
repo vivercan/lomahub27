@@ -134,6 +134,7 @@ export default function ProgramacionDedicados() {
   return (
     <ModuleLayout
       titulo="Programación Dedicados"
+      moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}
       subtitulo="Asignación semanal de tractos a clientes dedicados"
       acciones={<Button size="sm"><Plus size={16} /> Nueva Asignación</Button>}
     >

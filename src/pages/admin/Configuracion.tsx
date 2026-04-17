@@ -333,7 +333,7 @@ export default function Configuracion() {
   })
 
   return (
-    <ModuleLayout titulo="Configuración" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
+    <ModuleLayout titulo="Configuración">
       <div style={{
         background: 'linear-gradient(180deg, #E2E6EC 0%, #D5DAE3 100%)',
         minHeight: 'calc(100vh - 140px)',

@@ -92,7 +92,7 @@ export default function DashboardOperaciones() {
   })
 
   return (
-    <ModuleLayout titulo="Operaciones" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
+    <ModuleLayout titulo="Operaciones">
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
           {CARDS.map(card => {

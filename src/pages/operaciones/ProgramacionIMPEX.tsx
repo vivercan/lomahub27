@@ -236,7 +236,7 @@ export default function ProgramacionIMPEX() {
   ];
 
   return (
-    <ModuleLayout titulo="Programación IMPEX">
+    <ModuleLayout titulo="Programación IMPEX" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
       <div style={{ padding: tokens.spacing.lg }}>
         {/* KPI Cards Row */}
         <div

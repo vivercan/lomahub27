@@ -245,7 +245,7 @@ export default function AgingReport() {
   ];
 
   return (
-    <ModuleLayout titulo="CXC — Aging Report">
+    <ModuleLayout titulo="CXC — Aging Report" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
       {/* KPI Cards */}
       <div style={{
         display: 'grid',

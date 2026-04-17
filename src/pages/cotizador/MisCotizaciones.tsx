@@ -68,7 +68,7 @@ export default function MisCotizaciones() {
   }
 
   return (
-    <ModuleLayout titulo="Mis Cotizaciones" subtitulo="Cotizador Cross-Border" moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}>
+    <ModuleLayout titulo="Mis Cotizaciones" subtitulo="Cotizador Cross-Border">
       <div style={{ padding: '24px', maxHeight: '100vh', overflow: 'hidden' }}>
         {/* KPI Bar */}
         <div style={{ display: 'flex', gap: '16px', marginBottom: '20px' }}>

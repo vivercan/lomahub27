@@ -34,7 +34,7 @@ export default function WhatsApp() {
   };
 
   return (
-    <ModuleLayout titulo="WhatsApp — Bandeja de Mensajes">
+    <ModuleLayout titulo="WhatsApp — Bandeja de Mensajes" moduloPadre={{ nombre: 'Servicio', ruta: '/servicio/dashboard' }}>
       <div
         style={{
           display: 'grid',

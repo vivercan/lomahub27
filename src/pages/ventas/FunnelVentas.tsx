@@ -305,7 +305,7 @@ export default function FunnelVentas() {
   ];
 
   return (
-    <ModuleLayout titulo="Comercial — Funnel de Ventas">
+    <ModuleLayout titulo="Comercial — Funnel de Ventas" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
       {/* Vendedor Filter - only show for admin/superadmin */}
       {(user?.rol === 'superadmin' || user?.rol === 'admin') && (
         <div style={{

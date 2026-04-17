@@ -75,7 +75,7 @@ export default function Dedicados(): ReactElement {
     k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
   return (
-    <ModuleLayout titulo="Monitor Dedicados">
+    <ModuleLayout titulo="Monitor Dedicados" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
       {/* KPI row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
         {[

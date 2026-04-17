@@ -160,7 +160,7 @@ export default function ProspeccionExterna(): ReactElement {
 
   /* ─── render ─── */
   return (
-    <ModuleLayout titulo="Prospección Externa">
+    <ModuleLayout titulo="Prospección Externa" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
       <div style={{ padding: tokens.spacing.lg, minHeight: '100vh', background: tokens.colors.bgMain }}>
         {/* KPI Cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>

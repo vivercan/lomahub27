@@ -221,7 +221,7 @@ export default function NuevaCotizacion() {
   const showUSA = tipoOp && needsTramoUSA(op)
 
   return (
-    <ModuleLayout titulo="Nueva Cotización" subtitulo="Cotizador cross-border V28">
+    <ModuleLayout titulo="Nueva Cotización" subtitulo="Cotizador cross-border V28" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
       <form onSubmit={handleSubmit}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '1.25rem', maxHeight: 'calc(100vh - 140px)', overflow: 'hidden' }}>
 

@@ -312,7 +312,7 @@ export default function VentasAnalytics() {
     <ModuleLayout
       titulo="Ventas"
       subtitulo="Analytics de operaciones cerradas"
-      moduloPadre={{ nombre: 'Dashboard', ruta: '/dashboard' }}
+      moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}
     >
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');`}</style>
 

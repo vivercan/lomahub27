@@ -67,7 +67,7 @@ export default function ChiefOfStaffHome() {
   ]
 
   return (
-    <ModuleLayout titulo="Chief of Staff">
+    <ModuleLayout titulo="Chief of Staff" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
     <div style={{
       minHeight: '100vh', background: t.colors.bgMain,
       fontFamily: t.fonts.body, color: t.colors.textPrimary,

@@ -364,6 +364,7 @@ export default function RadiografiaFinanciera() {
     <ModuleLayout
       titulo={data ? `Radiografía — ${data.cliente.razon_social}` : 'Radiografía Financiera'}
       subtitulo="Perfil financiero 360° del cliente"
+      moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}
       acciones={
         <div className="flex items-center gap-2">
           <button
