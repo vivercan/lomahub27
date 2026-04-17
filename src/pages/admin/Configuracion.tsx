@@ -372,7 +372,7 @@ export default function Configuracion() {
                 {/* Title */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
-                  fontSize: '19px',
+                  fontSize: '22px',
                   fontWeight: 800,
                   color: '#FFFFFF',
                   lineHeight: 1.15,
@@ -389,7 +389,7 @@ export default function Configuracion() {
                 {/* Subtitle */}
                 <div style={{
                   fontFamily: DASH.fontBody,
-                  fontSize: '13px',
+                  fontSize: '15px',
                   fontWeight: 600,
                   color: 'rgba(255,255,255,0.85)',
                   marginTop: '6px',
@@ -462,7 +462,7 @@ export default function Configuracion() {
                 {/* Title */}
                 <div style={{
                   fontFamily: DASH.fontFamily,
-                  fontSize: '19px',
+                  fontSize: '22px',
                   fontWeight: 800,
                   color: '#FFFFFF',
                   lineHeight: 1.15,
@@ -479,7 +479,7 @@ export default function Configuracion() {
                 {/* Subtitle */}
                 <div style={{
                   fontFamily: DASH.fontBody,
-                  fontSize: '13px',
+                  fontSize: '15px',
                   fontWeight: 600,
                   color: 'rgba(255,255,255,0.85)',
                   marginTop: '6px',

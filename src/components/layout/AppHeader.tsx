@@ -282,7 +282,7 @@ export default function AppHeader({
             </span>
           </div>
 
-          {/* Bell — Dark 3D pushable button */}
+          {/* Bell — Inset concave keycap style */}
           <div style={{ position: 'relative' }}>
             <button
               ref={bellButtonRef}
@@ -291,7 +291,7 @@ export default function AppHeader({
               style={{
                 width: 40,
                 height: 40,
-                background: 'linear-gradient(180deg, #4B5563 0%, #374151 50%, #1F2937 100%)',
+                background: 'linear-gradient(180deg, #D1D5DB 0%, #E5E7EB 60%, #F3F4F6 100%)',
                 border: 'none',
                 borderRadius: '50%',
                 cursor: 'pointer',
@@ -300,34 +300,30 @@ export default function AppHeader({
                 justifyContent: 'center',
                 position: 'relative',
                 transition: 'all 0.14s cubic-bezier(0.23,1,0.32,1)',
-                boxShadow: `0 4px 0 rgba(0,0,0,0.35),
-                  0 5px 3px rgba(0,0,0,0.20),
-                  0 8px 12px -3px rgba(0,0,0,0.18),
-                  inset 0 2px 0 rgba(255,255,255,0.20),
-                  inset 0 -2px 0 rgba(0,0,0,0.25),
-                  inset 2px 0 0 rgba(255,255,255,0.10),
-                  inset -2px 0 0 rgba(0,0,0,0.15)`,
+                boxShadow: `inset 0 3px 6px rgba(0,0,0,0.22),
+                  inset 0 1px 2px rgba(0,0,0,0.18),
+                  inset 0 -2px 1px rgba(255,255,255,0.70),
+                  0 1px 0 rgba(255,255,255,0.90),
+                  0 -1px 2px rgba(0,0,0,0.08)`,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(180deg, #6B7280 0%, #4B5563 50%, #374151 100%)';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.38), 0 6px 4px rgba(0,0,0,0.22), 0 10px 16px -3px rgba(0,0,0,0.20), inset 0 2px 0 rgba(255,255,255,0.22), inset 0 -2px 0 rgba(0,0,0,0.28), inset 2px 0 0 rgba(255,255,255,0.12), inset -2px 0 0 rgba(0,0,0,0.18)`;
+                e.currentTarget.style.background = 'linear-gradient(180deg, #C9CDD5 0%, #DDE0E6 60%, #ECEEF2 100%)';
+                e.currentTarget.style.boxShadow = `inset 0 3px 6px rgba(0,0,0,0.25), inset 0 1px 2px rgba(0,0,0,0.20), inset 0 -2px 1px rgba(255,255,255,0.65), 0 1px 0 rgba(255,255,255,0.85), 0 -1px 2px rgba(0,0,0,0.10)`;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(180deg, #4B5563 0%, #374151 50%, #1F2937 100%)';
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = `0 4px 0 rgba(0,0,0,0.35), 0 5px 3px rgba(0,0,0,0.20), 0 8px 12px -3px rgba(0,0,0,0.18), inset 0 2px 0 rgba(255,255,255,0.20), inset 0 -2px 0 rgba(0,0,0,0.25), inset 2px 0 0 rgba(255,255,255,0.10), inset -2px 0 0 rgba(0,0,0,0.15)`;
+                e.currentTarget.style.background = 'linear-gradient(180deg, #D1D5DB 0%, #E5E7EB 60%, #F3F4F6 100%)';
+                e.currentTarget.style.boxShadow = `inset 0 3px 6px rgba(0,0,0,0.22), inset 0 1px 2px rgba(0,0,0,0.18), inset 0 -2px 1px rgba(255,255,255,0.70), 0 1px 0 rgba(255,255,255,0.90), 0 -1px 2px rgba(0,0,0,0.08)`;
               }}
               onMouseDown={(e) => {
-                e.currentTarget.style.transform = 'translateY(4px)';
-                e.currentTarget.style.boxShadow = `0 1px 0 rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.25), inset 0 3px 5px rgba(0,0,0,0.30), inset 0 1px 2px rgba(0,0,0,0.35), inset 0 -1px 0 rgba(255,255,255,0.12)`;
+                e.currentTarget.style.background = 'linear-gradient(180deg, #BCC0C8 0%, #D5D8DE 60%, #E2E4E8 100%)';
+                e.currentTarget.style.boxShadow = `inset 0 4px 8px rgba(0,0,0,0.30), inset 0 2px 4px rgba(0,0,0,0.25), inset 0 -1px 1px rgba(255,255,255,0.50), 0 1px 0 rgba(255,255,255,0.80)`;
               }}
               onMouseUp={(e) => {
-                e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.38), 0 6px 4px rgba(0,0,0,0.22), 0 10px 16px -3px rgba(0,0,0,0.20), inset 0 2px 0 rgba(255,255,255,0.22), inset 0 -2px 0 rgba(0,0,0,0.28), inset 2px 0 0 rgba(255,255,255,0.12), inset -2px 0 0 rgba(0,0,0,0.18)`;
+                e.currentTarget.style.background = 'linear-gradient(180deg, #C9CDD5 0%, #DDE0E6 60%, #ECEEF2 100%)';
+                e.currentTarget.style.boxShadow = `inset 0 3px 6px rgba(0,0,0,0.25), inset 0 1px 2px rgba(0,0,0,0.20), inset 0 -2px 1px rgba(255,255,255,0.65), 0 1px 0 rgba(255,255,255,0.85), 0 -1px 2px rgba(0,0,0,0.10)`;
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E5E7EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4B5563" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
               </svg>
@@ -471,14 +467,14 @@ export default function AppHeader({
             )}
           </div>
 
-          {/* Logout — Dark 3D pushable button */}
+          {/* Logout — Inset concave keycap style */}
           <button
             onClick={onLogout}
             title="Cerrar sesión"
             style={{
               width: 40,
               height: 40,
-              background: 'linear-gradient(180deg, #4B5563 0%, #374151 50%, #1F2937 100%)',
+              background: 'linear-gradient(180deg, #D1D5DB 0%, #E5E7EB 60%, #F3F4F6 100%)',
               border: 'none',
               borderRadius: '50%',
               cursor: 'pointer',
@@ -486,34 +482,30 @@ export default function AppHeader({
               alignItems: 'center',
               justifyContent: 'center',
               transition: 'all 0.14s cubic-bezier(0.23,1,0.32,1)',
-              boxShadow: `0 4px 0 rgba(0,0,0,0.35),
-                0 5px 3px rgba(0,0,0,0.20),
-                0 8px 12px -3px rgba(0,0,0,0.18),
-                inset 0 2px 0 rgba(255,255,255,0.20),
-                inset 0 -2px 0 rgba(0,0,0,0.25),
-                inset 2px 0 0 rgba(255,255,255,0.10),
-                inset -2px 0 0 rgba(0,0,0,0.15)`,
+              boxShadow: `inset 0 3px 6px rgba(0,0,0,0.22),
+                inset 0 1px 2px rgba(0,0,0,0.18),
+                inset 0 -2px 1px rgba(255,255,255,0.70),
+                0 1px 0 rgba(255,255,255,0.90),
+                0 -1px 2px rgba(0,0,0,0.08)`,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(180deg, #6B7280 0%, #4B5563 50%, #374151 100%)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.38), 0 6px 4px rgba(0,0,0,0.22), 0 10px 16px -3px rgba(0,0,0,0.20), inset 0 2px 0 rgba(255,255,255,0.22), inset 0 -2px 0 rgba(0,0,0,0.28), inset 2px 0 0 rgba(255,255,255,0.12), inset -2px 0 0 rgba(0,0,0,0.18)`;
+              e.currentTarget.style.background = 'linear-gradient(180deg, #C9CDD5 0%, #DDE0E6 60%, #ECEEF2 100%)';
+              e.currentTarget.style.boxShadow = `inset 0 3px 6px rgba(0,0,0,0.25), inset 0 1px 2px rgba(0,0,0,0.20), inset 0 -2px 1px rgba(255,255,255,0.65), 0 1px 0 rgba(255,255,255,0.85), 0 -1px 2px rgba(0,0,0,0.10)`;
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(180deg, #4B5563 0%, #374151 50%, #1F2937 100%)';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = `0 4px 0 rgba(0,0,0,0.35), 0 5px 3px rgba(0,0,0,0.20), 0 8px 12px -3px rgba(0,0,0,0.18), inset 0 2px 0 rgba(255,255,255,0.20), inset 0 -2px 0 rgba(0,0,0,0.25), inset 2px 0 0 rgba(255,255,255,0.10), inset -2px 0 0 rgba(0,0,0,0.15)`;
+              e.currentTarget.style.background = 'linear-gradient(180deg, #D1D5DB 0%, #E5E7EB 60%, #F3F4F6 100%)';
+              e.currentTarget.style.boxShadow = `inset 0 3px 6px rgba(0,0,0,0.22), inset 0 1px 2px rgba(0,0,0,0.18), inset 0 -2px 1px rgba(255,255,255,0.70), 0 1px 0 rgba(255,255,255,0.90), 0 -1px 2px rgba(0,0,0,0.08)`;
             }}
             onMouseDown={(e) => {
-              e.currentTarget.style.transform = 'translateY(4px)';
-              e.currentTarget.style.boxShadow = `0 1px 0 rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.25), inset 0 3px 5px rgba(0,0,0,0.30), inset 0 1px 2px rgba(0,0,0,0.35), inset 0 -1px 0 rgba(255,255,255,0.12)`;
+              e.currentTarget.style.background = 'linear-gradient(180deg, #BCC0C8 0%, #D5D8DE 60%, #E2E4E8 100%)';
+              e.currentTarget.style.boxShadow = `inset 0 4px 8px rgba(0,0,0,0.30), inset 0 2px 4px rgba(0,0,0,0.25), inset 0 -1px 1px rgba(255,255,255,0.50), 0 1px 0 rgba(255,255,255,0.80)`;
             }}
             onMouseUp={(e) => {
-              e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.38), 0 6px 4px rgba(0,0,0,0.22), 0 10px 16px -3px rgba(0,0,0,0.20), inset 0 2px 0 rgba(255,255,255,0.22), inset 0 -2px 0 rgba(0,0,0,0.28), inset 2px 0 0 rgba(255,255,255,0.12), inset -2px 0 0 rgba(0,0,0,0.18)`;
+              e.currentTarget.style.background = 'linear-gradient(180deg, #C9CDD5 0%, #DDE0E6 60%, #ECEEF2 100%)';
+              e.currentTarget.style.boxShadow = `inset 0 3px 6px rgba(0,0,0,0.25), inset 0 1px 2px rgba(0,0,0,0.20), inset 0 -2px 1px rgba(255,255,255,0.65), 0 1px 0 rgba(255,255,255,0.85), 0 -1px 2px rgba(0,0,0,0.10)`;
             }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
               <line x1="12" y1="2" x2="12" y2="12" />
             </svg>
