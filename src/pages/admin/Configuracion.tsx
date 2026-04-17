@@ -131,32 +131,40 @@ const IcoDocumentos = () => (
   </svg></div>
 )
 
-/* Cerebro Tarifario — brain with AI / neural look */
+/* Cerebro Tarifario — chip / AI brain */
 const IcoCerebro = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    {/* Brain outline — left hemisphere */}
-    <path d="M100,18 Q60,18 52,45 Q44,72 58,90 Q68,104 85,112 L100,118" stroke={S} strokeWidth="2" />
-    {/* Brain outline — right hemisphere */}
-    <path d="M100,18 Q140,18 148,45 Q156,72 142,90 Q132,104 115,112 L100,118" stroke={S} strokeWidth="2" />
-    {/* Center fold */}
-    <path d="M100,24 L100,112" stroke={S2} strokeWidth="1.2" strokeDasharray="3 4" />
-    {/* Brain folds left */}
-    <path d="M62,52 Q78,48 90,58" stroke={S2} strokeWidth="1.5" />
-    <path d="M58,74 Q75,68 92,78" stroke={S2} strokeWidth="1.5" />
-    {/* Brain folds right */}
-    <path d="M138,52 Q122,48 110,58" stroke={S2} strokeWidth="1.5" />
-    <path d="M142,74 Q125,68 108,78" stroke={S2} strokeWidth="1.5" />
-    {/* Neural nodes — AI feel */}
-    <circle cx="72" cy="50" r="3" fill={S2} />
-    <circle cx="128" cy="50" r="3" fill={S2} />
-    <circle cx="66" cy="76" r="3" fill={S2} />
-    <circle cx="134" cy="76" r="3" fill={S2} />
-    <circle cx="100" cy="60" r="4" fill={S} />
-    {/* Neural connections */}
-    <line x1="75" y1="50" x2="96" y2="60" stroke={S2} strokeWidth="1" />
-    <line x1="125" y1="50" x2="104" y2="60" stroke={S2} strokeWidth="1" />
-    <line x1="69" y1="76" x2="96" y2="62" stroke={S2} strokeWidth="1" />
-    <line x1="131" y1="76" x2="104" y2="62" stroke={S2} strokeWidth="1" />
+    {/* Central chip square */}
+    <rect x="62" y="32" width="76" height="76" rx="12" stroke={S} strokeWidth="2" />
+    {/* Inner circuit — brain symbol */}
+    <circle cx="100" cy="70" r="18" stroke={S} strokeWidth="1.8" />
+    <path d="M100,52 L100,58 M100,82 L100,88" stroke={S2} strokeWidth="1.5" />
+    <path d="M82,70 L88,70 M112,70 L118,70" stroke={S2} strokeWidth="1.5" />
+    {/* AI dot center */}
+    <circle cx="100" cy="70" r="4" fill={S2} />
+    {/* Traces going out — left */}
+    <line x1="62" y1="50" x2="42" y2="50" stroke={S2} strokeWidth="1.5" />
+    <line x1="62" y1="70" x2="38" y2="70" stroke={S2} strokeWidth="1.5" />
+    <line x1="62" y1="90" x2="42" y2="90" stroke={S2} strokeWidth="1.5" />
+    {/* Traces going out — right */}
+    <line x1="138" y1="50" x2="158" y2="50" stroke={S2} strokeWidth="1.5" />
+    <line x1="138" y1="70" x2="162" y2="70" stroke={S2} strokeWidth="1.5" />
+    <line x1="138" y1="90" x2="158" y2="90" stroke={S2} strokeWidth="1.5" />
+    {/* Traces going out — top */}
+    <line x1="82" y1="32" x2="82" y2="16" stroke={S2} strokeWidth="1.5" />
+    <line x1="100" y1="32" x2="100" y2="12" stroke={S2} strokeWidth="1.5" />
+    <line x1="118" y1="32" x2="118" y2="16" stroke={S2} strokeWidth="1.5" />
+    {/* Traces going out — bottom */}
+    <line x1="82" y1="108" x2="82" y2="124" stroke={S2} strokeWidth="1.5" />
+    <line x1="100" y1="108" x2="100" y2="128" stroke={S2} strokeWidth="1.5" />
+    <line x1="118" y1="108" x2="118" y2="124" stroke={S2} strokeWidth="1.5" />
+    {/* Trace endpoints — small dots */}
+    <circle cx="42" cy="50" r="2" fill={S2} />
+    <circle cx="38" cy="70" r="2" fill={S2} />
+    <circle cx="42" cy="90" r="2" fill={S2} />
+    <circle cx="158" cy="50" r="2" fill={S2} />
+    <circle cx="162" cy="70" r="2" fill={S2} />
+    <circle cx="158" cy="90" r="2" fill={S2} />
   </svg></div>
 )
 
