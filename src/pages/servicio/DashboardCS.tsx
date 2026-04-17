@@ -133,15 +133,10 @@ export default function DashboardCS() {
                   padding: '20px',
                   /* Solid navy — matches reference */
                   background: '#161d2f',
-                  /* Keycap bevel border — light top/left, dark bottom/right */
-                  borderTop: isH
+                  /* Contour border — subtle blue-gray, brighter on hover */
+                  border: isH
                     ? `1.5px solid rgba(${AMBER},0.45)`
-                    : '1.5px solid rgba(255,255,255,0.10)',
-                  borderLeft: isH
-                    ? `1.5px solid rgba(${AMBER},0.25)`
-                    : '1.5px solid rgba(255,255,255,0.06)',
-                  borderRight: '1.5px solid rgba(0,0,0,0.40)',
-                  borderBottom: '1.5px solid rgba(0,0,0,0.50)',
+                    : '1.5px solid rgba(100,130,180,0.25)',
                   cursor: 'pointer',
                   position: 'relative',
                   overflow: 'hidden',
