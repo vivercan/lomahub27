@@ -33,95 +33,108 @@ function adjustColor(hex: string, amount: number): string {
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
 }
 
-const ICO_OPACITY = 0.18
+const ICO_OPACITY = 0.20
+const SW = 0.8  // ultra-thin stroke
 
-/* Custom thin-line SVG icon components — strokeWidth 1.2 for delicate feel */
+/* Shared wrapper for all icons */
+const IcoWrap = ({ children }: { children: React.ReactNode }) => (
+  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={SW} strokeLinecap="round" strokeLinejoin="round"
+      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
+      {children}
+    </svg>
+  </div>
+)
+
+/* Tickets → Headset / soporte al cliente */
 const IconTickets = () => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
-      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
-      <path d="M2 9V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3" />
-      <path d="M2 15v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3" />
-      <path d="M2 9a3 3 0 0 0 3 3 3 3 0 0 0-3 3" />
-      <path d="M22 9a3 3 0 0 1-3 3 3 3 0 0 1 3 3" />
-      <line x1="9" y1="4" x2="9" y2="8" strokeDasharray="2 2" />
-      <line x1="9" y1="16" x2="9" y2="20" strokeDasharray="2 2" />
-    </svg>
-  </div>
+  <IcoWrap>
+    <path d="M4 15v-3a8 8 0 0 1 16 0v3" />
+    <path d="M2 15.5a1.5 1.5 0 0 1 1.5-1.5H5v5H3.5A1.5 1.5 0 0 1 2 17.5v-2z" />
+    <path d="M22 15.5a1.5 1.5 0 0 0-1.5-1.5H19v5h1.5a1.5 1.5 0 0 0 1.5-1.5v-2z" />
+    <path d="M19 19v1a2 2 0 0 1-2 2h-4" />
+    <circle cx="12" cy="22" r="1" />
+  </IcoWrap>
 )
 
+/* Clientes Activos → Grupo elegante con nodo de red */
 const IconClientes = () => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
-      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
-      <circle cx="9" cy="7" r="3.5" />
-      <path d="M2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2" />
-      <circle cx="18" cy="8" r="2.5" />
-      <path d="M18 14c2.5 0 4 1.5 4 4v2" />
-    </svg>
-  </div>
+  <IcoWrap>
+    <circle cx="12" cy="7" r="3" />
+    <path d="M5 21v-1.5a4.5 4.5 0 0 1 4.5-4.5h5a4.5 4.5 0 0 1 4.5 4.5V21" />
+    <circle cx="5" cy="9" r="2" />
+    <path d="M5 13c-2 0-3.5 1.2-3.5 3v1" />
+    <circle cx="19" cy="9" r="2" />
+    <path d="M19 13c2 0 3.5 1.2 3.5 3v1" />
+  </IcoWrap>
 )
 
-/* Importación = flecha arriba + caja */
+/* Importación → flecha arriba + contenedor */
 const IconImpo = () => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
-      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
-      <path d="M3 14v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5" />
-      <polyline points="8,8 12,3 16,8" />
-      <line x1="12" y1="3" x2="12" y2="16" />
-    </svg>
-  </div>
+  <IcoWrap>
+    <path d="M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4" />
+    <polyline points="8,8 12,3 16,8" />
+    <line x1="12" y1="3" x2="12" y2="16" />
+  </IcoWrap>
 )
 
-/* Exportación = flecha abajo + caja */
+/* Exportación → flecha abajo + contenedor */
 const IconExpo = () => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
-      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
-      <path d="M3 14v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5" />
-      <polyline points="8,10 12,16 16,10" />
-      <line x1="12" y1="2" x2="12" y2="16" />
-    </svg>
-  </div>
+  <IcoWrap>
+    <path d="M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4" />
+    <polyline points="8,10 12,16 16,10" />
+    <line x1="12" y1="2" x2="12" y2="16" />
+  </IcoWrap>
 )
 
+/* Despacho IA → Camión con cerebro/circuito IA */
 const IconDespachoIA = () => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
-      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
-      <circle cx="12" cy="12" r="3" />
-      <path d="M12 1v4" /><path d="M12 19v4" />
-      <path d="M4.22 4.22l2.83 2.83" /><path d="M16.95 16.95l2.83 2.83" />
-      <path d="M1 12h4" /><path d="M19 12h4" />
-      <path d="M4.22 19.78l2.83-2.83" /><path d="M16.95 7.05l2.83-2.83" />
-    </svg>
-  </div>
+  <IcoWrap>
+    {/* Camión body */}
+    <rect x="1" y="12" width="14" height="7" rx="1" />
+    <path d="M15 15h4l2 2v2h-6v-4z" />
+    <circle cx="6" cy="21" r="1.5" />
+    <circle cx="18" cy="21" r="1.5" />
+    {/* Cerebro IA — nodos + conexiones arriba del camión */}
+    <circle cx="5" cy="6" r="1.2" />
+    <circle cx="11" cy="4" r="1.2" />
+    <circle cx="8" cy="9" r="1.2" />
+    <line x1="5" y1="6" x2="11" y2="4" />
+    <line x1="5" y1="6" x2="8" y2="9" />
+    <line x1="11" y1="4" x2="8" y2="9" />
+    <circle cx="14" cy="7" r="0.8" />
+    <line x1="11" y1="4" x2="14" y2="7" />
+    <line x1="8" y1="9" x2="14" y2="7" />
+  </IcoWrap>
 )
 
+/* Métricas → Speedometer / gauge elegante */
 const IconMetricas = () => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
-      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
-      <line x1="4" y1="20" x2="4" y2="12" />
-      <line x1="8" y1="20" x2="8" y2="8" />
-      <line x1="12" y1="20" x2="12" y2="14" />
-      <line x1="16" y1="20" x2="16" y2="6" />
-      <line x1="20" y1="20" x2="20" y2="10" />
-      <polyline points="2,10 8,4 14,9 22,3" />
-    </svg>
-  </div>
+  <IcoWrap>
+    {/* Arco de gauge */}
+    <path d="M4.93 4.93A10 10 0 0 1 12 2a10 10 0 0 1 7.07 2.93" />
+    <path d="M2 12a10 10 0 0 0 2.93 7.07" />
+    <path d="M22 12a10 10 0 0 1-2.93 7.07" />
+    {/* Aguja apuntando arriba-derecha (buen rendimiento) */}
+    <line x1="12" y1="12" x2="16.5" y2="6" />
+    <circle cx="12" cy="12" r="1.5" />
+    {/* Marcas de escala */}
+    <line x1="12" y1="2.5" x2="12" y2="4" />
+    <line x1="4.5" y1="12" x2="3" y2="12" />
+    <line x1="21" y1="12" x2="19.5" y2="12" />
+    {/* Línea base */}
+    <line x1="5" y1="20" x2="19" y2="20" />
+  </IcoWrap>
 )
 
+/* Actividades → Clipboard con checks */
 const IconActividades = () => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round"
-      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
-      <rect x="3" y="3" width="18" height="18" rx="2" />
-      <path d="M8 12l2.5 2.5L16 9" />
-      <line x1="3" y1="8" x2="21" y2="8" />
-    </svg>
-  </div>
+  <IcoWrap>
+    <rect x="4" y="3" width="16" height="18" rx="2" />
+    <path d="M9 1h6v3a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V1z" />
+    <path d="M8 10l2 2 4-4" />
+    <line x1="8" y1="16" x2="16" y2="16" />
+  </IcoWrap>
 )
 
 /* —— Card Config —— */
@@ -223,7 +236,7 @@ export default function DashboardCS() {
     aspectRatio: '1 / 0.75',
     borderRadius: D.cardRadius,
     padding: '22px',
-    background: `linear-gradient(145deg, ${accent} 0%, ${accent} 40%, ${adjustColor(accent, -25)} 100%)`,
+    background: `linear-gradient(155deg, ${adjustColor(accent, 12)} 0%, ${accent} 35%, ${adjustColor(accent, -35)} 100%)`,
     border: 'none',
     cursor: 'pointer',
     position: 'relative',
@@ -234,8 +247,8 @@ export default function DashboardCS() {
     transition: 'transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s cubic-bezier(0.23,1,0.32,1)',
     transform: isH ? 'translateY(-4px)' : 'none',
     boxShadow: isH
-      ? `0 8px 16px rgba(0,0,0,0.20), 0 16px 40px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.20), inset 0 -1px 0 rgba(0,0,0,0.15)`
-      : `0 3px 6px rgba(0,0,0,0.12), 0 6px 20px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.12)`,
+      ? `0 12px 24px rgba(0,0,0,0.25), 0 24px 48px rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -2px 0 rgba(0,0,0,0.20)`
+      : `0 6px 14px rgba(0,0,0,0.20), 0 14px 36px rgba(0,0,0,0.14), 0 1px 3px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -2px 0 rgba(0,0,0,0.15)`,
   })
 
   return (
@@ -253,7 +266,7 @@ export default function DashboardCS() {
                 onClick={() => navigate(card.route)}
               >
                 {/* Top-edge light catch for 3D depth */}
-                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: '14px', background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 40%, rgba(0,0,0,0.08) 100%)' }} />
+                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', borderRadius: '14px', background: 'linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 35%, rgba(0,0,0,0.12) 100%)' }} />
                 <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px', transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)', transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none' }}>
                   {card.icon}
                 </div>
