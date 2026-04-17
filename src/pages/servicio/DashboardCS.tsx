@@ -16,7 +16,7 @@ const D = {
 } as const
 
 /* ── Amber glow color for hover ── */
-const AMBER = '218,140,28'
+const AMBER = '255,120,0'
 
 /* ── Icon component — centered, prominent, thin-stroke ── */
 const STROKE_SCALE = 0.75
@@ -118,7 +118,7 @@ export default function DashboardCS() {
               <div
                 key={card.id}
                 style={{
-                  aspectRatio: '1 / 1',
+                  aspectRatio: '1 / 0.9',
                   borderRadius: '16px',
                   padding: '20px',
                   /* Dark glass background */
