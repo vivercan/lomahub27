@@ -60,7 +60,7 @@ const IconTickets     = () => <IcoImg set="bi" name="ticket-perforated" />
 const IconClientes    = () => <IcoImg set="gridicons" name="multiple-users" />
 const IconImpo        = () => <IcoImg set="ion" name="cloud-upload" />
 const IconExpo        = () => <IcoImg set="ion" name="cloud-download" />
-const IconDespachoIA  = () => <IcoImg set="streamline" name="route-turn-right" />
+const IconDespachoIA  = () => <IcoImg set="bi" name="robot" />
 const IconMetricas    = () => <IcoImg set="bi" name="graph-up" />
 const IconActividades = () => <IcoImg set="bi" name="list-check" />
 
