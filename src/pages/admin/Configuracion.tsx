@@ -79,93 +79,98 @@ const IcoCatalogos = () => (
   </svg></div>
 )
 
-/* Parámetros — sliders / settings */
+/* Parámetros — sliders / settings — medium-dark card */
 const IcoParametros = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round">
-    <line x1="40" y1="35" x2="160" y2="35" stroke={S2} strokeWidth="2" />
-    <circle cx="105" cy="35" r="10" stroke={S} strokeWidth="2.5" fill="rgba(255,255,255,0.08)" />
-    <line x1="40" y1="70" x2="160" y2="70" stroke={S2} strokeWidth="2" />
-    <circle cx="70" cy="70" r="10" stroke={S} strokeWidth="2.5" fill="rgba(255,255,255,0.08)" />
-    <line x1="40" y1="105" x2="160" y2="105" stroke={S2} strokeWidth="2" />
-    <circle cx="135" cy="105" r="10" stroke={S} strokeWidth="2.5" fill="rgba(255,255,255,0.08)" />
+    <line x1="40" y1="35" x2="160" y2="35" stroke={S} strokeWidth="2.5" />
+    <circle cx="105" cy="35" r="12" stroke={S} strokeWidth="3" />
+    <line x1="40" y1="70" x2="160" y2="70" stroke={S} strokeWidth="2.5" />
+    <circle cx="70" cy="70" r="12" stroke={S} strokeWidth="3" />
+    <line x1="40" y1="105" x2="160" y2="105" stroke={S} strokeWidth="2.5" />
+    <circle cx="135" cy="105" r="12" stroke={S} strokeWidth="3" />
   </svg></div>
 )
 
-/* Integraciones — 3 puzzle pieces */
+/* Integraciones — 2 puzzle pieces interlocking */
 const IcoIntegraciones = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    {/* Piece 1 — top left */}
-    <path d="M30,28 L72,28 L72,42 Q80,42 80,50 Q80,58 72,58 L72,72 L30,72 L30,58 Q22,58 22,50 Q22,42 30,42 Z" stroke={S} strokeWidth="2" />
-    {/* Piece 2 — top right, interlocked */}
-    <path d="M78,28 L120,28 L120,42 Q128,42 128,50 Q128,58 120,58 L120,72 L78,72 L78,58 Q86,58 86,50 Q86,42 78,42 Z" stroke={S} strokeWidth="2" />
-    {/* Piece 3 — bottom center, interlocked */}
-    <path d="M54,78 L96,78 L96,92 Q104,92 104,100 Q104,108 96,108 L96,122 L54,122 L54,108 Q46,108 46,100 Q46,92 54,92 Z" stroke={S2} strokeWidth="1.8" />
+    {/* Left piece */}
+    <path d="M25,20 L90,20 L90,45 Q105,45 105,60 Q105,75 90,75 L90,100 L25,100 L25,75 Q10,75 10,60 Q10,45 25,45 Z" stroke={S} strokeWidth="2.5" />
+    {/* Right piece — interlocked */}
+    <path d="M96,20 L170,20 L170,45 Q185,45 185,60 Q185,75 170,75 L170,100 L96,100 L96,75 Q111,75 111,60 Q111,45 96,45 Z" stroke={S} strokeWidth="2.5" />
+    {/* Connection dots */}
+    <circle cx="100" cy="60" r="3" fill={S} />
   </svg></div>
 )
 
-/* Auditoría — shield / check */
+/* Auditoría — shield / check — dark card, use light strokes */
+const L = 'rgba(255,255,255,0.35)'
+const L2 = 'rgba(255,255,255,0.25)'
+const geoSvgLight: React.CSSProperties = {
+  ...geoSvg, filter: 'drop-shadow(0 -1px 0 rgba(0,0,0,0.30))',
+}
 const IcoAuditoria = () => (
-  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M100,12 L155,35 L155,72 Q155,105 100,128 Q45,105 45,72 L45,35 Z" stroke={S} strokeWidth="2" />
-    <path d="M78,65 L92,82 L125,50" stroke={S} strokeWidth="3" />
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvgLight} fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M100,12 L155,35 L155,72 Q155,105 100,128 Q45,105 45,72 L45,35 Z" stroke={L} strokeWidth="2.5" />
+    <path d="M78,65 L92,82 L125,50" stroke={L} strokeWidth="3.5" />
   </svg></div>
 )
 
 /* Plantillas — file / template */
 const IcoPlantillas = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M65,15 L65,125 Q65,130 70,130 L150,130 Q155,130 155,125 L155,42 L128,15 Z" stroke={S} strokeWidth="2" />
-    <path d="M128,15 L128,42 L155,42" stroke={S} strokeWidth="2" />
-    <line x1="82" y1="60" x2="138" y2="60" stroke={S2} strokeWidth="1.5" />
-    <line x1="82" y1="76" x2="138" y2="76" stroke={S2} strokeWidth="1.5" />
-    <line x1="82" y1="92" x2="120" y2="92" stroke={S2} strokeWidth="1.5" />
-    <line x1="82" y1="108" x2="110" y2="108" stroke={S2} strokeWidth="1.2" />
+    <path d="M65,15 L65,125 Q65,130 70,130 L150,130 Q155,130 155,125 L155,42 L128,15 Z" stroke={S} strokeWidth="2.5" />
+    <path d="M128,15 L128,42 L155,42" stroke={S} strokeWidth="2.5" />
+    <line x1="82" y1="60" x2="138" y2="60" stroke={S} strokeWidth="2" />
+    <line x1="82" y1="76" x2="138" y2="76" stroke={S} strokeWidth="2" />
+    <line x1="82" y1="92" x2="120" y2="92" stroke={S2} strokeWidth="1.8" />
+    <line x1="82" y1="108" x2="110" y2="108" stroke={S2} strokeWidth="1.5" />
   </svg></div>
 )
 
 /* Documentos — folder / briefcase */
 const IcoDocumentos = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M35,40 L35,115 Q35,122 42,122 L158,122 Q165,122 165,115 L165,40 Q165,33 158,33 L115,33 L105,18 L42,18 Q35,18 35,25 Z" stroke={S} strokeWidth="2" />
-    <line x1="35" y1="55" x2="165" y2="55" stroke={S2} strokeWidth="1.5" />
-    <rect x="75" y="42" width="50" height="22" rx="4" stroke={S2} strokeWidth="1.5" />
+    <path d="M35,40 L35,115 Q35,122 42,122 L158,122 Q165,122 165,115 L165,40 Q165,33 158,33 L115,33 L105,18 L42,18 Q35,18 35,25 Z" stroke={S} strokeWidth="2.5" />
+    <line x1="35" y1="55" x2="165" y2="55" stroke={S} strokeWidth="2" />
+    <rect x="75" y="42" width="50" height="22" rx="4" stroke={S} strokeWidth="2" />
   </svg></div>
 )
 
-/* Cerebro Tarifario — chip / AI brain */
+/* Cerebro Tarifario — chip / AI brain — dark card, light strokes */
 const IcoCerebro = () => (
-  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
+  <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvgLight} fill="none" strokeLinecap="round" strokeLinejoin="round">
     {/* Central chip square */}
-    <rect x="62" y="32" width="76" height="76" rx="12" stroke={S} strokeWidth="2" />
-    {/* Inner circuit — brain symbol */}
-    <circle cx="100" cy="70" r="18" stroke={S} strokeWidth="1.8" />
-    <path d="M100,52 L100,58 M100,82 L100,88" stroke={S2} strokeWidth="1.5" />
-    <path d="M82,70 L88,70 M112,70 L118,70" stroke={S2} strokeWidth="1.5" />
+    <rect x="62" y="32" width="76" height="76" rx="12" stroke={L} strokeWidth="2.5" />
+    {/* Inner circuit */}
+    <circle cx="100" cy="70" r="18" stroke={L} strokeWidth="2" />
+    <path d="M100,52 L100,58 M100,82 L100,88" stroke={L2} strokeWidth="2" />
+    <path d="M82,70 L88,70 M112,70 L118,70" stroke={L2} strokeWidth="2" />
     {/* AI dot center */}
-    <circle cx="100" cy="70" r="4" fill={S2} />
-    {/* Traces going out — left */}
-    <line x1="62" y1="50" x2="42" y2="50" stroke={S2} strokeWidth="1.5" />
-    <line x1="62" y1="70" x2="38" y2="70" stroke={S2} strokeWidth="1.5" />
-    <line x1="62" y1="90" x2="42" y2="90" stroke={S2} strokeWidth="1.5" />
-    {/* Traces going out — right */}
-    <line x1="138" y1="50" x2="158" y2="50" stroke={S2} strokeWidth="1.5" />
-    <line x1="138" y1="70" x2="162" y2="70" stroke={S2} strokeWidth="1.5" />
-    <line x1="138" y1="90" x2="158" y2="90" stroke={S2} strokeWidth="1.5" />
-    {/* Traces going out — top */}
-    <line x1="82" y1="32" x2="82" y2="16" stroke={S2} strokeWidth="1.5" />
-    <line x1="100" y1="32" x2="100" y2="12" stroke={S2} strokeWidth="1.5" />
-    <line x1="118" y1="32" x2="118" y2="16" stroke={S2} strokeWidth="1.5" />
-    {/* Traces going out — bottom */}
-    <line x1="82" y1="108" x2="82" y2="124" stroke={S2} strokeWidth="1.5" />
-    <line x1="100" y1="108" x2="100" y2="128" stroke={S2} strokeWidth="1.5" />
-    <line x1="118" y1="108" x2="118" y2="124" stroke={S2} strokeWidth="1.5" />
-    {/* Trace endpoints — small dots */}
-    <circle cx="42" cy="50" r="2" fill={S2} />
-    <circle cx="38" cy="70" r="2" fill={S2} />
-    <circle cx="42" cy="90" r="2" fill={S2} />
-    <circle cx="158" cy="50" r="2" fill={S2} />
-    <circle cx="162" cy="70" r="2" fill={S2} />
-    <circle cx="158" cy="90" r="2" fill={S2} />
+    <circle cx="100" cy="70" r="4.5" fill={L2} />
+    {/* Traces — left */}
+    <line x1="62" y1="50" x2="42" y2="50" stroke={L2} strokeWidth="2" />
+    <line x1="62" y1="70" x2="38" y2="70" stroke={L2} strokeWidth="2" />
+    <line x1="62" y1="90" x2="42" y2="90" stroke={L2} strokeWidth="2" />
+    {/* Traces — right */}
+    <line x1="138" y1="50" x2="158" y2="50" stroke={L2} strokeWidth="2" />
+    <line x1="138" y1="70" x2="162" y2="70" stroke={L2} strokeWidth="2" />
+    <line x1="138" y1="90" x2="158" y2="90" stroke={L2} strokeWidth="2" />
+    {/* Traces — top */}
+    <line x1="82" y1="32" x2="82" y2="16" stroke={L2} strokeWidth="2" />
+    <line x1="100" y1="32" x2="100" y2="12" stroke={L2} strokeWidth="2" />
+    <line x1="118" y1="32" x2="118" y2="16" stroke={L2} strokeWidth="2" />
+    {/* Traces — bottom */}
+    <line x1="82" y1="108" x2="82" y2="124" stroke={L2} strokeWidth="2" />
+    <line x1="100" y1="108" x2="100" y2="128" stroke={L2} strokeWidth="2" />
+    <line x1="118" y1="108" x2="118" y2="124" stroke={L2} strokeWidth="2" />
+    {/* Trace endpoints */}
+    <circle cx="42" cy="50" r="2.5" fill={L2} />
+    <circle cx="38" cy="70" r="2.5" fill={L2} />
+    <circle cx="42" cy="90" r="2.5" fill={L2} />
+    <circle cx="158" cy="50" r="2.5" fill={L2} />
+    <circle cx="162" cy="70" r="2.5" fill={L2} />
+    <circle cx="158" cy="90" r="2.5" fill={L2} />
   </svg></div>
 )
 
