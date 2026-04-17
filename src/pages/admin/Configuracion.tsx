@@ -41,16 +41,17 @@ function injectKeyframes() {
   document.head.appendChild(style)
 }
 
-/* –– Themed SVG Icons — subtle, same size as before –– */
+/* –– Themed SVG Icons — laser-etched look –– */
 const geoWrap: React.CSSProperties = {
   position: 'absolute', top: 0, right: 0, width: '100%', height: '100%',
   pointerEvents: 'none', overflow: 'hidden', borderRadius: '16px',
 }
 const geoSvg: React.CSSProperties = {
-  position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.22,
+  position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.14,
+  filter: 'drop-shadow(0 1px 0 rgba(255,255,255,0.12))',
 }
-const S = 'rgba(255,255,255,0.6)'
-const S2 = 'rgba(255,255,255,0.45)'
+const S = 'rgba(0,0,0,0.45)'
+const S2 = 'rgba(0,0,0,0.30)'
 
 /* Usuarios — people / team */
 const IcoUsuarios = () => (
@@ -325,9 +326,8 @@ export default function Configuracion() {
                 {/* Geometric SVG background — floats on hover */}
                 <div style={{
                   ...geoWrap,
-                  transition: 'transform 0.5s cubic-bezier(0.23,1,0.32,1)',
-                  transform: isH ? 'translate(3px, -4px) scale(1.06)' : 'translate(0,0) scale(1)',
-                  animation: isH ? 'cfgFloat 3s ease-in-out infinite' : 'none',
+                  transition: 'opacity 0.4s ease',
+                  opacity: isH ? 1.3 : 1,
                 }}>
                   {card.geo}
                 </div>
@@ -374,14 +374,14 @@ export default function Configuracion() {
                   fontFamily: DASH.fontFamily,
                   fontSize: '22px',
                   fontWeight: 800,
-                  color: '#FFFFFF',
+                  color: 'rgba(255,255,255,0.75)',
                   lineHeight: 1.15,
                   letterSpacing: '-0.02em',
                   whiteSpace: 'nowrap',
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 2px 8px rgba(0,0,0,0.40)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.60), 0 1px 1px rgba(255,255,255,0.10)',
                 }}>
                   {card.label}
                 </div>
@@ -391,11 +391,11 @@ export default function Configuracion() {
                   fontFamily: DASH.fontBody,
                   fontSize: '15px',
                   fontWeight: 600,
-                  color: 'rgba(255,255,255,0.85)',
+                  color: 'rgba(255,255,255,0.55)',
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 1px 3px rgba(0,0,0,0.30)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.50), 0 1px 1px rgba(255,255,255,0.08)',
                 }}>
                   {card.subtitle}
                 </div>
@@ -427,9 +427,8 @@ export default function Configuracion() {
                 {/* Geo SVG */}
                 <div style={{
                   ...geoWrap,
-                  transition: 'transform 0.5s cubic-bezier(0.23,1,0.32,1)',
-                  transform: isH ? 'translate(3px, -4px) scale(1.06)' : 'translate(0,0) scale(1)',
-                  animation: isH ? 'cfgFloat 3s ease-in-out infinite' : 'none',
+                  transition: 'opacity 0.4s ease',
+                  opacity: isH ? 1.3 : 1,
                 }}>
                   {card.geo}
                 </div>
@@ -464,14 +463,14 @@ export default function Configuracion() {
                   fontFamily: DASH.fontFamily,
                   fontSize: '22px',
                   fontWeight: 800,
-                  color: '#FFFFFF',
+                  color: 'rgba(255,255,255,0.75)',
                   lineHeight: 1.15,
                   letterSpacing: '-0.02em',
                   whiteSpace: 'nowrap',
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 2px 8px rgba(0,0,0,0.40)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.60), 0 1px 1px rgba(255,255,255,0.10)',
                 }}>
                   {card.label}
                 </div>
@@ -481,11 +480,11 @@ export default function Configuracion() {
                   fontFamily: DASH.fontBody,
                   fontSize: '15px',
                   fontWeight: 600,
-                  color: 'rgba(255,255,255,0.85)',
+                  color: 'rgba(255,255,255,0.55)',
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 1px 4px rgba(0,0,0,0.35)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.50), 0 1px 1px rgba(255,255,255,0.08)',
                 }}>
                   {card.subtitle}
                 </div>
