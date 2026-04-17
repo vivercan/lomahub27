@@ -33,109 +33,25 @@ function adjustColor(hex: string, amount: number): string {
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
 }
 
-const ICO_OPACITY = 0.20
-const SW = 0.8  // ultra-thin stroke
+const ICO_OPACITY = 0.22
 
-/* Shared wrapper for all icons */
-const IcoWrap = ({ children }: { children: React.ReactNode }) => (
+/* Iconify API — Phosphor Thin icons (ultra-delicate 1px strokes) */
+const icoUrl = (name: string) =>
+  `https://api.iconify.design/ph:${name}-thin.svg?color=%23ffffff`
+
+const IcoImg = ({ name }: { name: string }) => (
   <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,1)" strokeWidth={SW} strokeLinecap="round" strokeLinejoin="round"
-      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }}>
-      {children}
-    </svg>
+    <img src={icoUrl(name)} alt="" style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }} />
   </div>
 )
 
-/* Tickets → Headset / soporte al cliente */
-const IconTickets = () => (
-  <IcoWrap>
-    <path d="M4 15v-3a8 8 0 0 1 16 0v3" />
-    <path d="M2 15.5a1.5 1.5 0 0 1 1.5-1.5H5v5H3.5A1.5 1.5 0 0 1 2 17.5v-2z" />
-    <path d="M22 15.5a1.5 1.5 0 0 0-1.5-1.5H19v5h1.5a1.5 1.5 0 0 0 1.5-1.5v-2z" />
-    <path d="M19 19v1a2 2 0 0 1-2 2h-4" />
-    <circle cx="12" cy="22" r="1" />
-  </IcoWrap>
-)
-
-/* Clientes Activos → Grupo elegante con nodo de red */
-const IconClientes = () => (
-  <IcoWrap>
-    <circle cx="12" cy="7" r="3" />
-    <path d="M5 21v-1.5a4.5 4.5 0 0 1 4.5-4.5h5a4.5 4.5 0 0 1 4.5 4.5V21" />
-    <circle cx="5" cy="9" r="2" />
-    <path d="M5 13c-2 0-3.5 1.2-3.5 3v1" />
-    <circle cx="19" cy="9" r="2" />
-    <path d="M19 13c2 0 3.5 1.2 3.5 3v1" />
-  </IcoWrap>
-)
-
-/* Importación → flecha arriba + contenedor */
-const IconImpo = () => (
-  <IcoWrap>
-    <path d="M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4" />
-    <polyline points="8,8 12,3 16,8" />
-    <line x1="12" y1="3" x2="12" y2="16" />
-  </IcoWrap>
-)
-
-/* Exportación → flecha abajo + contenedor */
-const IconExpo = () => (
-  <IcoWrap>
-    <path d="M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4" />
-    <polyline points="8,10 12,16 16,10" />
-    <line x1="12" y1="2" x2="12" y2="16" />
-  </IcoWrap>
-)
-
-/* Despacho IA → Camión con cerebro/circuito IA */
-const IconDespachoIA = () => (
-  <IcoWrap>
-    {/* Camión body */}
-    <rect x="1" y="12" width="14" height="7" rx="1" />
-    <path d="M15 15h4l2 2v2h-6v-4z" />
-    <circle cx="6" cy="21" r="1.5" />
-    <circle cx="18" cy="21" r="1.5" />
-    {/* Cerebro IA — nodos + conexiones arriba del camión */}
-    <circle cx="5" cy="6" r="1.2" />
-    <circle cx="11" cy="4" r="1.2" />
-    <circle cx="8" cy="9" r="1.2" />
-    <line x1="5" y1="6" x2="11" y2="4" />
-    <line x1="5" y1="6" x2="8" y2="9" />
-    <line x1="11" y1="4" x2="8" y2="9" />
-    <circle cx="14" cy="7" r="0.8" />
-    <line x1="11" y1="4" x2="14" y2="7" />
-    <line x1="8" y1="9" x2="14" y2="7" />
-  </IcoWrap>
-)
-
-/* Métricas → Speedometer / gauge elegante */
-const IconMetricas = () => (
-  <IcoWrap>
-    {/* Arco de gauge */}
-    <path d="M4.93 4.93A10 10 0 0 1 12 2a10 10 0 0 1 7.07 2.93" />
-    <path d="M2 12a10 10 0 0 0 2.93 7.07" />
-    <path d="M22 12a10 10 0 0 1-2.93 7.07" />
-    {/* Aguja apuntando arriba-derecha (buen rendimiento) */}
-    <line x1="12" y1="12" x2="16.5" y2="6" />
-    <circle cx="12" cy="12" r="1.5" />
-    {/* Marcas de escala */}
-    <line x1="12" y1="2.5" x2="12" y2="4" />
-    <line x1="4.5" y1="12" x2="3" y2="12" />
-    <line x1="21" y1="12" x2="19.5" y2="12" />
-    {/* Línea base */}
-    <line x1="5" y1="20" x2="19" y2="20" />
-  </IcoWrap>
-)
-
-/* Actividades → Clipboard con checks */
-const IconActividades = () => (
-  <IcoWrap>
-    <rect x="4" y="3" width="16" height="18" rx="2" />
-    <path d="M9 1h6v3a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V1z" />
-    <path d="M8 10l2 2 4-4" />
-    <line x1="8" y1="16" x2="16" y2="16" />
-  </IcoWrap>
-)
+const IconTickets    = () => <IcoImg name="headset" />
+const IconClientes   = () => <IcoImg name="users-three" />
+const IconImpo       = () => <IcoImg name="arrow-circle-up" />
+const IconExpo       = () => <IcoImg name="arrow-circle-down" />
+const IconDespachoIA = () => <IcoImg name="cpu" />
+const IconMetricas   = () => <IcoImg name="chart-line-up" />
+const IconActividades = () => <IcoImg name="clipboard-text" />
 
 /* —— Card Config —— */
 interface LandingCard {
