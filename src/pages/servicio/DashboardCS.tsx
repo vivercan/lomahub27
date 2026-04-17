@@ -133,10 +133,10 @@ export default function DashboardCS() {
                   padding: '20px',
                   /* Solid navy — matches reference */
                   background: '#161d2f',
-                  /* Contour border — subtle blue-gray, brighter on hover */
+                  /* Contour border — visible blue, orange on hover */
                   border: isH
-                    ? `1.5px solid rgba(${AMBER},0.45)`
-                    : '1.5px solid rgba(100,130,180,0.25)',
+                    ? `1.5px solid rgba(${AMBER},0.50)`
+                    : '1.5px solid rgba(90,140,220,0.40)',
                   cursor: 'pointer',
                   position: 'relative',
                   overflow: 'hidden',
