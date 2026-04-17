@@ -35,7 +35,7 @@ const IcoCenter = ({ set, name }: { set: string; name: string }) => {
   }, [set, name])
   return (
     <img src={src} alt=""
-      style={{ width: '72px', height: '72px', opacity: 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }} />
+      style={{ width: '79px', height: '79px', opacity: 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }} />
   )
 }
 
@@ -164,7 +164,7 @@ export default function DashboardCS() {
 
                 {/* Label — at TOP */}
                 <div style={{
-                  fontFamily: D.font, fontSize: '13px', fontWeight: 700, color: 'rgba(255,255,255,0.88)',
+                  fontFamily: D.font, fontSize: '17px', fontWeight: 700, color: 'rgba(255,255,255,0.88)',
                   textAlign: 'center', position: 'relative', zIndex: 1, letterSpacing: '-0.01em',
                   lineHeight: 1.2, paddingTop: '4px',
                 }}>
