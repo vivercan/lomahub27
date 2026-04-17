@@ -20,7 +20,7 @@ const D = {
   titleWeight: 800,
   kpiSize: '28px',
   kpiWeight: 600,
-  subSize: '9px',
+  subSize: '11px',
   dotSize: '6px',
 } as const
 
