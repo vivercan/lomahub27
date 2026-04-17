@@ -47,11 +47,11 @@ const geoWrap: React.CSSProperties = {
   pointerEvents: 'none', overflow: 'hidden', borderRadius: '16px',
 }
 const geoSvg: React.CSSProperties = {
-  position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.38,
-  filter: 'drop-shadow(0 1.5px 0 rgba(255,255,255,0.25)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.15))',
+  position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.55,
+  filter: 'drop-shadow(0 2px 0 rgba(255,255,255,0.35)) drop-shadow(0 -1px 0 rgba(0,0,0,0.40))',
 }
-const S = 'rgba(0,0,0,0.60)'
-const S2 = 'rgba(0,0,0,0.45)'
+const S = 'rgba(0,0,0,0.70)'
+const S2 = 'rgba(0,0,0,0.55)'
 
 /* Usuarios — people / team */
 const IcoUsuarios = () => (
@@ -104,10 +104,10 @@ const IcoIntegraciones = () => (
 )
 
 /* Auditoría — shield / check — dark card, use light strokes */
-const L = 'rgba(255,255,255,0.45)'
-const L2 = 'rgba(255,255,255,0.32)'
+const L = 'rgba(255,255,255,0.65)'
+const L2 = 'rgba(255,255,255,0.50)'
 const geoSvgLight: React.CSSProperties = {
-  ...geoSvg, filter: 'drop-shadow(0 1.5px 0 rgba(255,255,255,0.12)) drop-shadow(0 -1px 0 rgba(0,0,0,0.50))',
+  ...geoSvg, filter: 'drop-shadow(0 2px 0 rgba(255,255,255,0.18)) drop-shadow(0 -1px 0 rgba(0,0,0,0.70))',
 }
 const IcoAuditoria = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvgLight} fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -366,12 +366,12 @@ export default function Configuracion() {
 
                 {/* Noise / grain texture for material feel */}
                 <div style={{
-                  position: 'absolute', left: 0, top: 0, width: '150%', height: '150%',
-                  opacity: 0.035,
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-                  backgroundSize: '128px 128px',
+                  position: 'absolute', left: 0, top: 0, width: '200%', height: '200%',
+                  opacity: 0.08,
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.01,0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3C/svg%3E")`,
+                  backgroundSize: '200px 200px',
                   pointerEvents: 'none', borderRadius: 'inherit', zIndex: 3,
-                  animation: 'cfgGrainDrift 8s linear infinite',
+                  animation: 'cfgGrainDrift 12s linear infinite',
                 }} />
 
                 {/* Title */}
@@ -386,7 +386,7 @@ export default function Configuracion() {
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 1px rgba(0,0,0,0.70), 0 2px 1px rgba(255,255,255,0.18), 0 0 4px rgba(0,0,0,0.15)',
+                  textShadow: '0 -2px 1px rgba(0,0,0,0.85), 0 2px 0 rgba(255,255,255,0.30), 0 0 6px rgba(0,0,0,0.25)',
                 }}>
                   {card.label}
                 </div>
@@ -400,7 +400,7 @@ export default function Configuracion() {
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 1px rgba(0,0,0,0.60), 0 2px 1px rgba(255,255,255,0.15), 0 0 3px rgba(0,0,0,0.12)',
+                  textShadow: '0 -2px 1px rgba(0,0,0,0.75), 0 2px 0 rgba(255,255,255,0.25), 0 0 5px rgba(0,0,0,0.20)',
                 }}>
                   {card.subtitle}
                 </div>
@@ -455,12 +455,12 @@ export default function Configuracion() {
 
                 {/* Noise */}
                 <div style={{
-                  position: 'absolute', left: 0, top: 0, width: '150%', height: '150%',
-                  opacity: 0.035,
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-                  backgroundSize: '128px 128px',
+                  position: 'absolute', left: 0, top: 0, width: '200%', height: '200%',
+                  opacity: 0.08,
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.01,0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3C/svg%3E")`,
+                  backgroundSize: '200px 200px',
                   pointerEvents: 'none', borderRadius: 'inherit', zIndex: 3,
-                  animation: 'cfgGrainDrift 8s linear infinite',
+                  animation: 'cfgGrainDrift 12s linear infinite',
                 }} />
 
                 {/* Title */}
@@ -475,7 +475,7 @@ export default function Configuracion() {
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 1px rgba(0,0,0,0.70), 0 2px 1px rgba(255,255,255,0.18), 0 0 4px rgba(0,0,0,0.15)',
+                  textShadow: '0 -2px 1px rgba(0,0,0,0.85), 0 2px 0 rgba(255,255,255,0.30), 0 0 6px rgba(0,0,0,0.25)',
                 }}>
                   {card.label}
                 </div>
@@ -489,7 +489,7 @@ export default function Configuracion() {
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 1px rgba(0,0,0,0.60), 0 2px 1px rgba(255,255,255,0.15), 0 0 3px rgba(0,0,0,0.12)',
+                  textShadow: '0 -2px 1px rgba(0,0,0,0.75), 0 2px 0 rgba(255,255,255,0.25), 0 0 5px rgba(0,0,0,0.20)',
                 }}>
                   {card.subtitle}
                 </div>
