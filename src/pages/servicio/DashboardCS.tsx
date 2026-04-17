@@ -96,6 +96,7 @@ async function countViajesAnodosByTipo(tipoViaje: number): Promise<number> {
 export default function DashboardCS() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
+  const [pressed, setPressed] = useState<string | null>(null)
   const [kpis, setKpis] = useState<Record<string, number>>({ tickets: 0, clientes: 0, impo: 0, expo: 0 })
   const [loading, setLoading] = useState(true)
 
@@ -122,6 +123,7 @@ export default function DashboardCS() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '16px' }}>
           {CARDS.map(card => {
             const isH = hovered === card.id
+            const isP = pressed === card.id
             return (
               <div
                 key={card.id}
@@ -129,14 +131,17 @@ export default function DashboardCS() {
                   aspectRatio: '1 / 0.9',
                   borderRadius: '16px',
                   padding: '20px',
-                  /* Dark glass background */
+                  /* Navy gradient background */
                   background: isH
-                    ? 'linear-gradient(160deg, rgba(30,38,58,0.97) 0%, rgba(18,24,42,0.99) 100%)'
-                    : 'linear-gradient(160deg, rgba(24,32,52,0.95) 0%, rgba(14,20,36,0.98) 100%)',
-                  /* Glass border — amber glow on hover */
-                  border: isH
-                    ? `1px solid rgba(${AMBER},0.50)`
-                    : '1px solid rgba(255,255,255,0.07)',
+                    ? 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)'
+                    : 'linear-gradient(180deg, #1a2332 0%, #0d1117 100%)',
+                  /* Keycap border — light top, dark bottom */
+                  borderTop: isH
+                    ? `1px solid rgba(${AMBER},0.45)`
+                    : '1px solid rgba(255,255,255,0.12)',
+                  borderLeft: '1px solid rgba(255,255,255,0.06)',
+                  borderRight: '1px solid rgba(0,0,0,0.20)',
+                  borderBottom: '1px solid rgba(0,0,0,0.30)',
                   cursor: 'pointer',
                   position: 'relative',
                   overflow: 'hidden',
@@ -145,14 +150,22 @@ export default function DashboardCS() {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   gap: '0px',
-                  transition: 'all 0.4s cubic-bezier(0.23,1,0.32,1)',
-                  transform: isH ? 'translateY(-4px)' : 'none',
-                  boxShadow: isH
-                    ? `0 0 20px rgba(${AMBER},0.15), 0 0 40px rgba(${AMBER},0.08), 0 8px 24px rgba(0,0,0,0.40), 0 16px 48px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08)`
-                    : `0 4px 12px rgba(0,0,0,0.25), 0 8px 32px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.06)`,
+                  transition: 'all 0.15s cubic-bezier(0.23,1,0.32,1)',
+                  /* Keycap: raised by default, sinks on press */
+                  transform: isP ? 'translateY(3px)' : isH ? 'translateY(-2px)' : 'none',
+                  boxShadow: isP
+                    /* Pressed — flat, no elevation */
+                    ? `0 1px 2px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.05)`
+                    : isH
+                    /* Hovered — lifted with orange glow */
+                    ? `0 4px 0 #0a0e17, 0 6px 16px rgba(0,0,0,0.45), 0 0 20px rgba(${AMBER},0.12), 0 0 40px rgba(${AMBER},0.06), inset 0 1px 0 rgba(255,255,255,0.10)`
+                    /* Default — keycap base shadow */
+                    : `0 4px 0 #080b12, 0 6px 14px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.08)`,
                 }}
                 onMouseEnter={() => setHovered(card.id)}
-                onMouseLeave={() => setHovered(null)}
+                onMouseLeave={() => { setHovered(null); setPressed(null) }}
+                onMouseDown={() => setPressed(card.id)}
+                onMouseUp={() => setPressed(null)}
                 onClick={() => navigate(card.route)}
               >
                 {/* Top amber glow line on hover */}
