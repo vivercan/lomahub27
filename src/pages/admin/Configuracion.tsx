@@ -47,11 +47,11 @@ const geoWrap: React.CSSProperties = {
   pointerEvents: 'none', overflow: 'hidden', borderRadius: '16px',
 }
 const geoSvg: React.CSSProperties = {
-  position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.28,
-  filter: 'drop-shadow(0 1px 0 rgba(255,255,255,0.15))',
+  position: 'absolute', right: '-8%', bottom: '-12%', width: '90%', height: '95%', opacity: 0.38,
+  filter: 'drop-shadow(0 1.5px 0 rgba(255,255,255,0.25)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.15))',
 }
-const S = 'rgba(0,0,0,0.55)'
-const S2 = 'rgba(0,0,0,0.40)'
+const S = 'rgba(0,0,0,0.60)'
+const S2 = 'rgba(0,0,0,0.45)'
 
 /* Usuarios — people / team */
 const IcoUsuarios = () => (
@@ -104,10 +104,10 @@ const IcoIntegraciones = () => (
 )
 
 /* Auditoría — shield / check — dark card, use light strokes */
-const L = 'rgba(255,255,255,0.35)'
-const L2 = 'rgba(255,255,255,0.25)'
+const L = 'rgba(255,255,255,0.45)'
+const L2 = 'rgba(255,255,255,0.32)'
 const geoSvgLight: React.CSSProperties = {
-  ...geoSvg, filter: 'drop-shadow(0 -1px 0 rgba(0,0,0,0.30))',
+  ...geoSvg, filter: 'drop-shadow(0 1.5px 0 rgba(255,255,255,0.12)) drop-shadow(0 -1px 0 rgba(0,0,0,0.50))',
 }
 const IcoAuditoria = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvgLight} fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -386,7 +386,7 @@ export default function Configuracion() {
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 1px rgba(0,0,0,0.60), 0 1px 1px rgba(255,255,255,0.10)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.70), 0 2px 1px rgba(255,255,255,0.18), 0 0 4px rgba(0,0,0,0.15)',
                 }}>
                   {card.label}
                 </div>
@@ -400,7 +400,7 @@ export default function Configuracion() {
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 1px rgba(0,0,0,0.50), 0 1px 1px rgba(255,255,255,0.08)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.60), 0 2px 1px rgba(255,255,255,0.15), 0 0 3px rgba(0,0,0,0.12)',
                 }}>
                   {card.subtitle}
                 </div>
@@ -475,7 +475,7 @@ export default function Configuracion() {
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 1px rgba(0,0,0,0.60), 0 1px 1px rgba(255,255,255,0.10)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.70), 0 2px 1px rgba(255,255,255,0.18), 0 0 4px rgba(0,0,0,0.15)',
                 }}>
                   {card.label}
                 </div>
@@ -489,7 +489,7 @@ export default function Configuracion() {
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 1px rgba(0,0,0,0.50), 0 1px 1px rgba(255,255,255,0.08)',
+                  textShadow: '0 -1px 1px rgba(0,0,0,0.60), 0 2px 1px rgba(255,255,255,0.15), 0 0 3px rgba(0,0,0,0.12)',
                 }}>
                   {card.subtitle}
                 </div>
