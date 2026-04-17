@@ -135,8 +135,8 @@ export default function DashboardCS() {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '12px',
+                  justifyContent: 'space-between',
+                  gap: '0px',
                   transition: 'all 0.4s cubic-bezier(0.23,1,0.32,1)',
                   transform: isH ? 'translateY(-4px)' : 'none',
                   boxShadow: isH
@@ -162,18 +162,18 @@ export default function DashboardCS() {
                   background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 40%)',
                 }} />
 
-                {/* Icon — centered, prominent */}
-                <div style={{ position: 'relative', zIndex: 1, transition: 'transform 0.4s ease', transform: isH ? 'scale(1.08)' : 'none' }}>
-                  <IcoCenter set={card.iconSet} name={card.iconName} />
-                </div>
-
-                {/* Label */}
+                {/* Label — at TOP */}
                 <div style={{
                   fontFamily: D.font, fontSize: '13px', fontWeight: 700, color: 'rgba(255,255,255,0.88)',
                   textAlign: 'center', position: 'relative', zIndex: 1, letterSpacing: '-0.01em',
-                  lineHeight: 1.2,
+                  lineHeight: 1.2, paddingTop: '4px',
                 }}>
                   {card.label}
+                </div>
+
+                {/* Icon — centered, prominent */}
+                <div style={{ position: 'relative', zIndex: 1, transition: 'transform 0.4s ease', transform: isH ? 'scale(1.08)' : 'none' }}>
+                  <IcoCenter set={card.iconSet} name={card.iconName} />
                 </div>
 
                 {/* KPI + sublabel */}
