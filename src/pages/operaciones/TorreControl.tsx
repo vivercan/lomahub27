@@ -191,7 +191,7 @@ function MultiSelectDropdown({
           width: '100%',
           padding: '10px 12px',
           border: `1px solid ${tokens.colors.border}`,
-          borderRadius: tokens.radii.md,
+          borderRadius: tokens.radius.md,
           backgroundColor: tokens.colors.bg,
           color: tokens.colors.text,
           cursor: 'pointer',
@@ -222,7 +222,7 @@ function MultiSelectDropdown({
             marginTop: '4px',
             backgroundColor: tokens.colors.bg,
             border: `1px solid ${tokens.colors.border}`,
-            borderRadius: tokens.radii.md,
+            borderRadius: tokens.radius.md,
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
             zIndex: 1000,
             maxHeight: '300px',
@@ -231,7 +231,7 @@ function MultiSelectDropdown({
         >
           {/* Search Input */}
           <div style={{ padding: '8px', borderBottom: `1px solid ${tokens.colors.border}`, position: 'sticky', top: 0, backgroundColor: tokens.colors.bg }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', backgroundColor: tokens.colors.bgSecondary, borderRadius: tokens.radii.sm }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', backgroundColor: tokens.colors.bgSecondary, borderRadius: tokens.radius.sm }}>
               <Search size={14} color={tokens.colors.textSecondary} />
               <input
                 type="text"
@@ -386,7 +386,7 @@ function MapModal({ viaje, onClose }: MapModalProps) {
               gap: tokens.spacing.md,
               padding: tokens.spacing.md,
               backgroundColor: tokens.colors.bgSecondary,
-              borderRadius: tokens.radii.md,
+              borderRadius: tokens.radius.md,
             }}
           >
             <div>
@@ -420,7 +420,7 @@ function MapModal({ viaje, onClose }: MapModalProps) {
             style={{
               width: '100%',
               height: '400px',
-              borderRadius: tokens.radii.md,
+              borderRadius: tokens.radius.md,
               overflow: 'hidden',
               border: `1px solid ${tokens.colors.border}`,
               backgroundColor: tokens.colors.bgSecondary,
