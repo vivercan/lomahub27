@@ -34,16 +34,27 @@ function adjustColor(hex: string, amount: number): string {
 }
 
 const ICO_OPACITY = 0.22
+const STROKE_SCALE = 0.8  // 20% thinner lines
 
-/* Iconify API — Solar Linear icons (premium, modern, distinctive)
-   stroke-width reduced 30% via CSS transform scaleX/Y trick won't work on raster,
-   so we use Solar's "broken" variant which has thinner lines */
-const IcoImg = ({ set, name }: { set: string; name: string }) => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    <img src={`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`} alt=""
-      style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }} />
-  </div>
-)
+/* Iconify API — fetches SVG, reduces stroke-width 20%, same icon size */
+const IcoImg = ({ set, name }: { set: string; name: string }) => {
+  const [src, setSrc] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
+  useEffect(() => {
+    fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
+      .then(r => r.text())
+      .then(raw => {
+        const thin = raw.replace(/stroke-width="([^"]+)"/g, (_, w) =>
+          `stroke-width="${(parseFloat(w) * STROKE_SCALE).toFixed(2)}"`)
+        setSrc(`data:image/svg+xml,${encodeURIComponent(thin)}`)
+      })
+      .catch(() => {})
+  }, [set, name])
+  return (
+    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
+      <img src={src} alt="" style={{ position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' }} />
+    </div>
+  )
+}
 
 const IconTickets     = () => <IcoImg set="solar" name="headphones-round-sound-broken" />
 const IconClientes    = () => <IcoImg set="solar" name="users-group-rounded-broken" />
