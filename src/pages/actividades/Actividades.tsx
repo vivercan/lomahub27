@@ -131,6 +131,7 @@ export default function Actividades() {
     <ModuleLayout
       titulo="Actividades"
       subtitulo="Bitácora de llamadas, visitas, emails y seguimientos"
+      moduloPadre={{ nombre: 'Servicio', ruta: '/servicio/dashboard' }}
       acciones={<Button size="sm"><Plus size={16} /> Nueva Actividad</Button>}
     >
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>

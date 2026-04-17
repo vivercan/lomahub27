@@ -320,7 +320,7 @@ export default function CorporativosClientes(): ReactElement {
   /* ───── render ───── */
   if (loading) {
     return (
-      <ModuleLayout titulo="Clientes Corporativos">
+      <ModuleLayout titulo="Clientes Corporativos" moduloPadre={{ nombre: 'Servicio', ruta: '/servicio/dashboard' }}>
         <Card>
           <div style={{ textAlign: 'center', padding: tokens.spacing.xl }}>
             <p style={{ color: tokens.colors.textSecondary }}>Cargando grupos corporativos...</p>
@@ -331,7 +331,7 @@ export default function CorporativosClientes(): ReactElement {
   }
 
   return (
-    <ModuleLayout titulo="Clientes Corporativos — Subsidiarias">
+    <ModuleLayout titulo="Clientes Corporativos — Subsidiarias" moduloPadre={{ nombre: 'Servicio', ruta: '/servicio/dashboard' }}>
       {/* KPI Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
         <KPICard titulo="Grupos Corporativos" valor={String(globalKPIs.totalGrupos)} color="primary" icono={<Building2 size={20} />} />

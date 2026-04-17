@@ -55,6 +55,8 @@ import WhatsAppBandeja from './pages/servicio/WhatsApp'
 import MetricasServicio from './pages/servicio/MetricasServicio'
 import ComunicacionProactiva from './pages/servicio/ComunicacionProactiva'
 import EscalamientoWhatsApp from './pages/servicio/EscalamientoWhatsApp'
+import ViajesImpo from './pages/servicio/ViajesImpo'
+import ViajesExpo from './pages/servicio/ViajesExpo'
 
 // CXC
 import Cartera from './pages/cxc/Cartera'
@@ -389,14 +391,14 @@ function App() {
           {/* ——— Servicio Importación ——— */}
           <Route path="/servicio/importacion" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs']}>
-              <DashboardCS />
+              <ViajesImpo />
             </ProtectedRoute>
           } />
 
           {/* ——— Servicio Exportación ——— */}
           <Route path="/servicio/exportacion" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs']}>
-              <DashboardCS />
+              <ViajesExpo />
             </ProtectedRoute>
           } />
 

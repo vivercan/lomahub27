@@ -97,20 +97,30 @@ export default function DashboardCS() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
   const [pressed, setPressed] = useState<string | null>(null)
-  const [kpis, setKpis] = useState<Record<string, number>>({ tickets: 0, clientes: 0, impo: 0, expo: 0 })
+  const [kpis, setKpis] = useState<Record<string, number>>({ tickets: 0, clientes: 0, impo: 0, expo: 0, despacho_ia: 0, metricas: 0, actividades: 0 })
   const [loading, setLoading] = useState(true)
 
   const fetchKpis = useCallback(async () => {
     try {
-      const [tix, cli] = await Promise.all([
+      const [tix, cli, act, viajesActivos] = await Promise.all([
         supabase.from('tickets').select('*', { count: 'exact', head: true }).is('deleted_at', null).in('estado', ['abierto', 'en_proceso']),
         supabase.from('clientes').select('*', { count: 'exact', head: true }).is('deleted_at', null),
+        supabase.from('actividades').select('*', { count: 'exact', head: true }).eq('estado', 'pendiente'),
+        supabase.from('viajes').select('*', { count: 'exact', head: true }).in('estado', ['en_transito', 'programado', 'en_riesgo']),
       ])
       const [impoCount, expoCount] = await Promise.all([
         countViajesAnodosByTipo(3),
         countViajesAnodosByTipo(2),
       ])
-      setKpis({ tickets: tix.count ?? 0, clientes: cli.count ?? 0, impo: impoCount, expo: expoCount })
+      setKpis({
+        tickets: tix.count ?? 0,
+        clientes: cli.count ?? 0,
+        impo: impoCount,
+        expo: expoCount,
+        despacho_ia: viajesActivos.count ?? 0,
+        metricas: tix.count ?? 0,
+        actividades: act.count ?? 0,
+      })
     } catch (e) { console.error('KPI fetch error:', e) }
     finally { setLoading(false) }
   }, [])
