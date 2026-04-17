@@ -282,48 +282,42 @@ export default function AppHeader({
             </span>
           </div>
 
-          {/* Bell — Inset concave keycap style */}
+          {/* Bell — Flat minimal circle */}
           <div style={{ position: 'relative' }}>
             <button
               ref={bellButtonRef}
               onClick={() => setShowNotifPanel((p) => !p)}
               title="Notificaciones"
               style={{
-                width: 40,
-                height: 40,
-                background: 'linear-gradient(180deg, #D1D5DB 0%, #E5E7EB 60%, #F3F4F6 100%)',
-                border: 'none',
+                width: 36,
+                height: 36,
+                background: 'transparent',
+                border: '1.5px solid #CBD5E1',
                 borderRadius: '50%',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
-                transition: 'all 0.14s cubic-bezier(0.23,1,0.32,1)',
-                boxShadow: `inset 0 3px 6px rgba(0,0,0,0.22),
-                  inset 0 1px 2px rgba(0,0,0,0.18),
-                  inset 0 -2px 1px rgba(255,255,255,0.70),
-                  0 1px 0 rgba(255,255,255,0.90),
-                  0 -1px 2px rgba(0,0,0,0.08)`,
+                transition: 'all 0.18s ease',
+                boxShadow: 'none',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(180deg, #C9CDD5 0%, #DDE0E6 60%, #ECEEF2 100%)';
-                e.currentTarget.style.boxShadow = `inset 0 3px 6px rgba(0,0,0,0.25), inset 0 1px 2px rgba(0,0,0,0.20), inset 0 -2px 1px rgba(255,255,255,0.65), 0 1px 0 rgba(255,255,255,0.85), 0 -1px 2px rgba(0,0,0,0.10)`;
+                e.currentTarget.style.background = '#F1F5F9';
+                e.currentTarget.style.borderColor = '#94A3B8';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(180deg, #D1D5DB 0%, #E5E7EB 60%, #F3F4F6 100%)';
-                e.currentTarget.style.boxShadow = `inset 0 3px 6px rgba(0,0,0,0.22), inset 0 1px 2px rgba(0,0,0,0.18), inset 0 -2px 1px rgba(255,255,255,0.70), 0 1px 0 rgba(255,255,255,0.90), 0 -1px 2px rgba(0,0,0,0.08)`;
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.borderColor = '#CBD5E1';
               }}
               onMouseDown={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(180deg, #BCC0C8 0%, #D5D8DE 60%, #E2E4E8 100%)';
-                e.currentTarget.style.boxShadow = `inset 0 4px 8px rgba(0,0,0,0.30), inset 0 2px 4px rgba(0,0,0,0.25), inset 0 -1px 1px rgba(255,255,255,0.50), 0 1px 0 rgba(255,255,255,0.80)`;
+                e.currentTarget.style.background = '#E2E8F0';
               }}
               onMouseUp={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(180deg, #C9CDD5 0%, #DDE0E6 60%, #ECEEF2 100%)';
-                e.currentTarget.style.boxShadow = `inset 0 3px 6px rgba(0,0,0,0.25), inset 0 1px 2px rgba(0,0,0,0.20), inset 0 -2px 1px rgba(255,255,255,0.65), 0 1px 0 rgba(255,255,255,0.85), 0 -1px 2px rgba(0,0,0,0.10)`;
+                e.currentTarget.style.background = '#F1F5F9';
               }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4B5563" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
               </svg>
@@ -467,42 +461,36 @@ export default function AppHeader({
             )}
           </div>
 
-          {/* Logout — Inset concave keycap style */}
+          {/* Logout — Flat minimal circle */}
           <button
             onClick={onLogout}
             title="Cerrar sesión"
             style={{
-              width: 40,
-              height: 40,
-              background: 'linear-gradient(180deg, #D1D5DB 0%, #E5E7EB 60%, #F3F4F6 100%)',
-              border: 'none',
+              width: 36,
+              height: 36,
+              background: 'transparent',
+              border: '1.5px solid #CBD5E1',
               borderRadius: '50%',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'all 0.14s cubic-bezier(0.23,1,0.32,1)',
-              boxShadow: `inset 0 3px 6px rgba(0,0,0,0.22),
-                inset 0 1px 2px rgba(0,0,0,0.18),
-                inset 0 -2px 1px rgba(255,255,255,0.70),
-                0 1px 0 rgba(255,255,255,0.90),
-                0 -1px 2px rgba(0,0,0,0.08)`,
+              transition: 'all 0.18s ease',
+              boxShadow: 'none',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(180deg, #C9CDD5 0%, #DDE0E6 60%, #ECEEF2 100%)';
-              e.currentTarget.style.boxShadow = `inset 0 3px 6px rgba(0,0,0,0.25), inset 0 1px 2px rgba(0,0,0,0.20), inset 0 -2px 1px rgba(255,255,255,0.65), 0 1px 0 rgba(255,255,255,0.85), 0 -1px 2px rgba(0,0,0,0.10)`;
+              e.currentTarget.style.background = '#FEF2F2';
+              e.currentTarget.style.borderColor = '#FCA5A5';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(180deg, #D1D5DB 0%, #E5E7EB 60%, #F3F4F6 100%)';
-              e.currentTarget.style.boxShadow = `inset 0 3px 6px rgba(0,0,0,0.22), inset 0 1px 2px rgba(0,0,0,0.18), inset 0 -2px 1px rgba(255,255,255,0.70), 0 1px 0 rgba(255,255,255,0.90), 0 -1px 2px rgba(0,0,0,0.08)`;
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.borderColor = '#CBD5E1';
             }}
             onMouseDown={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(180deg, #BCC0C8 0%, #D5D8DE 60%, #E2E4E8 100%)';
-              e.currentTarget.style.boxShadow = `inset 0 4px 8px rgba(0,0,0,0.30), inset 0 2px 4px rgba(0,0,0,0.25), inset 0 -1px 1px rgba(255,255,255,0.50), 0 1px 0 rgba(255,255,255,0.80)`;
+              e.currentTarget.style.background = '#FEE2E2';
             }}
             onMouseUp={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(180deg, #C9CDD5 0%, #DDE0E6 60%, #ECEEF2 100%)';
-              e.currentTarget.style.boxShadow = `inset 0 3px 6px rgba(0,0,0,0.25), inset 0 1px 2px rgba(0,0,0,0.20), inset 0 -2px 1px rgba(255,255,255,0.65), 0 1px 0 rgba(255,255,255,0.85), 0 -1px 2px rgba(0,0,0,0.10)`;
+              e.currentTarget.style.background = '#FEF2F2';
             }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
