@@ -391,7 +391,7 @@ export default function Configuracion() {
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 0 rgba(0,0,0,0.90), 0 1px 0 rgba(255,255,255,0.50), 1px 0 0 rgba(0,0,0,0.25), -1px 0 0 rgba(0,0,0,0.25)',
+                  textShadow: '0 -2px 1px rgba(0,0,0,1), 0 2px 0 rgba(255,255,255,0.60), 1px 0 0 rgba(0,0,0,0.35), -1px 0 0 rgba(0,0,0,0.35), 0 0 3px rgba(0,0,0,0.30)',
                 }}>
                   {card.label}
                 </div>
@@ -405,7 +405,7 @@ export default function Configuracion() {
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 0 rgba(0,0,0,0.85), 0 1px 0 rgba(255,255,255,0.45), 1px 0 0 rgba(0,0,0,0.20), -1px 0 0 rgba(0,0,0,0.20)',
+                  textShadow: '0 -2px 1px rgba(0,0,0,0.95), 0 2px 0 rgba(255,255,255,0.55), 1px 0 0 rgba(0,0,0,0.30), -1px 0 0 rgba(0,0,0,0.30), 0 0 2px rgba(0,0,0,0.25)',
                 }}>
                   {card.subtitle}
                 </div>
@@ -480,7 +480,7 @@ export default function Configuracion() {
                   marginBottom: 'auto',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 0 rgba(0,0,0,0.90), 0 1px 0 rgba(255,255,255,0.50), 1px 0 0 rgba(0,0,0,0.25), -1px 0 0 rgba(0,0,0,0.25)',
+                  textShadow: '0 -2px 1px rgba(0,0,0,1), 0 2px 0 rgba(255,255,255,0.60), 1px 0 0 rgba(0,0,0,0.35), -1px 0 0 rgba(0,0,0,0.35), 0 0 3px rgba(0,0,0,0.30)',
                 }}>
                   {card.label}
                 </div>
@@ -494,7 +494,7 @@ export default function Configuracion() {
                   marginTop: '6px',
                   position: 'relative',
                   zIndex: 4,
-                  textShadow: '0 -1px 0 rgba(0,0,0,0.85), 0 1px 0 rgba(255,255,255,0.45), 1px 0 0 rgba(0,0,0,0.20), -1px 0 0 rgba(0,0,0,0.20)',
+                  textShadow: '0 -2px 1px rgba(0,0,0,0.95), 0 2px 0 rgba(255,255,255,0.55), 1px 0 0 rgba(0,0,0,0.30), -1px 0 0 rgba(0,0,0,0.30), 0 0 2px rgba(0,0,0,0.25)',
                 }}>
                   {card.subtitle}
                 </div>
