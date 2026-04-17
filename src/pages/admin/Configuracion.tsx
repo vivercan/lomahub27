@@ -90,13 +90,15 @@ const IcoParametros = () => (
   </svg></div>
 )
 
-/* Integraciones — puzzle / link */
+/* Integraciones — 3 puzzle pieces */
 const IcoIntegraciones = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M60,55 L60,30 Q60,20 70,20 L105,20 Q105,8 120,8 Q135,8 135,20 L160,20 Q170,20 170,30 L170,55" stroke={S} strokeWidth="2" />
-    <path d="M170,65 L170,100 Q170,110 160,110 L130,110 Q130,122 115,122 Q100,122 100,110 L70,110 Q60,110 60,100 L60,65" stroke={S} strokeWidth="2" />
-    <line x1="60" y1="55" x2="60" y2="65" stroke={S2} strokeWidth="2" strokeDasharray="4 3" />
-    <line x1="170" y1="55" x2="170" y2="65" stroke={S2} strokeWidth="2" strokeDasharray="4 3" />
+    {/* Piece 1 — top left */}
+    <path d="M30,28 L72,28 L72,42 Q80,42 80,50 Q80,58 72,58 L72,72 L30,72 L30,58 Q22,58 22,50 Q22,42 30,42 Z" stroke={S} strokeWidth="2" />
+    {/* Piece 2 — top right, interlocked */}
+    <path d="M78,28 L120,28 L120,42 Q128,42 128,50 Q128,58 120,58 L120,72 L78,72 L78,58 Q86,58 86,50 Q86,42 78,42 Z" stroke={S} strokeWidth="2" />
+    {/* Piece 3 — bottom center, interlocked */}
+    <path d="M54,78 L96,78 L96,92 Q104,92 104,100 Q104,108 96,108 L96,122 L54,122 L54,108 Q46,108 46,100 Q46,92 54,92 Z" stroke={S2} strokeWidth="1.8" />
   </svg></div>
 )
 
@@ -129,14 +131,32 @@ const IcoDocumentos = () => (
   </svg></div>
 )
 
-/* Cerebro Tarifario — brain / dollar */
+/* Cerebro Tarifario — brain with AI / neural look */
 const IcoCerebro = () => (
   <div style={geoWrap}><svg viewBox="0 0 200 140" style={geoSvg} fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="100" cy="60" r="42" stroke={S} strokeWidth="2" />
-    <path d="M100,30 L100,90" stroke={S} strokeWidth="2.5" />
-    <path d="M82,42 Q82,36 92,36 L108,36 Q118,36 118,44 Q118,52 106,52 L94,52 Q82,52 82,60 Q82,68 92,68 L108,68 Q118,68 118,62" stroke={S} strokeWidth="2" />
-    <line x1="100" y1="26" x2="100" y2="30" stroke={S2} strokeWidth="2" />
-    <line x1="100" y1="90" x2="100" y2="94" stroke={S2} strokeWidth="2" />
+    {/* Brain outline — left hemisphere */}
+    <path d="M100,18 Q60,18 52,45 Q44,72 58,90 Q68,104 85,112 L100,118" stroke={S} strokeWidth="2" />
+    {/* Brain outline — right hemisphere */}
+    <path d="M100,18 Q140,18 148,45 Q156,72 142,90 Q132,104 115,112 L100,118" stroke={S} strokeWidth="2" />
+    {/* Center fold */}
+    <path d="M100,24 L100,112" stroke={S2} strokeWidth="1.2" strokeDasharray="3 4" />
+    {/* Brain folds left */}
+    <path d="M62,52 Q78,48 90,58" stroke={S2} strokeWidth="1.5" />
+    <path d="M58,74 Q75,68 92,78" stroke={S2} strokeWidth="1.5" />
+    {/* Brain folds right */}
+    <path d="M138,52 Q122,48 110,58" stroke={S2} strokeWidth="1.5" />
+    <path d="M142,74 Q125,68 108,78" stroke={S2} strokeWidth="1.5" />
+    {/* Neural nodes — AI feel */}
+    <circle cx="72" cy="50" r="3" fill={S2} />
+    <circle cx="128" cy="50" r="3" fill={S2} />
+    <circle cx="66" cy="76" r="3" fill={S2} />
+    <circle cx="134" cy="76" r="3" fill={S2} />
+    <circle cx="100" cy="60" r="4" fill={S} />
+    {/* Neural connections */}
+    <line x1="75" y1="50" x2="96" y2="60" stroke={S2} strokeWidth="1" />
+    <line x1="125" y1="50" x2="104" y2="60" stroke={S2} strokeWidth="1" />
+    <line x1="69" y1="76" x2="96" y2="62" stroke={S2} strokeWidth="1" />
+    <line x1="131" y1="76" x2="104" y2="62" stroke={S2} strokeWidth="1" />
   </svg></div>
 )
 
