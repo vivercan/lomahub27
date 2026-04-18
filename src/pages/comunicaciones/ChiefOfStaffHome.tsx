@@ -67,7 +67,7 @@ export default function ChiefOfStaffHome() {
   ]
 
   return (
-    <ModuleLayout titulo="Chief of Staff" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
+    <ModuleLayout titulo="Resumen Ejecutivo" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
     <div style={{
       minHeight: '100vh', background: t.colors.bgMain,
       fontFamily: t.fonts.body, color: t.colors.textPrimary,
@@ -91,7 +91,7 @@ export default function ChiefOfStaffHome() {
               margin: 0, fontSize: '20px', fontWeight: 700,
               fontFamily: t.fonts.heading, color: t.colors.textPrimary,
             }}>
-              AI Chief of Staff
+              Resumen Ejecutivo IA
             </h1>
             <div style={{
               fontSize: '13px', color: t.colors.textSecondary, marginTop: '2px',
