@@ -68,7 +68,7 @@ export default function MisCotizaciones() {
   }
 
   return (
-    <ModuleLayout titulo="Mis Cotizaciones" subtitulo="Cotizador Cross-Border" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
+    <ModuleLayout titulo="Mis Cotizaciones" subtitulo="Cotizador Transfronterizo" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
       <div style={{ padding: '24px', maxHeight: '100vh', overflow: 'hidden' }}>
         {/* KPI Bar */}
         <div style={{ display: 'flex', gap: '16px', marginBottom: '20px' }}>
@@ -118,7 +118,7 @@ export default function MisCotizaciones() {
             fontFamily: tokens.fonts.heading, fontSize: '14px', fontWeight: 600,
             cursor: 'pointer', transition: '0.2s',
           }}>
-            <Plus size={18} /> Nueva Cotizacion
+            <Plus size={18} /> Nueva Cotización
           </button>
         </div>
 
@@ -142,7 +142,7 @@ export default function MisCotizaciones() {
             <tbody>
               {paginated.length === 0 ? (
                 <tr><td colSpan={8} style={{ padding: '40px', textAlign: 'center', color: tokens.colors.textMuted, fontSize: '14px' }}>
-                  {filtered.length === 0 ? 'No hay cotizaciones aun. Crea la primera.' : `No hay cotizaciones con estado "${filtro}"`}
+                  {filtered.length === 0 ? 'No hay cotizaciones aún. Crea la primera.' : `No hay cotizaciones con estado "${filtro}"`}
                 </td></tr>
               ) : paginated.map(c => {
                 const est = estadoConfig[c.estado] || estadoConfig.borrador
