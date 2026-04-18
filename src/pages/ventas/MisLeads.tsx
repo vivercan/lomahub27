@@ -995,7 +995,12 @@ export default function MisLeads() {
                 return (
                   <tr
                     key={lead.id}
-                    style={s.row}
+                    style={{ ...s.row, cursor: 'pointer' }}
+                    onClick={(e) => {
+                      const target = e.target as HTMLElement;
+                      if (target.closest('button, svg, a, [role="button"], input, select, textarea')) return;
+                      navigate(`/ventas/leads/${lead.id}`);
+                    }}
                     onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = tokens.colors.bgHover }}
                     onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = 'transparent' }}
                   >
