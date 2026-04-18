@@ -533,7 +533,7 @@ const ControlTractos: React.FC = () => {
             <option value="">Todos los estados</option>
             {estados.map((estado) => (
               <option key={estado} value={estado}>
-                {estado.replace(/_/g, ' ').toUpperCase()}
+                {estado?.replace(/_/g, ' ').toUpperCase() ?? '—'}
               </option>
             ))}
           </select>
@@ -731,7 +731,7 @@ const ControlTractos: React.FC = () => {
                           textTransform: 'capitalize',
                         }}
                       >
-                        {tracto.estado_operativo.replace(/_/g, ' ')}
+                        {tracto.estado_operativo?.replace(/_/g, ' ') ?? '—'}
                       </span>
                     </td>
                     <td style={cellStyle}>
@@ -1100,7 +1100,7 @@ const FormFields: React.FC<FormFieldsProps> = ({
           <option value="">Seleccionar estado</option>
           {estados.map((estado) => (
             <option key={estado} value={estado}>
-              {estado.replace(/_/g, ' ').toUpperCase()}
+              {estado?.replace(/_/g, ' ').toUpperCase() ?? '—'}
             </option>
           ))}
         </select>
