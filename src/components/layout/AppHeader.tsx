@@ -235,8 +235,8 @@ export default function AppHeader({
         <div style={{ display: 'flex', alignItems: 'center', gap: 56, marginRight: 'auto', marginLeft: 40 }}>
           {/* Fecha */}
           <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1E293B', fontFamily: "'Montserrat', sans-serif", textTransform: 'capitalize' as const }}>
-              {fechaStr}
+            <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1E293B', fontFamily: "'Montserrat', sans-serif" }}>
+              {fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1)}
             </p>
           </div>
 
