@@ -195,7 +195,7 @@ export default function Documentos() {
           columns={columns}
           data={filtered}
           loading={loading}
-          emptyMessage="Sin datos • Tabla vacía en Supabase"
+          emptyMessage="Aún no hay documentos"
         />
       </Card>
     </ModuleLayout>
