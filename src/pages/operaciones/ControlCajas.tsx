@@ -235,17 +235,17 @@ export default function ControlCajas(): ReactElement {
             Cajas GPS — {cajasFiltradas.length} unidades
           </h3>
           <span style={{ color: tokens.colors.textMuted, fontSize: '13px' }}>
-            Fuente: GPS Master (tipo_unidad = caja)
+            Inventario consolidado de cajas
           </span>
         </div>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
-            <p>Cargando cajas desde GPS Master...</p>
+            <p>Cargando cajas...</p>
           </div>
         ) : cajasFiltradas.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
             <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
-            <p style={{ fontSize: '14px', marginTop: '4px' }}>No se encontraron cajas en el GPS Master</p>
+            <p style={{ fontSize: '14px', marginTop: '4px' }}>No se encontraron cajas</p>
           </div>
         ) : (
           <DataTable columns={cajasColumns} data={cajasFiltradas} />
