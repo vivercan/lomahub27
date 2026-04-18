@@ -562,6 +562,20 @@ function App() {
             </ProtectedRoute>
           } />
 
+          {/* --- Redirects legacy a rutas canonicas (P0-03) --- */}
+          <Route path="/ventas/nuevo-lead" element={<Navigate to="/ventas/leads/nuevo" replace />} />
+          <Route path="/ventas/leads" element={<Navigate to="/ventas/mis-leads" replace />} />
+          <Route path="/ventas/comisiones" element={<Navigate to="/ventas/dashboard" replace />} />
+          <Route path="/ventas/prospeccion-externa" element={<Navigate to="/ventas/prospeccion" replace />} />
+          <Route path="/clientes" element={<Navigate to="/clientes/alta" replace />} />
+          <Route path="/operaciones/mapa-gps" element={<Navigate to="/operaciones/mapa" replace />} />
+          <Route path="/operaciones/control-tractos" element={<Navigate to="/operaciones/tractos" replace />} />
+          <Route path="/operaciones/control-cajas" element={<Navigate to="/operaciones/cajas" replace />} />
+          <Route path="/operaciones/viajes" element={<Navigate to="/operaciones/torre-control" replace />} />
+          <Route path="/operaciones/trazabilidad" element={<Navigate to="/operaciones/torre-control" replace />} />
+          <Route path="/cotizador/nuevo" element={<Navigate to="/cotizador/nueva" replace />} />
+          <Route path="/inteligencia/rankings" element={<Navigate to="/inteligencia" replace />} />
+
           {/* ––– Default ––– */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
