@@ -596,6 +596,7 @@ export default function CerebroTarifario() {
     <ModuleLayout
       titulo="Cerebro Tarifario"
       subtitulo="Motor de pricing — tarifas MX/USA, cruces fronterizos y accesoriales"
+      moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}
       acciones={
         <div style={{ display: 'flex', gap: tokens.spacing.sm }}>
           {tab !== 'historial' && (

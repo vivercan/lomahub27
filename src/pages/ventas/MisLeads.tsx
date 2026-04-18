@@ -797,6 +797,7 @@ export default function MisLeads() {
     <ModuleLayout
         titulo="Panel de Oportunidades"
         subtitulo={`${totalActive} oportunidades activas \u2022 ${formatCurrency(totalValue)} en pipeline`}
+        moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}
         acciones={
           <button
             style={s.addBtn}

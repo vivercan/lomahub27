@@ -277,7 +277,7 @@ export default function FichaLead() {
 
   if (loading) {
     return (
-      <ModuleLayout titulo="Lead">
+      <ModuleLayout titulo="Lead" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
         <div style={{ textAlign: 'center', padding: '60px', color: tokens.colors.textMuted }}>
           <p style={{ fontFamily: tokens.fonts.body }}>Cargando...</p>
         </div>
@@ -287,7 +287,7 @@ export default function FichaLead() {
 
   if (notFound || !lead) {
     return (
-      <ModuleLayout titulo="Lead">
+      <ModuleLayout titulo="Lead" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
         <div style={{ textAlign: 'center', padding: '60px', color: tokens.colors.textMuted }}>
           <p style={{ fontSize: '18px', fontWeight: 500, margin: 0, fontFamily: tokens.fonts.heading }}>Lead no encontrado</p>
           <p style={{ fontSize: '14px', marginTop: '8px', fontFamily: tokens.fonts.body }}>No hay información disponible para este lead</p>
@@ -304,6 +304,7 @@ export default function FichaLead() {
   return (
     <ModuleLayout
       titulo={`Lead — ${lead.empresa}`}
+      moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}
       acciones={
         <button
           style={s.backBtn}

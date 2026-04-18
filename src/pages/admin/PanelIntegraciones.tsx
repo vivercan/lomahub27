@@ -64,6 +64,7 @@ export default function PanelIntegraciones() {
     <ModuleLayout
       titulo="Panel de Integraciones"
       subtitulo="Estado de conexiones externas del sistema"
+      moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}
       acciones={
         <Button size="sm" variant="secondary" onClick={fetchIntegraciones}>
           <RefreshCw size={16} /> Verificar Estado

@@ -141,6 +141,7 @@ export default function Documentos() {
     <ModuleLayout
       titulo="Documentos"
       subtitulo="Contratos, cartas porte, PODs y plantillas"
+      moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}
       acciones={
         <div style={{ display: 'flex', gap: tokens.spacing.sm }}>
           <Button size="sm" variant="secondary"><Upload size={16} /> Subir</Button>
