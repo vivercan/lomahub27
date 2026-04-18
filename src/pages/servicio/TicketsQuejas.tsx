@@ -398,7 +398,7 @@ export default function TicketsQuejas() {
               columns={columns}
               data={ticketsFiltered}
               loading={loading}
-              emptyMessage={tickets.length === 0 ? 'Sin datos • Tabla vacía en Supabase' : 'Sin resultados para los filtros seleccionados'}
+              emptyMessage={tickets.length === 0 ? 'Aún no hay registros' : 'Sin resultados para los filtros seleccionados'}
             />
           </div>
         </Card>
