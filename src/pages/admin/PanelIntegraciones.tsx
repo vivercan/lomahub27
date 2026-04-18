@@ -20,8 +20,8 @@ interface Integracion {
 }
 
 const defaultIntegraciones: Integracion[] = [
-  { id: '1', nombre: 'Supabase', descripcion: 'Base de datos y autenticación', tipo: 'supabase', estado: 'conectado', ultima_sync: new Date().toISOString().split('T')[0], registros_sync: 4739, api_key_configurada: true },
-  { id: '2', nombre: 'GPS Tracking', descripcion: 'Posición en tiempo real de unidades', tipo: 'gps', estado: 'conectado', ultima_sync: new Date().toISOString().split('T')[0], registros_sync: 271, api_key_configurada: true },
+  { id: '1', nombre: 'Supabase', descripcion: 'Base de datos y autenticación', tipo: 'supabase', estado: 'conectado', ultima_sync: new Date().toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City' }), registros_sync: 4739, api_key_configurada: true },
+  { id: '2', nombre: 'GPS Tracking', descripcion: 'Posición en tiempo real de unidades', tipo: 'gps', estado: 'conectado', ultima_sync: new Date().toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City' }), registros_sync: 271, api_key_configurada: true },
   { id: '3', nombre: 'WhatsApp Business', descripcion: 'Mensajería con clientes', tipo: 'whatsapp', estado: 'desconectado', api_key_configurada: false },
   { id: '4', nombre: 'ANODOS ERP', descripcion: 'Sincronización contable y facturación', tipo: 'anodos', estado: 'desconectado', api_key_configurada: false },
   { id: '5', nombre: 'Resend Email', descripcion: 'Correos transaccionales y marketing', tipo: 'email', estado: 'desconectado', api_key_configurada: false },
