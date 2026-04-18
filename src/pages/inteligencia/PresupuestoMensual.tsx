@@ -1,4 +1,4 @@
-// PresupuestoMensual.tsx – V2 – Real revenue from viajes_anodos + tarifas
+// PresupuestoMensual.tsx — V2 — Real revenue from viajes_anodos + tarifas
 // Shows per-client monthly revenue with estimated income from ANODOS data
 import { useState, useEffect } from 'react'
 import {
@@ -269,7 +269,7 @@ export default function PresupuestoMensual() {
         margenPct: Math.round(totalMargenPct * 10) / 10,
         totalViajes: allViajes.length,
         totalKm: totalKm,
-        clienteTop: detalleArr[0]?.cliente || '–',
+        clienteTop: detalleArr[0]?.cliente || '—',
       })
       setDetalle(detalleArr)
     } catch (err) {
@@ -329,7 +329,7 @@ export default function PresupuestoMensual() {
       render: (row) => {
         if (row.tendencia === 'alza') return <TrendingUp size={16} style={{ color: tokens.colors.green }} />
         if (row.tendencia === 'baja') return <TrendingDown size={16} style={{ color: tokens.colors.red }} />
-        return <span style={{ color: tokens.colors.gray }}>–</span>
+        return <span style={{ color: tokens.colors.gray }}>—</span>
       },
     },
   ]
@@ -355,7 +355,7 @@ export default function PresupuestoMensual() {
     <ModuleLayout
       titulo="Ingreso Mensual por Cliente"
       moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}
-      subtitulo="Ingreso estimado, costo y margen por cliente – datos ANODOS en tiempo real"
+      subtitulo="Ingreso estimado, costo y margen por cliente — datos ANODOS en tiempo real"
       acciones={
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={handleExportCSV} disabled={!detalle.length}>
