@@ -179,7 +179,7 @@ export default function Actividades() {
           columns={columns}
           data={filtered}
           loading={loading}
-          emptyMessage="Sin datos • Tabla vacía en Supabase"
+          emptyMessage="Aún no hay actividades registradas"
         />
       </Card>
     </ModuleLayout>
