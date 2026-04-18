@@ -159,7 +159,7 @@ export default function ControlCajas(): ReactElement {
             }}
           />
           <span style={{ color: row.conGPS ? tokens.colors.textPrimary : tokens.colors.textMuted }}>
-            {row.ubicacion}
+            {row.ubicacion?.replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&amp;/g, '&').replace(/&quot;/g, '"')}
           </span>
         </div>
       ),
