@@ -311,7 +311,7 @@ export default function ProspeccionExterna(): ReactElement {
               </p>
               {prospectos.length === 0 && (
                 <p style={{ fontSize: '12px', color: tokens.colors.textMuted, marginTop: tokens.spacing.md }}>
-                  Requiere Edge Functions: prospeccion-buscar, prospeccion-enriquecer
+                  La integración de prospección aún no está activada. Contacta al administrador.
                 </p>
               )}
             </div>
