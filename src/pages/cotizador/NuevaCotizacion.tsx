@@ -7,6 +7,7 @@ import { Input } from '../../components/ui/Input'
 import { Select } from '../../components/ui/Select'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
+import { useFxRate } from '../../hooks/useFxRate'
 import { useAuthContext } from '../../hooks/AuthContext'
 import type { ReactNode } from 'react'
 
@@ -94,7 +95,7 @@ export default function NuevaCotizacion() {
   const [notas, setNotas] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [showAcc, setShowAcc] = useState(false)
-  const [fxRate] = useState(17.88) // TODO: fetch real rate from API
+  const { effective: fxRate } = useFxRate()
   const [saving, setSaving] = useState(false)
 
   /* validation */
