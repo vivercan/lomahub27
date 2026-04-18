@@ -213,7 +213,7 @@ export default function EscalamientoWhatsApp(): ReactElement {
                 Sin escalamientos registrados
               </p>
               <p style={{ fontSize: '14px', color: tokens.colors.textMuted, marginTop: tokens.spacing.xs }}>
-                Ejecutar migración 013 en Supabase para habilitar tabla escalamientos_whatsapp
+                Aún no hay escalamientos registrados. Aparecerán aquí cuando un ticket requiera elevar al supervisor.
               </p>
             </div>
           ) : (
