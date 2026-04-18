@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 import { useState, useEffect } from 'react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
-import { Card } from '../../components/Card'
+import { Card } from '../../components/ui/Card'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 import {
