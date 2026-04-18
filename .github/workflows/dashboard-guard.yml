@@ -14,7 +14,7 @@ jobs:
   check-dashboard-approval:
     runs-on: ubuntu-latest
     steps:
-      - name: Check commit message for DASHBOARD-APPROVED tag
+      - name: Check commit message for DESIGN-APPROVED tag
         run: |
           echo "Checking if HomeDashboard.tsx modification is approved..."
           COMMIT_MSG="${{ github.event.head_commit.message }}"
@@ -29,10 +29,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Verify BLESSED backup exists
+      - name: Verify V27k-CANONICAL backup exists
         run: |
-          if [ ! -f "src/pages/HomeDashboard.BLESSED.tsx" ]; then
-            echo "::error::HomeDashboard.BLESSED.tsx backup is missing! Dashboard blindaje compromised."
+          if [ ! -f "src/pages/HomeDashboard.V27k-CANONICAL.tsx" ]; then
+            echo "::error::HomeDashboard.V27k-CANONICAL.tsx backup is missing! Dashboard blindaje compromised."
             exit 1
           fi
-          echo "BLESSED backup verified."
+          echo "V27k-CANONICAL backup verified."
