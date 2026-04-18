@@ -24,7 +24,11 @@ jobs:
             fn=$(basename "$dir")
             if [ -f "$dir/index.ts" ]; then
               echo "Deploying $fn..."
-              supabase functions deploy "$fn" --project-ref $PROJECT_REF --no-verify-jwt || echo "WARN: $fn deploy failed"
+              if [[ "$fn" == whatsapp-* ]]; then
+                supabase functions deploy "$fn" --project-ref $PROJECT_REF --no-verify-jwt
+              else
+                supabase functions deploy "$fn" --project-ref $PROJECT_REF
+              fi || { echo "ERROR: $fn deploy failed"; exit 1; }
             else
               echo "Skipping $fn (no index.ts)"
             fi
