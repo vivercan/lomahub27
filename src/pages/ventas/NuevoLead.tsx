@@ -149,7 +149,9 @@ export default function NuevoLead(): ReactElement {
   }
 
   const handleSave = async () => {
-    if (!empresa.trim()) { setError('Empresa es obligatoria'); return }
+    if (!empresa.trim()) { setError('La empresa es obligatoria'); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
+    if (!contacto.trim()) { setError('El nombre del contacto es obligatorio'); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
+    if (!telefono.trim() && !email.trim()) { setError('Proporciona al menos teléfono o correo de contacto'); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
     setSaving(true); setError('')
     try {
       // Apply Title Case to empresa
@@ -613,7 +615,7 @@ export default function NuevoLead(): ReactElement {
             <div style={ps.sectionTitle}><FileText size={14} style={{ color: tokens.colors.primary }} /> Notas</div>
             <div style={ps.fieldGroup}>
               <label style={ps.label}>Proximos pasos</label>
-              <textarea style={{ ...ps.input, minHeight: '60px', resize: 'none' }} value={proximosPasos} onChange={e => setProximosPasos(e.target.value)} placeholder="Siguiente accion con el prospecto..." />
+              <textarea style={{ ...ps.input, minHeight: '60px', resize: 'none' }} value={proximosPasos} onChange={e => setProximosPasos(e.target.value)} placeholder="Siguiente acción con el prospecto..." />
             </div>
             <div style={ps.row}>
               <div style={ps.fieldGroup}>
