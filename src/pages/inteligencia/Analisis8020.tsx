@@ -2,7 +2,7 @@
 // Pareto analysis with actual estimated revenue per cliente/tracto/ruta
 import { useState, useEffect } from 'react'
 import {
-  BarChart3, TrendingUp, Users, Truck, Map, RefreshCw, Download,
+  BarChart3, TrendingUp, Users, Truck, Map as MapIcon, RefreshCw, Download,
   Target, Percent, Award, ChevronDown, ChevronUp
 } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
@@ -86,7 +86,7 @@ function getMonthOptions() {
 function getDimensionIcon(dim: Dimension) {
   if (dim === 'clientes') return <Users size={18} />
   if (dim === 'tractos') return <Truck size={18} />
-  return <Map size={18} />
+  return <MapIcon size={18} />
 }
 
 function getDimensionLabel(dim: Dimension) {
