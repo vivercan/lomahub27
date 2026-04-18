@@ -160,7 +160,7 @@ export default function Notificaciones() {
           </div>
         ) : filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '48px', color: tokens.colors.textMuted, fontFamily: tokens.fonts.body }}>
-            Sin datos • Tabla vacía en Supabase
+            Aún no hay notificaciones
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
