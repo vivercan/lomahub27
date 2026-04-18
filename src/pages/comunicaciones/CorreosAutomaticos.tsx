@@ -147,7 +147,7 @@ export default function CorreosAutomaticos() {
           columns={columns}
           data={templates}
           loading={loading}
-          emptyMessage="Sin datos • Tabla vacía en Supabase"
+          emptyMessage="Aún no hay correos automatizados"
         />
       </Card>
     </ModuleLayout>
