@@ -372,7 +372,7 @@ export default function CerebroTarifario() {
           <tr key={r.id} style={{ transition: 'background 0.15s' }} onMouseEnter={e => (e.currentTarget.style.background = tokens.colors.bgHover)} onMouseLeave={e => (e.currentTarget.style.background = '')}>
             <td style={cellStyle}>
               <span style={{ fontWeight: 600 }}>
-                <EditableCell value={r.rango_km_min} type="number" onSave={v => handleInlineUpdate('tarifas_mx', r.id, 'rango_km_min', v, r.rango_km_min)} />
+                <EditableCell value={r.rango_km_min ?? 0} type="number" onSave={v => handleInlineUpdate('tarifas_mx', r.id, 'rango_km_min', v, r.rango_km_min)} />
                 {' — '}
                 <EditableCell value={r.rango_km_max >= 99000 ? '∞' : r.rango_km_max} type="number" onSave={v => handleInlineUpdate('tarifas_mx', r.id, 'rango_km_max', v, r.rango_km_max)} />
                 {' km'}
@@ -418,7 +418,7 @@ export default function CerebroTarifario() {
           <tr key={r.id} style={{ transition: 'background 0.15s' }} onMouseEnter={e => (e.currentTarget.style.background = tokens.colors.bgHover)} onMouseLeave={e => (e.currentTarget.style.background = '')}>
             <td style={cellStyle}>
               <span style={{ fontWeight: 600 }}>
-                <EditableCell value={r.rango_millas_min} type="number" onSave={v => handleInlineUpdate('tarifas_usa', r.id, 'rango_millas_min', v, r.rango_millas_min)} />
+                <EditableCell value={r.rango_millas_min ?? 0} type="number" onSave={v => handleInlineUpdate('tarifas_usa', r.id, 'rango_millas_min', v, r.rango_millas_min)} />
                 {' — '}
                 <EditableCell value={r.rango_millas_max >= 99000 ? '∞' : r.rango_millas_max} type="number" onSave={v => handleInlineUpdate('tarifas_usa', r.id, 'rango_millas_max', v, r.rango_millas_max)} />
                 {' mi'}
