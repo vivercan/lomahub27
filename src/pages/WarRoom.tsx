@@ -404,7 +404,7 @@ export default function WarRoom() {
                 marginTop: '4px',
               }}
             >
-              Estado calculado en tiempo real desde datos de Supabase
+              Estado calculado en tiempo real
             </p>
           </div>
           <div className="grid grid-cols-5 gap-4">
@@ -651,7 +651,7 @@ export default function WarRoom() {
                 {alertas.filter((a) => a.tipo === 'danger').length > 0
                   ? `${alertas.filter((a) => a.tipo === 'danger').length} críticas`
                   : alertas.filter((a) => a.tipo === 'warning').length > 0
-                    ? `${alertas.filter((a) => a.tipo === 'warning').length} advertencias`
+                    ? (() => { const n = alertas.filter((a) => a.tipo === 'warning').length; return `${n} ${n === 1 ? 'advertencia' : 'advertencias'}`; })()
                     : 'Todo normal'}
               </span>
             </div>
