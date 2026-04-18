@@ -52,10 +52,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
             color: tokens.colors.textPrimary,
             margin: 0,
           }}>
-            {this.props.fallbackMessage || 'Algo salio mal'}
+            {this.props.fallbackMessage || 'Algo salió mal'}
           </h2>
           <p style={{ fontSize: '14px', maxWidth: '400px', textAlign: 'center' as const, margin: 0 }}>
-            {this.state.error?.message || 'Error inesperado en este modulo'}
+            {this.state.error?.message || 'Error inesperado en este módulo'}
           </p>
           <button
             onClick={this.handleRetry}
