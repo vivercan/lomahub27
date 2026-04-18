@@ -773,7 +773,7 @@ const ControlTractos: React.FC = () => {
                                   : tokens.green,
                         }}
                       >
-                        {tracto.horas_ociosas.toFixed(1)}h
+                        {(tracto.horas_ociosas ?? 0).toFixed(1)}h
                       </span>
                     </td>
                     <td style={cellStyle}>
