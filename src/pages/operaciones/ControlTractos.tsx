@@ -35,6 +35,18 @@ const tokens = {
 
 type EstadoOperativo = 'disponible' | 'en_viaje' | 'taller' | 'siniestro' | 'baja'
 
+// Normaliza estado_operativo de BD (puede ser ACTIVO, MTTO, TALLER, S/OP, etc.) al enum canonico
+const normalizarEstado = (e?: string | null): EstadoOperativo | '' => {
+  if (!e) return ''
+  const lower = String(e).toLowerCase().trim()
+  if (lower === 'activo' || lower === 'disponible') return 'disponible'
+  if (lower.includes('viaje')) return 'en_viaje'
+  if (lower.includes('mmto') || lower.includes('mtto') || lower.includes('taller')) return 'taller'
+  if (lower.includes('siniestro')) return 'siniestro'
+  if (lower.includes('baja') || lower === 's/op') return 'baja'
+  return ''
+}
+
 interface Tracto {
   id: string
   numero_economico: string
@@ -183,12 +195,12 @@ const ControlTractos: React.FC = () => {
 
   const summary = useMemo(() => {
     const activos = tractos.filter((t) => t.activo).length
-    const enViaje = tractos.filter((t) => t.activo && t.estado_operativo === 'en_viaje').length
-    const disponibles = tractos.filter((t) => t.activo && t.estado_operativo === 'disponible').length
-    const enTaller = tractos.filter((t) => t.activo && t.estado_operativo === 'taller').length
+    const enViaje = tractos.filter((t) => t.activo && normalizarEstado(t.estado_operativo) === 'en_viaje').length
+    const disponibles = tractos.filter((t) => t.activo && normalizarEstado(t.estado_operativo) === 'disponible').length
+    const enTaller = tractos.filter((t) => t.activo && normalizarEstado(t.estado_operativo) === 'taller').length
 
     const costOciosoTotal = tractos
-      .filter((t) => t.activo && t.estado_operativo === 'disponible')
+      .filter((t) => t.activo && normalizarEstado(t.estado_operativo) === 'disponible')
       .reduce((sum, t) => sum + (t.horas_ociosas || 0) * IDLE_COST_PER_HOUR, 0)
 
     return {
@@ -710,7 +722,7 @@ const ControlTractos: React.FC = () => {
                           display: 'inline-block',
                           padding: '0.25rem 0.75rem',
                           backgroundColor:
-                            tracto.estado_operativo === 'disponible'
+                            normalizarEstado(tracto.estado_operativo) === 'disponible'
                               ? '#F0FDF4'
                               : tracto.estado_operativo === 'en_viaje'
                                 ? '#EFF6FF'
@@ -718,7 +730,7 @@ const ControlTractos: React.FC = () => {
                                   ? '#F3F4F6'
                                   : '#FEE2E2',
                           color:
-                            tracto.estado_operativo === 'disponible'
+                            normalizarEstado(tracto.estado_operativo) === 'disponible'
                               ? tokens.green
                               : tracto.estado_operativo === 'en_viaje'
                                 ? tokens.blue
