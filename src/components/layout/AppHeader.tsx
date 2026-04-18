@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '../../lib/supabase'
+import { useFxRate } from '../../hooks/useFxRate'
 
 interface AppHeaderProps {
   onLogout: () => void
@@ -30,7 +31,7 @@ export default function AppHeader({
   const [showNotifPanel, setShowNotifPanel] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [tipoCambio, setTipoCambio] = useState<number | null>(null)
+  const { rate: tipoCambio } = useFxRate()
   const notifPanelRef = useRef<HTMLDivElement>(null)
   const bellButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -48,35 +49,6 @@ export default function AppHeader({
     return Math.ceil((days + oneJan.getDay() + 1) / 7)
   }
   const weekNum = getWeekNumber(now)
-
-  // --- Fetch USD/MXN exchange rate ---
-  useEffect(() => {
-    const fetchRate = async () => {
-      // 1. Try Supabase configuracion table
-      try {
-        const { data, error } = await supabase
-          .from('configuracion')
-          .select('valor')
-          .eq('clave', 'tipo_cambio_usd_mxn')
-          .maybeSingle()
-        if (!error && data?.valor) {
-          setTipoCambio(parseFloat(data.valor))
-          return
-        }
-      } catch { /* fallthrough */ }
-      // 2. Fallback: free exchangerate API
-      try {
-        const res = await fetch('https://open.er-api.com/v6/latest/USD')
-        const json = await res.json()
-        if (json?.rates?.MXN) {
-          setTipoCambio(json.rates.MXN)
-          return
-        }
-      } catch { /* fallthrough */ }
-      setTipoCambio(null)
-    }
-    fetchRate()
-  }, [])
 
   // --- Fetch notifications ---
   const fetchNotifications = useCallback(async () => {
