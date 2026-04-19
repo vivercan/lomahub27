@@ -555,7 +555,7 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* ——— Dashboard 14 modulos ——— */}
+          {/* ——— Dashboard V27k 8 cards (canónico, ratificado audit 17/Abr/2026) ——— */}
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <HomeDashboard />
