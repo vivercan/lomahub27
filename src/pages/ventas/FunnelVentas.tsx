@@ -32,7 +32,7 @@ const ETAPAS_ORDEN = [
   'Nuevo',
   'Contactado',
   'Cotizado',
-  'Negociación',
+  'Negociacion',
   'Cerrado Ganado',
   'Cerrado Perdido',
 ];
@@ -41,7 +41,7 @@ const etapaColores: Record<string, string> = {
   'Nuevo': tokens.colors.blue,
   'Contactado': '#8B5CF6',
   'Cotizado': tokens.colors.yellow,
-  'Negociación': tokens.colors.orange2,
+  'Negociacion': tokens.colors.orange2,
   'Cerrado Ganado': tokens.colors.green,
   'Cerrado Perdido': tokens.colors.red,
 };
