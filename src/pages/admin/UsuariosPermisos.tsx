@@ -4,7 +4,7 @@ import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 import {
   Users, ChevronDown, ChevronRight, Check, X, Shield, Clock,
-  ToggleLeft, ToggleRight
+  ToggleLeft, ToggleRight, Plus, Edit2, Power, AlertCircle
 } from 'lucide-react'
 
 /* ═══════════════════════════════════════════════════════════════
@@ -294,6 +294,177 @@ export default function UsuariosPermisos() {
     }
   }
 
+  // ══════════════ CRUD usuarios_autorizados ══════════════
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
+  const [editingUser, setEditingUser] = useState<UsuarioAutorizado | null>(null)
+  const [formData, setFormData] = useState({
+    email: '', nombre: '', rol: 'ventas', empresa: 'todas', activo: true
+  })
+  const [formError, setFormError] = useState<string | null>(null)
+  const [formSaving, setFormSaving] = useState(false)
+
+  const ROLES_DISPONIBLES = ['superadmin', 'admin', 'cs', 'ventas', 'operaciones']
+  const EMPRESAS_DISPONIBLES = ['todas', 'trob', 'wexpress', 'speedyhaul', 'trob_usa']
+
+  const MATRIZ_ROL: Record<string, string[]> = {
+    superadmin: MODULOS.map(m => m.id),
+    admin: MODULOS.map(m => m.id),
+    cs: ['servicio', 'operaciones', 'comunicaciones', 'clientes'],
+    ventas: ['comercial', 'clientes'],
+    operaciones: ['operaciones', 'comunicaciones'],
+  }
+
+  function resetForm() {
+    setFormData({ email: '', nombre: '', rol: 'ventas', empresa: 'todas', activo: true })
+    setFormError(null)
+    setEditingUser(null)
+  }
+
+  function openCreateModal() {
+    resetForm()
+    setModalMode('create')
+    setModalOpen(true)
+  }
+
+  function openEditModal(user: UsuarioAutorizado) {
+    setModalMode('edit')
+    setEditingUser(user)
+    setFormData({
+      email: user.email,
+      nombre: user.nombre || '',
+      rol: user.rol,
+      empresa: user.empresa || 'todas',
+      activo: user.activo !== false,
+    })
+    setFormError(null)
+    setModalOpen(true)
+  }
+
+  function closeModal() {
+    setModalOpen(false)
+    resetForm()
+  }
+
+  function validateEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  }
+
+  async function seedPermisosForRol(userId: string, rol: string) {
+    const modulosHabilitados = MATRIZ_ROL[rol] || []
+    const rows: any[] = []
+    for (const mod of MODULOS) {
+      const habMod = modulosHabilitados.includes(mod.id)
+      rows.push({ usuario_id: userId, modulo: mod.id, submodulo: null, habilitado: habMod })
+      for (const sub of mod.submodulos) {
+        rows.push({ usuario_id: userId, modulo: mod.id, submodulo: sub.id, habilitado: habMod })
+      }
+    }
+    if (rows.length === 0) return
+    const { error } = await supabase.from('permisos_modulo').upsert(rows, {
+      onConflict: 'usuario_id,modulo,submodulo'
+    })
+    if (error) throw error
+  }
+
+  async function resetPermisosForRol(userId: string, rol: string) {
+    const { error: delErr } = await supabase.from('permisos_modulo').delete().eq('usuario_id', userId)
+    if (delErr) throw delErr
+    await seedPermisosForRol(userId, rol)
+  }
+
+  async function handleSaveUser() {
+    setFormError(null)
+    const email = formData.email.trim().toLowerCase()
+    const nombre = formData.nombre.trim()
+    const { rol, empresa, activo } = formData
+
+    if (!email) { setFormError('Email obligatorio'); return }
+    if (!validateEmail(email)) { setFormError('Formato de email inválido'); return }
+    if (!ROLES_DISPONIBLES.includes(rol)) { setFormError('Rol inválido'); return }
+    if (!EMPRESAS_DISPONIBLES.includes(empresa)) { setFormError('Empresa inválida'); return }
+
+    if (modalMode === 'create') {
+      const dup = usuarios.find(u => u.email.toLowerCase() === email)
+      if (dup) { setFormError('Ese email ya existe'); return }
+    }
+
+    if (modalMode === 'edit' && editingUser) {
+      const wasSuperadmin = editingUser.rol === 'superadmin' && editingUser.activo !== false
+      const willBeActiveSuperadmin = rol === 'superadmin' && activo
+      if (wasSuperadmin && !willBeActiveSuperadmin) {
+        const otrosSuperadminsActivos = usuarios.filter(u =>
+          u.id !== editingUser.id && u.rol === 'superadmin' && u.activo !== false
+        )
+        if (otrosSuperadminsActivos.length === 0) {
+          setFormError('No puedes desactivar o degradar al único superadmin activo')
+          return
+        }
+      }
+    }
+
+    setFormSaving(true)
+    try {
+      if (modalMode === 'create') {
+        const { data: inserted, error } = await supabase
+          .from('usuarios_autorizados')
+          .insert({ email, nombre: nombre || null, rol, empresa, activo })
+          .select()
+          .single()
+        if (error) throw error
+        if (inserted?.id) {
+          await seedPermisosForRol(inserted.id, rol)
+        }
+        setMsg({ type: 'ok', text: 'Usuario creado' })
+      } else if (editingUser) {
+        const rolChanged = editingUser.rol !== rol
+        const { error } = await supabase
+          .from('usuarios_autorizados')
+          .update({ email, nombre: nombre || null, rol, empresa, activo })
+          .eq('id', editingUser.id)
+        if (error) throw error
+        if (rolChanged) {
+          await resetPermisosForRol(editingUser.id, rol)
+        }
+        setMsg({ type: 'ok', text: 'Usuario actualizado' })
+      }
+      setTimeout(() => setMsg(null), 3000)
+      closeModal()
+      await loadData()
+    } catch (err: any) {
+      console.error('handleSaveUser:', err)
+      setFormError(err?.message || 'Error al guardar usuario')
+    } finally {
+      setFormSaving(false)
+    }
+  }
+
+  async function handleToggleActivo(user: UsuarioAutorizado) {
+    const nuevoActivo = !(user.activo !== false)
+    if (!nuevoActivo && user.rol === 'superadmin') {
+      const otros = usuarios.filter(u =>
+        u.id !== user.id && u.rol === 'superadmin' && u.activo !== false
+      )
+      if (otros.length === 0) {
+        setMsg({ type: 'err', text: 'No puedes desactivar al único superadmin activo' })
+        setTimeout(() => setMsg(null), 3000)
+        return
+      }
+    }
+    const { error } = await supabase
+      .from('usuarios_autorizados')
+      .update({ activo: nuevoActivo })
+      .eq('id', user.id)
+    if (error) {
+      console.error('toggle activo:', error)
+      setMsg({ type: 'err', text: 'Error al cambiar estado' })
+    } else {
+      setMsg({ type: 'ok', text: nuevoActivo ? 'Usuario activado' : 'Usuario desactivado' })
+      await loadData()
+    }
+    setTimeout(() => setMsg(null), 3000)
+  }
+
   const selectedUserData = usuarios.find(u => u.id === selectedUser)
 
   if (loading) {
@@ -327,9 +498,21 @@ export default function UsuariosPermisos() {
             display: 'flex', alignItems: 'center', gap: '10px',
           }}>
             <Users size={20} color={tokens.colors.primary} />
-            <span style={{ fontWeight: 600, fontSize: '1rem', color: '#0F172A' }}>
+            <span style={{ fontWeight: 600, fontSize: '1rem', color: '#0F172A', flex: 1 }}>
               Usuarios ({usuarios.length})
             </span>
+            <button
+              onClick={openCreateModal}
+              title="Agregar usuario"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                width: '28px', height: '28px', borderRadius: '6px',
+                border: 'none', cursor: 'pointer',
+                background: tokens.colors.primary, color: '#FFFFFF',
+              }}
+            >
+              <Plus size={16} />
+            </button>
           </div>
 
           <div style={{ flex: 1, overflowY: 'auto', padding: '8px' }}>
@@ -371,8 +554,31 @@ export default function UsuariosPermisos() {
                   }}>
                     <Clock size={12} />
                     <span>{formatDate(user.ultimo_acceso)}</span>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); openEditModal(user) }}
+                      title="Editar usuario"
+                      style={{
+                        marginLeft: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        width: '22px', height: '22px', borderRadius: '4px',
+                        border: '1px solid #E2E8F0', background: '#FFFFFF',
+                        cursor: 'pointer', color: '#64748B',
+                      }}
+                    >
+                      <Edit2 size={12} />
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleToggleActivo(user) }}
+                      title={user.activo !== false ? 'Desactivar' : 'Activar'}
+                      style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        width: '22px', height: '22px', borderRadius: '4px',
+                        border: '1px solid #E2E8F0', background: '#FFFFFF',
+                        cursor: 'pointer', color: user.activo !== false ? '#0D9668' : '#C53030',
+                      }}
+                    >
+                      <Power size={12} />
+                    </button>
                     <span style={{
-                      marginLeft: 'auto',
                       width: '8px', height: '8px', borderRadius: '50%',
                       background: user.activo !== false ? '#0D9668' : '#C53030',
                     }} />
@@ -546,6 +752,181 @@ export default function UsuariosPermisos() {
           </div>
         </div>
       </div>
+
+      {/* ═════ Modal CRUD usuarios ═════ */}
+      {modalOpen && (
+        <div
+          onClick={closeModal}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(15, 23, 42, 0.55)', zIndex: 1000,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: 'Montserrat, sans-serif',
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: '480px', maxWidth: '94vw', background: '#FFFFFF',
+              borderRadius: '14px', padding: '26px 28px 22px',
+              boxShadow: '0 20px 50px rgba(15,23,42,0.25)',
+              border: '1px solid #E2E8F0',
+            }}
+          >
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              marginBottom: '18px',
+            }}>
+              <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0F172A' }}>
+                {modalMode === 'create' ? 'Agregar usuario' : 'Editar usuario'}
+              </div>
+              <button
+                onClick={closeModal}
+                style={{
+                  background: 'transparent', border: 'none', cursor: 'pointer',
+                  color: '#94A3B8', padding: '4px',
+                }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {formError && (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                padding: '10px 12px', borderRadius: '8px',
+                background: '#FEF2F2', color: '#B91C1C',
+                fontSize: '0.85rem', marginBottom: '14px',
+              }}>
+                <AlertCircle size={16} />
+                <span>{formError}</span>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div>
+                <label style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600, display: 'block', marginBottom: '5px' }}>
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="usuario@dominio.com"
+                  disabled={modalMode === 'edit'}
+                  style={{
+                    width: '100%', padding: '9px 12px', borderRadius: '8px',
+                    border: '1px solid #E2E8F0', fontSize: '0.9rem',
+                    fontFamily: 'inherit', color: '#0F172A',
+                    background: modalMode === 'edit' ? '#F8FAFC' : '#FFFFFF',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600, display: 'block', marginBottom: '5px' }}>
+                  Nombre
+                </label>
+                <input
+                  type="text"
+                  value={formData.nombre}
+                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                  placeholder="Nombre completo"
+                  style={{
+                    width: '100%', padding: '9px 12px', borderRadius: '8px',
+                    border: '1px solid #E2E8F0', fontSize: '0.9rem',
+                    fontFamily: 'inherit', color: '#0F172A',
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600, display: 'block', marginBottom: '5px' }}>
+                    Rol *
+                  </label>
+                  <select
+                    value={formData.rol}
+                    onChange={(e) => setFormData({ ...formData, rol: e.target.value })}
+                    style={{
+                      width: '100%', padding: '9px 12px', borderRadius: '8px',
+                      border: '1px solid #E2E8F0', fontSize: '0.9rem',
+                      fontFamily: 'inherit', color: '#0F172A', background: '#FFFFFF',
+                    }}
+                  >
+                    {ROLES_DISPONIBLES.map(r => (
+                      <option key={r} value={r}>{r}</option>
+                    ))}
+                  </select>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600, display: 'block', marginBottom: '5px' }}>
+                    Empresa *
+                  </label>
+                  <select
+                    value={formData.empresa}
+                    onChange={(e) => setFormData({ ...formData, empresa: e.target.value })}
+                    style={{
+                      width: '100%', padding: '9px 12px', borderRadius: '8px',
+                      border: '1px solid #E2E8F0', fontSize: '0.9rem',
+                      fontFamily: 'inherit', color: '#0F172A', background: '#FFFFFF',
+                    }}
+                  >
+                    {EMPRESAS_DISPONIBLES.map(e => (
+                      <option key={e} value={e}>{e}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <label style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                fontSize: '0.9rem', color: '#0F172A', cursor: 'pointer',
+                marginTop: '4px',
+              }}>
+                <input
+                  type="checkbox"
+                  checked={formData.activo}
+                  onChange={(e) => setFormData({ ...formData, activo: e.target.checked })}
+                  style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                />
+                Usuario activo
+              </label>
+            </div>
+
+            <div style={{
+              display: 'flex', justifyContent: 'flex-end', gap: '10px',
+              marginTop: '22px', paddingTop: '16px', borderTop: '1px solid #F1F5F9',
+            }}>
+              <button
+                onClick={closeModal}
+                disabled={formSaving}
+                style={{
+                  padding: '9px 18px', borderRadius: '8px',
+                  border: '1px solid #E2E8F0', background: '#FFFFFF',
+                  color: '#64748B', fontWeight: 600, fontSize: '0.85rem',
+                  cursor: formSaving ? 'not-allowed' : 'pointer',
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSaveUser}
+                disabled={formSaving}
+                style={{
+                  padding: '9px 20px', borderRadius: '8px',
+                  border: 'none', background: tokens.colors.primary,
+                  color: '#FFFFFF', fontWeight: 600, fontSize: '0.85rem',
+                  cursor: formSaving ? 'not-allowed' : 'pointer',
+                  opacity: formSaving ? 0.7 : 1,
+                }}
+              >
+                {formSaving ? 'Guardando...' : (modalMode === 'create' ? 'Crear' : 'Guardar')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </ModuleLayout>
   )
 }
