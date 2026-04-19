@@ -221,7 +221,7 @@ export default function ConfigIntegraciones() {
     if (mins < 60) return `Hace ${mins} min`
     const hrs = Math.floor(mins / 60)
     if (hrs < 24) return `Hace ${hrs}h`
-    return new Date(iso).toLocaleDateString('es-MX')
+    return new Date(iso).toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City' })
   }
 
   /* ——— stats ——— */
