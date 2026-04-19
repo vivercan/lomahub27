@@ -1,4 +1,4 @@
-// HomeDashboard V27k - Intense gradients, integrated text, small icons
+// HomeDashboard V27k - 8 cards dark gradients - CANÓNICO ratificado audit 17/Abr/2026
 // AppHeader, banner, layout 7+2, KPIs, rutas = INTACTO
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
