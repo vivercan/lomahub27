@@ -501,10 +501,10 @@ export default function AltaClienteWorkflow(): ReactElement {
                       >
                         <td style={tdStyle}>{isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}</td>
                         <td style={tdStyle}>
-                          <span style={{ fontWeight: 600, color: tokens.colors.textPrimary }}>{r.razon_social || '\u2014'}</span>
+                          <span style={{ fontWeight: 600, color: tokens.colors.textPrimary }}>{r.razon_social || '—'}</span>
                           {r.contacto_nombre && <span style={{ display: 'block', fontSize: '11px', color: tokens.colors.textMuted }}>{r.contacto_nombre}</span>}
                         </td>
-                        <td style={tdStyle}><span style={{ fontSize: '13px', fontFamily: 'monospace' }}>{r.rfc || '\u2014'}</span></td>
+                        <td style={tdStyle}><span style={{ fontSize: '13px', fontFamily: 'monospace' }}>{r.rfc || '—'}</span></td>
                         <td style={tdStyle}>{estadoBadge(r.estado)}</td>
                         <td style={tdStyle}>
                           <span style={{
@@ -529,7 +529,7 @@ export default function AltaClienteWorkflow(): ReactElement {
                             {r.csr_asignada ? (
                               <span style={{ color: tokens.colors.green }}><User size={10} style={{ verticalAlign: 'middle' }} /> {r.csr_asignada}</span>
                             ) : (
-                              <span style={{ color: tokens.colors.textMuted }}>\u2014</span>
+                              <span style={{ color: tokens.colors.textMuted }}>—</span>
                             )}
                             {r.cxc_asignado && (
                               <span style={{ display: 'block', color: tokens.colors.blue }}>
@@ -557,13 +557,13 @@ export default function AltaClienteWorkflow(): ReactElement {
                               <div>
                                 <p style={sectionTitle}>Datos de la Empresa</p>
                                 <div style={detailGrid}>
-                                  <div><strong>Razón Social:</strong> {r.razon_social || '\u2014'}</div>
-                                  <div><strong>RFC:</strong> {r.rfc || '\u2014'}</div>
-                                  <div><strong>Dirección Fiscal:</strong> {r.direccion_fiscal || '\u2014'}</div>
-                                  <div><strong>Régimen Fiscal:</strong> {r.regimen_fiscal || '\u2014'}</div>
-                                  <div><strong>Contacto:</strong> {r.contacto_nombre || '\u2014'}</div>
-                                  <div><strong>Email:</strong> {r.contacto_email || '\u2014'}</div>
-                                  <div><strong>Vendedor:</strong> {r.vendedor_nombre || '\u2014'}</div>
+                                  <div><strong>Razón Social:</strong> {r.razon_social || '—'}</div>
+                                  <div><strong>RFC:</strong> {r.rfc || '—'}</div>
+                                  <div><strong>Dirección Fiscal:</strong> {r.direccion_fiscal || '—'}</div>
+                                  <div><strong>Régimen Fiscal:</strong> {r.regimen_fiscal || '—'}</div>
+                                  <div><strong>Contacto:</strong> {r.contacto_nombre || '—'}</div>
+                                  <div><strong>Email:</strong> {r.contacto_email || '—'}</div>
+                                  <div><strong>Vendedor:</strong> {r.vendedor_nombre || '—'}</div>
                                 </div>
 
                                 <p style={{ ...sectionTitle, marginTop: tokens.spacing.md }}>Asignaciones</p>
@@ -600,11 +600,11 @@ export default function AltaClienteWorkflow(): ReactElement {
                                 <p style={sectionTitle}>Firma Digital</p>
                                 {r.firma_hash ? (
                                   <div style={detailGrid}>
-                                    <div><strong>Firmante:</strong> {r.firmante_nombre || '\u2014'}</div>
+                                    <div><strong>Firmante:</strong> {r.firmante_nombre || '—'}</div>
                                     <div><strong>Hash SHA-256:</strong> <span style={{ fontFamily: 'monospace', fontSize: '11px', wordBreak: 'break-all' }}>{r.firma_hash}</span></div>
-                                    <div><strong>IP:</strong> {r.firma_ip || '\u2014'}</div>
-                                    <div><strong>Fecha:</strong> {r.firma_timestamp ? new Date(r.firma_timestamp).toLocaleString('es-MX') : '\u2014'}</div>
-                                    <div><strong>User Agent:</strong> <span style={{ fontSize: '11px' }}>{r.firma_user_agent || '\u2014'}</span></div>
+                                    <div><strong>IP:</strong> {r.firma_ip || '—'}</div>
+                                    <div><strong>Fecha:</strong> {r.firma_timestamp ? new Date(r.firma_timestamp).toLocaleString('es-MX') : '—'}</div>
+                                    <div><strong>User Agent:</strong> <span style={{ fontSize: '11px' }}>{r.firma_user_agent || '—'}</span></div>
                                   </div>
                                 ) : (
                                   <p style={{ fontSize: '13px', color: tokens.colors.textMuted }}>Firma digital pendiente</p>
