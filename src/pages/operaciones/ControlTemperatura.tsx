@@ -150,7 +150,7 @@ export default function ControlTemperatura(): ReactElement {
               background: filtroEstado === e ? tokens.colors.primary : tokens.colors.bgCard,
               color: filtroEstado === e ? '#fff' : tokens.colors.textSecondary,
             }}>
-              {e === 'todos' ? 'Todos' : e.charAt(0).toUpperCase() + e.slice(1)}
+              {e === 'todos' ? 'Todos' : e === 'critico' ? 'Crítico' : e.charAt(0).toUpperCase() + e.slice(1)}
             </button>
           ))}
           <button onClick={fetchData} style={{ ...chipStyle, background: tokens.colors.bgCard, color: tokens.colors.textSecondary }}>
