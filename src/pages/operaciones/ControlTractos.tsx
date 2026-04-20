@@ -758,7 +758,7 @@ const ControlTractos: React.FC = () => {
                           {tracto.viaje_actual}
                         </span>
                       ) : (
-                        <span style={{ fontSize: '0.85rem', color: tokens.textSecondary }}>–</span>
+                        <span style={{ fontSize: '0.85rem', color: tokens.textSecondary }}>—</span>
                       )}
                     </td>
                     <td style={cellStyle}>
@@ -767,7 +767,7 @@ const ControlTractos: React.FC = () => {
                           {tracto.operador_asignado}
                         </span>
                       ) : (
-                        <span style={{ fontSize: '0.85rem', color: tokens.textSecondary }}>–</span>
+                        <span style={{ fontSize: '0.85rem', color: tokens.textSecondary }}>—</span>
                       )}
                     </td>
                     <td style={cellStyle}>
