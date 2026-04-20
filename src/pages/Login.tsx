@@ -113,7 +113,7 @@ const S = {
   card: {
     background:
       'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.04) 100%)',
-    border: '1px solid rgba(255,255,255,0.12)',
+    border: '1px solid rgba(255,255,255,0.14)',
     borderRadius: '20px',
     padding: '22px 52px',
     backdropFilter: 'blur(40px) saturate(1.4)',
@@ -122,7 +122,7 @@ const S = {
     overflow: 'hidden' as const,
     animation: 'loginSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both',
     boxShadow:
-      '0 8px 32px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.08) inset, 0 1px 0 rgba(255,255,255,0.1) inset, 0 -1px 0 rgba(0,0,0,0.2) inset',
+      '0 12px 40px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(255,255,255,0.1) inset, 0 1px 0 rgba(255,255,255,0.12) inset, 0 -1px 0 rgba(0,0,0,0.25) inset',
     transform: 'perspective(1000px) rotateX(0.5deg)',
   },
   cardLine: {
@@ -168,7 +168,7 @@ const S = {
     fontSize: '16px',
     fontWeight: 600,
     cursor: 'pointer',
-    transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+    transition: 'all 180ms cubic-bezier(0.16, 1, 0.3, 1)',
     boxShadow: '0 2px 12px rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.06) inset',
     letterSpacing: '0.3px',
     position: 'relative' as const,
@@ -219,6 +219,7 @@ const S = {
     lineHeight: 1,
     marginBottom: '2px',
     userSelect: 'none' as const,
+    animation: 'lab-revealLogo 700ms cubic-bezier(0.16, 1, 0.3, 1) 0.1s both',
   },
   logoLoma: {
     fontSize: '148px',
@@ -291,6 +292,7 @@ function injectKF() {
       @keyframes loginFadeIn { from{opacity:0} to{opacity:1} }
       @keyframes loginSlideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
       @keyframes loginSpin { to{transform:rotate(360deg)} }
+      @keyframes lab-revealLogo { 0%{opacity:0;transform:translateY(6px)} 100%{opacity:1;transform:translateY(0)} }
     `
     document.head.appendChild(el)
   }
@@ -488,6 +490,16 @@ export default function Login() {
 
   return (
     <div style={S.page}>
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.35) 100%)',
+          zIndex: 1,
+        }}
+      />
       <svg style={{ position: 'absolute', width: 0, height: 0 }}>
         <filter id="grain">
           <feTurbulence
@@ -545,7 +557,7 @@ export default function Login() {
               boxShadow: pressed
                 ? '0 1px 4px rgba(0,0,0,0.5), 0 0 15px rgba(244,123,32,0.18), inset 0 2px 6px rgba(0,0,0,0.4)'
                 : hover
-                  ? '0 8px 32px rgba(0,0,0,0.3), 0 0 35px rgba(244,123,32,0.28), 4px 0 20px rgba(244,123,32,0.14)'
+                  ? '0 6px 16px rgba(0,0,0,0.4), 0 8px 32px rgba(0,0,0,0.3), 0 0 35px rgba(244,123,32,0.28), 4px 0 20px rgba(244,123,32,0.14)'
                   : '0 2px 12px rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.06) inset',
               transform: pressed
                 ? 'translateY(2px) scale(0.98)'
@@ -554,7 +566,7 @@ export default function Login() {
                   : 'none',
               transition: pressed
                 ? 'all 0.08s ease'
-                : 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+                : 'all 180ms cubic-bezier(0.16, 1, 0.3, 1)',
             }}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => {
