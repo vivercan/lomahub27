@@ -319,7 +319,7 @@ export default function FichaLead() {
       {/* Hidden file input */}
       <input ref={fileInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={handleFileSelected} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%', overflow: 'hidden' }}>
-        {/* ââ PIPELINE ââ */}
+        {/* ── PIPELINE ── */}
         <div style={s.card}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {PIPELINE_STAGES.map((stage, idx) => {
@@ -344,7 +344,7 @@ export default function FichaLead() {
           </div>
         </div>
 
-        {/* ââ BODY: 2 columns ââ */}
+        {/* ── BODY: 2 columns ── */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px', flex: 1, minHeight: 0, overflow: 'auto' }}>
 
           {/* LEFT: Info del lead */}
