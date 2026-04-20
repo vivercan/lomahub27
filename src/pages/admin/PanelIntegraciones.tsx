@@ -128,7 +128,7 @@ export default function PanelIntegraciones() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <Clock size={12} style={{ color: tokens.colors.textMuted }} />
                           <span style={{ color: tokens.colors.textMuted, fontFamily: tokens.fonts.body, fontSize: '11px' }}>
-                            Sync: {integ.ultima_sync}
+                            Sync: {new Date(integ.ultima_sync).toLocaleString('es-MX', { timeZone: 'America/Mexico_City' })}
                           </span>
                         </div>
                       )}
