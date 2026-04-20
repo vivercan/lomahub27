@@ -571,7 +571,7 @@ export default function FunnelVentas() {
                         fontWeight: 600,
                         color: tokens.colors.textPrimary,
                       }}>
-                        {item.etapa}
+                        {item.etapa === 'Negociacion' ? 'Negociación' : item.etapa}
                       </div>
 
                       {/* Bar */}
