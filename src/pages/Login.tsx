@@ -24,28 +24,36 @@ declare global {
 }
 
 // ============================================================
-// BLUEPRINT V2.1 — design tokens (refined)
+// BLUEPRINT V2.3 — design tokens (10 refinements)
 // ============================================================
 const L = {
   bg: '#050505',
-  bgDeep: '#020202',
   orange: '#E8611A',
   orangeBright: '#FF7A2E',
   orangeGlow: 'rgba(232, 97, 26, 0.22)',
-  orangeSoft: 'rgba(232, 97, 26, 0.10)',
+  orangeSoft: 'rgba(232, 97, 26, 0.13)',
   orangeBorder: 'rgba(232, 97, 26, 0.28)',
-  orangeTick: 'rgba(232, 97, 26, 0.50)',
+  orangeTick: 'rgba(232, 97, 26, 0.55)',
+  orangeBtnBorder: 'rgba(232, 97, 26, 0.25)',
+  orangeCardBloom: 'rgba(232, 97, 26, 0.15)',
+  orangeFocus: 'rgba(232, 97, 26, 0.08)',
   gridMajor: 'rgba(232, 97, 26, 0.045)',
   gridMinor: 'rgba(255, 255, 255, 0.022)',
-  w90: 'rgba(255,255,255,0.92)',
+  w92: 'rgba(255,255,255,0.92)',
   w70: 'rgba(255,255,255,0.70)',
   w50: 'rgba(255,255,255,0.50)',
+  w48: 'rgba(255,255,255,0.48)',
   w35: 'rgba(255,255,255,0.35)',
   w20: 'rgba(255,255,255,0.20)',
+  w15: 'rgba(255,255,255,0.15)',
+  w12: 'rgba(255,255,255,0.12)',
   w10: 'rgba(255,255,255,0.10)',
   w08: 'rgba(255,255,255,0.08)',
+  w06: 'rgba(255,255,255,0.06)',
   w05: 'rgba(255,255,255,0.05)',
+  w04: 'rgba(255,255,255,0.04)',
   w03: 'rgba(255,255,255,0.03)',
+  w02: 'rgba(255,255,255,0.02)',
   red: '#C53030',
   font: "'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif",
   mono: "'Menlo', 'Consolas', 'SF Mono', monospace",
@@ -72,10 +80,10 @@ const KF = `
 }
 @keyframes lhShimmer {
   0% { transform: translateX(-120%); opacity: 0; }
-  8% { opacity: 1; }
-  60% { transform: translateX(420%); opacity: 1; }
-  62% { opacity: 0; }
-  100% { transform: translateX(420%); opacity: 0; }
+  6% { opacity: 1; }
+  55% { transform: translateX(460%); opacity: 1; }
+  58% { opacity: 0; }
+  100% { transform: translateX(460%); opacity: 0; }
 }
 @keyframes lhBreathe {
   0%, 100% { transform: scale(1); opacity: 0.85; }
@@ -85,6 +93,12 @@ const KF = `
   0%, 94%, 100% { opacity: 0.55; }
   96% { opacity: 0.95; }
   98% { opacity: 0.55; }
+}
+@keyframes lhBtnIdleShimmer {
+  0%, 88% { left: -100%; opacity: 0; }
+  89% { opacity: 0; }
+  92% { opacity: 0.6; }
+  100% { left: 130%; opacity: 0; }
 }
 `
 
@@ -96,6 +110,10 @@ function injectKF() {
   el.textContent = KF
   document.head.appendChild(el)
 }
+
+// SVG grain datauri (turbulence 1.5% opacity, overlay blend)
+const GRAIN_SVG =
+  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>\")"
 
 const S = {
   pageLoading: {
@@ -114,6 +132,39 @@ const S = {
     position: 'relative' as const,
     overflow: 'hidden' as const,
   },
+  // Layer 0: vignette radial (dar teatro)
+  vignette: {
+    position: 'absolute' as const,
+    inset: 0,
+    background:
+      'radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.55) 100%)',
+    pointerEvents: 'none' as const,
+    zIndex: 0,
+  },
+  // Layer 1: ambient glow (breathing)
+  ambientGlow: {
+    position: 'absolute' as const,
+    inset: 0,
+    background: `
+      radial-gradient(ellipse 900px 560px at 28% 52%, ${L.orangeGlow}, transparent 58%),
+      radial-gradient(ellipse 700px 460px at 76% 48%, ${L.orangeSoft}, transparent 58%)
+    `,
+    pointerEvents: 'none' as const,
+    animation: 'lhBreathe 15s ease-in-out infinite',
+    transformOrigin: '50% 50%' as const,
+    zIndex: 0,
+  },
+  // Layer 2: grain texture (cinematic)
+  grain: {
+    position: 'absolute' as const,
+    inset: 0,
+    backgroundImage: GRAIN_SVG,
+    opacity: 0.25,
+    mixBlendMode: 'overlay' as const,
+    pointerEvents: 'none' as const,
+    zIndex: 0,
+  },
+  // Layer 3: blueprint grid
   gridLayer: {
     position: 'absolute' as const,
     inset: 0,
@@ -128,18 +179,37 @@ const S = {
     WebkitMaskImage: 'radial-gradient(ellipse at center, black 45%, transparent 90%)',
     animation: 'lhGridPulse 12s ease-in-out infinite',
     pointerEvents: 'none' as const,
+    zIndex: 1,
   },
-  ambientGlow: {
+  // Layer 4: meridiano vertical central (tensión visual)
+  meridian: {
     position: 'absolute' as const,
-    inset: 0,
-    background: `
-      radial-gradient(ellipse 800px 500px at 28% 52%, ${L.orangeGlow}, transparent 55%),
-      radial-gradient(ellipse 600px 400px at 78% 48%, ${L.orangeSoft}, transparent 55%)
-    `,
+    left: '50%',
+    top: '20%',
+    bottom: '20%',
+    width: '1px',
+    background:
+      'linear-gradient(180deg, transparent, rgba(232,97,26,0.10), rgba(255,255,255,0.05), rgba(232,97,26,0.10), transparent)',
     pointerEvents: 'none' as const,
-    animation: 'lhBreathe 15s ease-in-out infinite',
-    transformOrigin: '50% 50%' as const,
+    zIndex: 1,
+    animation: 'lhFadeIn 1.5s ease 0.7s both',
   },
+  // Focus light (aparece al hover card)
+  cardFocusGlow: {
+    position: 'absolute' as const,
+    right: '6%',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: '520px',
+    height: '520px',
+    background:
+      `radial-gradient(circle, ${L.orangeFocus}, transparent 65%)`,
+    pointerEvents: 'none' as const,
+    filter: 'blur(40px)',
+    transition: 'opacity 0.6s cubic-bezier(.2,.7,.2,1)',
+    zIndex: 1,
+  },
+  // Corners
   corner: {
     position: 'absolute' as const,
     width: '64px',
@@ -147,6 +217,7 @@ const S = {
     border: `1px solid ${L.orangeBorder}`,
     pointerEvents: 'none' as const,
     animation: 'lhCornerDraw 0.8s cubic-bezier(.2,.7,.2,1) both',
+    zIndex: 2,
   },
   cornerTL: { top: '28px', left: '28px', borderRight: 'none', borderBottom: 'none' },
   cornerTR: { top: '28px', right: '28px', borderLeft: 'none', borderBottom: 'none', animationDelay: '0.1s' },
@@ -162,11 +233,21 @@ const S = {
     pointerEvents: 'none' as const,
     animation: 'lhFadeIn 1.2s ease 0.6s both',
     zIndex: 3,
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    gap: '4px',
   },
   tickTL: { top: '36px', left: '100px' },
   tickTR: { top: '36px', right: '100px' },
   tickBL: { bottom: '36px', left: '100px' },
   tickBR: { bottom: '36px', right: '100px' },
+  tickMark: {
+    display: 'inline-block' as const,
+    width: '5px',
+    height: '1px',
+    background: L.orangeTick,
+  },
+  // Content grid
   content: {
     position: 'relative' as const,
     zIndex: 2,
@@ -181,6 +262,7 @@ const S = {
     flexDirection: 'column' as const,
     alignItems: 'flex-start' as const,
     animation: 'lhFadeIn 1s ease both',
+    position: 'relative' as const,
   },
   logoRow: {
     display: 'flex' as const,
@@ -193,7 +275,7 @@ const S = {
     whiteSpace: 'nowrap' as const,
     animation: 'lhLogoEnter 1.2s cubic-bezier(.2,.7,.2,1) both',
   },
-  logoWhite: { color: L.w90 },
+  logoWhite: { color: L.w92 },
   logoOrange: { color: L.orange, textShadow: `0 0 80px ${L.orangeGlow}` },
   logoLine: {
     position: 'relative' as const,
@@ -207,21 +289,22 @@ const S = {
     position: 'absolute' as const,
     top: 0,
     left: 0,
-    width: '25%',
+    width: '18%',
     height: '1px',
-    background: 'linear-gradient(90deg, transparent, rgba(255,200,150,0.85), #FF8A3E, rgba(255,200,150,0.85), transparent)',
+    background:
+      'linear-gradient(90deg, transparent, rgba(255,200,150,0.9), #FF8A3E, rgba(255,200,150,0.9), transparent)',
     filter: 'blur(0.3px)',
-    animation: 'lhShimmer 9s cubic-bezier(.35,.1,.25,1) infinite',
+    animation: 'lhShimmer 7s cubic-bezier(.35,.1,.25,1) infinite',
     pointerEvents: 'none' as const,
   },
   logoTag: {
     alignSelf: 'flex-end' as const,
-    marginTop: '12px',
-    fontSize: '16px',
+    marginTop: '10px',
+    fontSize: '15px',
     fontStyle: 'italic' as const,
     fontWeight: 300,
-    color: L.w35,
-    letterSpacing: '0.18em',
+    color: L.w48,
+    letterSpacing: '0.28em',
     textTransform: 'lowercase' as const,
   },
   logoSpec: {
@@ -232,26 +315,84 @@ const S = {
     textTransform: 'uppercase' as const,
     color: 'rgba(232, 97, 26, 0.65)',
   },
-  cardWrap: { display: 'flex' as const, justifyContent: 'flex-end' as const },
+  cardWrap: {
+    display: 'flex' as const,
+    justifyContent: 'flex-end' as const,
+    position: 'relative' as const,
+  },
+  // ============== CARD WITH ARCHITECTURE ==============
   card: {
     width: '100%',
     maxWidth: '400px',
-    background: `linear-gradient(180deg, ${L.w05}, ${L.w03})`,
-    border: `1px solid ${L.w08}`,
-    borderRadius: '18px',
-    padding: '38px 36px 30px',
-    boxShadow: `0 30px 70px rgba(0,0,0,0.6), inset 0 1px 0 ${L.w08}`,
-    transition: 'transform 0.5s cubic-bezier(.2,.7,.2,1), box-shadow 0.5s cubic-bezier(.2,.7,.2,1), border-color 0.4s ease',
-    animation: 'lhCardEnter 0.8s cubic-bezier(.2,.7,.2,1) both',
     position: 'relative' as const,
+    background: `linear-gradient(180deg, ${L.w06} 0%, ${L.w04} 50%, ${L.w02} 100%)`,
+    borderRadius: '18px',
+    padding: '42px 38px 32px',
+    boxShadow: `
+      0 40px 100px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      inset 0 -1px 0 rgba(232,97,26,0.08)
+    `,
+    transition:
+      'transform 0.5s cubic-bezier(.2,.7,.2,1), box-shadow 0.5s cubic-bezier(.2,.7,.2,1)',
+    animation: 'lhCardEnter 0.8s cubic-bezier(.2,.7,.2,1) both',
+    overflow: 'hidden' as const,
+  },
+  // Gradient border overlay (::before replacement via absolute div)
+  cardBorder: {
+    position: 'absolute' as const,
+    inset: 0,
+    borderRadius: '18px',
+    padding: '1px',
+    background:
+      'linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.06) 50%, rgba(232,97,26,0.10) 100%)',
+    WebkitMask:
+      'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+    WebkitMaskComposite: 'xor',
+    maskComposite: 'exclude' as const,
+    pointerEvents: 'none' as const,
+    zIndex: 1,
+  },
+  // Inner bloom (top-left corner warm fog)
+  cardBloom: {
+    position: 'absolute' as const,
+    top: '-20%',
+    left: '-10%',
+    width: '60%',
+    height: '60%',
+    background: `radial-gradient(circle, ${L.orangeCardBloom}, transparent 65%)`,
+    filter: 'blur(30px)',
+    pointerEvents: 'none' as const,
+    zIndex: 0,
+    opacity: 0.6,
   },
   cardHover: {
-    transform: 'translateY(-3px)',
-    boxShadow: `0 42px 90px rgba(0,0,0,0.7), inset 0 1px 0 ${L.w10}, 0 0 0 1px ${L.orangeSoft}`,
-    borderColor: L.w10,
+    transform: 'translateY(-5px) scale(1.003)',
+    boxShadow: `
+      0 52px 110px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(255,255,255,0.16),
+      inset 0 -1px 0 rgba(232,97,26,0.14),
+      0 0 0 1px rgba(232,97,26,0.12)
+    `,
   },
-  cardTitle: { fontSize: '22px', fontWeight: 600, color: L.w90, letterSpacing: '-0.015em', marginBottom: '4px' },
-  cardSub: { fontSize: '12.5px', color: L.w50, marginBottom: '24px', fontWeight: 400 },
+  cardContent: {
+    position: 'relative' as const,
+    zIndex: 2,
+  },
+  cardTitle: {
+    fontSize: '22px',
+    fontWeight: 600,
+    color: L.w92,
+    letterSpacing: '-0.015em',
+    marginBottom: '8px',
+  },
+  cardSub: {
+    fontSize: '12.5px',
+    color: L.w50,
+    marginBottom: '28px',
+    fontWeight: 400,
+  },
+  // ============== GOOGLE BUTTON (HERO CTA) ==============
   gbtn: {
     position: 'relative' as const,
     overflow: 'hidden' as const,
@@ -260,25 +401,35 @@ const S = {
     justifyContent: 'center' as const,
     gap: '14px',
     width: '100%',
-    height: '54px',
+    height: '60px',
     padding: '0 22px',
-    background: L.w05,
-    color: L.w90,
-    border: `1px solid ${L.w08}`,
-    borderRadius: '12px',
+    background: `linear-gradient(180deg, ${L.w06}, ${L.w03})`,
+    color: L.w92,
+    border: `1px solid ${L.orangeBtnBorder}`,
+    borderRadius: '13px',
     fontFamily: L.font,
     fontSize: '14.5px',
     fontWeight: 500,
     letterSpacing: '0.2px',
     cursor: 'pointer' as const,
-    transition: 'transform 0.35s cubic-bezier(.2,.7,.2,1), box-shadow 0.4s cubic-bezier(.2,.7,.2,1), border-color 0.35s ease, background 0.35s ease',
+    boxShadow: `
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      inset 0 -1px 0 rgba(0,0,0,0.2),
+      0 8px 24px rgba(0,0,0,0.4)
+    `,
+    transition:
+      'transform 0.35s cubic-bezier(.2,.7,.2,1), box-shadow 0.4s cubic-bezier(.2,.7,.2,1), border-color 0.35s ease, background 0.35s ease',
     zIndex: 1,
   },
   gbtnHover: {
     background: `linear-gradient(135deg, ${L.orange} 0%, ${L.orangeBright} 100%)`,
     borderColor: L.orange,
-    transform: 'translateY(-2px)',
-    boxShadow: `0 18px 44px ${L.orangeGlow}, 0 0 0 1px ${L.orangeBorder}`,
+    transform: 'scale(1.012)',
+    boxShadow: `
+      0 22px 50px rgba(232,97,26,0.45),
+      0 0 0 1px rgba(232,97,26,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.22)
+    `,
     color: '#ffffff',
   },
   gbtnShimmer: {
@@ -287,13 +438,28 @@ const S = {
     left: '-100%',
     width: '60%',
     height: '200%',
-    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+    background:
+      'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
     transform: 'skewX(-20deg)',
     transition: 'left 0.7s cubic-bezier(.2,.7,.2,1)',
     pointerEvents: 'none' as const,
     zIndex: 0,
   },
   gbtnShimmerHover: { left: '130%' },
+  // Idle shimmer (periodic, subtle)
+  gbtnIdleShimmer: {
+    position: 'absolute' as const,
+    top: '-50%',
+    left: '-100%',
+    width: '40%',
+    height: '200%',
+    background:
+      'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+    transform: 'skewX(-20deg)',
+    animation: 'lhBtnIdleShimmer 14s linear infinite',
+    pointerEvents: 'none' as const,
+    zIndex: 0,
+  },
   gIconSlot: {
     position: 'relative' as const,
     width: '26px',
@@ -313,13 +479,14 @@ const S = {
     transition: 'opacity 0.35s cubic-bezier(.2,.7,.2,1)',
   },
   gbtnLabel: { position: 'relative' as const, zIndex: 2 },
+  // Divider + secure
   divider: {
     display: 'flex' as const,
     alignItems: 'center' as const,
     gap: '12px',
-    marginTop: '18px',
-    fontSize: '9px',
-    letterSpacing: '2.5px',
+    marginTop: '22px',
+    fontSize: '8px',
+    letterSpacing: '3px',
     color: L.w35,
     textTransform: 'uppercase' as const,
     fontWeight: 600,
@@ -335,7 +502,7 @@ const S = {
     justifyContent: 'center' as const,
     gap: '6px',
     marginTop: '10px',
-    fontSize: '10.5px',
+    fontSize: '10px',
     color: L.w50,
     fontWeight: 400,
   },
@@ -382,12 +549,12 @@ const S = {
     left: '28px',
     display: 'flex' as const,
     alignItems: 'center' as const,
-    gap: '8px',
+    gap: '10px',
     fontSize: '9px',
     fontWeight: 600,
     letterSpacing: '2px',
     fontFamily: L.mono,
-    color: 'rgba(232, 97, 26, 0.65)',
+    color: 'rgba(232, 97, 26, 0.70)',
     textTransform: 'uppercase' as const,
     pointerEvents: 'none' as const,
     zIndex: 3,
@@ -401,7 +568,11 @@ const S = {
     boxShadow: '0 0 8px rgba(232, 97, 26, 0.7)',
     animation: 'lhVersionBlink 3s ease-in-out infinite',
   },
-  versionLabel: { color: L.w35 },
+  versionPipe: {
+    color: L.w20,
+    fontWeight: 400,
+  },
+  versionLabel: { color: L.w50 },
   hiddenGsi: {
     position: 'absolute' as const,
     opacity: 0,
@@ -557,10 +728,10 @@ export default function Login() {
   const gbtnStyle = hover ? { ...S.gbtn, ...S.gbtnHover } : S.gbtn
   const shimmerStyle = hover ? { ...S.gbtnShimmer, ...S.gbtnShimmerHover } : S.gbtnShimmer
   const cardStyle = cardHover ? { ...S.card, ...S.cardHover } : S.card
+  const focusGlowStyle = { ...S.cardFocusGlow, opacity: cardHover ? 1 : 0 }
 
   const now = new Date()
   const versionStr =
-    'v2.' +
     String(now.getFullYear()).slice(2) +
     '.' +
     String(now.getMonth() + 1).padStart(2, '0') +
@@ -569,24 +740,44 @@ export default function Login() {
 
   return (
     <div style={S.page}>
+      {/* Layered background */}
       <div style={S.ambientGlow} />
+      <div style={S.vignette} />
+      <div style={S.grain} />
       <div style={S.gridLayer} />
+      <div style={S.meridian} />
+      <div style={focusGlowStyle} />
+
+      {/* Corners + ticks */}
       <div style={{ ...S.corner, ...S.cornerTL }} />
       <div style={{ ...S.corner, ...S.cornerTR }} />
       <div style={{ ...S.corner, ...S.cornerBL }} />
       <div style={{ ...S.corner, ...S.cornerBR }} />
 
-      <div style={{ ...S.cornerTick, ...S.tickTL }}>00,00</div>
-      <div style={{ ...S.cornerTick, ...S.tickTR }}>00,99</div>
-      <div style={{ ...S.cornerTick, ...S.tickBL }}>99,00</div>
-      <div style={{ ...S.cornerTick, ...S.tickBR }}>99,99</div>
-
-      <div style={S.versionTag}>
-        <span style={S.versionDot} />
-        <span>{versionStr}</span>
-        <span style={S.versionLabel}>{'\u00b7'} LIVE</span>
+      <div style={{ ...S.cornerTick, ...S.tickTL }}>
+        <span style={S.tickMark} />00,00
+      </div>
+      <div style={{ ...S.cornerTick, ...S.tickTR }}>
+        00,99<span style={S.tickMark} />
+      </div>
+      <div style={{ ...S.cornerTick, ...S.tickBL }}>
+        <span style={S.tickMark} />99,00
+      </div>
+      <div style={{ ...S.cornerTick, ...S.tickBR }}>
+        99,99<span style={S.tickMark} />
       </div>
 
+      {/* Version tag inferior izquierda */}
+      <div style={S.versionTag}>
+        <span style={S.versionDot} />
+        <span>V2</span>
+        <span style={S.versionPipe}>|</span>
+        <span>{versionStr}</span>
+        <span style={S.versionPipe}>|</span>
+        <span style={S.versionLabel}>LIVE</span>
+      </div>
+
+      {/* Content grid */}
       <div style={S.content}>
         <div style={S.logoWrap}>
           <div style={S.logoRow}>
@@ -596,7 +787,7 @@ export default function Login() {
           <div style={S.logoLine}>
             <span style={S.logoShimmer} />
           </div>
-          <div style={S.logoTag}>Future Experience</div>
+          <div style={S.logoTag}>future experience</div>
           <div style={S.logoSpec}>
             TROB {'\u00b7'} OPS-V2 {'\u00b7'} 2026 EDITION
           </div>
@@ -608,52 +799,61 @@ export default function Login() {
             onMouseEnter={() => setCardHover(true)}
             onMouseLeave={() => setCardHover(false)}
           >
-            <h2 style={S.cardTitle}>Bienvenido</h2>
-            <p style={S.cardSub}>Acceso al sistema operativo</p>
+            {/* Inner bloom layer (behind content) */}
+            <div style={S.cardBloom} />
+            {/* Gradient border overlay */}
+            <div style={S.cardBorder} />
 
-            <button
-              type="button"
-              style={gbtnStyle}
-              onMouseEnter={() => setHover(true)}
-              onMouseLeave={() => setHover(false)}
-              onClick={triggerGoogle}
-              disabled={googleLoading}
-            >
-              <span style={shimmerStyle} />
-              <span style={S.gIconSlot}>
-                <span style={{ ...S.gIconLayer, opacity: hover ? 0 : 1 }}>
-                  <GoogleGColor />
-                </span>
-                <span style={{ ...S.gIconLayer, opacity: hover ? 1 : 0 }}>
-                  <GoogleGWhite />
-                </span>
-              </span>
-              <span style={S.gbtnLabel}>
-                {googleLoading ? 'Conectando...' : 'Continuar con Google'}
-              </span>
-            </button>
+            {/* Actual content */}
+            <div style={S.cardContent}>
+              <h2 style={S.cardTitle}>Bienvenido</h2>
+              <p style={S.cardSub}>Acceso al sistema operativo</p>
 
-            {error && (
-              <div style={S.errorBox}>
-                <AlertCircle size={14} style={{ marginTop: '1px', flexShrink: 0 }} />
-                <span>{error}</span>
+              <button
+                type="button"
+                style={gbtnStyle}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+                onClick={triggerGoogle}
+                disabled={googleLoading}
+              >
+                <span style={S.gbtnIdleShimmer} />
+                <span style={shimmerStyle} />
+                <span style={S.gIconSlot}>
+                  <span style={{ ...S.gIconLayer, opacity: hover ? 0 : 1 }}>
+                    <GoogleGColor />
+                  </span>
+                  <span style={{ ...S.gIconLayer, opacity: hover ? 1 : 0 }}>
+                    <GoogleGWhite />
+                  </span>
+                </span>
+                <span style={S.gbtnLabel}>
+                  {googleLoading ? 'Conectando...' : 'Continuar con Google'}
+                </span>
+              </button>
+
+              {error && (
+                <div style={S.errorBox}>
+                  <AlertCircle size={14} style={{ marginTop: '1px', flexShrink: 0 }} />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              <div style={S.divider}>
+                <span style={S.dividerLine} />
+                Acceso Autorizado
+                <span style={S.dividerLine} />
               </div>
-            )}
+              <div style={S.secure}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <rect x="5" y="11" width="14" height="9" rx="2" />
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                </svg>
+                Conexi{'\u00f3'}n cifrada {'\u00b7'} Solo personal autorizado
+              </div>
 
-            <div style={S.divider}>
-              <span style={S.dividerLine} />
-              Acceso Autorizado
-              <span style={S.dividerLine} />
+              <div ref={hiddenGoogleRef} style={S.hiddenGsi} aria-hidden="true" />
             </div>
-            <div style={S.secure}>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <rect x="5" y="11" width="14" height="9" rx="2" />
-                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-              </svg>
-              Conexi{'\u00f3'}n cifrada {'\u00b7'} Solo personal autorizado
-            </div>
-
-            <div ref={hiddenGoogleRef} style={S.hiddenGsi} aria-hidden="true" />
           </div>
         </div>
       </div>
