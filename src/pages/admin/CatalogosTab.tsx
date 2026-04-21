@@ -2,6 +2,7 @@ import { tokens } from '../../lib/tokens'
 import { useState, useEffect, useCallback } from 'react';
 import type { FC } from 'react';
 import { supabase } from '../../lib/supabase';
+import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import {
   ArrowLeft,
   Plus,
@@ -216,6 +217,7 @@ export default function CatalogosTab() {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [toast, setToast] = useState<Toast | null>(null);
   const [empresasLookup, setEmpresasLookup] = useState<{ id: string; nombre: string }[]>([]);
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   const catalog = CATALOGS.find((c) => c.key === selectedCatalog);
 
@@ -491,100 +493,115 @@ export default function CatalogosTab() {
 
   if (!selectedCatalog) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 20, height: '100%' }}>
-        <p style={{ ...styles.body, color: styles.textSecondary, fontSize: 14, margin: 0 }}>
-          Selecciona un catálogo para administrar sus registros
-        </p>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: 16,
-          }}
-        >
-          {CATALOGS.map((cat) => {
-            const Icon = cat.icon;
-            const count = counts[cat.key];
-            return (
-              <button
-                key={cat.key}
-                onClick={() => {
-                  setSelectedCatalog(cat.key);
-                  setSearchTerm('');
-                  setIsAdding(false);
-                  setEditingId(null);
-                }}
-                style={{
-                  background: styles.bgCard,
-                  border: '1px solid ' + styles.border,
-                  borderRadius: 16,
-                  padding: 24,
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  transition: 'all 0.2s',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 12,
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = cat.color;
-                  (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = styles.border;
-                  (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div
-                    style={{
-                      background: cat.color + '20',
-                      borderRadius: 12,
+      <ModuleLayout
+        titulo="Catalogos"
+        moduloPadre={{ nombre: 'Configuracion', ruta: '/admin/configuracion' }}
+      >
+        <div style={{ background: '#E8EBF0', minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
+          <p style={{ ...styles.body, color: styles.textSecondary, fontSize: 14, margin: '0 0 20px 0' }}>
+            Selecciona un catalogo para administrar sus registros
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }}>
+            {CATALOGS.map((cat) => {
+              const Icon = cat.icon;
+              const count = counts[cat.key];
+              const isH = hoveredCard === cat.key;
+
+              const bgNormal =
+                'linear-gradient(155deg, rgba(18,32,58,0.96) 0%, rgba(12,22,42,0.98) 35%, rgba(8,16,32,1) 70%, rgba(6,12,24,1) 100%), ' +
+                'linear-gradient(135deg, rgba(180,100,50,0.28) 0%, rgba(60,90,140,0.25) 50%, rgba(180,100,50,0.28) 100%)';
+              const bgHover =
+                'linear-gradient(155deg, rgba(28,48,82,1) 0%, rgba(20,35,62,1) 35%, rgba(14,24,45,1) 70%, rgba(10,18,35,1) 100%), ' +
+                'linear-gradient(135deg, rgba(240,160,80,0.65) 0%, rgba(220,140,70,0.6) 25%, rgba(70,110,170,0.4) 50%, rgba(220,140,70,0.6) 75%, rgba(240,160,80,0.65) 100%)';
+
+              return (
+                <button
+                  key={cat.key}
+                  onClick={() => {
+                    setSelectedCatalog(cat.key);
+                    setSearchTerm('');
+                    setIsAdding(false);
+                    setEditingId(null);
+                  }}
+                  onMouseEnter={() => setHoveredCard(cat.key)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  style={{
+                    aspectRatio: '1 / 0.78',
+                    borderRadius: 10,
+                    padding: '22px 20px',
+                    backgroundImage: isH ? bgHover : bgNormal,
+                    backgroundOrigin: 'border-box',
+                    backgroundClip: 'padding-box, border-box',
+                    border: '2px solid transparent',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    gap: 10,
+                    transition: 'all 0.3s ease',
+                    transform: isH ? 'translateY(-4px)' : 'none',
+                    boxShadow: isH
+                      ? '0 4px 8px rgba(0,0,0,0.4), 0 10px 24px rgba(0,0,0,0.6), 0 0 30px rgba(240,160,80,0.15), inset 0 1px 0 rgba(255,255,255,0.05)'
+                      : '0 2px 4px rgba(0,0,0,0.3), 0 6px 16px rgba(0,0,0,0.5), inset -2px -2px 4px rgba(0,0,0,0.2)',
+                    fontFamily: styles.heading.fontFamily,
+                  }}
+                >
+                  <div style={{
+                    position: 'absolute', top: 0, left: 0, right: 0, height: '35%',
+                    background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%)',
+                    borderTopLeftRadius: 10, borderTopRightRadius: 10,
+                    pointerEvents: 'none', opacity: isH ? 0.5 : 0.3,
+                    transition: 'opacity 0.3s ease',
+                  }} />
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
+                    <div style={{
+                      background: 'rgba(255,255,255,0.08)',
+                      borderRadius: 10,
                       padding: 10,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                    }}
-                  >
-                    <Icon size={24} className="" style={{ color: cat.color }} />
+                      border: '1px solid rgba(255,255,255,0.10)',
+                    }}>
+                      <Icon size={22} style={{ color: isH ? 'rgba(240,160,80,1)' : 'rgba(255,255,255,0.9)', transition: 'color 0.3s ease' }} />
+                    </div>
+                    <span style={{
+                      fontFamily: styles.heading.fontFamily,
+                      fontSize: 26, fontWeight: 700,
+                      color: isH ? 'rgba(240,160,80,1)' : 'rgba(255,255,255,0.95)',
+                      transition: 'color 0.3s ease',
+                    }}>
+                      {count !== undefined ? count.toLocaleString() : '...'}
+                    </span>
                   </div>
-                  <span
-                    style={{
-                      ...styles.heading,
-                      fontSize: 28,
-                      color: styles.textPrimary,
-                    }}
-                  >
-                    {count !== undefined ? count.toLocaleString() : '...'}
-                  </span>
-                </div>
-                <div>
-                  <h3
-                    style={{
-                      ...styles.heading,
-                      fontSize: 16,
-                      color: styles.textPrimary,
-                      margin: 0,
-                    }}
-                  >
-                    {cat.title}
-                  </h3>
-                  <p
-                    style={{
-                      ...styles.body,
-                      fontSize: 13,
-                      color: styles.textMuted,
+                  <div style={{ position: 'relative', zIndex: 1 }}>
+                    <h3 style={{
+                      fontFamily: styles.heading.fontFamily,
+                      fontSize: 15, fontWeight: 700,
+                      color: '#ffffff', margin: 0,
+                      letterSpacing: '0.02em',
+                    }}>
+                      {cat.title}
+                    </h3>
+                    <p style={{
+                      fontFamily: styles.body.fontFamily,
+                      fontSize: 11, fontWeight: 500,
+                      color: 'rgba(255,255,255,0.55)',
                       margin: '4px 0 0',
-                    }}
-                  >
-                    {cat.description}
-                  </p>
-                </div>
-              </button>
-            );
-          })}
+                      letterSpacing: '0.02em',
+                    }}>
+                      {cat.description}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </ModuleLayout>
     );
   }
 
@@ -596,6 +613,10 @@ export default function CatalogosTab() {
   const Icon = catalog.icon;
 
   return (
+    <ModuleLayout
+      titulo={`Catalogos — ${catalog.title}`}
+      moduloPadre={{ nombre: 'Configuracion', ruta: '/admin/configuracion' }}
+    >
     <div
       style={{
         display: 'flex',
@@ -1070,5 +1091,6 @@ export default function CatalogosTab() {
       {/* Spin keyframe */}
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
+    </ModuleLayout>
   );
 }
