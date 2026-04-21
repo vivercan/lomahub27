@@ -255,10 +255,10 @@ const CARDS: ConfigCard[] = [
   },
   {
     id: 'plantillas', label: 'Plantillas', route: '/admin/configuracion/plantillas',
-    subtitle: 'Formatos y templates', accent: '#E5E7EB',
-    gradientBase: 'linear-gradient(155deg, #D1D5DB 0%, #9CA3AF 35%, #6B7280 70%, #4B5563 100%)',
-    gradientHover: 'linear-gradient(155deg, #E5E7EB 0%, #D1D5DB 35%, #9CA3AF 70%, #6B7280 100%)',
-    glowColor: 'rgba(229,231,235,0.3)', geo: <IcoPlantillas />, tone: 'light' as CardTone,
+    subtitle: 'Formatos y templates', accent: '#4B5563',
+    gradientBase: 'linear-gradient(155deg, #4B5563 0%, #374151 35%, #1F2937 70%, #111827 100%)',
+    gradientHover: 'linear-gradient(155deg, #6B7280 0%, #4B5563 35%, #374151 70%, #1F2937 100%)',
+    glowColor: 'rgba(75,85,99,0.4)', geo: <IcoPlantillas />, tone: 'medium' as CardTone,
   },
   {
     id: 'documentos', label: 'Documentos', route: '/admin/configuracion/documentos',
