@@ -1,94 +1,151 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { tokens } from '../../lib/tokens'
 
 /* ———————————————————————————————————————————————————————————————
    COMUNICACIONES — Landing Page (5 cards)
-   Correos, WhatsApp, Com. Proactiva, Escalamiento, Notificaciones
+   Dark glass cards with amber hover glow — same FX27 style as DashboardVentas
    ——————————————————————————————————————————————————————————————— */
 
 const D = {
   bg: '#E8EBF0',
   font: tokens.fonts.heading,
-  cardRadius: '14px',
-  titleSize: '20px',
-  titleWeight: 800,
-  kpiSize: '28px',
-  kpiWeight: 600,
-  subSize: '9px',
+  fontBody: tokens.fonts.body,
 } as const
 
-const ICO_OPACITY = 0.20
-const ico = (path: string, style: React.CSSProperties) => (
-  <img src={`https://api.iconify.design/${path}.svg?color=%23ffffff`} alt="" style={style} />
-)
-const compose = (main: string) => () => (
-  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: ICO_OPACITY }}>
-    {ico(main, { position: 'absolute', right: '-2%', bottom: '-2%', width: '70%', height: '70%' })}
-  </div>
-)
+const STROKE_SCALE = 0.75
 
-const CARDS = [
-  { id: 'correos',      label: 'Correos Automáticos',    route: '/comunicaciones/correos',              kpiLabel: 'Templates',      icon: compose('hugeicons:mail-send-02'),       accent: '#2563EB' },
-  { id: 'whatsapp',     label: 'WhatsApp',               route: '/servicio/whatsapp',                   kpiLabel: 'Bandeja',        icon: compose('hugeicons:whatsapp'),            accent: '#16A34A' },
-  { id: 'proactiva',    label: 'Com. Proactiva',         route: '/servicio/comunicacion-proactiva',     kpiLabel: 'Campañas',       icon: compose('hugeicons:megaphone-01'),        accent: '#D97706' },
-  { id: 'escalamiento', label: 'Escalamiento',           route: '/servicio/escalamiento-whatsapp',      kpiLabel: 'Pendientes',     icon: compose('hugeicons:arrow-up-double'),     accent: '#DC2626' },
-  { id: 'notificaciones', label: 'Notificaciones',       route: '/comunicaciones/notificaciones',       kpiLabel: 'Sin leer',       icon: compose('hugeicons:notification-03'),     accent: '#7C3AED' },
+const IcoCenter = ({ set, name, hovered }: { set: string; name: string; hovered?: boolean }) => {
+  const [srcWhite, setSrcWhite] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
+  const [srcOrange, setSrcOrange] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ff7800`)
+
+  useEffect(() => {
+    const thinify = (raw: string) =>
+      raw.replace(/stroke-width="([^"]+)"/g, (_, w) =>
+        `stroke-width="${(parseFloat(w) * STROKE_SCALE).toFixed(2)}"`)
+
+    fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
+      .then(r => r.text())
+      .then(raw => setSrcWhite(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
+      .catch(() => {})
+
+    fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ff9940`)
+      .then(r => r.text())
+      .then(raw => setSrcOrange(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
+      .catch(() => {})
+  }, [set, name])
+
+  return (
+    <img src={hovered ? srcOrange : srcWhite} alt=""
+      style={{ width: '79px', height: '79px', opacity: hovered ? 0.55 : 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))', transition: 'opacity 0.3s ease' }} />
+  )
+}
+
+interface CardDef {
+  id: string; label: string; route: string; kpiLabel: string;
+  iconSet: string; iconName: string
+}
+
+const CARDS: CardDef[] = [
+  { id: 'correos',        label: 'Correos Automaticos', route: '/comunicaciones/correos',          kpiLabel: 'Templates',  iconSet: 'hugeicons', iconName: 'mail-send-02' },
+  { id: 'whatsapp',       label: 'WhatsApp',            route: '/servicio/whatsapp',               kpiLabel: 'Bandeja',    iconSet: 'hugeicons', iconName: 'whatsapp' },
+  { id: 'proactiva',      label: 'Com. Proactiva',      route: '/servicio/comunicacion-proactiva', kpiLabel: 'Campanias',  iconSet: 'hugeicons', iconName: 'megaphone-01' },
+  { id: 'escalamiento',   label: 'Escalamiento',        route: '/servicio/escalamiento-whatsapp',  kpiLabel: 'Pendientes', iconSet: 'hugeicons', iconName: 'arrow-up-double' },
+  { id: 'notificaciones', label: 'Notificaciones',      route: '/comunicaciones/notificaciones',   kpiLabel: 'Sin leer',   iconSet: 'hugeicons', iconName: 'notification-03' },
 ]
 
 export default function DashboardComunicaciones() {
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
-
-  const getCardStyle = (isH: boolean, accent: string): React.CSSProperties => ({
-    aspectRatio: '1 / 0.75',
-    borderRadius: D.cardRadius,
-    padding: '22px',
-    background: accent,
-    border: 'none',
-    cursor: 'pointer',
-    position: 'relative',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-    transform: isH ? 'translateY(-3px)' : 'none',
-    boxShadow: isH ? '0 6px 12px rgba(0,0,0,0.15), 0 12px 32px rgba(0,0,0,0.1)' : '0 2px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06)',
-  })
+  const [pressed, setPressed] = useState<string | null>(null)
 
   return (
     <ModuleLayout titulo="Comunicaciones">
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '14px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '20px' }}>
           {CARDS.map(card => {
             const isH = hovered === card.id
-            const Icon = card.icon
+            const isP = pressed === card.id
+
+            const bgNormal =
+              'linear-gradient(155deg, rgba(18,32,58,0.96) 0%, rgba(12,22,42,0.98) 35%, rgba(8,16,32,1) 70%, rgba(6,12,24,1) 100%), ' +
+              'linear-gradient(135deg, rgba(180,100,50,0.28) 0%, rgba(60,90,140,0.25) 50%, rgba(180,100,50,0.28) 100%)'
+            const bgHover =
+              'linear-gradient(155deg, rgba(28,48,82,1) 0%, rgba(20,35,62,1) 35%, rgba(14,24,45,1) 70%, rgba(10,18,35,1) 100%), ' +
+              'linear-gradient(135deg, rgba(240,160,80,0.65) 0%, rgba(220,140,70,0.6) 25%, rgba(70,110,170,0.4) 50%, rgba(220,140,70,0.6) 75%, rgba(240,160,80,0.65) 100%)'
+
             return (
               <div
                 key={card.id}
-                style={getCardStyle(isH, card.accent)}
+                style={{
+                  aspectRatio: '1 / 0.9',
+                  borderRadius: '10px',
+                  padding: '24px 20px',
+                  backgroundImage: isH ? bgHover : bgNormal,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                  border: '2px solid transparent',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '0px',
+                  transition: 'all 0.3s ease',
+                  transform: isP ? 'translateY(0px)' : isH ? 'translateY(-6px)' : 'translateY(0)',
+                  boxShadow: isP
+                    ? '0 1px 2px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(0,0,0,0.2)'
+                    : isH
+                    ? '0 4px 8px rgba(0,0,0,0.4), 0 10px 24px rgba(0,0,0,0.6), 0 0 30px rgba(240,160,80,0.15), inset 0 1px 0 rgba(255,255,255,0.05)'
+                    : '0 2px 4px rgba(0,0,0,0.3), 0 6px 16px rgba(0,0,0,0.5), inset -2px -2px 4px rgba(0,0,0,0.2)',
+                  fontFamily: D.font,
+                }}
                 onMouseEnter={() => setHovered(card.id)}
-                onMouseLeave={() => setHovered(null)}
+                onMouseLeave={() => { setHovered(null); setPressed(null) }}
+                onMouseDown={() => setPressed(card.id)}
+                onMouseUp={() => setPressed(null)}
                 onClick={() => navigate(card.route)}
               >
+                {/* Top shine */}
                 <div style={{
-                  position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', borderRadius: '14px',
-                  transition: 'transform 0.6s cubic-bezier(0.23,1,0.32,1)',
-                  transform: isH ? 'translate(4px,-4px) scale(1.05)' : 'none',
+                  position: 'absolute', top: 0, left: 0, right: 0, height: '35%',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%)',
+                  borderTopLeftRadius: '10px', borderTopRightRadius: '10px',
+                  pointerEvents: 'none', opacity: isH ? 0.5 : 0.3,
+                  transition: 'opacity 0.3s ease',
+                }} />
+
+                {/* Label */}
+                <div style={{
+                  fontFamily: D.font, fontSize: '17px', fontWeight: 600, color: '#ffffff',
+                  textAlign: 'center', position: 'relative', zIndex: 1, letterSpacing: '0.02em',
+                  lineHeight: 1.2, paddingTop: '2px',
                 }}>
-                  <Icon />
-                </div>
-                <div style={{ position: 'absolute', top: 14, right: 14, width: 6, height: 6, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.35)' }} />
-                <div style={{ fontFamily: D.font, fontSize: D.titleSize, fontWeight: D.titleWeight, color: '#FFFFFF', lineHeight: 1.2, position: 'relative', zIndex: 1, textAlign: 'center' }}>
                   {card.label}
                 </div>
-                <div>
-                  <div style={{ fontFamily: D.font, fontSize: D.kpiSize, fontWeight: D.kpiWeight, color: '#FFFFFF', lineHeight: 1, position: 'relative', zIndex: 1 }}>
+
+                {/* Icon */}
+                <div style={{ position: 'relative', zIndex: 1, transition: 'transform 0.3s ease', transform: isH ? 'scale(1.05)' : 'none' }}>
+                  <IcoCenter set={card.iconSet} name={card.iconName} hovered={isH} />
+                </div>
+
+                {/* KPI */}
+                <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                  <div style={{
+                    fontFamily: D.font, fontSize: '22px', fontWeight: 600,
+                    color: isH ? 'rgba(240,160,80,1)' : 'rgba(255,255,255,0.95)',
+                    lineHeight: 1, transition: 'color 0.3s ease',
+                  }}>
                     —
                   </div>
-                  <div style={{ fontFamily: D.font, fontSize: D.subSize, color: 'rgba(255,255,255,0.7)', marginTop: 3, position: 'relative', zIndex: 1 }}>
+                  <div style={{
+                    fontFamily: D.font, fontSize: '10px', fontWeight: 500,
+                    color: 'rgba(255,255,255,0.50)', marginTop: 3, letterSpacing: '0.03em',
+                    textTransform: 'uppercase',
+                  }}>
                     {card.kpiLabel}
                   </div>
                 </div>
