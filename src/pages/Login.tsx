@@ -24,7 +24,7 @@ declare global {
 }
 
 // ============================================================
-// BLUEPRINT V2 — design tokens
+// BLUEPRINT V2.1 — design tokens (refined)
 // ============================================================
 const L = {
   bg: '#050505',
@@ -34,6 +34,7 @@ const L = {
   orangeGlow: 'rgba(232, 97, 26, 0.22)',
   orangeSoft: 'rgba(232, 97, 26, 0.10)',
   orangeBorder: 'rgba(232, 97, 26, 0.28)',
+  orangeTick: 'rgba(232, 97, 26, 0.50)',
   gridMajor: 'rgba(232, 97, 26, 0.045)',
   gridMinor: 'rgba(255, 255, 255, 0.022)',
   w90: 'rgba(255,255,255,0.92)',
@@ -47,6 +48,7 @@ const L = {
   w03: 'rgba(255,255,255,0.03)',
   red: '#C53030',
   font: "'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif",
+  mono: "'Menlo', 'Consolas', 'SF Mono', monospace",
 } as const
 
 const KF = `
@@ -68,6 +70,22 @@ const KF = `
   from { opacity: 0; transform: scale(0.85); }
   to { opacity: 1; transform: scale(1); }
 }
+@keyframes lhShimmer {
+  0% { transform: translateX(-120%); opacity: 0; }
+  8% { opacity: 1; }
+  60% { transform: translateX(420%); opacity: 1; }
+  62% { opacity: 0; }
+  100% { transform: translateX(420%); opacity: 0; }
+}
+@keyframes lhBreathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+@keyframes lhVersionBlink {
+  0%, 94%, 100% { opacity: 0.55; }
+  96% { opacity: 0.95; }
+  98% { opacity: 0.55; }
+}
 `
 
 function injectKF() {
@@ -79,9 +97,6 @@ function injectKF() {
   document.head.appendChild(el)
 }
 
-// ============================================================
-// STYLES
-// ============================================================
 const S = {
   pageLoading: {
     display: 'flex' as const,
@@ -122,6 +137,8 @@ const S = {
       radial-gradient(ellipse 600px 400px at 78% 48%, ${L.orangeSoft}, transparent 55%)
     `,
     pointerEvents: 'none' as const,
+    animation: 'lhBreathe 15s ease-in-out infinite',
+    transformOrigin: '50% 50%' as const,
   },
   corner: {
     position: 'absolute' as const,
@@ -131,33 +148,25 @@ const S = {
     pointerEvents: 'none' as const,
     animation: 'lhCornerDraw 0.8s cubic-bezier(.2,.7,.2,1) both',
   },
-  cornerTL: {
-    top: '28px',
-    left: '28px',
-    borderRight: 'none',
-    borderBottom: 'none',
+  cornerTL: { top: '28px', left: '28px', borderRight: 'none', borderBottom: 'none' },
+  cornerTR: { top: '28px', right: '28px', borderLeft: 'none', borderBottom: 'none', animationDelay: '0.1s' },
+  cornerBL: { bottom: '28px', left: '28px', borderRight: 'none', borderTop: 'none', animationDelay: '0.2s' },
+  cornerBR: { bottom: '28px', right: '28px', borderLeft: 'none', borderTop: 'none', animationDelay: '0.3s' },
+  cornerTick: {
+    position: 'absolute' as const,
+    fontSize: '8px',
+    fontWeight: 600,
+    letterSpacing: '1.5px',
+    color: L.orangeTick,
+    fontFamily: L.mono,
+    pointerEvents: 'none' as const,
+    animation: 'lhFadeIn 1.2s ease 0.6s both',
+    zIndex: 3,
   },
-  cornerTR: {
-    top: '28px',
-    right: '28px',
-    borderLeft: 'none',
-    borderBottom: 'none',
-    animationDelay: '0.1s',
-  },
-  cornerBL: {
-    bottom: '28px',
-    left: '28px',
-    borderRight: 'none',
-    borderTop: 'none',
-    animationDelay: '0.2s',
-  },
-  cornerBR: {
-    bottom: '28px',
-    right: '28px',
-    borderLeft: 'none',
-    borderTop: 'none',
-    animationDelay: '0.3s',
-  },
+  tickTL: { top: '36px', left: '100px' },
+  tickTR: { top: '36px', right: '100px' },
+  tickBL: { bottom: '36px', left: '100px' },
+  tickBR: { bottom: '36px', right: '100px' },
   content: {
     position: 'relative' as const,
     zIndex: 2,
@@ -185,15 +194,25 @@ const S = {
     animation: 'lhLogoEnter 1.2s cubic-bezier(.2,.7,.2,1) both',
   },
   logoWhite: { color: L.w90 },
-  logoOrange: {
-    color: L.orange,
-    textShadow: `0 0 80px ${L.orangeGlow}`,
-  },
+  logoOrange: { color: L.orange, textShadow: `0 0 80px ${L.orangeGlow}` },
   logoLine: {
+    position: 'relative' as const,
     width: '100%',
     height: '1px',
     background: `linear-gradient(90deg, transparent, ${L.w35}, ${L.orangeBorder}, transparent)`,
     marginTop: '14px',
+    overflow: 'hidden' as const,
+  },
+  logoShimmer: {
+    position: 'absolute' as const,
+    top: 0,
+    left: 0,
+    width: '25%',
+    height: '1px',
+    background: 'linear-gradient(90deg, transparent, rgba(255,200,150,0.85), #FF8A3E, rgba(255,200,150,0.85), transparent)',
+    filter: 'blur(0.3px)',
+    animation: 'lhShimmer 9s cubic-bezier(.35,.1,.25,1) infinite',
+    pointerEvents: 'none' as const,
   },
   logoTag: {
     alignSelf: 'flex-end' as const,
@@ -213,10 +232,7 @@ const S = {
     textTransform: 'uppercase' as const,
     color: 'rgba(232, 97, 26, 0.65)',
   },
-  cardWrap: {
-    display: 'flex' as const,
-    justifyContent: 'flex-end' as const,
-  },
+  cardWrap: { display: 'flex' as const, justifyContent: 'flex-end' as const },
   card: {
     width: '100%',
     maxWidth: '400px',
@@ -224,37 +240,18 @@ const S = {
     border: `1px solid ${L.w08}`,
     borderRadius: '18px',
     padding: '38px 36px 30px',
-    boxShadow: `
-      0 30px 70px rgba(0,0,0,0.6),
-      inset 0 1px 0 ${L.w08}
-    `,
+    boxShadow: `0 30px 70px rgba(0,0,0,0.6), inset 0 1px 0 ${L.w08}`,
     transition: 'transform 0.5s cubic-bezier(.2,.7,.2,1), box-shadow 0.5s cubic-bezier(.2,.7,.2,1), border-color 0.4s ease',
     animation: 'lhCardEnter 0.8s cubic-bezier(.2,.7,.2,1) both',
     position: 'relative' as const,
   },
   cardHover: {
     transform: 'translateY(-3px)',
-    boxShadow: `
-      0 42px 90px rgba(0,0,0,0.7),
-      inset 0 1px 0 ${L.w10},
-      0 0 0 1px ${L.orangeSoft}
-    `,
+    boxShadow: `0 42px 90px rgba(0,0,0,0.7), inset 0 1px 0 ${L.w10}, 0 0 0 1px ${L.orangeSoft}`,
     borderColor: L.w10,
   },
-  cardTitle: {
-    fontSize: '22px',
-    fontWeight: 600,
-    color: L.w90,
-    letterSpacing: '-0.015em',
-    marginBottom: '4px',
-  },
-  cardSub: {
-    fontSize: '12.5px',
-    color: L.w50,
-    marginBottom: '24px',
-    fontWeight: 400,
-  },
-  // --- GOOGLE BUTTON ---
+  cardTitle: { fontSize: '22px', fontWeight: 600, color: L.w90, letterSpacing: '-0.015em', marginBottom: '4px' },
+  cardSub: { fontSize: '12.5px', color: L.w50, marginBottom: '24px', fontWeight: 400 },
   gbtn: {
     position: 'relative' as const,
     overflow: 'hidden' as const,
@@ -265,7 +262,7 @@ const S = {
     width: '100%',
     height: '54px',
     padding: '0 22px',
-    background: L.w04,
+    background: L.w05,
     color: L.w90,
     border: `1px solid ${L.w08}`,
     borderRadius: '12px',
@@ -296,9 +293,7 @@ const S = {
     pointerEvents: 'none' as const,
     zIndex: 0,
   },
-  gbtnShimmerHover: {
-    left: '130%',
-  },
+  gbtnShimmerHover: { left: '130%' },
   gIconSlot: {
     position: 'relative' as const,
     width: '26px',
@@ -317,11 +312,7 @@ const S = {
     justifyContent: 'center' as const,
     transition: 'opacity 0.35s cubic-bezier(.2,.7,.2,1)',
   },
-  gbtnLabel: {
-    position: 'relative' as const,
-    zIndex: 2,
-  },
-  // --- DIVIDER + SECURE ---
+  gbtnLabel: { position: 'relative' as const, zIndex: 2 },
   divider: {
     display: 'flex' as const,
     alignItems: 'center' as const,
@@ -348,7 +339,6 @@ const S = {
     color: L.w50,
     fontWeight: 400,
   },
-  // --- ERROR ---
   errorBox: {
     marginTop: '14px',
     display: 'flex' as const,
@@ -362,7 +352,6 @@ const S = {
     fontSize: '12px',
     lineHeight: 1.4,
   },
-  // --- FOOTER ---
   footer: {
     position: 'absolute' as const,
     bottom: 0,
@@ -387,7 +376,32 @@ const S = {
     cursor: 'pointer' as const,
     transition: 'color 0.2s ease',
   },
-  // --- HIDDEN GSI ---
+  versionTag: {
+    position: 'absolute' as const,
+    bottom: '44px',
+    left: '28px',
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    gap: '8px',
+    fontSize: '9px',
+    fontWeight: 600,
+    letterSpacing: '2px',
+    fontFamily: L.mono,
+    color: 'rgba(232, 97, 26, 0.65)',
+    textTransform: 'uppercase' as const,
+    pointerEvents: 'none' as const,
+    zIndex: 3,
+    animation: 'lhFadeIn 1.5s ease 0.8s both',
+  },
+  versionDot: {
+    width: '6px',
+    height: '6px',
+    borderRadius: '50%',
+    background: '#E8611A',
+    boxShadow: '0 0 8px rgba(232, 97, 26, 0.7)',
+    animation: 'lhVersionBlink 3s ease-in-out infinite',
+  },
+  versionLabel: { color: L.w35 },
   hiddenGsi: {
     position: 'absolute' as const,
     opacity: 0,
@@ -397,7 +411,6 @@ const S = {
     height: '1px',
     overflow: 'hidden' as const,
   },
-  // --- SPINNER ---
   spinner: {
     width: '18px',
     height: '18px',
@@ -408,9 +421,6 @@ const S = {
   },
 }
 
-// ============================================================
-// Google G icon (multicolor default / white on hover)
-// ============================================================
 function GoogleGColor() {
   return (
     <svg width="22" height="22" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -430,9 +440,6 @@ function GoogleGWhite() {
   )
 }
 
-// ============================================================
-// MAIN COMPONENT
-// ============================================================
 export default function Login() {
   const [error, setError] = useState('')
   const [googleLoading, setGoogleLoading] = useState(false)
@@ -442,9 +449,7 @@ export default function Login() {
   const navigate = useNavigate()
   const hiddenGoogleRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    injectKF()
-  }, [])
+  useEffect(() => { injectKF() }, [])
 
   useEffect(() => {
     if (!loading && user) {
@@ -493,9 +498,7 @@ export default function Login() {
             width: 320,
           })
         }
-      } catch (_err) {
-        /* noop */
-      }
+      } catch (_err) { /* noop */ }
     }
 
     if (existing && window.google?.accounts?.id) {
@@ -510,10 +513,7 @@ export default function Login() {
         let tries = 0
         const waitG = () => {
           if (!mounted) return
-          if (window.google?.accounts?.id) {
-            initGsi()
-            return
-          }
+          if (window.google?.accounts?.id) { initGsi(); return }
           tries += 1
           if (tries < 20) setTimeout(waitG, 100)
         }
@@ -524,19 +524,14 @@ export default function Login() {
       let tries = 0
       const waitG = () => {
         if (!mounted) return
-        if (window.google?.accounts?.id) {
-          initGsi()
-          return
-        }
+        if (window.google?.accounts?.id) { initGsi(); return }
         tries += 1
         if (tries < 20) setTimeout(waitG, 100)
       }
       waitG()
     }
 
-    return () => {
-      mounted = false
-    }
+    return () => { mounted = false }
   }, [handleCredential])
 
   const triggerGoogle = () => {
@@ -547,15 +542,8 @@ export default function Login() {
       node.querySelector<HTMLElement>('[role="button"]') ||
       node.querySelector<HTMLElement>('div[aria-labelledby]') ||
       node.querySelector<HTMLElement>('button')
-    if (realBtn) {
-      realBtn.click()
-      return
-    }
-    try {
-      window.google?.accounts?.id?.prompt()
-    } catch (_e) {
-      /* noop */
-    }
+    if (realBtn) { realBtn.click(); return }
+    try { window.google?.accounts?.id?.prompt() } catch (_e) { /* noop */ }
   }
 
   if (loading) {
@@ -566,15 +554,18 @@ export default function Login() {
     )
   }
 
-  const gbtnStyle = hover
-    ? { ...S.gbtn, ...S.gbtnHover }
-    : S.gbtn
-  const shimmerStyle = hover
-    ? { ...S.gbtnShimmer, ...S.gbtnShimmerHover }
-    : S.gbtnShimmer
-  const cardStyle = cardHover
-    ? { ...S.card, ...S.cardHover }
-    : S.card
+  const gbtnStyle = hover ? { ...S.gbtn, ...S.gbtnHover } : S.gbtn
+  const shimmerStyle = hover ? { ...S.gbtnShimmer, ...S.gbtnShimmerHover } : S.gbtnShimmer
+  const cardStyle = cardHover ? { ...S.card, ...S.cardHover } : S.card
+
+  const now = new Date()
+  const versionStr =
+    'v2.' +
+    String(now.getFullYear()).slice(2) +
+    '.' +
+    String(now.getMonth() + 1).padStart(2, '0') +
+    '.' +
+    String(now.getDate()).padStart(2, '0')
 
   return (
     <div style={S.page}>
@@ -585,21 +576,32 @@ export default function Login() {
       <div style={{ ...S.corner, ...S.cornerBL }} />
       <div style={{ ...S.corner, ...S.cornerBR }} />
 
+      <div style={{ ...S.cornerTick, ...S.tickTL }}>00,00</div>
+      <div style={{ ...S.cornerTick, ...S.tickTR }}>00,99</div>
+      <div style={{ ...S.cornerTick, ...S.tickBL }}>99,00</div>
+      <div style={{ ...S.cornerTick, ...S.tickBR }}>99,99</div>
+
+      <div style={S.versionTag}>
+        <span style={S.versionDot} />
+        <span>{versionStr}</span>
+        <span style={S.versionLabel}>{'\u00b7'} LIVE</span>
+      </div>
+
       <div style={S.content}>
-        {/* LOGO */}
         <div style={S.logoWrap}>
           <div style={S.logoRow}>
             <span style={S.logoWhite}>Loma</span>
             <span style={S.logoOrange}>HUB27</span>
           </div>
-          <div style={S.logoLine} />
+          <div style={S.logoLine}>
+            <span style={S.logoShimmer} />
+          </div>
           <div style={S.logoTag}>Future Experience</div>
           <div style={S.logoSpec}>
             TROB {'\u00b7'} OPS-V2 {'\u00b7'} 2026 EDITION
           </div>
         </div>
 
-        {/* CARD */}
         <div style={S.cardWrap}>
           <div
             style={cardStyle}
@@ -619,20 +621,10 @@ export default function Login() {
             >
               <span style={shimmerStyle} />
               <span style={S.gIconSlot}>
-                <span
-                  style={{
-                    ...S.gIconLayer,
-                    opacity: hover ? 0 : 1,
-                  }}
-                >
+                <span style={{ ...S.gIconLayer, opacity: hover ? 0 : 1 }}>
                   <GoogleGColor />
                 </span>
-                <span
-                  style={{
-                    ...S.gIconLayer,
-                    opacity: hover ? 1 : 0,
-                  }}
-                >
+                <span style={{ ...S.gIconLayer, opacity: hover ? 1 : 0 }}>
                   <GoogleGWhite />
                 </span>
               </span>
