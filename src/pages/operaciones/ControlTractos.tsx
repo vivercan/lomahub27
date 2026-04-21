@@ -162,8 +162,8 @@ const ControlTractos: React.FC = () => {
   const filteredTractos = useMemo(() => {
     return tractos.filter((tracto) => {
       const matchesSearch =
-        tracto.numero_economico.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tracto.placas.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (tracto.numero_economico ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (tracto.placas ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
         (tracto.operador_asignado?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
 
       const matchesEmpresa = !filterEmpresa || tracto.empresa === filterEmpresa
