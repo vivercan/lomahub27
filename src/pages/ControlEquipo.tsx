@@ -89,7 +89,6 @@ export default function ControlEquipo() {
     <ModuleLayout
       titulo="Control de Equipo"
       subtitulo="Posicionamiento en tiempo real · WidgeTech GPS"
-      moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}
     >
       <div style={{ padding: '20px 28px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {/* Totales */}
