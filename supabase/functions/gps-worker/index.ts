@@ -184,7 +184,15 @@ function parsePlateResponse(xml: string): GPSUnit[] {
     const get = (tag: string) => {
       const m = hst.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, 'i'))
       if (!m) return ''
-      return m[1].replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').trim()
+      return m[1]
+        .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
+        .replace(/&gt;/gi, '>')
+        .replace(/&lt;/gi, '<')
+        .replace(/&amp;/gi, '&')
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/&apos;/gi, "'")
+        .trim()
     }
 
     const lat = parseFloat(get('Latitude') || get('latitude')) || 0
