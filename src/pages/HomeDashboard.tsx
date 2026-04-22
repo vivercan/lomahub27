@@ -1,10 +1,12 @@
-// HomeDashboard V34 - Drag siempre activo (sin modo edición) + refinement V32
-// Cambios sobre V33 autorizados por JJ 21/Abr/2026 noche:
-//   - ELIMINADO modo edición (botones Editar/Listo/Restaurar + tooltip + drag handles)
-//   - Drag siempre activo: click normal navega, drag (>5px) mueve el card
-//   - Cursor 'grab' en hover, 'grabbing' mientras se arrastra
-//   - Swap 1:1 dentro de familia, localStorage por usuario preservado
-//   - Todo el refinement visual V32 intacto (colores, material, shadows, typography)
+// HomeDashboard V35 - Drag cross-family (cualquier slot) + 3D depth reforzado
+// Cambios sobre V34 autorizados por JJ 21/Abr/2026 noche:
+//   - QUITADO el constraint de familia: cualquier card puede ir a cualquier slot
+//   - Card adopta el tamaño del slot destino (Configuración chico → Servicio grande se agranda, y viceversa)
+//   - Shadows reforzadas: stack de 4 drop shadows + inset top highlight + inset bottom shadow vignette
+//   - Ambient light upper-left más visible (opacity 0.14 vs 0.09)
+//   - Inset bevels más marcados (top rgba 0.18 vs 0.14, bottom rgba 0.28 vs 0.20)
+//   - Hover 3D más pronunciado (translateY -4px, shadow más intensa)
+// Click normal sigue navegando; drag activo sin modo edición
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -20,25 +22,23 @@ interface CardConfig {
   iconFile: string
   statusDot: 'green' | 'yellow' | 'red' | 'gray'
   statusText: string
-  family: 'A' | 'B' | 'C'
 }
 
 interface Slot {
-  family: 'A' | 'B' | 'C'
   gridColumn: string
   gridRow: string
 }
 
-// 8 slots fijos — la cuadratura nunca cambia, solo qué card ocupa cada slot
+// 8 slots fijos — la cuadratura nunca cambia. La card adopta el tamaño del slot.
 const SLOTS: Slot[] = [
-  { family: 'A', gridColumn: '1 / 2', gridRow: '1 / 2' }, // 0 — default: oportunidades
-  { family: 'B', gridColumn: '2 / 4', gridRow: '1 / 2' }, // 1 — default: servicio
-  { family: 'C', gridColumn: '4 / 5', gridRow: '1 / 3' }, // 2 — default: comercial
-  { family: 'A', gridColumn: '1 / 2', gridRow: '2 / 3' }, // 3 — default: operaciones
-  { family: 'A', gridColumn: '2 / 3', gridRow: '2 / 3' }, // 4 — default: ventas
-  { family: 'C', gridColumn: '3 / 4', gridRow: '2 / 4' }, // 5 — default: comunicaciones
-  { family: 'B', gridColumn: '1 / 3', gridRow: '3 / 4' }, // 6 — default: autofomento
-  { family: 'A', gridColumn: '4 / 5', gridRow: '3 / 4' }, // 7 — default: config
+  { gridColumn: '1 / 2', gridRow: '1 / 2' }, // 0 — 1×1
+  { gridColumn: '2 / 4', gridRow: '1 / 2' }, // 1 — 2×1
+  { gridColumn: '4 / 5', gridRow: '1 / 3' }, // 2 — 1×2
+  { gridColumn: '1 / 2', gridRow: '2 / 3' }, // 3 — 1×1
+  { gridColumn: '2 / 3', gridRow: '2 / 3' }, // 4 — 1×1
+  { gridColumn: '3 / 4', gridRow: '2 / 4' }, // 5 — 1×2
+  { gridColumn: '1 / 3', gridRow: '3 / 4' }, // 6 — 2×1
+  { gridColumn: '4 / 5', gridRow: '3 / 4' }, // 7 — 1×1
 ]
 
 const DEFAULT_LAYOUT = [
@@ -66,14 +66,14 @@ export default function HomeDashboard() {
   }
 
   const cardCatalog: Record<string, CardConfig> = useMemo(() => ({
-    'oportunidades': { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#2763C4', gradient: 'linear-gradient(135deg, #2763C4 0%, #0A2D6F 100%)', iconFile: 'oportunidades.svg', statusDot: 'green', statusText: 'Mis Leads · Funnel · Oportunidades', family: 'A' },
-    'servicio-clientes': { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#2B5FB5', gradient: 'linear-gradient(135deg, #2B5FB5 0%, #0B2E68 100%)', iconFile: 'servicio-al-cliente.svg', statusDot: 'green', statusText: 'Tickets · KPIs · Programación', family: 'B' },
-    'comercial': { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#2557A8', gradient: 'linear-gradient(135deg, #2557A8 0%, #082552 100%)', iconFile: 'comercial.svg', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics', family: 'C' },
-    'operaciones': { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#3D78D6', gradient: 'linear-gradient(135deg, #3D78D6 0%, #134287 100%)', iconFile: 'camion-contenedor-v2.svg', statusDot: 'green', statusText: 'Despachos · Seguimiento', family: 'A' },
-    'ventas': { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#C77A22', gradient: 'linear-gradient(135deg, #C77A22 0%, #7A3F0E 100%)', iconFile: 'ingresos.svg', statusDot: 'green', statusText: 'Analytics · KPIs', family: 'A' },
-    'comunicaciones': { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#4F88E3', gradient: 'linear-gradient(135deg, #4F88E3 0%, #1B56A8 100%)', iconFile: 'comunicaciones.svg', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA', family: 'C' },
-    'autofomento': { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#3A72CF', gradient: 'linear-gradient(135deg, #3A72CF 0%, #153E82 100%)', iconFile: 'gps.svg', statusDot: 'green', statusText: 'GPS · Cajas · Tractos · Thermos', family: 'B' },
-    'config': { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#3F4856', gradient: 'linear-gradient(135deg, #3F4856 0%, #0F1620 100%)', iconFile: 'configuracion.svg', statusDot: 'gray', statusText: '', family: 'A' },
+    'oportunidades': { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#2763C4', gradient: 'linear-gradient(135deg, #2763C4 0%, #0A2D6F 100%)', iconFile: 'oportunidades.svg', statusDot: 'green', statusText: 'Mis Leads · Funnel · Oportunidades' },
+    'servicio-clientes': { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#2B5FB5', gradient: 'linear-gradient(135deg, #2B5FB5 0%, #0B2E68 100%)', iconFile: 'servicio-al-cliente.svg', statusDot: 'green', statusText: 'Tickets · KPIs · Programación' },
+    'comercial': { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#2557A8', gradient: 'linear-gradient(135deg, #2557A8 0%, #082552 100%)', iconFile: 'comercial.svg', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics' },
+    'operaciones': { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#3D78D6', gradient: 'linear-gradient(135deg, #3D78D6 0%, #134287 100%)', iconFile: 'camion-contenedor-v2.svg', statusDot: 'green', statusText: 'Despachos · Seguimiento' },
+    'ventas': { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#C77A22', gradient: 'linear-gradient(135deg, #C77A22 0%, #7A3F0E 100%)', iconFile: 'ingresos.svg', statusDot: 'green', statusText: 'Analytics · KPIs' },
+    'comunicaciones': { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#4F88E3', gradient: 'linear-gradient(135deg, #4F88E3 0%, #1B56A8 100%)', iconFile: 'comunicaciones.svg', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA' },
+    'autofomento': { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#3A72CF', gradient: 'linear-gradient(135deg, #3A72CF 0%, #153E82 100%)', iconFile: 'gps.svg', statusDot: 'green', statusText: 'GPS · Cajas · Tractos · Thermos' },
+    'config': { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#3F4856', gradient: 'linear-gradient(135deg, #3F4856 0%, #0F1620 100%)', iconFile: 'configuracion.svg', statusDot: 'gray', statusText: '' },
   }), [])
 
   const layoutKey = `lhub27-layout-${user?.id || 'guest'}`
@@ -84,8 +84,7 @@ export default function HomeDashboard() {
       if (stored) {
         const parsed = JSON.parse(stored)
         if (Array.isArray(parsed) && parsed.length === 8 && parsed.every((id) => id in cardCatalog)) {
-          const valid = parsed.every((id: string, i: number) => cardCatalog[id]?.family === SLOTS[i].family)
-          if (valid) return parsed
+          return parsed
         }
       }
     } catch {}
@@ -99,11 +98,8 @@ export default function HomeDashboard() {
       if (stored) {
         const parsed = JSON.parse(stored)
         if (Array.isArray(parsed) && parsed.length === 8 && parsed.every((id: string) => id in cardCatalog)) {
-          const valid = parsed.every((id: string, i: number) => cardCatalog[id]?.family === SLOTS[i].family)
-          if (valid) {
-            setLayout(parsed)
-            return
-          }
+          setLayout(parsed)
+          return
         }
       }
     } catch {}
@@ -121,7 +117,7 @@ export default function HomeDashboard() {
     e.dataTransfer.setData('text/plain', cardId)
     e.dataTransfer.effectAllowed = 'move'
     setDraggingId(cardId)
-    setPressedCard(null) // cancelar pressed si empieza drag
+    setPressedCard(null)
     setHoveredCard(null)
   }
 
@@ -132,12 +128,10 @@ export default function HomeDashboard() {
 
   const handleDragOver = (e: React.DragEvent, slotIndex: number) => {
     if (!draggingId) return
-    const draggingCard = cardCatalog[draggingId]
-    if (draggingCard && draggingCard.family === SLOTS[slotIndex].family) {
-      e.preventDefault()
-      e.dataTransfer.dropEffect = 'move'
-      setOverSlot(slotIndex)
-    }
+    // V35: cualquier slot es válido (sin restricción de familia)
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    setOverSlot(slotIndex)
   }
 
   const handleDragLeave = (_: React.DragEvent, slotIndex: number) => {
@@ -156,14 +150,7 @@ export default function HomeDashboard() {
       return
     }
 
-    const draggedFamily = cardCatalog[draggedId].family
-    const targetFamily = SLOTS[targetSlotIndex].family
-    if (draggedFamily !== targetFamily) {
-      setDraggingId(null)
-      setOverSlot(null)
-      return
-    }
-
+    // V35: swap libre — cualquier card adopta el tamaño de cualquier slot
     const newLayout = [...layout]
     ;[newLayout[sourceSlotIndex], newLayout[targetSlotIndex]] = [newLayout[targetSlotIndex], newLayout[sourceSlotIndex]]
     setLayout(newLayout)
@@ -172,14 +159,15 @@ export default function HomeDashboard() {
   }
 
   const getCardStyle = (isHovered: boolean, isPressed: boolean, card: CardConfig, slot: Slot, slotIndex: number): React.CSSProperties => {
+    // V35 Material — upper-left ambient MÁS visible (0.14 vs 0.09)
     const materialGradient = `
-      radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0) 40%),
-      linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 20%, rgba(0,0,0,0.10) 100%),
+      radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 45%),
+      linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 22%, rgba(0,0,0,0.14) 100%),
       ${card.gradient}
     `
 
     const isDragging = draggingId === card.id
-    const isValidDropTarget = draggingId && cardCatalog[draggingId]?.family === slot.family && draggingId !== card.id
+    const isValidDropTarget = !!draggingId && draggingId !== card.id
     const isOverThisSlot = overSlot === slotIndex && isValidDropTarget
 
     let transform: string
@@ -188,28 +176,71 @@ export default function HomeDashboard() {
     let outlineOffset = '0'
 
     if (isDragging) {
-      transform = 'scale(0.98)'
-      boxShadow = `inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 16px rgba(15,23,42,0.12)`
+      transform = 'scale(0.97)'
+      boxShadow = `
+        inset 0 1px 0 rgba(255,255,255,0.16),
+        0 2px 6px rgba(15,23,42,0.14),
+        0 10px 20px rgba(15,23,42,0.16)
+      `
     } else if (isOverThisSlot) {
-      transform = 'translateY(-2px)'
-      boxShadow = `inset 0 1px 0 rgba(255,255,255,0.20), 0 10px 24px rgba(214,168,79,0.28), 0 4px 10px rgba(15,23,42,0.10)`
-      outline = '2px solid rgba(214,168,79,0.70)'
+      // V35 drop target activo — lift pronunciado + glow dorado
+      transform = 'translateY(-3px)'
+      boxShadow = `
+        inset 0 1px 0 rgba(255,255,255,0.22),
+        inset 0 -1px 0 rgba(0,0,0,0.28),
+        inset 0 -16px 28px rgba(0,0,0,0.12),
+        0 2px 4px rgba(15,23,42,0.10),
+        0 14px 28px rgba(214,168,79,0.32),
+        0 32px 56px rgba(15,23,42,0.28)
+      `
+      outline = '2px solid rgba(214,168,79,0.75)'
       outlineOffset = '2px'
     } else if (isValidDropTarget) {
-      // Target válido mientras se arrastra otro card de la misma familia — hint sutil
+      // V35 otros slots válidos — hint dorado muy sutil
       transform = 'translateY(0)'
-      boxShadow = `inset 0 1px 0 rgba(255,255,255,0.16), inset 0 -1px 0 rgba(0,0,0,0.20), 0 10px 22px rgba(15,23,42,0.14), 0 3px 8px rgba(15,23,42,0.08)`
-      outline = '1px dashed rgba(214,168,79,0.32)'
+      boxShadow = `
+        inset 0 1px 0 rgba(255,255,255,0.18),
+        inset 0 -1px 0 rgba(0,0,0,0.28),
+        inset 0 -18px 32px rgba(0,0,0,0.14),
+        0 2px 4px rgba(15,23,42,0.10),
+        0 8px 16px rgba(15,23,42,0.14),
+        0 20px 40px rgba(15,23,42,0.20)
+      `
+      outline = '1px dashed rgba(214,168,79,0.28)'
       outlineOffset = '2px'
     } else if (isPressed) {
       transform = 'translateY(1px)'
-      boxShadow = `inset 0 1px 0 rgba(255,255,255,0.06), inset 0 3px 8px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.14), 0 1px 2px rgba(0,0,0,0.10)`
+      boxShadow = `
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        inset 0 3px 8px rgba(0,0,0,0.22),
+        0 2px 4px rgba(15,23,42,0.12),
+        0 4px 8px rgba(15,23,42,0.10)
+      `
     } else if (isHovered) {
-      transform = 'translateY(-3px)'
-      boxShadow = `inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.22), inset 0 -14px 26px rgba(0,0,0,0.10), 0 18px 42px rgba(15,23,42,0.22), 0 6px 14px rgba(15,23,42,0.14)`
+      // V35 Hover 3D pronunciado
+      transform = 'translateY(-4px)'
+      boxShadow = `
+        inset 0 1px 0 rgba(255,255,255,0.22),
+        inset 0 -1px 0 rgba(0,0,0,0.30),
+        inset 0 -18px 32px rgba(0,0,0,0.14),
+        0 2px 4px rgba(15,23,42,0.10),
+        0 14px 28px rgba(15,23,42,0.20),
+        0 30px 56px rgba(15,23,42,0.26),
+        0 52px 80px -16px rgba(15,23,42,0.24)
+      `
     } else {
+      // V35 Resting — 3D MUCHO más marcado
       transform = 'translateY(0)'
-      boxShadow = `inset 0 1px 0 rgba(255,255,255,0.16), inset 0 -1px 0 rgba(0,0,0,0.20), inset 0 -12px 22px rgba(0,0,0,0.08), 0 14px 30px rgba(15,23,42,0.16), 0 4px 10px rgba(15,23,42,0.10)`
+      boxShadow = `
+        inset 0 1px 0 rgba(255,255,255,0.18),
+        inset 0 -1px 0 rgba(0,0,0,0.28),
+        inset 0 -18px 32px rgba(0,0,0,0.14),
+        inset 8px 0 20px rgba(255,255,255,0.02),
+        0 2px 4px rgba(15,23,42,0.10),
+        0 10px 20px rgba(15,23,42,0.18),
+        0 24px 44px rgba(15,23,42,0.22),
+        0 48px 64px -12px rgba(15,23,42,0.22)
+      `
     }
 
     return ({
@@ -219,7 +250,7 @@ export default function HomeDashboard() {
       borderRadius: '20px',
       padding: '28px',
       background: materialGradient,
-      border: '1px solid rgba(255,255,255,0.09)',
+      border: '1px solid rgba(255,255,255,0.11)',
       outline,
       outlineOffset,
       cursor: isDragging ? 'grabbing' : 'grab',
@@ -229,10 +260,10 @@ export default function HomeDashboard() {
       flexDirection: 'column',
       alignItems: 'flex-start',
       justifyContent: 'flex-start',
-      transition: 'transform 0.24s cubic-bezier(0.22,1,0.36,1), box-shadow 0.24s ease, outline 0.18s ease, opacity 0.2s ease',
+      transition: 'transform 0.28s cubic-bezier(0.22,1,0.36,1), box-shadow 0.28s ease, outline 0.18s ease, opacity 0.2s ease',
       transform,
       boxShadow,
-      opacity: isDragging ? 0.5 : 1,
+      opacity: isDragging ? 0.55 : 1,
       userSelect: 'none' as const,
     })
   }
@@ -315,11 +346,11 @@ export default function HomeDashboard() {
         default: return 100
       }
     })()
-    const iconOpacity = isHovered ? 0.10 : 0.07
+    const iconOpacity = isHovered ? 0.11 : 0.08
     const iconBottom = card.id === 'operaciones' ? '-26px' : '8px'
     const iconRight = card.id === 'operaciones' ? '8px' : '16px'
     const icon = card.iconFile ? (
-      <div style={{ position: 'absolute', right: iconRight, bottom: iconBottom, width: `${iconSize}px`, height: `${iconSize}px`, pointerEvents: 'none', transition: baseTransition, zIndex: 2, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.10))' }}>
+      <div style={{ position: 'absolute', right: iconRight, bottom: iconBottom, width: `${iconSize}px`, height: `${iconSize}px`, pointerEvents: 'none', transition: baseTransition, zIndex: 2, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.14))' }}>
         <img src={`/icons/dashboard/${card.iconFile}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center center', filter: 'brightness(0) invert(1)', opacity: iconOpacity, transition: 'opacity 0.24s ease' }} />
       </div>
     ) : null
@@ -351,11 +382,11 @@ export default function HomeDashboard() {
         style={getCardStyle(isHovered, isPressed, card, slot, slotIndex)}
       >
         {renderDecor(card, isHovered)}
-        <div style={{ position: 'absolute', top: '18px', right: '18px', width: '6px', height: '6px', borderRadius: '50%', background: '#D6A84F', boxShadow: '0 0 0 1.5px rgba(214,168,79,0.18), 0 0 8px rgba(214,168,79,0.35)', zIndex: 3, pointerEvents: 'none' }} />
-        <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '22px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1.15, marginBottom: 'auto', textAlign: 'left', width: '100%', position: 'relative', zIndex: 2, textShadow: '0 1px 0 rgba(255,255,255,0.08), 0 1px 3px rgba(0,0,0,0.24)', pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', top: '18px', right: '18px', width: '6px', height: '6px', borderRadius: '50%', background: '#D6A84F', boxShadow: '0 0 0 1.5px rgba(214,168,79,0.22), 0 0 10px rgba(214,168,79,0.45)', zIndex: 3, pointerEvents: 'none' }} />
+        <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '22px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1.15, marginBottom: 'auto', textAlign: 'left', width: '100%', position: 'relative', zIndex: 2, textShadow: '0 1px 0 rgba(255,255,255,0.10), 0 2px 4px rgba(0,0,0,0.28)', pointerEvents: 'none' }}>
           {card.label}
         </div>
-        <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '12px', fontWeight: 500, color: 'rgba(255,255,255,0.70)', letterSpacing: '0.2px', textAlign: 'left', width: '100%', marginTop: '8px', position: 'relative', zIndex: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', boxSizing: 'border-box', textShadow: '0 1px 2px rgba(0,0,0,0.16)', pointerEvents: 'none' }}>
+        <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '12px', fontWeight: 500, color: 'rgba(255,255,255,0.72)', letterSpacing: '0.2px', textAlign: 'left', width: '100%', marginTop: '8px', position: 'relative', zIndex: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', boxSizing: 'border-box', textShadow: '0 1px 2px rgba(0,0,0,0.18)', pointerEvents: 'none' }}>
           {card.statusText}
         </div>
       </div>
@@ -367,7 +398,7 @@ export default function HomeDashboard() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');`}</style>
       <AppHeader onLogout={handleLogout} userName={formatName(user?.email)} userRole={user?.rol || 'admin'} userEmail={user?.email} />
       <div style={{ flex: '1 1 auto', padding: '36px 32px', display: 'flex', flexDirection: 'column', gap: '16px', overflow: 'hidden' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridTemplateRows: 'repeat(3, 1fr)', gap: '16px', flex: '0 0 72%', minHeight: 0 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridTemplateRows: 'repeat(3, 1fr)', gap: '18px', flex: '0 0 72%', minHeight: 0 }}>
           {SLOTS.map((_, i) => renderCard(i))}
         </div>
       </div>
