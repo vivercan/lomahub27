@@ -1,13 +1,15 @@
-// HomeDashboard V35 - Drag cross-family (cualquier slot) + 3D depth reforzado
-// Cambios sobre V34 autorizados por JJ 21/Abr/2026 noche:
-//   - QUITADO el constraint de familia: cualquier card puede ir a cualquier slot
-//   - Card adopta el tamaño del slot destino (Configuración chico → Servicio grande se agranda, y viceversa)
-//   - Shadows reforzadas: stack de 4 drop shadows + inset top highlight + inset bottom shadow vignette
-//   - Ambient light upper-left más visible (opacity 0.14 vs 0.09)
-//   - Inset bevels más marcados (top rgba 0.18 vs 0.14, bottom rgba 0.28 vs 0.20)
-//   - Hover 3D más pronunciado (translateY -4px, shadow más intensa)
-// Click normal sigue navegando; drag activo sin modo edición
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+// HomeDashboard V36 - Tactile premium + doble-click para armar drag + cursor move
+// Cambios sobre V35 autorizados por JJ 21/Abr/2026 noche:
+//   - DRAG TRIGGER: ahora doble-click (rápido) arma el card como movible durante 5s
+//     Cursor cambia a 'move' (cruz 4 flechas) en card armado
+//     Click simple sigue navegando al módulo
+//     Outline dorado punteado persistente marca el card armado
+//   - ENGRAVED TITLES: text-shadow triple (inset top dark + lip bright + drop) sutil
+//   - CONTOUR PRECISION: top edge brightened 2px + bottom edge darkened 2px (milled-edge feel)
+//   - OUTER OUTLINE: 1px rgba(0,0,0,0.08) muy sutil para silueta definida sobre bg claro
+//   - PRESSED FEEDBACK: compression visual más refinada
+//   - 3D preservado de V35 pero contenido en límites "subtle" no "cartoon"
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import AppHeader from '../components/layout/AppHeader'
@@ -29,22 +31,23 @@ interface Slot {
   gridRow: string
 }
 
-// 8 slots fijos — la cuadratura nunca cambia. La card adopta el tamaño del slot.
 const SLOTS: Slot[] = [
-  { gridColumn: '1 / 2', gridRow: '1 / 2' }, // 0 — 1×1
-  { gridColumn: '2 / 4', gridRow: '1 / 2' }, // 1 — 2×1
-  { gridColumn: '4 / 5', gridRow: '1 / 3' }, // 2 — 1×2
-  { gridColumn: '1 / 2', gridRow: '2 / 3' }, // 3 — 1×1
-  { gridColumn: '2 / 3', gridRow: '2 / 3' }, // 4 — 1×1
-  { gridColumn: '3 / 4', gridRow: '2 / 4' }, // 5 — 1×2
-  { gridColumn: '1 / 3', gridRow: '3 / 4' }, // 6 — 2×1
-  { gridColumn: '4 / 5', gridRow: '3 / 4' }, // 7 — 1×1
+  { gridColumn: '1 / 2', gridRow: '1 / 2' },
+  { gridColumn: '2 / 4', gridRow: '1 / 2' },
+  { gridColumn: '4 / 5', gridRow: '1 / 3' },
+  { gridColumn: '1 / 2', gridRow: '2 / 3' },
+  { gridColumn: '2 / 3', gridRow: '2 / 3' },
+  { gridColumn: '3 / 4', gridRow: '2 / 4' },
+  { gridColumn: '1 / 3', gridRow: '3 / 4' },
+  { gridColumn: '4 / 5', gridRow: '3 / 4' },
 ]
 
 const DEFAULT_LAYOUT = [
   'oportunidades', 'servicio-clientes', 'comercial', 'operaciones',
   'ventas', 'comunicaciones', 'autofomento', 'config',
 ]
+
+const ARMED_TIMEOUT_MS = 5000
 
 export default function HomeDashboard() {
   const navigate = useNavigate()
@@ -53,6 +56,8 @@ export default function HomeDashboard() {
   const [pressedCard, setPressedCard] = useState<string | null>(null)
   const [draggingId, setDraggingId] = useState<string | null>(null)
   const [overSlot, setOverSlot] = useState<number | null>(null)
+  const [armedCardId, setArmedCardId] = useState<string | null>(null)
+  const armedTimerRef = useRef<number | null>(null)
 
   const formatName = (email?: string) => {
     if (!email) return 'Usuario'
@@ -113,7 +118,64 @@ export default function HomeDashboard() {
     } catch {}
   }, [layout, layoutKey])
 
+  // Cleanup del timer al desmontar
+  useEffect(() => {
+    return () => {
+      if (armedTimerRef.current) window.clearTimeout(armedTimerRef.current)
+    }
+  }, [])
+
+  // Desarmar al clickear fuera del dashboard (ESC o click en área vacía)
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && armedCardId) {
+        setArmedCardId(null)
+        if (armedTimerRef.current) window.clearTimeout(armedTimerRef.current)
+      }
+    }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [armedCardId])
+
+  const armCard = useCallback((cardId: string) => {
+    setArmedCardId(cardId)
+    if (armedTimerRef.current) window.clearTimeout(armedTimerRef.current)
+    armedTimerRef.current = window.setTimeout(() => {
+      setArmedCardId(null)
+    }, ARMED_TIMEOUT_MS)
+  }, [])
+
+  const disarmCard = useCallback(() => {
+    setArmedCardId(null)
+    if (armedTimerRef.current) window.clearTimeout(armedTimerRef.current)
+  }, [])
+
+  const handleDoubleClick = (e: React.MouseEvent, cardId: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (armedCardId === cardId) {
+      disarmCard()
+    } else {
+      armCard(cardId)
+    }
+  }
+
+  const handleClick = (card: CardConfig) => {
+    // Si el card está armado, un click simple lo desarma sin navegar (da chance de cancelar)
+    if (armedCardId === card.id) {
+      disarmCard()
+      return
+    }
+    // Si ningún card está armado y no hay drag en curso, navega normal
+    if (!draggingId) navigate(card.route)
+  }
+
   const handleDragStart = (e: React.DragEvent, cardId: string) => {
+    // Solo permite drag si está armado
+    if (armedCardId !== cardId) {
+      e.preventDefault()
+      return
+    }
     e.dataTransfer.setData('text/plain', cardId)
     e.dataTransfer.effectAllowed = 'move'
     setDraggingId(cardId)
@@ -124,11 +186,11 @@ export default function HomeDashboard() {
   const handleDragEnd = () => {
     setDraggingId(null)
     setOverSlot(null)
+    disarmCard() // Al terminar drag (exitoso o no), desarmar
   }
 
   const handleDragOver = (e: React.DragEvent, slotIndex: number) => {
     if (!draggingId) return
-    // V35: cualquier slot es válido (sin restricción de familia)
     e.preventDefault()
     e.dataTransfer.dropEffect = 'move'
     setOverSlot(slotIndex)
@@ -150,23 +212,24 @@ export default function HomeDashboard() {
       return
     }
 
-    // V35: swap libre — cualquier card adopta el tamaño de cualquier slot
     const newLayout = [...layout]
     ;[newLayout[sourceSlotIndex], newLayout[targetSlotIndex]] = [newLayout[targetSlotIndex], newLayout[sourceSlotIndex]]
     setLayout(newLayout)
     setDraggingId(null)
     setOverSlot(null)
+    disarmCard()
   }
 
   const getCardStyle = (isHovered: boolean, isPressed: boolean, card: CardConfig, slot: Slot, slotIndex: number): React.CSSProperties => {
-    // V35 Material — upper-left ambient MÁS visible (0.14 vs 0.09)
+    // V36 Material — upper-left ambient + luz/sombra vertical + base color
     const materialGradient = `
-      radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 45%),
-      linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 22%, rgba(0,0,0,0.14) 100%),
+      radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0) 45%),
+      linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 22%, rgba(0,0,0,0.13) 100%),
       ${card.gradient}
     `
 
     const isDragging = draggingId === card.id
+    const isArmed = armedCardId === card.id
     const isValidDropTarget = !!draggingId && draggingId !== card.id
     const isOverThisSlot = overSlot === slotIndex && isValidDropTarget
 
@@ -174,6 +237,12 @@ export default function HomeDashboard() {
     let boxShadow: string
     let outline = 'none'
     let outlineOffset = '0'
+    let cursor = 'pointer'
+
+    // CURSOR LOGIC
+    if (isDragging) cursor = 'move'
+    else if (isArmed) cursor = 'move'
+    else cursor = 'pointer'
 
     if (isDragging) {
       transform = 'scale(0.97)'
@@ -183,63 +252,75 @@ export default function HomeDashboard() {
         0 10px 20px rgba(15,23,42,0.16)
       `
     } else if (isOverThisSlot) {
-      // V35 drop target activo — lift pronunciado + glow dorado
       transform = 'translateY(-3px)'
       boxShadow = `
-        inset 0 1px 0 rgba(255,255,255,0.22),
-        inset 0 -1px 0 rgba(0,0,0,0.28),
+        inset 0 2px 0 rgba(255,255,255,0.14),
+        inset 0 -2px 0 rgba(0,0,0,0.26),
         inset 0 -16px 28px rgba(0,0,0,0.12),
         0 2px 4px rgba(15,23,42,0.10),
-        0 14px 28px rgba(214,168,79,0.32),
-        0 32px 56px rgba(15,23,42,0.28)
+        0 14px 28px rgba(214,168,79,0.30),
+        0 30px 54px rgba(15,23,42,0.26)
       `
-      outline = '2px solid rgba(214,168,79,0.75)'
+      outline = '2px solid rgba(214,168,79,0.70)'
       outlineOffset = '2px'
     } else if (isValidDropTarget) {
-      // V35 otros slots válidos — hint dorado muy sutil
       transform = 'translateY(0)'
       boxShadow = `
-        inset 0 1px 0 rgba(255,255,255,0.18),
-        inset 0 -1px 0 rgba(0,0,0,0.28),
-        inset 0 -18px 32px rgba(0,0,0,0.14),
+        inset 0 2px 0 rgba(255,255,255,0.12),
+        inset 0 -2px 0 rgba(0,0,0,0.24),
+        inset 0 -16px 30px rgba(0,0,0,0.13),
         0 2px 4px rgba(15,23,42,0.10),
         0 8px 16px rgba(15,23,42,0.14),
-        0 20px 40px rgba(15,23,42,0.20)
+        0 18px 36px rgba(15,23,42,0.18)
       `
-      outline = '1px dashed rgba(214,168,79,0.28)'
+      outline = '1px dashed rgba(214,168,79,0.26)'
+      outlineOffset = '2px'
+    } else if (isArmed) {
+      // V36 ARMED STATE — outline dorado persistente + lift sutil + cursor move
+      transform = 'translateY(-2px)'
+      boxShadow = `
+        inset 0 2px 0 rgba(255,255,255,0.14),
+        inset 0 -2px 0 rgba(0,0,0,0.26),
+        inset 0 -16px 30px rgba(0,0,0,0.13),
+        0 2px 4px rgba(15,23,42,0.10),
+        0 12px 24px rgba(15,23,42,0.18),
+        0 26px 46px rgba(214,168,79,0.22)
+      `
+      outline = '1.5px solid rgba(214,168,79,0.62)'
       outlineOffset = '2px'
     } else if (isPressed) {
-      transform = 'translateY(1px)'
+      // V36 PRESSED — compression refinada
+      transform = 'translateY(1.5px)'
       boxShadow = `
-        inset 0 1px 0 rgba(255,255,255,0.08),
-        inset 0 3px 8px rgba(0,0,0,0.22),
-        0 2px 4px rgba(15,23,42,0.12),
-        0 4px 8px rgba(15,23,42,0.10)
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        inset 0 -1px 0 rgba(0,0,0,0.18),
+        inset 0 3px 10px rgba(0,0,0,0.22),
+        0 1px 3px rgba(15,23,42,0.12),
+        0 3px 6px rgba(15,23,42,0.08)
       `
     } else if (isHovered) {
-      // V35 Hover 3D pronunciado
-      transform = 'translateY(-4px)'
+      // V36 HOVER — lift controlado
+      transform = 'translateY(-3px)'
       boxShadow = `
-        inset 0 1px 0 rgba(255,255,255,0.22),
-        inset 0 -1px 0 rgba(0,0,0,0.30),
-        inset 0 -18px 32px rgba(0,0,0,0.14),
+        inset 0 2px 0 rgba(255,255,255,0.18),
+        inset 0 -2px 0 rgba(0,0,0,0.26),
+        inset 0 -16px 30px rgba(0,0,0,0.12),
         0 2px 4px rgba(15,23,42,0.10),
-        0 14px 28px rgba(15,23,42,0.20),
-        0 30px 56px rgba(15,23,42,0.26),
-        0 52px 80px -16px rgba(15,23,42,0.24)
+        0 12px 24px rgba(15,23,42,0.18),
+        0 26px 46px rgba(15,23,42,0.22),
+        0 44px 64px -12px rgba(15,23,42,0.20)
       `
     } else {
-      // V35 Resting — 3D MUCHO más marcado
+      // V36 RESTING — contour premium asimétrico (top bright + bottom dark)
       transform = 'translateY(0)'
       boxShadow = `
-        inset 0 1px 0 rgba(255,255,255,0.18),
-        inset 0 -1px 0 rgba(0,0,0,0.28),
-        inset 0 -18px 32px rgba(0,0,0,0.14),
-        inset 8px 0 20px rgba(255,255,255,0.02),
+        inset 0 2px 0 rgba(255,255,255,0.14),
+        inset 0 -2px 0 rgba(0,0,0,0.26),
+        inset 0 -16px 30px rgba(0,0,0,0.13),
         0 2px 4px rgba(15,23,42,0.10),
-        0 10px 20px rgba(15,23,42,0.18),
-        0 24px 44px rgba(15,23,42,0.22),
-        0 48px 64px -12px rgba(15,23,42,0.22)
+        0 10px 20px rgba(15,23,42,0.16),
+        0 22px 40px rgba(15,23,42,0.20),
+        0 42px 56px -12px rgba(15,23,42,0.18)
       `
     }
 
@@ -250,17 +331,18 @@ export default function HomeDashboard() {
       borderRadius: '20px',
       padding: '28px',
       background: materialGradient,
-      border: '1px solid rgba(255,255,255,0.11)',
-      outline,
-      outlineOffset,
-      cursor: isDragging ? 'grabbing' : 'grab',
+      // V36 doble contour: inner precision edge + outer silhouette definer
+      border: '1px solid rgba(255,255,255,0.10)',
+      outline: outline !== 'none' ? outline : '1px solid rgba(15,23,42,0.06)',
+      outlineOffset: outline !== 'none' ? outlineOffset : '-1px',
+      cursor,
       position: 'relative',
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-start',
       justifyContent: 'flex-start',
-      transition: 'transform 0.28s cubic-bezier(0.22,1,0.36,1), box-shadow 0.28s ease, outline 0.18s ease, opacity 0.2s ease',
+      transition: 'transform 0.22s cubic-bezier(0.22,1,0.36,1), box-shadow 0.22s ease, outline 0.18s ease, opacity 0.2s ease',
       transform,
       boxShadow,
       opacity: isDragging ? 0.55 : 1,
@@ -364,17 +446,19 @@ export default function HomeDashboard() {
     if (!card) return null
     const isHovered = hoveredCard === card.id
     const isPressed = pressedCard === card.id
+    const isArmed = armedCardId === card.id
 
     return (
       <div
         key={card.id}
-        draggable={true}
+        draggable={isArmed}
         onDragStart={(e) => handleDragStart(e, card.id)}
         onDragEnd={handleDragEnd}
         onDragOver={(e) => handleDragOver(e, slotIndex)}
         onDragLeave={(e) => handleDragLeave(e, slotIndex)}
         onDrop={(e) => handleDrop(e, slotIndex)}
-        onClick={() => { if (!draggingId) navigate(card.route) }}
+        onClick={() => handleClick(card)}
+        onDoubleClick={(e) => handleDoubleClick(e, card.id)}
         onMouseEnter={() => !draggingId && setHoveredCard(card.id)}
         onMouseLeave={() => { setHoveredCard(null); setPressedCard(null) }}
         onMouseDown={() => !draggingId && setPressedCard(card.id)}
@@ -382,22 +466,65 @@ export default function HomeDashboard() {
         style={getCardStyle(isHovered, isPressed, card, slot, slotIndex)}
       >
         {renderDecor(card, isHovered)}
+        {/* Gold dot — preserved V35 */}
         <div style={{ position: 'absolute', top: '18px', right: '18px', width: '6px', height: '6px', borderRadius: '50%', background: '#D6A84F', boxShadow: '0 0 0 1.5px rgba(214,168,79,0.22), 0 0 10px rgba(214,168,79,0.45)', zIndex: 3, pointerEvents: 'none' }} />
-        <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '22px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1.15, marginBottom: 'auto', textAlign: 'left', width: '100%', position: 'relative', zIndex: 2, textShadow: '0 1px 0 rgba(255,255,255,0.10), 0 2px 4px rgba(0,0,0,0.28)', pointerEvents: 'none' }}>
+        {/* V36 Title — text-shadow engraved (inset-like doble highlight + drop) */}
+        <div style={{
+          fontFamily: "'Montserrat', sans-serif",
+          fontSize: '22px',
+          fontWeight: 800,
+          color: '#FFFFFF',
+          letterSpacing: '-0.02em',
+          lineHeight: 1.15,
+          marginBottom: 'auto',
+          textAlign: 'left',
+          width: '100%',
+          position: 'relative',
+          zIndex: 2,
+          textShadow: [
+            '0 -1px 0 rgba(0,0,0,0.32)',
+            '0 1px 0 rgba(255,255,255,0.10)',
+            '0 2px 4px rgba(0,0,0,0.28)',
+          ].join(', '),
+          pointerEvents: 'none',
+        }}>
           {card.label}
         </div>
-        <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '12px', fontWeight: 500, color: 'rgba(255,255,255,0.72)', letterSpacing: '0.2px', textAlign: 'left', width: '100%', marginTop: '8px', position: 'relative', zIndex: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', boxSizing: 'border-box', textShadow: '0 1px 2px rgba(0,0,0,0.18)', pointerEvents: 'none' }}>
+        {/* Subtitle */}
+        <div style={{
+          fontFamily: "'Montserrat', sans-serif",
+          fontSize: '12px',
+          fontWeight: 500,
+          color: 'rgba(255,255,255,0.72)',
+          letterSpacing: '0.2px',
+          textAlign: 'left',
+          width: '100%',
+          marginTop: '8px',
+          position: 'relative',
+          zIndex: 3,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          boxSizing: 'border-box',
+          textShadow: '0 1px 2px rgba(0,0,0,0.18)',
+          pointerEvents: 'none',
+        }}>
           {card.statusText}
         </div>
       </div>
     )
   }
 
+  // Global click to dismiss armed when clicking outside of cards
+  const handleBackgroundClick = () => {
+    if (armedCardId) disarmCard()
+  }
+
   return (
     <div style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', background: `radial-gradient(ellipse 120% 80% at 50% 0%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 60%), #ECEEF2`, fontFamily: "'Montserrat', sans-serif", color: '#1E293B' }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');`}</style>
       <AppHeader onLogout={handleLogout} userName={formatName(user?.email)} userRole={user?.rol || 'admin'} userEmail={user?.email} />
-      <div style={{ flex: '1 1 auto', padding: '36px 32px', display: 'flex', flexDirection: 'column', gap: '16px', overflow: 'hidden' }}>
+      <div onClick={handleBackgroundClick} style={{ flex: '1 1 auto', padding: '36px 32px', display: 'flex', flexDirection: 'column', gap: '16px', overflow: 'hidden' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridTemplateRows: 'repeat(3, 1fr)', gap: '18px', flex: '0 0 72%', minHeight: 0 }}>
           {SLOTS.map((_, i) => renderCard(i))}
         </div>
