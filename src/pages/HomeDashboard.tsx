@@ -1,3 +1,15 @@
+// HomeDashboard V42 — All-in: verde enterprise + Ventas vibrante + parallax reforzado + ritmo orgánico
+//
+// 8 cambios sobre V41:
+//   1. PULSES DESINCRONIZADOS — cada card con delay random 0-1.8s (sistema orgánico, no marea sincronizada)
+//   2. CONFIG SIN PULSE — solo dot estático dorado (es módulo sistema, no operación)
+//   3. DOTS VERDE ENTERPRISE — #10B981 con gradient radial #34D399→#10B981→#047857 (Slack/Linear "active")
+//   4. VENTAS VIBRANTE — gradient #F09830→#9A4E0E (más vivo que V41, sigue premium sin cruzar a cartoon)
+//   5. PARALLAX 3D REFORZADO — tilt ±6° + translateY -10 + translateZ +24 + scale 1.02
+//   6. GRID GAP RITHM — 18px horizontal + 24px vertical (respiración entre filas)
+//   7. COMERCIAL ICONO — 124 → 136 (reforza dominancia visual del rey)
+//   8. HAPTIC FLASH ARM — 120ms flash dorado al armar card (confirmación visual)
+//
 // HomeDashboard V41 — Refinement maduro completo (Packs A + B + C)
 //
 // 16 cambios aplicados sobre V40:
@@ -137,7 +149,7 @@ export default function HomeDashboard() {
     'servicio-clientes': { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#2B5FB5', gradient: 'linear-gradient(135deg, #2B5FB5 0%, #0B2E68 100%)', iconFile: 'servicio-al-cliente.svg', statusDot: 'green', statusText: 'Tickets · KPIs · Programación' },
     'comercial': { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#224CA0', gradient: 'linear-gradient(135deg, #224CA0 0%, #062348 100%)', iconFile: 'comercial.svg', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics' },
     'operaciones': { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#3D78D6', gradient: 'linear-gradient(135deg, #3D78D6 0%, #134287 100%)', iconFile: 'camion-contenedor-v2.svg', statusDot: 'green', statusText: 'Despachos · Seguimiento' },
-    'ventas': { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#D08530', gradient: 'linear-gradient(135deg, #D08530 0%, #7E4212 100%)', iconFile: 'ingresos.svg', statusDot: 'green', statusText: 'Analytics · KPIs' },
+    'ventas': { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#F09830', gradient: 'linear-gradient(135deg, #F09830 0%, #9A4E0E 100%)', iconFile: 'ingresos.svg', statusDot: 'green', statusText: 'Analytics · KPIs' },
     'comunicaciones': { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#4078D0', gradient: 'linear-gradient(135deg, #4078D0 0%, #153E88 100%)', iconFile: 'comunicaciones.svg', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA' },
     'autofomento': { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#3A72CF', gradient: 'linear-gradient(135deg, #3A72CF 0%, #153E82 100%)', iconFile: 'gps.svg', statusDot: 'green', statusText: 'GPS · Cajas · Tractos · Thermos' },
     'config': { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#3F4856', gradient: 'linear-gradient(135deg, #3F4856 0%, #0F1620 100%)', iconFile: 'configuracion.svg', statusDot: 'gray', statusText: '' },
@@ -206,8 +218,13 @@ export default function HomeDashboard() {
     return () => document.removeEventListener('keydown', handler)
   }, [armedCardId])
 
+  const [flashCardId, setFlashCardId] = useState<string | null>(null)
+
   const armCard = useCallback((cardId: string) => {
     setArmedCardId(cardId)
+    /* V42 — haptic flash 400ms al armar (confirmación visual) */
+    setFlashCardId(cardId)
+    window.setTimeout(() => setFlashCardId((prev) => (prev === cardId ? null : prev)), 420)
     if (armedTimerRef.current) window.clearTimeout(armedTimerRef.current)
     armedTimerRef.current = window.setTimeout(() => {
       setArmedCardId(null)
@@ -312,17 +329,17 @@ export default function HomeDashboard() {
     disarmCard()
   }
 
-  // V38 — PARALLAX 3D tilt handler
+  // V42 — PARALLAX 3D reforzado (±6° tilt, se siente más "sale hacia el usuario")
   const handleCardMouseMove = (e: React.MouseEvent, cardId: string) => {
     if (draggingId || armedCardId) return
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
-    const px = (x / rect.width) - 0.5   // -0.5 .. +0.5
-    const py = (y / rect.height) - 0.5  // -0.5 .. +0.5
-    // Max ±2° tilt — controlado, enterprise-level (no gaming)
-    const rx = -py * 4  // invertido: mouse arriba = tilt forward
-    const ry = px * 4
+    const px = (x / rect.width) - 0.5
+    const py = (y / rect.height) - 0.5
+    // Max ±3° tilt — más perceptible que V41 (±2°), sigue enterprise
+    const rx = -py * 6
+    const ry = px * 6
     setCardTilts(prev => ({ ...prev, [cardId]: { rx, ry } }))
   }
 
@@ -415,8 +432,8 @@ export default function HomeDashboard() {
         0 4px 8px rgba(0,0,0,0.12)
       `
     } else if (isHovered) {
-      // V41 HOVER — parallax 3D + sombras arquitectónicas con spread calibrado
-      transform = `${basePerspective} rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateY(-6px) translateZ(12px)`
+      // V42 HOVER — parallax reforzado ±6° + translateY -10 + translateZ +24 + scale 1.02
+      transform = `${basePerspective} rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateY(-10px) translateZ(24px) scale(1.02)`
       boxShadow = `
         inset 1px 0 0 rgba(255,255,255,0.12),
         inset -1px 0 0 rgba(255,255,255,0.08),
@@ -554,7 +571,7 @@ export default function HomeDashboard() {
     const iconSize = (() => {
       switch (card.id) {
         case 'operaciones': return 138
-        case 'comercial': return 124
+        case 'comercial': return 136 /* V42 — refuerza dominancia del "rey" visual (antes 124) */
         case 'comunicaciones': return 118
         case 'servicio-clientes': return 116
         case 'oportunidades': return 108
@@ -600,34 +617,57 @@ export default function HomeDashboard() {
         onMouseLeave={() => handleCardMouseLeave(card.id)}
         onMouseDown={() => !draggingId && setPressedCard(card.id)}
         onMouseUp={() => setPressedCard(null)}
-        className={mounted ? 'lh-card-entered' : 'lh-card-entering'}
+        className={`${mounted ? 'lh-card-entered' : 'lh-card-entering'}${flashCardId === card.id ? ' lh-arm-flash' : ''}`}
         style={{
           ...getCardStyle(isHovered, isPressed, card, slot, slotIndex, tilt),
           transitionDelay: mounted ? '0s' : mountDelay,
         }}
       >
         {renderDecor(card, isHovered)}
-        {/* V41 — Pulse ring + dot gradient (sistema vivo premium, no gaming) */}
+        {/* V42 — Dot verde enterprise + pulse ring desincronizado
+            Config: SIN pulse (módulo sistema, no operación) — solo dot estático dorado. */}
         <div style={{ position: 'absolute', top: '14px', right: '14px', width: '14px', height: '14px', pointerEvents: 'none', zIndex: 3 }}>
-          {/* Pulse ring — anillo que se expande y se desvanece */}
-          <div style={{
-            position: 'absolute',
-            top: '50%', left: '50%',
-            width: '14px', height: '14px',
-            borderRadius: '50%',
-            border: '1.5px solid rgba(255,193,74,0.70)',
-            transform: 'translate(-50%, -50%)',
-            animation: 'lhDotPulse 2.2s ease-in-out infinite',
-            pointerEvents: 'none',
-          }} />
-          {/* Dot central con gradient radial — centro brillante → bordes más cálidos */}
+          {card.id !== 'config' && (
+            /* Pulse ring — delay random por card para ritmo orgánico (no marea sincronizada) */
+            <div style={{
+              position: 'absolute',
+              top: '50%', left: '50%',
+              width: '14px', height: '14px',
+              borderRadius: '50%',
+              border: '1.5px solid rgba(16,185,129,0.75)', /* verde enterprise #10B981 */
+              transform: 'translate(-50%, -50%)',
+              animation: 'lhDotPulse 2.2s ease-in-out infinite',
+              animationDelay: (() => {
+                /* Delay determinístico por card — 8 valores spread 0-1.6s */
+                const delayMap: Record<string, string> = {
+                  'oportunidades': '0s',
+                  'servicio-clientes': '0.3s',
+                  'comercial': '0.7s',
+                  'operaciones': '1.1s',
+                  'ventas': '1.5s',
+                  'comunicaciones': '0.5s',
+                  'autofomento': '0.9s',
+                  'config': '0s',
+                }
+                return delayMap[card.id] || '0s'
+              })(),
+              pointerEvents: 'none',
+            }} />
+          )}
+          {/* Dot central:
+              - Config: dorado estático (módulo sistema)
+              - Otros: verde enterprise con gradient radial (operacional, "active") */}
           <div style={{
             position: 'absolute',
             top: '50%', left: '50%',
             width: '6px', height: '6px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle at 35% 30%, #FFD270 0%, #D6A84F 65%, #B8892B 100%)',
-            boxShadow: '0 0 0 1px rgba(255,255,255,0.12), 0 0 10px rgba(255,193,74,0.55)',
+            background: card.id === 'config'
+              ? 'radial-gradient(circle at 35% 30%, #FFD270 0%, #D6A84F 65%, #B8892B 100%)'
+              : 'radial-gradient(circle at 35% 30%, #34D399 0%, #10B981 65%, #047857 100%)',
+            boxShadow: card.id === 'config'
+              ? '0 0 0 1px rgba(255,255,255,0.12), 0 0 8px rgba(214,168,79,0.55)'
+              : '0 0 0 1px rgba(255,255,255,0.14), 0 0 10px rgba(16,185,129,0.62)',
             transform: 'translate(-50%, -50%)',
             pointerEvents: 'none',
           }} />
@@ -724,6 +764,16 @@ export default function HomeDashboard() {
           100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
         }
 
+        /* V42 — Haptic flash al armar card (confirmación visual 120ms) */
+        @keyframes lhArmFlash {
+          0%   { box-shadow: inset 0 0 0 0 rgba(214,168,79,0); }
+          35%  { box-shadow: inset 0 0 40px 4px rgba(214,168,79,0.40); }
+          100% { box-shadow: inset 0 0 0 0 rgba(214,168,79,0); }
+        }
+        .lh-arm-flash {
+          animation: lhArmFlash 400ms ease-out;
+        }
+
         /* V41 — Page transition fade-out (150ms premium, Linear/Arc-style) */
         .lh-page-exit {
           opacity: 0.55;
@@ -758,7 +808,9 @@ export default function HomeDashboard() {
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
           gridTemplateRows: 'repeat(3, 1fr)',
-          gap: '20px',
+          /* V42 — gap asimétrico 18px horizontal + 24px vertical (más respiración entre filas) */
+          columnGap: '18px',
+          rowGap: '24px',
           flex: '0 0 72%',
           minHeight: 0,
           perspective: '1400px',
