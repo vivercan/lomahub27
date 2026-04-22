@@ -24,13 +24,14 @@ declare global {
 }
 
 // ============================================================
-// BLUEPRINT V3.0 — SEQUENTIAL EDITORIAL + FORMING MOIRÉ
+// BLUEPRINT V3.1 — Delay 2s + Login Block +20% + Slogan +50% + Grey 3D Button
 // ============================================================
 const L = {
   bg: '#050508',
   orange: '#E8611A',
   orangeBright: '#FF7A2E',
   white: '#FAFAFA',
+  btn: '#18181D',
   font: "'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif",
   mono: "'Menlo', 'Consolas', 'SF Mono', monospace",
 } as const
@@ -86,7 +87,7 @@ function injectKF() {
 }
 
 // ============================================================
-// STYLES
+// STYLES — Login block escalado +20% · Slogan +50% · Botón gris 3D · Delay 2s
 // ============================================================
 const S = {
   pageLoading: {
@@ -105,12 +106,11 @@ const S = {
     position: 'relative' as const,
     overflow: 'hidden' as const,
   },
-  // ====== MOIRÉ BACKGROUND (appears after sequential entry) ======
   moireWrap: {
     position: 'absolute' as const,
     inset: '-10%',
     opacity: 0,
-    animation: 'lhMoireAppear 3s ease 3.8s forwards, lhMoireSpin 120s linear 6.8s infinite',
+    animation: 'lhMoireAppear 3s ease 7s forwards, lhMoireSpin 120s linear 10s infinite',
     pointerEvents: 'none' as const,
     zIndex: 1,
   },
@@ -124,21 +124,20 @@ const S = {
     backgroundImage:
       'linear-gradient(rgba(232, 97, 26, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(232, 97, 26, 0.07) 1px, transparent 1px)',
     backgroundSize: '80px 80px',
-    animation: 'lhMoireFadeO 19s ease-in-out 6.8s infinite',
+    animation: 'lhMoireFadeO 19s ease-in-out 10s infinite',
   },
   moireWhite: {
     backgroundImage:
       'linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px)',
     backgroundSize: '40px 40px',
-    animation: 'lhMoireFadeW 19s ease-in-out 6.8s infinite reverse',
+    animation: 'lhMoireFadeW 19s ease-in-out 10s infinite reverse',
   },
   moireBlue: {
     backgroundImage:
       'linear-gradient(rgba(100, 150, 220, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(100, 150, 220, 0.06) 1px, transparent 1px)',
     backgroundSize: '60px 60px',
-    animation: 'lhMoireFadeB 19s ease-in-out 8s infinite',
+    animation: 'lhMoireFadeB 19s ease-in-out 11.5s infinite',
   },
-  // ====== AMBIENT GLOW (entra primero) ======
   glow: {
     position: 'absolute' as const,
     left: '35%',
@@ -150,10 +149,9 @@ const S = {
       'radial-gradient(ellipse at center, rgba(232, 97, 26, 0.14), transparent 60%)',
     filter: 'blur(40px)',
     pointerEvents: 'none' as const,
-    animation: 'lhSeqUp 1.2s ease both, lhGlowBreathe 7s ease-in-out 2s infinite',
+    animation: 'lhSeqUp 1.4s ease 2s both, lhGlowBreathe 7s ease-in-out 6s infinite',
     zIndex: 0,
   },
-  // ====== CONTENT GRID ======
   content: {
     position: 'relative' as const,
     zIndex: 5,
@@ -163,7 +161,6 @@ const S = {
     alignItems: 'center' as const,
     padding: '0 7%',
   },
-  // ====== LOGO ======
   logoWrap: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
@@ -178,7 +175,7 @@ const S = {
       'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 25%, rgba(255,255,255,0.28) 55%, rgba(232,97,26,0.55) 92%, transparent 100%)',
     overflow: 'hidden' as const,
     marginBottom: '18px',
-    animation: 'lhSeqUp 0.9s ease 0.4s both',
+    animation: 'lhSeqUp 1.1s ease 2.4s both',
   },
   logoLineBot: {
     width: '100%',
@@ -188,7 +185,7 @@ const S = {
       'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 25%, rgba(255,255,255,0.28) 55%, rgba(232,97,26,0.55) 92%, transparent 100%)',
     overflow: 'hidden' as const,
     marginTop: '14px',
-    animation: 'lhSeqUp 0.9s ease 1.1s both',
+    animation: 'lhSeqUp 1.1s ease 3.3s both',
   },
   logoLineSweep: {
     position: 'absolute' as const,
@@ -198,7 +195,7 @@ const S = {
     height: '100%',
     background:
       'linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent)',
-    animation: 'lhLineSweep 8s linear 4s infinite',
+    animation: 'lhLineSweep 8s linear 6s infinite',
   },
   logoLineSweepBot: {
     position: 'absolute' as const,
@@ -208,7 +205,7 @@ const S = {
     height: '100%',
     background:
       'linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent)',
-    animation: 'lhLineSweep 8s linear 8s infinite',
+    animation: 'lhLineSweep 8s linear 10s infinite',
   },
   logoRow: {
     fontFamily: L.font,
@@ -220,81 +217,86 @@ const S = {
     fontSize: 'clamp(64px, 7.4vw, 112px)',
     display: 'flex' as const,
     alignItems: 'baseline' as const,
-    animation: 'lhSeqUp 1s ease 0.8s both',
+    animation: 'lhSeqUp 1.2s ease 2.9s both',
   },
   logoWhite: { color: L.white },
   logoOrange: { color: L.orange },
+  // Future Experience +50% (15px -> 23px)
   logoTag: {
     fontFamily: 'Inter, system-ui, sans-serif',
     fontStyle: 'italic' as const,
     fontWeight: 300,
-    color: 'rgba(255,255,255,0.5)',
-    letterSpacing: '0.02em',
-    fontSize: '15px',
-    marginTop: '8px',
+    color: 'rgba(255,255,255,0.55)',
+    letterSpacing: '0.04em',
+    fontSize: '23px',
+    marginTop: '10px',
     alignSelf: 'flex-end' as const,
-    animation: 'lhSeqUp 0.8s ease 1.4s both',
+    animation: 'lhSeqUp 1s ease 3.7s both',
   },
   logoSpec: {
-    marginTop: '18px',
-    fontSize: '10px',
+    marginTop: '22px',
+    fontSize: '11px',
     fontWeight: 600,
-    letterSpacing: '2.4px',
+    letterSpacing: '2.6px',
     textTransform: 'uppercase' as const,
-    color: 'rgba(255, 255, 255, 0.4)',
+    color: 'rgba(255, 255, 255, 0.45)',
     fontFamily: L.mono,
-    animation: 'lhSeqUp 0.8s ease 1.6s both',
+    animation: 'lhSeqUp 1s ease 4s both',
   },
-  // ====== LOGIN BLOCK (no card, minimal) ======
+  // Login block +20% (maxWidth 380 -> 460)
   loginBlock: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
     justifySelf: 'end' as const,
     width: '100%',
-    maxWidth: '380px',
+    maxWidth: '460px',
   },
+  // H1 Bienvenido +20% (24px -> 29px, margin 24 -> 28)
   loginH: {
     fontFamily: L.font,
     fontWeight: 600,
-    fontSize: '24px',
+    fontSize: '29px',
     color: 'rgba(255, 255, 255, 0.94)',
-    marginBottom: '24px',
-    letterSpacing: '-0.015em',
-    animation: 'lhSeqUp 0.8s ease 1.9s both',
+    marginBottom: '28px',
+    letterSpacing: '-0.02em',
+    animation: 'lhSeqUp 1s ease 4.4s both',
   },
+  // Botón gris sólido 3D +20% altura y tipografía
   gbtn: {
     display: 'inline-flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
-    gap: '12px',
+    gap: '14px',
     width: '100%',
-    padding: '0 22px',
-    height: '56px',
-    background: 'rgba(255, 255, 255, 0.04)',
-    color: 'rgba(255, 255, 255, 0.92)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    borderRadius: '11px',
+    padding: '0 26px',
+    height: '68px',
+    background: L.btn,
+    color: 'rgba(255, 255, 255, 0.94)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    borderRadius: '13px',
     fontFamily: 'Inter, system-ui, sans-serif',
-    fontSize: '14.5px',
+    fontSize: '17px',
     fontWeight: 500,
     cursor: 'pointer' as const,
     position: 'relative' as const,
     overflow: 'hidden' as const,
+    boxShadow:
+      'inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.35), 0 2px 0 rgba(0,0,0,0.4), 0 10px 24px rgba(0,0,0,0.55)',
     transition: 'all 0.35s cubic-bezier(.2,.7,.2,1)',
-    animation: 'lhSeqUp 0.9s ease 2.2s both',
+    animation: 'lhSeqUp 1.1s ease 4.8s both',
   },
   gbtnHover: {
     background: `linear-gradient(135deg, ${L.orange}, ${L.orangeBright})`,
     borderColor: L.orange,
-    transform: 'scale(1.012)',
+    transform: 'translateY(-2px) scale(1.012)',
     boxShadow:
-      '0 18px 40px rgba(232, 97, 26, 0.5), 0 0 0 1px rgba(232, 97, 26, 0.4)',
+      'inset 0 1px 0 rgba(255,255,255,0.25), 0 4px 0 rgba(0,0,0,0.4), 0 18px 42px rgba(232, 97, 26, 0.55), 0 0 0 1px rgba(232, 97, 26, 0.45)',
     color: '#ffffff',
   },
   gIconSlot: {
     position: 'relative' as const,
-    width: '22px',
-    height: '22px',
+    width: '26px',
+    height: '26px',
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
@@ -308,17 +310,18 @@ const S = {
     justifyContent: 'center' as const,
     transition: 'opacity 0.35s cubic-bezier(.2,.7,.2,1)',
   },
+  // Divider +20% (8.5 -> 10)
   divider: {
     display: 'flex' as const,
     alignItems: 'center' as const,
-    gap: '12px',
-    marginTop: '18px',
-    fontSize: '8.5px',
-    letterSpacing: '3px',
-    color: 'rgba(255, 255, 255, 0.35)',
+    gap: '14px',
+    marginTop: '22px',
+    fontSize: '10px',
+    letterSpacing: '3.6px',
+    color: 'rgba(255, 255, 255, 0.38)',
     textTransform: 'uppercase' as const,
     fontWeight: 600,
-    animation: 'lhSeqUp 0.8s ease 2.5s both',
+    animation: 'lhSeqUp 1s ease 5.2s both',
   },
   dividerLine: {
     flex: 1,
@@ -326,31 +329,31 @@ const S = {
     background:
       'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
   },
+  // Secure +20% (10 -> 12)
   secure: {
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
-    gap: '6px',
-    marginTop: '10px',
-    fontSize: '10px',
-    color: 'rgba(255, 255, 255, 0.5)',
+    gap: '7px',
+    marginTop: '12px',
+    fontSize: '12px',
+    color: 'rgba(255, 255, 255, 0.55)',
     fontWeight: 400,
-    animation: 'lhSeqUp 0.8s ease 2.7s both',
+    animation: 'lhSeqUp 1s ease 5.5s both',
   },
   errorBox: {
     marginTop: '14px',
     display: 'flex' as const,
     alignItems: 'flex-start' as const,
     gap: '8px',
-    padding: '10px 12px',
+    padding: '12px 14px',
     background: 'rgba(197, 48, 48, 0.10)',
     border: '1px solid rgba(197, 48, 48, 0.30)',
     borderRadius: '8px',
     color: '#F29090',
-    fontSize: '12px',
+    fontSize: '13px',
     lineHeight: 1.4,
   },
-  // ====== VERSION TAG (bottom-left) ======
   versionTag: {
     position: 'absolute' as const,
     bottom: '14px',
@@ -365,7 +368,7 @@ const S = {
     color: 'rgba(232, 97, 26, 0.7)',
     textTransform: 'uppercase' as const,
     zIndex: 10,
-    animation: 'lhSeqUp 0.8s ease 2.9s both',
+    animation: 'lhSeqUp 1s ease 5.8s both',
   },
   versionDot: {
     width: '5px',
@@ -373,11 +376,10 @@ const S = {
     borderRadius: '50%',
     background: L.orange,
     boxShadow: '0 0 6px rgba(232, 97, 26, 0.7)',
-    animation: 'lhDotPulse 3s ease-in-out 3.5s infinite',
+    animation: 'lhDotPulse 3s ease-in-out 6.5s infinite',
   },
   versionPipe: { color: 'rgba(255, 255, 255, 0.2)', fontWeight: 400 },
   versionLabel: { color: 'rgba(255, 255, 255, 0.45)' },
-  // ====== FOOTER (bottom-right) ======
   footer: {
     position: 'absolute' as const,
     bottom: '14px',
@@ -386,7 +388,7 @@ const S = {
     color: 'rgba(255, 255, 255, 0.3)',
     letterSpacing: '0.3px',
     zIndex: 10,
-    animation: 'lhSeqUp 0.8s ease 3s both',
+    animation: 'lhSeqUp 1s ease 6s both',
   },
   footerEmail: {
     color: 'rgba(255, 255, 255, 0.3)',
@@ -413,12 +415,9 @@ const S = {
   },
 }
 
-// ============================================================
-// Google G icon
-// ============================================================
 function GoogleGColor() {
   return (
-    <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
       <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
       <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
@@ -428,15 +427,12 @@ function GoogleGColor() {
 }
 function GoogleGWhite() {
   return (
-    <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path fill="#ffffff" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
     </svg>
   )
 }
 
-// ============================================================
-// MAIN COMPONENT
-// ============================================================
 export default function Login() {
   const [error, setError] = useState('')
   const [googleLoading, setGoogleLoading] = useState(false)
@@ -562,17 +558,14 @@ export default function Login() {
 
   return (
     <div style={S.page}>
-      {/* Ambient glow (primero) */}
       <div style={S.glow} />
 
-      {/* Moiré background (aparece despu\u00e9s de la cascada 3.8s) */}
       <div style={S.moireWrap}>
         <div style={{ ...S.moireLayerBase, ...S.moireOrange }} />
         <div style={{ ...S.moireLayerBase, ...S.moireWhite }} />
         <div style={{ ...S.moireLayerBase, ...S.moireBlue }} />
       </div>
 
-      {/* Content */}
       <div style={S.content}>
         <div style={S.logoWrap}>
           <div style={S.logoLineTop}>
@@ -617,7 +610,7 @@ export default function Login() {
 
           {error && (
             <div style={S.errorBox}>
-              <AlertCircle size={14} style={{ marginTop: '1px', flexShrink: 0 }} />
+              <AlertCircle size={16} style={{ marginTop: '1px', flexShrink: 0 }} />
               <span>{error}</span>
             </div>
           )}
@@ -628,7 +621,7 @@ export default function Login() {
             <span style={S.dividerLine} />
           </div>
           <div style={S.secure}>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <rect x="5" y="11" width="14" height="9" rx="2" />
               <path d="M8 11V7a4 4 0 0 1 8 0v4" />
             </svg>
@@ -639,7 +632,6 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Version tag */}
       <div style={S.versionTag}>
         <span style={S.versionDot} />
         <span>V2</span>
@@ -649,7 +641,6 @@ export default function Login() {
         <span style={S.versionLabel}>LIVE</span>
       </div>
 
-      {/* Footer */}
       <div style={S.footer}>
         Grupo Loma 2026 {'\u00b7'}{' '}
         <a
