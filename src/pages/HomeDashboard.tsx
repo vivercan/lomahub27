@@ -1,3 +1,9 @@
+// HomeDashboard V40 — Fix raya blanca inferior (border CSS → insets asimétricos)
+// V40 fix visual: JJ reportó una "raya blanca" en la base de todos los cards.
+// Causa: border 1px blanco 360° + inset bottom dark 3px producían un contraste parasitario.
+// Fix: border: 'none', reemplazado por inset laterales 1px en el boxShadow stack.
+// Preservado todo V39: parallax, spotlight, rim light, shadows dramáticas, patterns 0.08.
+// V39 header:
 // HomeDashboard V39 — Cinematic Premium Command Center + 3 refinamientos finales
 // V39 sobre V38 (validado por JJ como "10/10 absoluto objetivo"):
 //   - FONDO más oscuro: centro #B0B6C0 → orillas #747A85 (antes #CED3DB → #878C96)
@@ -346,6 +352,8 @@ export default function HomeDashboard() {
     } else if (isArmed) {
       transform = `${basePerspective} translateY(-3px) translateZ(6px)`
       boxShadow = `
+        inset 1px 0 0 rgba(255,255,255,0.12),
+        inset -1px 0 0 rgba(255,255,255,0.08),
         inset 0 3px 0 rgba(255,255,255,0.24),
         inset 0 -3px 0 rgba(0,0,0,0.36),
         inset 0 -20px 36px rgba(0,0,0,0.18),
@@ -365,9 +373,11 @@ export default function HomeDashboard() {
         0 4px 8px rgba(0,0,0,0.12)
       `
     } else if (isHovered) {
-      // V39 HOVER — parallax 3D tilt + lift + shadows aún más dramáticas
+      // V40 HOVER — parallax 3D tilt + lift + shadows dramáticas + insets laterales
       transform = `${basePerspective} rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateY(-6px) translateZ(12px)`
       boxShadow = `
+        inset 1px 0 0 rgba(255,255,255,0.12),
+        inset -1px 0 0 rgba(255,255,255,0.08),
         inset 0 3px 0 rgba(255,255,255,0.30),
         inset 0 -3px 0 rgba(0,0,0,0.42),
         inset 0 -22px 38px rgba(0,0,0,0.18),
@@ -377,9 +387,12 @@ export default function HomeDashboard() {
         0 90px 130px -18px rgba(0,0,0,0.48)
       `
     } else {
-      // V39 RESTING — shadow inferior dramáticamente más densa (0.44 vs 0.32)
+      // V40 RESTING — sin border CSS, insets laterales reemplazan la definición lateral.
+      // La "raya blanca" inferior de V39 desaparece al quitar el border 360°.
       transform = `${basePerspective} translateY(0) translateZ(0)`
       boxShadow = `
+        inset 1px 0 0 rgba(255,255,255,0.10),
+        inset -1px 0 0 rgba(255,255,255,0.06),
         inset 0 3px 0 rgba(255,255,255,0.24),
         inset 0 -3px 0 rgba(0,0,0,0.38),
         inset 0 -20px 36px rgba(0,0,0,0.18),
@@ -397,7 +410,9 @@ export default function HomeDashboard() {
       borderRadius: '20px',
       padding: '28px',
       background: materialGradient,
-      border: '1px solid rgba(255,255,255,0.12)',
+      // V40 — border eliminado. La silueta se define ahora con insets asimétricos dentro del boxShadow.
+      // Así quitamos la "raya blanca" inferior que generaba el border 1px sobre la zona oscura del inset bottom.
+      border: 'none',
       outline: outline !== 'none' ? outline : '1px solid rgba(0,0,0,0.18)',
       outlineOffset: outline !== 'none' ? outlineOffset : '-1px',
       cursor,
