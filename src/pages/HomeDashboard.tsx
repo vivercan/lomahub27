@@ -1,4 +1,10 @@
-// HomeDashboard V36 - Tactile premium + doble-click para armar drag + cursor move
+// HomeDashboard V37 - Fix click/dblclick race condition
+// V36 tenía un bug: onClick se disparaba con cada click individual del doble-click,
+// navegando al módulo ANTES de que llegara el evento onDoubleClick para armar el drag.
+// V37 usa timer de 250ms en onClick para distinguir single vs double:
+//   - Si llega un solo click en 250ms → single click → navegar (o desarmar si armed)
+//   - Si llega un segundo click antes de 250ms → double click → armar/desarmar drag
+// onDoubleClick handler eliminado — todo unificado en onClick con timer.
 // Cambios sobre V35 autorizados por JJ 21/Abr/2026 noche:
 //   - DRAG TRIGGER: ahora doble-click (rápido) arma el card como movible durante 5s
 //     Cursor cambia a 'move' (cruz 4 flechas) en card armado
@@ -58,6 +64,10 @@ export default function HomeDashboard() {
   const [overSlot, setOverSlot] = useState<number | null>(null)
   const [armedCardId, setArmedCardId] = useState<string | null>(null)
   const armedTimerRef = useRef<number | null>(null)
+  // V37 — click timer para distinguir single vs double click
+  const clickTimerRef = useRef<number | null>(null)
+  const pendingClickIdRef = useRef<string | null>(null)
+  const clickCountRef = useRef<number>(0)
 
   const formatName = (email?: string) => {
     if (!email) return 'Usuario'
@@ -118,10 +128,11 @@ export default function HomeDashboard() {
     } catch {}
   }, [layout, layoutKey])
 
-  // Cleanup del timer al desmontar
+  // Cleanup de timers al desmontar
   useEffect(() => {
     return () => {
       if (armedTimerRef.current) window.clearTimeout(armedTimerRef.current)
+      if (clickTimerRef.current) window.clearTimeout(clickTimerRef.current)
     }
   }, [])
 
@@ -150,24 +161,59 @@ export default function HomeDashboard() {
     if (armedTimerRef.current) window.clearTimeout(armedTimerRef.current)
   }, [])
 
-  const handleDoubleClick = (e: React.MouseEvent, cardId: string) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (armedCardId === cardId) {
-      disarmCard()
-    } else {
-      armCard(cardId)
-    }
-  }
-
+  // V37 — Click unificado con timer 250ms
+  // Single click → navegar (o desarmar si armed)
+  // Double click → armar/desarmar drag
   const handleClick = (card: CardConfig) => {
-    // Si el card está armado, un click simple lo desarma sin navegar (da chance de cancelar)
-    if (armedCardId === card.id) {
-      disarmCard()
+    // Si diferente card, reset
+    if (pendingClickIdRef.current !== card.id) {
+      clickCountRef.current = 0
+      pendingClickIdRef.current = card.id
+    }
+    clickCountRef.current += 1
+
+    // Cancelar timer anterior
+    if (clickTimerRef.current) {
+      window.clearTimeout(clickTimerRef.current)
+    }
+
+    // Si ya hay 2 clicks, acción inmediata (doble-click detectado)
+    if (clickCountRef.current >= 2) {
+      const targetId = card.id
+      clickCountRef.current = 0
+      pendingClickIdRef.current = null
+      if (clickTimerRef.current) {
+        window.clearTimeout(clickTimerRef.current)
+        clickTimerRef.current = null
+      }
+      // Toggle armed state
+      if (armedCardId === targetId) {
+        disarmCard()
+      } else {
+        armCard(targetId)
+      }
       return
     }
-    // Si ningún card está armado y no hay drag en curso, navega normal
-    if (!draggingId) navigate(card.route)
+
+    // Solo 1 click — esperar 250ms para ver si viene otro
+    clickTimerRef.current = window.setTimeout(() => {
+      const count = clickCountRef.current
+      const id = pendingClickIdRef.current
+      clickCountRef.current = 0
+      pendingClickIdRef.current = null
+      clickTimerRef.current = null
+
+      if (count === 1 && id) {
+        // Single click confirmado
+        if (armedCardId === id) {
+          // Card armado → click simple desarma (no navega)
+          disarmCard()
+        } else if (!draggingId) {
+          // Navegar al módulo
+          navigate(card.route)
+        }
+      }
+    }, 250)
   }
 
   const handleDragStart = (e: React.DragEvent, cardId: string) => {
@@ -458,7 +504,6 @@ export default function HomeDashboard() {
         onDragLeave={(e) => handleDragLeave(e, slotIndex)}
         onDrop={(e) => handleDrop(e, slotIndex)}
         onClick={() => handleClick(card)}
-        onDoubleClick={(e) => handleDoubleClick(e, card.id)}
         onMouseEnter={() => !draggingId && setHoveredCard(card.id)}
         onMouseLeave={() => { setHoveredCard(null); setPressedCard(null) }}
         onMouseDown={() => !draggingId && setPressedCard(card.id)}
