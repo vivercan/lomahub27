@@ -1,3 +1,10 @@
+// HomeDashboard V39 — Cinematic Premium Command Center + 3 refinamientos finales
+// V39 sobre V38 (validado por JJ como "10/10 absoluto objetivo"):
+//   - FONDO más oscuro: centro #B0B6C0 → orillas #747A85 (antes #CED3DB → #878C96)
+//   - SHADOW BOTTOM bump: última layer 0.32 → 0.44 (cards flotan con más peso)
+//   - PATTERNS opacity: baseline 0.06 → 0.08 / stronger 0.08 → 0.10 (más texturales sobre bg oscuro)
+// Resto idéntico a V38: parallax 3D, spotlight, rim light, noise, mount animation.
+// V38 header original abajo para referencia:
 // HomeDashboard V38 — Cinematic Premium Command Center
 // Combo B + TODO lo mejor. All-in on impact + depth.
 //
@@ -358,28 +365,28 @@ export default function HomeDashboard() {
         0 4px 8px rgba(0,0,0,0.12)
       `
     } else if (isHovered) {
-      // V38 HOVER — parallax 3D tilt + lift + deepened shadows
+      // V39 HOVER — parallax 3D tilt + lift + shadows aún más dramáticas
       transform = `${basePerspective} rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateY(-6px) translateZ(12px)`
       boxShadow = `
-        inset 0 3px 0 rgba(255,255,255,0.28),
-        inset 0 -3px 0 rgba(0,0,0,0.38),
-        inset 0 -20px 36px rgba(0,0,0,0.16),
-        0 8px 16px rgba(0,0,0,0.24),
-        0 24px 48px rgba(0,0,0,0.36),
-        0 48px 80px rgba(0,0,0,0.38),
-        0 80px 120px -20px rgba(0,0,0,0.40)
+        inset 0 3px 0 rgba(255,255,255,0.30),
+        inset 0 -3px 0 rgba(0,0,0,0.42),
+        inset 0 -22px 38px rgba(0,0,0,0.18),
+        0 8px 16px rgba(0,0,0,0.28),
+        0 26px 52px rgba(0,0,0,0.40),
+        0 52px 88px rgba(0,0,0,0.44),
+        0 90px 130px -18px rgba(0,0,0,0.48)
       `
     } else {
-      // V38 RESTING — dramatic depth, clear separation from bg
+      // V39 RESTING — shadow inferior dramáticamente más densa (0.44 vs 0.32)
       transform = `${basePerspective} translateY(0) translateZ(0)`
       boxShadow = `
-        inset 0 3px 0 rgba(255,255,255,0.22),
-        inset 0 -3px 0 rgba(0,0,0,0.34),
-        inset 0 -18px 34px rgba(0,0,0,0.16),
-        0 4px 8px rgba(0,0,0,0.18),
-        0 16px 32px rgba(0,0,0,0.30),
-        0 32px 56px rgba(0,0,0,0.34),
-        0 60px 88px -16px rgba(0,0,0,0.32)
+        inset 0 3px 0 rgba(255,255,255,0.24),
+        inset 0 -3px 0 rgba(0,0,0,0.38),
+        inset 0 -20px 36px rgba(0,0,0,0.18),
+        0 4px 8px rgba(0,0,0,0.22),
+        0 18px 36px rgba(0,0,0,0.36),
+        0 36px 64px rgba(0,0,0,0.40),
+        0 70px 100px -14px rgba(0,0,0,0.44)
       `
     }
 
@@ -417,8 +424,9 @@ export default function HomeDashboard() {
     // V38 — patterns reveal en hover (opacity bump)
     const mult = isHovered ? 2.2 : 1
     const geometry = (() => {
-      const baseOpacity = 0.06 * mult
-      const strongerOpacity = 0.08 * mult
+      // V39 — patterns más visibles sobre el fondo oscuro (baseline 0.08 vs 0.06)
+      const baseOpacity = 0.08 * mult
+      const strongerOpacity = 0.10 * mult
       switch (card.id) {
         case 'oportunidades':
           return (
@@ -595,9 +603,9 @@ export default function HomeDashboard() {
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      // V38 BACKGROUND — radial vignette oscuro con gradient profundo
+      // V39 BACKGROUND — radial vignette MÁS oscuro para drama máximo
       background: `
-        radial-gradient(ellipse 100% 70% at 50% 35%, #CED3DB 0%, #A8AEB8 50%, #878C96 100%)
+        radial-gradient(ellipse 100% 70% at 50% 35%, #B0B6C0 0%, #9199A3 50%, #747A85 100%)
       `,
       fontFamily: "'Montserrat', sans-serif",
       color: '#1E293B',
