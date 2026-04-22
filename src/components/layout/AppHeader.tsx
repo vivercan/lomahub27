@@ -21,6 +21,10 @@ interface Notificacion {
   url_destino?: string
 }
 
+// V32 AppHeader — refinement premium polish sobre V31
+// Cambios: shadow más limpia (less cloudy), bottom separation line sutil,
+// typography hierarchy mejorada (user stronger, role secondary),
+// bell + logout más crisp con border 1px fino y svg stroke 1.8px
 export default function AppHeader({
   onLogout,
   userName = 'Usuario',
@@ -35,7 +39,6 @@ export default function AppHeader({
   const notifPanelRef = useRef<HTMLDivElement>(null)
   const bellButtonRef = useRef<HTMLButtonElement>(null)
 
-  // --- Date / Week helpers ---
   const now = new Date()
   const fechaStr = now.toLocaleDateString('es-MX', {
     weekday: 'long',
@@ -50,7 +53,6 @@ export default function AppHeader({
   }
   const weekNum = getWeekNumber(now)
 
-  // --- Fetch notifications ---
   const fetchNotifications = useCallback(async () => {
     if (!userEmail) return
     try {
@@ -108,7 +110,6 @@ export default function AppHeader({
     return () => { subscription.unsubscribe() }
   }, [userEmail, fetchNotifications])
 
-  // Close panel on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -126,7 +127,6 @@ export default function AppHeader({
     }
   }, [showNotifPanel])
 
-  // Mark as read
   const markAsRead = async (id: string) => {
     try {
       const { error } = await supabase
@@ -170,14 +170,15 @@ export default function AppHeader({
 
   const recent = notifications.slice(0, 8)
 
-  // -------- RENDER --------
   return (
     <header
       style={{
         position: 'relative',
         height: 64,
         background: '#FFFFFF',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06)',
+        // V32: shadow premium más limpia (antes 3-layer cloud)
+        boxShadow: '0 1px 0 rgba(15,23,42,0.06), 0 2px 8px rgba(15,23,42,0.04)',
+        borderBottom: '1px solid rgba(15,23,42,0.05)',
         zIndex: 50,
         fontFamily: 'Montserrat, sans-serif',
         flexShrink: 0,
@@ -190,11 +191,11 @@ export default function AppHeader({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 20px',
+          padding: '0 28px',
           zIndex: 10,
         }}
       >
-        {/* LEFT — Logo Institucional LomaHUB27 */}
+        {/* LEFT — Logo LomaHUB27 */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <h1 style={{ margin: 0, fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontStyle: 'italic', fontSize: 22, letterSpacing: '-0.5px', lineHeight: 1 }}>
             <span style={{ color: '#0F172A' }}>Loma</span>
@@ -203,68 +204,51 @@ export default function AppHeader({
           </h1>
         </div>
 
-        {/* CENTER — Fecha, Semana, Tipo Cambio */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 56, marginRight: 'auto', marginLeft: 40 }}>
-          {/* Fecha */}
+        {/* CENTER — Fecha, Semana, Tipo Cambio — V32 spacing rhythm refinado */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 48, marginRight: 'auto', marginLeft: 48 }}>
           <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1E293B', fontFamily: "'Montserrat', sans-serif" }}>
+            <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: '#1E293B', fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.01em' }}>
               {fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1)}
             </p>
           </div>
 
-          {/* Semana */}
-          <div
-            style={{
-              background: 'transparent',
-              border: 'none',
-              borderRadius: 0,
-              padding: '3px 0',
-            }}
-          >
-            <span style={{ fontSize: 14, fontWeight: 700, color: '#3B6CE7', fontFamily: "'Montserrat', sans-serif" }}>
+          <div style={{ padding: '3px 0' }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#3B6CE7', fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.01em' }}>
               Semana {weekNum}
             </span>
           </div>
 
-          {/* USD / MXN */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 13, color: '#1E293B', fontFamily: "'Montserrat', sans-serif" }}>USD/MXN</span>
-            <span
-              style={{
-                fontSize: 15,
-                fontWeight: 700,
-                color: '#1E293B',
-                fontFamily: "'Montserrat', sans-serif",
-              }}
-            >
+            <span style={{ fontSize: 12, color: '#64748B', fontWeight: 500, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.02em' }}>USD/MXN</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: '#1E293B', fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.01em' }}>
               {tipoCambio ? `${tipoCambio.toFixed(2)}` : '—'}
             </span>
           </div>
         </div>
 
-        {/* RIGHT — User + Bell + Logout */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {/* User info — name + role stacked */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.3 }}>
-            <span style={{ fontSize: 13, color: '#1E293B', fontWeight: 600, fontFamily: "'Montserrat', sans-serif" }}>
+        {/* RIGHT — User + Bell + Logout — V32 hierarchy refinada */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          {/* User info — name stronger, role secondary */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.25 }}>
+            <span style={{ fontSize: 13, color: '#0F172A', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.01em' }}>
               {userName}
             </span>
-            <span style={{ fontSize: 13, color: '#1E293B', fontWeight: 400, fontFamily: "'Montserrat', sans-serif" }}>
+            <span style={{ fontSize: 11, color: '#64748B', fontWeight: 500, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.02em', textTransform: 'lowercase' }}>
               {userRole}
             </span>
           </div>
 
-          {/* Bell — Flat minimal circle */}
+          {/* Bell — V32 más crisp */}
           <div style={{ position: 'relative' }}>
             <button
               ref={bellButtonRef}
               onClick={() => setShowNotifPanel((p) => !p)}
               title="Notificaciones"
               style={{
-                width: 36,
-                height: 36,
+                width: 34,
+                height: 34,
                 background: 'transparent',
-                border: '1.5px solid #CBD5E1',
+                border: '1px solid #E2E8F0',
                 borderRadius: '50%',
                 cursor: 'pointer',
                 display: 'flex',
@@ -275,21 +259,17 @@ export default function AppHeader({
                 boxShadow: 'none',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#F1F5F9';
-                e.currentTarget.style.borderColor = '#94A3B8';
+                e.currentTarget.style.background = '#F8FAFC';
+                e.currentTarget.style.borderColor = '#CBD5E1';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = 'transparent';
-                e.currentTarget.style.borderColor = '#CBD5E1';
+                e.currentTarget.style.borderColor = '#E2E8F0';
               }}
-              onMouseDown={(e) => {
-                e.currentTarget.style.background = '#E2E8F0';
-              }}
-              onMouseUp={(e) => {
-                e.currentTarget.style.background = '#F1F5F9';
-              }}
+              onMouseDown={(e) => { e.currentTarget.style.background = '#F1F5F9'; }}
+              onMouseUp={(e) => { e.currentTarget.style.background = '#F8FAFC'; }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
               </svg>
@@ -297,20 +277,21 @@ export default function AppHeader({
                 <span
                   style={{
                     position: 'absolute',
-                    top: 4,
-                    right: 4,
-                    width: 16,
-                    height: 16,
+                    top: 2,
+                    right: 2,
+                    width: 14,
+                    height: 14,
                     borderRadius: '50%',
                     background: '#DC2626',
                     color: '#FFFFFF',
-                    fontSize: 10,
+                    fontSize: 9,
                     fontWeight: 700,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     lineHeight: 1,
                     fontFamily: "'Montserrat', sans-serif",
+                    border: '1.5px solid #FFFFFF',
                   }}
                 >
                   {unreadCount > 9 ? '9+' : unreadCount}
@@ -318,7 +299,6 @@ export default function AppHeader({
               )}
             </button>
 
-            {/* Notification Panel */}
             {showNotifPanel && (
               <div
                 ref={notifPanelRef}
@@ -330,14 +310,13 @@ export default function AppHeader({
                   maxHeight: 420,
                   background: '#FFFFFF',
                   borderRadius: 12,
-                  boxShadow: '0 12px 40px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.08)',
+                  boxShadow: '0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06)',
                   border: '1px solid #E2E8F0',
                   overflow: 'hidden',
                   zIndex: 100,
                   fontFamily: "'Montserrat', sans-serif",
                 }}
               >
-                {/* Panel header */}
                 <div
                   style={{
                     padding: '12px 16px',
@@ -347,9 +326,7 @@ export default function AppHeader({
                     alignItems: 'center',
                   }}
                 >
-                  <span style={{ fontSize: 14, fontWeight: 700, color: '#1E293B' }}>
-                    Notificaciones
-                  </span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: '#1E293B' }}>Notificaciones</span>
                   {unreadCount > 0 && (
                     <span
                       style={{
@@ -366,82 +343,72 @@ export default function AppHeader({
                   )}
                 </div>
 
-                {/* Panel body */}
                 <div style={{ maxHeight: 360, overflowY: 'auto' }}>
                   {loading && (
-                    <div style={{ padding: 20, textAlign: 'center', color: '#94A3B8', fontSize: 13 }}>
-                      Cargando...
-                    </div>
+                    <div style={{ padding: 20, textAlign: 'center', color: '#94A3B8', fontSize: 13 }}>Cargando...</div>
                   )}
                   {!loading && recent.length === 0 && (
-                    <div style={{ padding: 20, textAlign: 'center', color: '#94A3B8', fontSize: 13 }}>
-                      Sin notificaciones
-                    </div>
+                    <div style={{ padding: 20, textAlign: 'center', color: '#94A3B8', fontSize: 13 }}>Sin notificaciones</div>
                   )}
-                  {!loading &&
-                    recent.map((n) => (
-                      <div
-                        key={n.id}
-                        onClick={() => handleNotifClick(n)}
-                        style={{
-                          padding: '10px 16px',
-                          cursor: n.url_destino ? 'pointer' : 'default',
-                          borderBottom: '1px solid #F1F5F9',
-                          background: n.leida ? 'transparent' : '#F8FAFC',
-                          transition: 'background 0.15s ease',
-                        }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = '#F1F5F9'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = n.leida ? 'transparent' : '#F8FAFC'; }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                          <div
+                  {!loading && recent.map((n) => (
+                    <div
+                      key={n.id}
+                      onClick={() => handleNotifClick(n)}
+                      style={{
+                        padding: '10px 16px',
+                        cursor: n.url_destino ? 'pointer' : 'default',
+                        borderBottom: '1px solid #F1F5F9',
+                        background: n.leida ? 'transparent' : '#F8FAFC',
+                        transition: 'background 0.15s ease',
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = '#F1F5F9'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = n.leida ? 'transparent' : '#F8FAFC'; }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                        <div
+                          style={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: '50%',
+                            background: n.leida ? 'transparent' : typeColor(n.tipo),
+                            marginTop: 5,
+                            flexShrink: 0,
+                          }}
+                        />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: '#1E293B', lineHeight: 1.3 }}>{n.titulo}</p>
+                          <p
                             style={{
-                              width: 8,
-                              height: 8,
-                              borderRadius: '50%',
-                              background: n.leida ? 'transparent' : typeColor(n.tipo),
-                              marginTop: 5,
-                              flexShrink: 0,
+                              margin: '2px 0 0',
+                              fontSize: 12,
+                              color: '#64748B',
+                              lineHeight: 1.4,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
                             }}
-                          />
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: '#1E293B', lineHeight: 1.3 }}>
-                              {n.titulo}
-                            </p>
-                            <p
-                              style={{
-                                margin: '2px 0 0',
-                                fontSize: 12,
-                                color: '#64748B',
-                                lineHeight: 1.4,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                              }}
-                            >
-                              {n.mensaje}
-                            </p>
-                            <p style={{ margin: '3px 0 0', fontSize: 11, color: '#94A3B8' }}>
-                              {timeAgo(n.created_at)}
-                            </p>
-                          </div>
+                          >
+                            {n.mensaje}
+                          </p>
+                          <p style={{ margin: '3px 0 0', fontSize: 11, color: '#94A3B8' }}>{timeAgo(n.created_at)}</p>
                         </div>
                       </div>
-                    ))}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Logout — Flat minimal circle */}
+          {/* Logout — V32 más controlado */}
           <button
             onClick={onLogout}
             title="Cerrar sesión"
             style={{
-              width: 36,
-              height: 36,
+              width: 34,
+              height: 34,
               background: 'transparent',
-              border: '1.5px solid #CBD5E1',
+              border: '1px solid #E2E8F0',
               borderRadius: '50%',
               cursor: 'pointer',
               display: 'flex',
@@ -456,21 +423,16 @@ export default function AppHeader({
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'transparent';
-              e.currentTarget.style.borderColor = '#CBD5E1';
+              e.currentTarget.style.borderColor = '#E2E8F0';
             }}
-            onMouseDown={(e) => {
-              e.currentTarget.style.background = '#FEE2E2';
-            }}
-            onMouseUp={(e) => {
-              e.currentTarget.style.background = '#FEF2F2';
-            }}
+            onMouseDown={(e) => { e.currentTarget.style.background = '#FEE2E2'; }}
+            onMouseUp={(e) => { e.currentTarget.style.background = '#FEF2F2'; }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
               <line x1="12" y1="2" x2="12" y2="12" />
             </svg>
           </button>
-
         </div>
       </div>
     </header>
