@@ -1,16 +1,3 @@
-// HomeDashboard V43 — Rubber Deboss + Iconos Salidos 3D (P14 Bloque 1, implementación JJ)
-//
-// Cambios V43 sobre V42:
-//   • TÍTULO: 22px → 27px · weight 800 → 900 · color blanco → rgba(0,0,0,0.32)
-//     + textShadow rubber deboss (top-dark 0.76 + bottom-light 0.24 + drop 0.32)
-//   • SUBTÍTULO: 12px → 14px · weight 500 → 600 · color blanco → rgba(0,0,0,0.42)
-//     + textShadow dual rubber (top 0.66 + bottom 0.20)
-//   • ICONOS: +10% tamaño (138→152, 136→150, 118→130, 116→128, 108→119, 100→110)
-//     · opacity 0.12/0.15 → 0.88/0.92
-//     · filter 3D laser-cut: highlight -1.5/-1.5 + shadow 2/2 + lift 6px + depth 2px
-//     · img inner: brightness(0) invert(0.95) (era invert(1) contrast(1.1))
-//   • OPORTUNIDADES FIX: iconRight 16 → 20px · iconBottom 8 → 4px · iconSize se queda 100
-//
 // HomeDashboard V42 — All-in: verde enterprise + Ventas vibrante + parallax reforzado + ritmo orgánico
 //
 // 8 cambios sobre V41:
@@ -582,42 +569,24 @@ export default function HomeDashboard() {
     })()
 
     const iconSize = (() => {
-      /* V43 — tamaños +10% (P14 Bloque 1) */
       switch (card.id) {
-        case 'operaciones': return 152
-        case 'comercial': return 150
-        case 'comunicaciones': return 130
-        case 'servicio-clientes': return 128
-        case 'oportunidades': return 100 /* se queda chico para no empalmar con subtitle largo */
-        case 'autofomento': return 119
-        case 'config': return 119
-        default: return 110
+        case 'operaciones': return 138
+        case 'comercial': return 136 /* V42 — refuerza dominancia del "rey" visual (antes 124) */
+        case 'comunicaciones': return 118
+        case 'servicio-clientes': return 116
+        case 'oportunidades': return 108
+        case 'autofomento': return 108
+        case 'config': return 108
+        default: return 100
       }
     })()
-    // V43 — iconos 3D laser-cut salidos (P14 Bloque 1): opacity alta, sin hover change
-    const iconOpacity = isHovered ? 0.92 : 0.88
-    const iconBottom = card.id === 'operaciones' ? '-26px' : card.id === 'oportunidades' ? '4px' : '8px'
-    /* V43 — Oportunidades 4px más a la izquierda (JJ fix) */
-    const iconRight = card.id === 'operaciones' ? '8px' : card.id === 'oportunidades' ? '20px' : '16px'
+    // V41 — iconos con más definición (opacity 0.12→0.15 hover, contrast 1.1, drop-shadow más fino)
+    const iconOpacity = isHovered ? 0.15 : 0.12
+    const iconBottom = card.id === 'operaciones' ? '-26px' : '8px'
+    const iconRight = card.id === 'operaciones' ? '8px' : '16px'
     const icon = card.iconFile ? (
-      <div style={{
-        position: 'absolute',
-        right: iconRight,
-        bottom: iconBottom,
-        width: `${iconSize}px`,
-        height: `${iconSize}px`,
-        pointerEvents: 'none',
-        transition: baseTransition,
-        zIndex: 2,
-        overflow: 'visible',
-        filter: [
-          'drop-shadow(-1.5px -1.5px 0 rgba(255,255,255,0.48))',
-          'drop-shadow(2px 2px 0 rgba(0,0,0,0.62))',
-          'drop-shadow(0 6px 9px rgba(0,0,0,0.58))',
-          'drop-shadow(0 2px 4px rgba(0,0,0,0.40))',
-        ].join(' '),
-      }}>
-        <img src={`/icons/dashboard/${card.iconFile}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center center', filter: 'brightness(0) invert(0.95)', opacity: iconOpacity, transition: 'opacity 0.24s ease' }} />
+      <div style={{ position: 'absolute', right: iconRight, bottom: iconBottom, width: `${iconSize}px`, height: `${iconSize}px`, pointerEvents: 'none', transition: baseTransition, zIndex: 2, filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.30))' }}>
+        <img src={`/icons/dashboard/${card.iconFile}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center center', filter: 'brightness(0) invert(1) contrast(1.1)', opacity: iconOpacity, transition: 'opacity 0.24s ease' }} />
       </div>
     ) : null
     return <>{geometry}{icon}</>
@@ -703,48 +672,45 @@ export default function HomeDashboard() {
             pointerEvents: 'none',
           }} />
         </div>
-        {/* V43 Title — Rubber Deboss negro (P14 Bloque 1) */}
+        {/* V38 Title — engraved triple */}
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
-          fontSize: '27px',
-          fontWeight: 900,
-          color: 'rgba(0,0,0,0.32)',
-          letterSpacing: '-0.024em',
-          lineHeight: 1.12,
+          fontSize: '22px',
+          fontWeight: 800,
+          color: '#FFFFFF',
+          letterSpacing: '-0.02em',
+          lineHeight: 1.15,
           marginBottom: 'auto',
           textAlign: 'left',
           width: '100%',
           position: 'relative',
           zIndex: 2,
+          /* V41 — halo top reducido 0.40 → 0.28 (menos "impresión", más engraving sutil) */
           textShadow: [
-            '0 -1px 0 rgba(0,0,0,0.76)',
-            '0 1px 1px rgba(255,255,255,0.24)',
-            '0 2px 3px rgba(0,0,0,0.32)',
+            '0 -1px 0 rgba(0,0,0,0.28)',
+            '0 1px 0 rgba(255,255,255,0.12)',
+            '0 2px 5px rgba(0,0,0,0.30)',
           ].join(', '),
           pointerEvents: 'none',
         }}>
           {card.label}
         </div>
-        {/* V43 Subtitle — Rubber Deboss negro (P14 Bloque 1) */}
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
-          fontSize: '14px',
-          fontWeight: 600,
-          color: 'rgba(0,0,0,0.42)',
-          letterSpacing: '0.015em',
+          fontSize: '12px',
+          fontWeight: 500,
+          color: 'rgba(255,255,255,0.88)', /* V41 — 0.78 → 0.88 (más legible sobre cards oscuros) */
+          letterSpacing: '0.2px',
           textAlign: 'left',
           width: '100%',
-          marginTop: '10px',
+          marginTop: '8px',
           position: 'relative',
           zIndex: 3,
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           boxSizing: 'border-box',
-          textShadow: [
-            '0 -1px 0 rgba(0,0,0,0.66)',
-            '0 1px 0 rgba(255,255,255,0.20)',
-          ].join(', '),
+          textShadow: '0 1px 3px rgba(0,0,0,0.28)',
           pointerEvents: 'none',
         }}>
           {card.statusText}
