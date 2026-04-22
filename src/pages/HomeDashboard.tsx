@@ -1,11 +1,10 @@
-// HomeDashboard V33 - V32 refinement + drag-drop por familia con modo edición
-// Cambios sobre V32 autorizados por JJ 21/Abr/2026 noche:
-//   - HTML5 Drag&Drop nativo (sin dependencias nuevas)
-//   - Modo edición con toggle "✎ Editar / ✓ Listo" arriba-derecha del dashboard
-//   - 3 familias: A (1×1 ×4), B (2×1 ×2), C (1×2 ×2) — swap solo dentro de familia
-//   - 8 slots fijos con family, cards swap 1:1, cuadratura nunca se rompe
-//   - Persistencia localStorage por usuario: lhub27-layout-{userId}
-//   - Refinement V32 preservado: material, shadows, typography, colors
+// HomeDashboard V34 - Drag siempre activo (sin modo edición) + refinement V32
+// Cambios sobre V33 autorizados por JJ 21/Abr/2026 noche:
+//   - ELIMINADO modo edición (botones Editar/Listo/Restaurar + tooltip + drag handles)
+//   - Drag siempre activo: click normal navega, drag (>5px) mueve el card
+//   - Cursor 'grab' en hover, 'grabbing' mientras se arrastra
+//   - Swap 1:1 dentro de familia, localStorage por usuario preservado
+//   - Todo el refinement visual V32 intacto (colores, material, shadows, typography)
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -30,7 +29,7 @@ interface Slot {
   gridRow: string
 }
 
-// 8 slots fijos — la cuadratura nunca cambia, solo cambia qué card ocupa cada slot
+// 8 slots fijos — la cuadratura nunca cambia, solo qué card ocupa cada slot
 const SLOTS: Slot[] = [
   { family: 'A', gridColumn: '1 / 2', gridRow: '1 / 2' }, // 0 — default: oportunidades
   { family: 'B', gridColumn: '2 / 4', gridRow: '1 / 2' }, // 1 — default: servicio
@@ -52,7 +51,6 @@ export default function HomeDashboard() {
   const { user, logout } = useAuthContext()
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
   const [pressedCard, setPressedCard] = useState<string | null>(null)
-  const [editMode, setEditMode] = useState(false)
   const [draggingId, setDraggingId] = useState<string | null>(null)
   const [overSlot, setOverSlot] = useState<number | null>(null)
 
@@ -67,7 +65,6 @@ export default function HomeDashboard() {
     navigate('/login')
   }
 
-  // CARD CATALOG — V32 colors preservados, con family added
   const cardCatalog: Record<string, CardConfig> = useMemo(() => ({
     'oportunidades': { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#2763C4', gradient: 'linear-gradient(135deg, #2763C4 0%, #0A2D6F 100%)', iconFile: 'oportunidades.svg', statusDot: 'green', statusText: 'Mis Leads · Funnel · Oportunidades', family: 'A' },
     'servicio-clientes': { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#2B5FB5', gradient: 'linear-gradient(135deg, #2B5FB5 0%, #0B2E68 100%)', iconFile: 'servicio-al-cliente.svg', statusDot: 'green', statusText: 'Tickets · KPIs · Programación', family: 'B' },
@@ -79,7 +76,6 @@ export default function HomeDashboard() {
     'config': { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#3F4856', gradient: 'linear-gradient(135deg, #3F4856 0%, #0F1620 100%)', iconFile: 'configuracion.svg', statusDot: 'gray', statusText: '', family: 'A' },
   }), [])
 
-  // Layout state — array de 8 IDs, slot[i] → layout[i] card
   const layoutKey = `lhub27-layout-${user?.id || 'guest'}`
   const [layout, setLayout] = useState<string[]>(() => {
     if (typeof window === 'undefined') return DEFAULT_LAYOUT
@@ -88,7 +84,6 @@ export default function HomeDashboard() {
       if (stored) {
         const parsed = JSON.parse(stored)
         if (Array.isArray(parsed) && parsed.length === 8 && parsed.every((id) => id in cardCatalog)) {
-          // Validar que cada card en layout[i] match familia de SLOTS[i]
           const valid = parsed.every((id: string, i: number) => cardCatalog[id]?.family === SLOTS[i].family)
           if (valid) return parsed
         }
@@ -97,7 +92,6 @@ export default function HomeDashboard() {
     return DEFAULT_LAYOUT
   })
 
-  // Re-validar layout si user cambia
   useEffect(() => {
     if (!user?.id) return
     try {
@@ -116,7 +110,6 @@ export default function HomeDashboard() {
     setLayout(DEFAULT_LAYOUT)
   }, [user?.id, layoutKey, cardCatalog])
 
-  // Persistir cambios
   useEffect(() => {
     if (typeof window === 'undefined') return
     try {
@@ -124,15 +117,12 @@ export default function HomeDashboard() {
     } catch {}
   }, [layout, layoutKey])
 
-  // Drag handlers
   const handleDragStart = (e: React.DragEvent, cardId: string) => {
-    if (!editMode) {
-      e.preventDefault()
-      return
-    }
     e.dataTransfer.setData('text/plain', cardId)
     e.dataTransfer.effectAllowed = 'move'
     setDraggingId(cardId)
+    setPressedCard(null) // cancelar pressed si empieza drag
+    setHoveredCard(null)
   }
 
   const handleDragEnd = () => {
@@ -141,7 +131,7 @@ export default function HomeDashboard() {
   }
 
   const handleDragOver = (e: React.DragEvent, slotIndex: number) => {
-    if (!editMode || !draggingId) return
+    if (!draggingId) return
     const draggingCard = cardCatalog[draggingId]
     if (draggingCard && draggingCard.family === SLOTS[slotIndex].family) {
       e.preventDefault()
@@ -150,13 +140,12 @@ export default function HomeDashboard() {
     }
   }
 
-  const handleDragLeave = (e: React.DragEvent, slotIndex: number) => {
+  const handleDragLeave = (_: React.DragEvent, slotIndex: number) => {
     if (overSlot === slotIndex) setOverSlot(null)
   }
 
   const handleDrop = (e: React.DragEvent, targetSlotIndex: number) => {
     e.preventDefault()
-    if (!editMode) return
     const draggedId = e.dataTransfer.getData('text/plain')
     if (!draggedId || !(draggedId in cardCatalog)) return
 
@@ -167,7 +156,6 @@ export default function HomeDashboard() {
       return
     }
 
-    // Validar family match
     const draggedFamily = cardCatalog[draggedId].family
     const targetFamily = SLOTS[targetSlotIndex].family
     if (draggedFamily !== targetFamily) {
@@ -176,18 +164,11 @@ export default function HomeDashboard() {
       return
     }
 
-    // SWAP 1:1
     const newLayout = [...layout]
     ;[newLayout[sourceSlotIndex], newLayout[targetSlotIndex]] = [newLayout[targetSlotIndex], newLayout[sourceSlotIndex]]
     setLayout(newLayout)
     setDraggingId(null)
     setOverSlot(null)
-  }
-
-  const resetLayout = () => {
-    if (window.confirm('¿Restaurar el orden original del dashboard?')) {
-      setLayout(DEFAULT_LAYOUT)
-    }
   }
 
   const getCardStyle = (isHovered: boolean, isPressed: boolean, card: CardConfig, slot: Slot, slotIndex: number): React.CSSProperties => {
@@ -206,23 +187,24 @@ export default function HomeDashboard() {
     let outline = 'none'
     let outlineOffset = '0'
 
-    if (editMode && isDragging) {
+    if (isDragging) {
       transform = 'scale(0.98)'
       boxShadow = `inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 16px rgba(15,23,42,0.12)`
-    } else if (editMode && isOverThisSlot) {
+    } else if (isOverThisSlot) {
       transform = 'translateY(-2px)'
       boxShadow = `inset 0 1px 0 rgba(255,255,255,0.20), 0 10px 24px rgba(214,168,79,0.28), 0 4px 10px rgba(15,23,42,0.10)`
       outline = '2px solid rgba(214,168,79,0.70)'
       outlineOffset = '2px'
-    } else if (editMode && isValidDropTarget) {
+    } else if (isValidDropTarget) {
+      // Target válido mientras se arrastra otro card de la misma familia — hint sutil
       transform = 'translateY(0)'
-      boxShadow = `inset 0 1px 0 rgba(255,255,255,0.16), inset 0 -1px 0 rgba(0,0,0,0.20), 0 10px 24px rgba(15,23,42,0.14), 0 3px 8px rgba(15,23,42,0.08)`
-      outline = '1.5px dashed rgba(214,168,79,0.38)'
+      boxShadow = `inset 0 1px 0 rgba(255,255,255,0.16), inset 0 -1px 0 rgba(0,0,0,0.20), 0 10px 22px rgba(15,23,42,0.14), 0 3px 8px rgba(15,23,42,0.08)`
+      outline = '1px dashed rgba(214,168,79,0.32)'
       outlineOffset = '2px'
-    } else if (isPressed && !editMode) {
+    } else if (isPressed) {
       transform = 'translateY(1px)'
       boxShadow = `inset 0 1px 0 rgba(255,255,255,0.06), inset 0 3px 8px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.14), 0 1px 2px rgba(0,0,0,0.10)`
-    } else if (isHovered && !editMode) {
+    } else if (isHovered) {
       transform = 'translateY(-3px)'
       boxShadow = `inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.22), inset 0 -14px 26px rgba(0,0,0,0.10), 0 18px 42px rgba(15,23,42,0.22), 0 6px 14px rgba(15,23,42,0.14)`
     } else {
@@ -240,7 +222,7 @@ export default function HomeDashboard() {
       border: '1px solid rgba(255,255,255,0.09)',
       outline,
       outlineOffset,
-      cursor: editMode ? (isDragging ? 'grabbing' : 'grab') : 'pointer',
+      cursor: isDragging ? 'grabbing' : 'grab',
       position: 'relative',
       overflow: 'hidden',
       display: 'flex',
@@ -257,22 +239,13 @@ export default function HomeDashboard() {
 
   const renderDecor = (card: CardConfig, isHovered: boolean) => {
     const baseTransition = 'opacity 0.4s ease'
-
     const geometry = (() => {
       switch (card.id) {
         case 'oportunidades':
           return (
             <>
               {[0, 1, 2].map(i => (
-                <div key={`opp-line-${i}`} style={{
-                  position: 'absolute',
-                  right: '42%', top: '60%',
-                  width: '62%', height: '2px',
-                  background: 'rgba(255,255,255,0.05)',
-                  transformOrigin: '100% 50%',
-                  transform: `rotate(-48deg) translateY(${-i * 22}px)`,
-                  pointerEvents: 'none',
-                }} />
+                <div key={`opp-line-${i}`} style={{ position: 'absolute', right: '42%', top: '60%', width: '62%', height: '2px', background: 'rgba(255,255,255,0.05)', transformOrigin: '100% 50%', transform: `rotate(-48deg) translateY(${-i * 22}px)`, pointerEvents: 'none' }} />
               ))}
             </>
           )
@@ -346,41 +319,11 @@ export default function HomeDashboard() {
     const iconBottom = card.id === 'operaciones' ? '-26px' : '8px'
     const iconRight = card.id === 'operaciones' ? '8px' : '16px'
     const icon = card.iconFile ? (
-      <div
-        style={{
-          position: 'absolute',
-          right: iconRight,
-          bottom: iconBottom,
-          width: `${iconSize}px`,
-          height: `${iconSize}px`,
-          pointerEvents: 'none',
-          transition: baseTransition,
-          zIndex: 2,
-          filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.10))',
-        }}
-      >
-        <img
-          src={`/icons/dashboard/${card.iconFile}`}
-          alt=""
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain',
-            objectPosition: 'center center',
-            filter: 'brightness(0) invert(1)',
-            opacity: iconOpacity,
-            transition: 'opacity 0.24s ease',
-          }}
-        />
+      <div style={{ position: 'absolute', right: iconRight, bottom: iconBottom, width: `${iconSize}px`, height: `${iconSize}px`, pointerEvents: 'none', transition: baseTransition, zIndex: 2, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.10))' }}>
+        <img src={`/icons/dashboard/${card.iconFile}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center center', filter: 'brightness(0) invert(1)', opacity: iconOpacity, transition: 'opacity 0.24s ease' }} />
       </div>
     ) : null
-
-    return (
-      <>
-        {geometry}
-        {icon}
-      </>
-    )
+    return <>{geometry}{icon}</>
   }
 
   const renderCard = (slotIndex: number) => {
@@ -394,80 +337,25 @@ export default function HomeDashboard() {
     return (
       <div
         key={card.id}
-        draggable={editMode}
+        draggable={true}
         onDragStart={(e) => handleDragStart(e, card.id)}
         onDragEnd={handleDragEnd}
         onDragOver={(e) => handleDragOver(e, slotIndex)}
         onDragLeave={(e) => handleDragLeave(e, slotIndex)}
         onDrop={(e) => handleDrop(e, slotIndex)}
-        onClick={() => { if (!editMode) navigate(card.route) }}
-        onMouseEnter={() => !editMode && setHoveredCard(card.id)}
+        onClick={() => { if (!draggingId) navigate(card.route) }}
+        onMouseEnter={() => !draggingId && setHoveredCard(card.id)}
         onMouseLeave={() => { setHoveredCard(null); setPressedCard(null) }}
-        onMouseDown={() => !editMode && setPressedCard(card.id)}
+        onMouseDown={() => !draggingId && setPressedCard(card.id)}
         onMouseUp={() => setPressedCard(null)}
         style={getCardStyle(isHovered, isPressed, card, slot, slotIndex)}
       >
         {renderDecor(card, isHovered)}
-        {/* Gold dot */}
-        <div
-          style={{
-            position: 'absolute', top: '18px', right: '18px',
-            width: '6px', height: '6px', borderRadius: '50%',
-            background: '#D6A84F',
-            boxShadow: '0 0 0 1.5px rgba(214,168,79,0.18), 0 0 8px rgba(214,168,79,0.35)',
-            zIndex: 3,
-            pointerEvents: 'none',
-          }}
-        />
-        {/* Drag handle indicator en modo edición */}
-        {editMode && (
-          <div style={{
-            position: 'absolute', top: '14px', left: '14px',
-            display: 'flex', flexDirection: 'column', gap: 2,
-            opacity: 0.5, zIndex: 3, pointerEvents: 'none',
-          }}>
-            {[0, 1, 2].map(i => (
-              <div key={i} style={{ display: 'flex', gap: 2 }}>
-                <div style={{ width: 3, height: 3, borderRadius: '50%', background: '#FFFFFF' }} />
-                <div style={{ width: 3, height: 3, borderRadius: '50%', background: '#FFFFFF' }} />
-              </div>
-            ))}
-          </div>
-        )}
-        <div style={{
-          fontFamily: "'Montserrat', sans-serif",
-          fontSize: '22px',
-          fontWeight: 800,
-          color: '#FFFFFF',
-          letterSpacing: '-0.02em',
-          lineHeight: 1.15,
-          marginBottom: 'auto',
-          textAlign: 'left',
-          width: '100%',
-          position: 'relative',
-          zIndex: 2,
-          textShadow: '0 1px 0 rgba(255,255,255,0.08), 0 1px 3px rgba(0,0,0,0.24)',
-          pointerEvents: 'none',
-        }}>
+        <div style={{ position: 'absolute', top: '18px', right: '18px', width: '6px', height: '6px', borderRadius: '50%', background: '#D6A84F', boxShadow: '0 0 0 1.5px rgba(214,168,79,0.18), 0 0 8px rgba(214,168,79,0.35)', zIndex: 3, pointerEvents: 'none' }} />
+        <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '22px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1.15, marginBottom: 'auto', textAlign: 'left', width: '100%', position: 'relative', zIndex: 2, textShadow: '0 1px 0 rgba(255,255,255,0.08), 0 1px 3px rgba(0,0,0,0.24)', pointerEvents: 'none' }}>
           {card.label}
         </div>
-        <div style={{
-          fontFamily: "'Montserrat', sans-serif",
-          fontSize: '12px',
-          fontWeight: 500,
-          color: 'rgba(255,255,255,0.70)',
-          letterSpacing: '0.2px',
-          textAlign: 'left', width: '100%',
-          marginTop: '8px',
-          position: 'relative',
-          zIndex: 3,
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          boxSizing: 'border-box',
-          textShadow: '0 1px 2px rgba(0,0,0,0.16)',
-          pointerEvents: 'none',
-        }}>
+        <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '12px', fontWeight: 500, color: 'rgba(255,255,255,0.70)', letterSpacing: '0.2px', textAlign: 'left', width: '100%', marginTop: '8px', position: 'relative', zIndex: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', boxSizing: 'border-box', textShadow: '0 1px 2px rgba(0,0,0,0.16)', pointerEvents: 'none' }}>
           {card.statusText}
         </div>
       </div>
@@ -475,129 +363,11 @@ export default function HomeDashboard() {
   }
 
   return (
-    <div style={{
-      height: '100vh',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      background: `
-        radial-gradient(ellipse 120% 80% at 50% 0%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 60%),
-        #ECEEF2
-      `,
-      fontFamily: "'Montserrat', sans-serif",
-      color: '#1E293B',
-    }}>
+    <div style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', background: `radial-gradient(ellipse 120% 80% at 50% 0%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 60%), #ECEEF2`, fontFamily: "'Montserrat', sans-serif", color: '#1E293B' }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');`}</style>
-      <AppHeader
-        onLogout={handleLogout}
-        userName={formatName(user?.email)}
-        userRole={user?.rol || 'admin'}
-        userEmail={user?.email}
-      />
-      <div style={{
-        flex: '1 1 auto',
-        padding: '36px 32px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-        overflow: 'hidden',
-        position: 'relative',
-      }}>
-        {/* EDIT MODE TOOLBAR — arriba derecha, premium subtle */}
-        <div style={{
-          position: 'absolute',
-          top: 12,
-          right: 32,
-          display: 'flex',
-          gap: 8,
-          zIndex: 20,
-        }}>
-          {editMode && (
-            <button
-              onClick={resetLayout}
-              title="Restaurar orden original"
-              style={{
-                height: 30,
-                padding: '0 12px',
-                background: 'rgba(255,255,255,0.85)',
-                border: '1px solid rgba(15,23,42,0.08)',
-                borderRadius: 8,
-                cursor: 'pointer',
-                fontFamily: "'Montserrat', sans-serif",
-                fontSize: 11,
-                fontWeight: 600,
-                color: '#64748B',
-                letterSpacing: '0.02em',
-                transition: 'all 0.18s ease',
-                boxShadow: '0 1px 3px rgba(15,23,42,0.06)',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = '#0F172A'; e.currentTarget.style.background = '#FFFFFF' }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = '#64748B'; e.currentTarget.style.background = 'rgba(255,255,255,0.85)' }}
-            >
-              Restaurar
-            </button>
-          )}
-          <button
-            onClick={() => setEditMode((m) => !m)}
-            title={editMode ? 'Terminar edición' : 'Editar orden del dashboard'}
-            style={{
-              height: 30,
-              padding: '0 14px',
-              background: editMode ? '#D6A84F' : 'rgba(255,255,255,0.85)',
-              border: editMode ? '1px solid rgba(214,168,79,0.8)' : '1px solid rgba(15,23,42,0.08)',
-              borderRadius: 8,
-              cursor: 'pointer',
-              fontFamily: "'Montserrat', sans-serif",
-              fontSize: 11,
-              fontWeight: 700,
-              color: editMode ? '#FFFFFF' : '#1E293B',
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase' as const,
-              transition: 'all 0.18s ease',
-              boxShadow: editMode
-                ? '0 2px 8px rgba(214,168,79,0.35), 0 1px 3px rgba(15,23,42,0.08)'
-                : '0 1px 3px rgba(15,23,42,0.06)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-            }}
-          >
-            <span style={{ fontSize: 12 }}>{editMode ? '✓' : '✎'}</span>
-            {editMode ? 'Listo' : 'Editar'}
-          </button>
-        </div>
-
-        {/* Helper hint cuando edit mode activo */}
-        {editMode && (
-          <div style={{
-            position: 'absolute',
-            top: 50,
-            right: 32,
-            maxWidth: 280,
-            padding: '10px 14px',
-            background: 'rgba(15,23,42,0.92)',
-            borderRadius: 8,
-            fontSize: 11,
-            fontWeight: 500,
-            color: 'rgba(255,255,255,0.92)',
-            letterSpacing: '0.02em',
-            lineHeight: 1.45,
-            boxShadow: '0 6px 16px rgba(15,23,42,0.16)',
-            zIndex: 20,
-            fontFamily: "'Montserrat', sans-serif",
-          }}>
-            Arrastra un card sobre otro de la misma forma para intercambiarlos. El orden se guarda automáticamente.
-          </div>
-        )}
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gridTemplateRows: 'repeat(3, 1fr)',
-          gap: '16px',
-          flex: '0 0 72%',
-          minHeight: 0,
-        }}>
+      <AppHeader onLogout={handleLogout} userName={formatName(user?.email)} userRole={user?.rol || 'admin'} userEmail={user?.email} />
+      <div style={{ flex: '1 1 auto', padding: '36px 32px', display: 'flex', flexDirection: 'column', gap: '16px', overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridTemplateRows: 'repeat(3, 1fr)', gap: '16px', flex: '0 0 72%', minHeight: 0 }}>
           {SLOTS.map((_, i) => renderCard(i))}
         </div>
       </div>
