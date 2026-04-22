@@ -191,16 +191,16 @@ export default function AppHeader({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 28px',
+          padding: '0 32px', /* V41 — alineado con grid (antes 28px, inconsistente) */
           zIndex: 10,
         }}
       >
-        {/* LEFT — Logo LomaHUB27 */}
+        {/* LEFT — Logo LomaHUB27 — V41: "27" con glow azul sutil para más firma */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <h1 style={{ margin: 0, fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontStyle: 'italic', fontSize: 22, letterSpacing: '-0.5px', lineHeight: 1 }}>
             <span style={{ color: '#0F172A' }}>Loma</span>
             <span style={{ color: '#0F172A' }}>HUB</span>
-            <span style={{ color: '#3B6CE7' }}>27</span>
+            <span style={{ color: '#3B6CE7', textShadow: '0 0 10px rgba(59,108,231,0.32)' }}>27</span>
           </h1>
         </div>
 

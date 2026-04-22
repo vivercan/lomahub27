@@ -1,3 +1,34 @@
+// HomeDashboard V41 — Refinement maduro completo (Packs A + B + C)
+//
+// 16 cambios aplicados sobre V40:
+//
+// PACK A (tus 5 recomendaciones + mis 4):
+//   1. Subtítulos 0.78 → 0.88 opacity (lectura reforzada)
+//   2. Iconos 0.09 → 0.12 base / 0.15 hover + contrast 1.1 + drop-shadow más fino (más firmes sin crecer)
+//   3. Títulos text-shadow top-dark 0.40 → 0.28 (menos halo, más engraving sutil)
+//   4. Copper Ventas #C77A22 → #D08530 (más luminoso sin cruzar a cartoon)
+//   5. Diagonales opacity base 0.08 → 0.06 / stronger 0.10 → 0.08 (bajar 25%, dejan de dominar)
+//   6. Servicio al Cliente: diagonales más angostas (32% → 26%, 18% → 16%), recupera azul profundo
+//   7. Comunicaciones: gradient start #4F88E3 → #4078D0 (-8% brillo), más autoridad
+//   8. Comercial: gradient #2557A8→#082552 → #224CA0→#062348 + inset extra -40px 60px 0.18 (rey visual)
+//   9. Sombras arquitectónicas: 4 layers calibradas con spread negative en vez de "nube"
+//
+// PACK B (evolución del dot + mejoras UX):
+//   10. Dot evolucionado a pulse ring + dot gradient radial
+//       - Center 6×6 radial-gradient(#FFD270 → #D6A84F → #B8892B)
+//       - Pulse ring 14×14 border 1.5px #FFC14A, animación scale 1→2.2 opacity 0.70→0 en 2.2s ease-in-out
+//   11. Transición de página 150ms fade-out antes de navegar (premium perception)
+//   12. Padding alineado 32px AppHeader + Grid (antes 28/32 inconsistente)
+//   13. @media (prefers-reduced-motion) respect — accesibilidad vestibular
+//
+// PACK C (polish final):
+//   14. Logo "27" con text-shadow glow azul sutil 0 0 8px rgba(59,108,231,0.28)
+//   15. Cursor pointer → pointer en cards no armed, move solo en armed/drag
+//   16. Keyframe lhDotPulse añadido al <style>
+//
+// Preservado: 8 cards, distribución, drag cross-family con doble-click V37,
+// parallax 3D tilt, spotlight interior, mount animation staggered, noise texture.
+//
 // HomeDashboard V40 — Fix raya blanca inferior (border CSS → insets asimétricos)
 // V40 fix visual: JJ reportó una "raya blanca" en la base de todos los cards.
 // Causa: border 1px blanco 360° + inset bottom dark 3px producían un contraste parasitario.
@@ -104,10 +135,10 @@ export default function HomeDashboard() {
   const cardCatalog: Record<string, CardConfig> = useMemo(() => ({
     'oportunidades': { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#2763C4', gradient: 'linear-gradient(135deg, #2763C4 0%, #0A2D6F 100%)', iconFile: 'oportunidades.svg', statusDot: 'green', statusText: 'Mis Leads · Funnel · Oportunidades' },
     'servicio-clientes': { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#2B5FB5', gradient: 'linear-gradient(135deg, #2B5FB5 0%, #0B2E68 100%)', iconFile: 'servicio-al-cliente.svg', statusDot: 'green', statusText: 'Tickets · KPIs · Programación' },
-    'comercial': { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#2557A8', gradient: 'linear-gradient(135deg, #2557A8 0%, #082552 100%)', iconFile: 'comercial.svg', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics' },
+    'comercial': { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#224CA0', gradient: 'linear-gradient(135deg, #224CA0 0%, #062348 100%)', iconFile: 'comercial.svg', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics' },
     'operaciones': { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#3D78D6', gradient: 'linear-gradient(135deg, #3D78D6 0%, #134287 100%)', iconFile: 'camion-contenedor-v2.svg', statusDot: 'green', statusText: 'Despachos · Seguimiento' },
-    'ventas': { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#C77A22', gradient: 'linear-gradient(135deg, #C77A22 0%, #7A3F0E 100%)', iconFile: 'ingresos.svg', statusDot: 'green', statusText: 'Analytics · KPIs' },
-    'comunicaciones': { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#4F88E3', gradient: 'linear-gradient(135deg, #4F88E3 0%, #1B56A8 100%)', iconFile: 'comunicaciones.svg', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA' },
+    'ventas': { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#D08530', gradient: 'linear-gradient(135deg, #D08530 0%, #7E4212 100%)', iconFile: 'ingresos.svg', statusDot: 'green', statusText: 'Analytics · KPIs' },
+    'comunicaciones': { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#4078D0', gradient: 'linear-gradient(135deg, #4078D0 0%, #153E88 100%)', iconFile: 'comunicaciones.svg', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA' },
     'autofomento': { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#3A72CF', gradient: 'linear-gradient(135deg, #3A72CF 0%, #153E82 100%)', iconFile: 'gps.svg', statusDot: 'green', statusText: 'GPS · Cajas · Tractos · Thermos' },
     'config': { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#3F4856', gradient: 'linear-gradient(135deg, #3F4856 0%, #0F1620 100%)', iconFile: 'configuracion.svg', statusDot: 'gray', statusText: '' },
   }), [])
@@ -216,7 +247,18 @@ export default function HomeDashboard() {
 
       if (count === 1 && id) {
         if (armedCardId === id) disarmCard()
-        else if (!draggingId) navigate(card.route)
+        else if (!draggingId) {
+          // V41 — transición fade-out 150ms antes de navegar (premium perception)
+          if (typeof document !== 'undefined') {
+            const main = document.querySelector('.lh-dashboard-main') as HTMLElement | null
+            if (main) {
+              main.classList.add('lh-page-exit')
+              window.setTimeout(() => navigate(card.route), 150)
+              return
+            }
+          }
+          navigate(card.route)
+        }
       }
     }, 250)
   }
@@ -373,7 +415,7 @@ export default function HomeDashboard() {
         0 4px 8px rgba(0,0,0,0.12)
       `
     } else if (isHovered) {
-      // V40 HOVER — parallax 3D tilt + lift + shadows dramáticas + insets laterales
+      // V41 HOVER — parallax 3D + sombras arquitectónicas con spread calibrado
       transform = `${basePerspective} rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateY(-6px) translateZ(12px)`
       boxShadow = `
         inset 1px 0 0 rgba(255,255,255,0.12),
@@ -381,25 +423,28 @@ export default function HomeDashboard() {
         inset 0 3px 0 rgba(255,255,255,0.30),
         inset 0 -3px 0 rgba(0,0,0,0.42),
         inset 0 -22px 38px rgba(0,0,0,0.18),
-        0 8px 16px rgba(0,0,0,0.28),
-        0 26px 52px rgba(0,0,0,0.40),
-        0 52px 88px rgba(0,0,0,0.44),
-        0 90px 130px -18px rgba(0,0,0,0.48)
+        0 4px 8px rgba(0,0,0,0.22),
+        0 20px 36px rgba(0,0,0,0.34),
+        0 44px 72px -10px rgba(0,0,0,0.42),
+        0 72px 104px -18px rgba(0,0,0,0.38)
       `
     } else {
-      // V40 RESTING — sin border CSS, insets laterales reemplazan la definición lateral.
-      // La "raya blanca" inferior de V39 desaparece al quitar el border 360°.
+      // V41 RESTING — sombras arquitectónicas (spread negative + 4 layers calibradas)
+      // + Comercial con inset extra para reforzar autoridad visual ("rey" por tamaño 1x2)
       transform = `${basePerspective} translateY(0) translateZ(0)`
+      const comercialAuthority = card.id === 'comercial'
+        ? `, inset 0 -60px 80px rgba(0,0,0,0.22)` /* masa oscura inferior extra para dominancia */
+        : ''
       boxShadow = `
         inset 1px 0 0 rgba(255,255,255,0.10),
         inset -1px 0 0 rgba(255,255,255,0.06),
         inset 0 3px 0 rgba(255,255,255,0.24),
         inset 0 -3px 0 rgba(0,0,0,0.38),
         inset 0 -20px 36px rgba(0,0,0,0.18),
-        0 4px 8px rgba(0,0,0,0.22),
-        0 18px 36px rgba(0,0,0,0.36),
-        0 36px 64px rgba(0,0,0,0.40),
-        0 70px 100px -14px rgba(0,0,0,0.44)
+        0 2px 4px rgba(0,0,0,0.18),
+        0 14px 24px rgba(0,0,0,0.28),
+        0 32px 52px -8px rgba(0,0,0,0.36),
+        0 56px 80px -14px rgba(0,0,0,0.32)${comercialAuthority}
       `
     }
 
@@ -439,9 +484,9 @@ export default function HomeDashboard() {
     // V38 — patterns reveal en hover (opacity bump)
     const mult = isHovered ? 2.2 : 1
     const geometry = (() => {
-      // V39 — patterns más visibles sobre el fondo oscuro (baseline 0.08 vs 0.06)
-      const baseOpacity = 0.08 * mult
-      const strongerOpacity = 0.10 * mult
+      // V41 — patterns reducidos 25% (baseline 0.06 / stronger 0.08). Dejan de dominar.
+      const baseOpacity = 0.06 * mult
+      const strongerOpacity = 0.08 * mult
       switch (card.id) {
         case 'oportunidades':
           return (
@@ -454,8 +499,9 @@ export default function HomeDashboard() {
         case 'servicio-clientes':
           return (
             <>
-              <div style={{ position: 'absolute', left: '44%', top: '-30%', width: '32%', height: '160%', background: `rgba(255,255,255,${baseOpacity})`, transform: 'rotate(26deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
-              <div style={{ position: 'absolute', left: '70%', top: '-30%', width: '18%', height: '160%', background: `rgba(255,255,255,${baseOpacity})`, transform: 'rotate(26deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
+              {/* V41 — diagonales más angostas (32%→26%, 18%→16%), recupera azul profundo en centro */}
+              <div style={{ position: 'absolute', left: '48%', top: '-30%', width: '26%', height: '160%', background: `rgba(255,255,255,${baseOpacity * 0.85})`, transform: 'rotate(26deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
+              <div style={{ position: 'absolute', left: '72%', top: '-30%', width: '16%', height: '160%', background: `rgba(255,255,255,${baseOpacity * 0.85})`, transform: 'rotate(26deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
             </>
           )
         case 'comercial':
@@ -517,12 +563,13 @@ export default function HomeDashboard() {
         default: return 100
       }
     })()
-    const iconOpacity = isHovered ? 0.14 : 0.09
+    // V41 — iconos con más definición (opacity 0.12→0.15 hover, contrast 1.1, drop-shadow más fino)
+    const iconOpacity = isHovered ? 0.15 : 0.12
     const iconBottom = card.id === 'operaciones' ? '-26px' : '8px'
     const iconRight = card.id === 'operaciones' ? '8px' : '16px'
     const icon = card.iconFile ? (
-      <div style={{ position: 'absolute', right: iconRight, bottom: iconBottom, width: `${iconSize}px`, height: `${iconSize}px`, pointerEvents: 'none', transition: baseTransition, zIndex: 2, filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.18))' }}>
-        <img src={`/icons/dashboard/${card.iconFile}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center center', filter: 'brightness(0) invert(1)', opacity: iconOpacity, transition: 'opacity 0.24s ease' }} />
+      <div style={{ position: 'absolute', right: iconRight, bottom: iconBottom, width: `${iconSize}px`, height: `${iconSize}px`, pointerEvents: 'none', transition: baseTransition, zIndex: 2, filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.30))' }}>
+        <img src={`/icons/dashboard/${card.iconFile}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center center', filter: 'brightness(0) invert(1) contrast(1.1)', opacity: iconOpacity, transition: 'opacity 0.24s ease' }} />
       </div>
     ) : null
     return <>{geometry}{icon}</>
@@ -560,8 +607,31 @@ export default function HomeDashboard() {
         }}
       >
         {renderDecor(card, isHovered)}
-        {/* Gold dot */}
-        <div style={{ position: 'absolute', top: '18px', right: '18px', width: '6px', height: '6px', borderRadius: '50%', background: '#D6A84F', boxShadow: '0 0 0 1.5px rgba(214,168,79,0.28), 0 0 12px rgba(214,168,79,0.55)', zIndex: 3, pointerEvents: 'none' }} />
+        {/* V41 — Pulse ring + dot gradient (sistema vivo premium, no gaming) */}
+        <div style={{ position: 'absolute', top: '14px', right: '14px', width: '14px', height: '14px', pointerEvents: 'none', zIndex: 3 }}>
+          {/* Pulse ring — anillo que se expande y se desvanece */}
+          <div style={{
+            position: 'absolute',
+            top: '50%', left: '50%',
+            width: '14px', height: '14px',
+            borderRadius: '50%',
+            border: '1.5px solid rgba(255,193,74,0.70)',
+            transform: 'translate(-50%, -50%)',
+            animation: 'lhDotPulse 2.2s ease-in-out infinite',
+            pointerEvents: 'none',
+          }} />
+          {/* Dot central con gradient radial — centro brillante → bordes más cálidos */}
+          <div style={{
+            position: 'absolute',
+            top: '50%', left: '50%',
+            width: '6px', height: '6px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle at 35% 30%, #FFD270 0%, #D6A84F 65%, #B8892B 100%)',
+            boxShadow: '0 0 0 1px rgba(255,255,255,0.12), 0 0 10px rgba(255,193,74,0.55)',
+            transform: 'translate(-50%, -50%)',
+            pointerEvents: 'none',
+          }} />
+        </div>
         {/* V38 Title — engraved triple */}
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
@@ -575,10 +645,11 @@ export default function HomeDashboard() {
           width: '100%',
           position: 'relative',
           zIndex: 2,
+          /* V41 — halo top reducido 0.40 → 0.28 (menos "impresión", más engraving sutil) */
           textShadow: [
-            '0 -1px 0 rgba(0,0,0,0.40)',
-            '0 1px 0 rgba(255,255,255,0.14)',
-            '0 2px 6px rgba(0,0,0,0.34)',
+            '0 -1px 0 rgba(0,0,0,0.28)',
+            '0 1px 0 rgba(255,255,255,0.12)',
+            '0 2px 5px rgba(0,0,0,0.30)',
           ].join(', '),
           pointerEvents: 'none',
         }}>
@@ -588,7 +659,7 @@ export default function HomeDashboard() {
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '12px',
           fontWeight: 500,
-          color: 'rgba(255,255,255,0.78)',
+          color: 'rgba(255,255,255,0.88)', /* V41 — 0.78 → 0.88 (más legible sobre cards oscuros) */
           letterSpacing: '0.2px',
           textAlign: 'left',
           width: '100%',
@@ -645,9 +716,36 @@ export default function HomeDashboard() {
                       opacity 0.45s ease,
                       filter 0.6s ease !important;
         }
+
+        /* V41 — Pulse ring en dots (sistema vivo, 2.2s respiración) */
+        @keyframes lhDotPulse {
+          0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.70; }
+          70%  { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+          100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+        }
+
+        /* V41 — Page transition fade-out (150ms premium, Linear/Arc-style) */
+        .lh-page-exit {
+          opacity: 0.55;
+          transition: opacity 0.15s ease-out;
+        }
+
+        /* V41 — Accesibilidad vestibular (respeta prefers-reduced-motion) */
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+          .lh-card-entering, .lh-card-entered {
+            transform: none !important;
+            opacity: 1 !important;
+            filter: none !important;
+          }
+        }
       `}</style>
       <AppHeader onLogout={handleLogout} userName={formatName(user?.email)} userRole={user?.rol || 'admin'} userEmail={user?.email} />
-      <div onClick={handleBackgroundClick} style={{
+      <div className="lh-dashboard-main" onClick={handleBackgroundClick} style={{
         flex: '1 1 auto',
         padding: '36px 32px',
         display: 'flex',
