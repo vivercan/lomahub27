@@ -23,9 +23,7 @@ declare global {
   }
 }
 
-// ============================================================
-// BLUEPRINT V3.1 — Delay 2s + Login Block +20% + Slogan +50% + Grey 3D Button
-// ============================================================
+// V3.2 — Delay 1s + Btn -20% width + G icon +25% + Footer armonizado
 const L = {
   bg: '#050508',
   orange: '#E8611A',
@@ -86,9 +84,6 @@ function injectKF() {
   document.head.appendChild(el)
 }
 
-// ============================================================
-// STYLES — Login block escalado +20% · Slogan +50% · Botón gris 3D · Delay 2s
-// ============================================================
 const S = {
   pageLoading: {
     display: 'flex' as const,
@@ -110,7 +105,7 @@ const S = {
     position: 'absolute' as const,
     inset: '-10%',
     opacity: 0,
-    animation: 'lhMoireAppear 3s ease 7s forwards, lhMoireSpin 120s linear 10s infinite',
+    animation: 'lhMoireAppear 3s ease 6s forwards, lhMoireSpin 120s linear 9s infinite',
     pointerEvents: 'none' as const,
     zIndex: 1,
   },
@@ -124,19 +119,19 @@ const S = {
     backgroundImage:
       'linear-gradient(rgba(232, 97, 26, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(232, 97, 26, 0.07) 1px, transparent 1px)',
     backgroundSize: '80px 80px',
-    animation: 'lhMoireFadeO 19s ease-in-out 10s infinite',
+    animation: 'lhMoireFadeO 19s ease-in-out 9s infinite',
   },
   moireWhite: {
     backgroundImage:
       'linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px)',
     backgroundSize: '40px 40px',
-    animation: 'lhMoireFadeW 19s ease-in-out 10s infinite reverse',
+    animation: 'lhMoireFadeW 19s ease-in-out 9s infinite reverse',
   },
   moireBlue: {
     backgroundImage:
       'linear-gradient(rgba(100, 150, 220, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(100, 150, 220, 0.06) 1px, transparent 1px)',
     backgroundSize: '60px 60px',
-    animation: 'lhMoireFadeB 19s ease-in-out 11.5s infinite',
+    animation: 'lhMoireFadeB 19s ease-in-out 10.5s infinite',
   },
   glow: {
     position: 'absolute' as const,
@@ -149,7 +144,7 @@ const S = {
       'radial-gradient(ellipse at center, rgba(232, 97, 26, 0.14), transparent 60%)',
     filter: 'blur(40px)',
     pointerEvents: 'none' as const,
-    animation: 'lhSeqUp 1.4s ease 2s both, lhGlowBreathe 7s ease-in-out 6s infinite',
+    animation: 'lhSeqUp 1.4s ease 1s both, lhGlowBreathe 7s ease-in-out 5s infinite',
     zIndex: 0,
   },
   content: {
@@ -175,7 +170,7 @@ const S = {
       'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 25%, rgba(255,255,255,0.28) 55%, rgba(232,97,26,0.55) 92%, transparent 100%)',
     overflow: 'hidden' as const,
     marginBottom: '18px',
-    animation: 'lhSeqUp 1.1s ease 2.4s both',
+    animation: 'lhSeqUp 1.1s ease 1.4s both',
   },
   logoLineBot: {
     width: '100%',
@@ -185,7 +180,7 @@ const S = {
       'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 25%, rgba(255,255,255,0.28) 55%, rgba(232,97,26,0.55) 92%, transparent 100%)',
     overflow: 'hidden' as const,
     marginTop: '14px',
-    animation: 'lhSeqUp 1.1s ease 3.3s both',
+    animation: 'lhSeqUp 1.1s ease 2.3s both',
   },
   logoLineSweep: {
     position: 'absolute' as const,
@@ -195,7 +190,7 @@ const S = {
     height: '100%',
     background:
       'linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent)',
-    animation: 'lhLineSweep 8s linear 6s infinite',
+    animation: 'lhLineSweep 8s linear 5s infinite',
   },
   logoLineSweepBot: {
     position: 'absolute' as const,
@@ -205,7 +200,7 @@ const S = {
     height: '100%',
     background:
       'linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent)',
-    animation: 'lhLineSweep 8s linear 10s infinite',
+    animation: 'lhLineSweep 8s linear 9s infinite',
   },
   logoRow: {
     fontFamily: L.font,
@@ -217,11 +212,10 @@ const S = {
     fontSize: 'clamp(64px, 7.4vw, 112px)',
     display: 'flex' as const,
     alignItems: 'baseline' as const,
-    animation: 'lhSeqUp 1.2s ease 2.9s both',
+    animation: 'lhSeqUp 1.2s ease 1.9s both',
   },
   logoWhite: { color: L.white },
   logoOrange: { color: L.orange },
-  // Future Experience +50% (15px -> 23px)
   logoTag: {
     fontFamily: 'Inter, system-ui, sans-serif',
     fontStyle: 'italic' as const,
@@ -231,7 +225,7 @@ const S = {
     fontSize: '23px',
     marginTop: '10px',
     alignSelf: 'flex-end' as const,
-    animation: 'lhSeqUp 1s ease 3.7s both',
+    animation: 'lhSeqUp 1s ease 2.7s both',
   },
   logoSpec: {
     marginTop: '22px',
@@ -241,17 +235,16 @@ const S = {
     textTransform: 'uppercase' as const,
     color: 'rgba(255, 255, 255, 0.45)',
     fontFamily: L.mono,
-    animation: 'lhSeqUp 1s ease 4s both',
+    animation: 'lhSeqUp 1s ease 3s both',
   },
-  // Login block +20% (maxWidth 380 -> 460)
   loginBlock: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
     justifySelf: 'end' as const,
+    alignItems: 'stretch' as const,
     width: '100%',
     maxWidth: '460px',
   },
-  // H1 Bienvenido +20% (24px -> 29px, margin 24 -> 28)
   loginH: {
     fontFamily: L.font,
     fontWeight: 600,
@@ -259,16 +252,24 @@ const S = {
     color: 'rgba(255, 255, 255, 0.94)',
     marginBottom: '28px',
     letterSpacing: '-0.02em',
-    animation: 'lhSeqUp 1s ease 4.4s both',
+    animation: 'lhSeqUp 1s ease 3.4s both',
+    textAlign: 'center' as const,
   },
-  // Botón gris sólido 3D +20% altura y tipografía
+  // Wrapper para centrar el botón al 80%
+  gbtnWrap: {
+    width: '100%',
+    display: 'flex' as const,
+    justifyContent: 'center' as const,
+    animation: 'lhSeqUp 1.1s ease 3.8s both',
+  },
+  // Botón -20% de ancho (80% del bloque) manteniendo height
   gbtn: {
     display: 'inline-flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
     gap: '14px',
-    width: '100%',
-    padding: '0 26px',
+    width: '80%',
+    padding: '0 20px',
     height: '68px',
     background: L.btn,
     color: 'rgba(255, 255, 255, 0.94)',
@@ -283,7 +284,6 @@ const S = {
     boxShadow:
       'inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.35), 0 2px 0 rgba(0,0,0,0.4), 0 10px 24px rgba(0,0,0,0.55)',
     transition: 'all 0.35s cubic-bezier(.2,.7,.2,1)',
-    animation: 'lhSeqUp 1.1s ease 4.8s both',
   },
   gbtnHover: {
     background: `linear-gradient(135deg, ${L.orange}, ${L.orangeBright})`,
@@ -293,10 +293,11 @@ const S = {
       'inset 0 1px 0 rgba(255,255,255,0.25), 0 4px 0 rgba(0,0,0,0.4), 0 18px 42px rgba(232, 97, 26, 0.55), 0 0 0 1px rgba(232, 97, 26, 0.45)',
     color: '#ffffff',
   },
+  // G icon +25% (26 -> 32)
   gIconSlot: {
     position: 'relative' as const,
-    width: '26px',
-    height: '26px',
+    width: '32px',
+    height: '32px',
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
@@ -310,7 +311,6 @@ const S = {
     justifyContent: 'center' as const,
     transition: 'opacity 0.35s cubic-bezier(.2,.7,.2,1)',
   },
-  // Divider +20% (8.5 -> 10)
   divider: {
     display: 'flex' as const,
     alignItems: 'center' as const,
@@ -321,7 +321,7 @@ const S = {
     color: 'rgba(255, 255, 255, 0.38)',
     textTransform: 'uppercase' as const,
     fontWeight: 600,
-    animation: 'lhSeqUp 1s ease 5.2s both',
+    animation: 'lhSeqUp 1s ease 4.2s both',
   },
   dividerLine: {
     flex: 1,
@@ -329,7 +329,6 @@ const S = {
     background:
       'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
   },
-  // Secure +20% (10 -> 12)
   secure: {
     display: 'flex' as const,
     alignItems: 'center' as const,
@@ -339,7 +338,7 @@ const S = {
     fontSize: '12px',
     color: 'rgba(255, 255, 255, 0.55)',
     fontWeight: 400,
-    animation: 'lhSeqUp 1s ease 5.5s both',
+    animation: 'lhSeqUp 1s ease 4.5s both',
   },
   errorBox: {
     marginTop: '14px',
@@ -361,40 +360,43 @@ const S = {
     display: 'flex' as const,
     alignItems: 'center' as const,
     gap: '8px',
-    fontSize: '9px',
+    fontSize: '10px',
     fontWeight: 600,
-    letterSpacing: '2px',
+    letterSpacing: '2.4px',
     fontFamily: L.mono,
     color: 'rgba(232, 97, 26, 0.7)',
     textTransform: 'uppercase' as const,
     zIndex: 10,
-    animation: 'lhSeqUp 1s ease 5.8s both',
+    animation: 'lhSeqUp 1s ease 4.8s both',
   },
   versionDot: {
-    width: '5px',
-    height: '5px',
+    width: '6px',
+    height: '6px',
     borderRadius: '50%',
     background: L.orange,
     boxShadow: '0 0 6px rgba(232, 97, 26, 0.7)',
-    animation: 'lhDotPulse 3s ease-in-out 6.5s infinite',
+    animation: 'lhDotPulse 3s ease-in-out 5.5s infinite',
   },
   versionPipe: { color: 'rgba(255, 255, 255, 0.2)', fontWeight: 400 },
-  versionLabel: { color: 'rgba(255, 255, 255, 0.45)' },
+  versionLabel: { color: 'rgba(255, 255, 255, 0.5)' },
+  // Footer armonizado con Acceso Autorizado / Conexión Cifrada
   footer: {
     position: 'absolute' as const,
     bottom: '14px',
     right: '22px',
-    fontSize: '9.5px',
-    color: 'rgba(255, 255, 255, 0.3)',
-    letterSpacing: '0.3px',
+    fontSize: '11px',
+    color: 'rgba(255, 255, 255, 0.45)',
+    letterSpacing: '1px',
+    fontWeight: 400,
     zIndex: 10,
-    animation: 'lhSeqUp 1s ease 6s both',
+    animation: 'lhSeqUp 1s ease 5s both',
   },
   footerEmail: {
-    color: 'rgba(255, 255, 255, 0.3)',
+    color: 'rgba(255, 255, 255, 0.55)',
     textDecoration: 'none' as const,
     cursor: 'pointer' as const,
     transition: 'color 0.2s ease',
+    fontWeight: 500,
   },
   hiddenGsi: {
     position: 'absolute' as const,
@@ -417,7 +419,7 @@ const S = {
 
 function GoogleGColor() {
   return (
-    <svg width="24" height="24" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg width="30" height="30" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
       <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
       <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
@@ -427,7 +429,7 @@ function GoogleGColor() {
 }
 function GoogleGWhite() {
   return (
-    <svg width="24" height="24" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg width="30" height="30" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path fill="#ffffff" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
     </svg>
   )
@@ -587,26 +589,28 @@ export default function Login() {
         <div style={S.loginBlock}>
           <h2 style={S.loginH}>Bienvenido</h2>
 
-          <button
-            type="button"
-            style={gbtnStyle}
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-            onClick={triggerGoogle}
-            disabled={googleLoading}
-          >
-            <span style={S.gIconSlot}>
-              <span style={{ ...S.gIconLayer, opacity: hover ? 0 : 1 }}>
-                <GoogleGColor />
+          <div style={S.gbtnWrap}>
+            <button
+              type="button"
+              style={gbtnStyle}
+              onMouseEnter={() => setHover(true)}
+              onMouseLeave={() => setHover(false)}
+              onClick={triggerGoogle}
+              disabled={googleLoading}
+            >
+              <span style={S.gIconSlot}>
+                <span style={{ ...S.gIconLayer, opacity: hover ? 0 : 1 }}>
+                  <GoogleGColor />
+                </span>
+                <span style={{ ...S.gIconLayer, opacity: hover ? 1 : 0 }}>
+                  <GoogleGWhite />
+                </span>
               </span>
-              <span style={{ ...S.gIconLayer, opacity: hover ? 1 : 0 }}>
-                <GoogleGWhite />
+              <span>
+                {googleLoading ? 'Conectando...' : 'Continuar con Google'}
               </span>
-            </span>
-            <span>
-              {googleLoading ? 'Conectando...' : 'Continuar con Google'}
-            </span>
-          </button>
+            </button>
+          </div>
 
           {error && (
             <div style={S.errorBox}>
