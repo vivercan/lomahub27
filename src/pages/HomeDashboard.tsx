@@ -1,4 +1,8 @@
-// HomeDashboard V27k - 8 cards dark gradients - CANÓNICO ratificado audit 17/Abr/2026
+// HomeDashboard V28 - Paleta dual azul/naranja + dots verde limón fosforescente
+// Cambios sobre V27k autorizados por JJ 21/Abr/2026 noche:
+//   - Servicio al Cliente + Comercial → mismo gradient que Oportunidades
+//   - Operaciones + Ventas + Comunicaciones + Control de equipo → paleta naranja #FF6600
+//   - 8 dots de status → verde limón fosforescente #CCFF00
 // AppHeader, banner, layout 7+2, KPIs, rutas = INTACTO
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -30,7 +34,7 @@ interface CardConfig {
 const CARD_STATUS_PADDING_RIGHT = '110px'
 
 const DOT_COLORS: Record<string, string> = {
-  green: '#FF7A00', yellow: '#FF7A00', red: '#FF7A00', gray: '#FF7A00',
+  green: '#CCFF00', yellow: '#CCFF00', red: '#CCFF00', gray: '#CCFF00',
 }
 
 export default function HomeDashboard() {
@@ -107,12 +111,12 @@ export default function HomeDashboard() {
 
   const mainCards: CardConfig[] = [
     { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#1B4DB5', gradient: 'linear-gradient(138deg, #1B4DB5 0%, #143A8E 40%, #0B2157 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'oportunidades.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Mis Leads · Funnel · Oportunidades', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#1944A8', gradient: 'linear-gradient(142deg, #2050C0 0%, #163A90 40%, #0C2260 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Tickets · KPIs · Programación', gridColumn: '2 / 4', gridRow: '1 / 2' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#1840A0', gradient: 'linear-gradient(145deg, #2050B8 0%, #153888 40%, #0C2258 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comercial.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics', gridColumn: '4 / 5', gridRow: '1 / 3' },
-    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#2B6FD4', gradient: 'linear-gradient(136deg, #3580E8 0%, #2260B8 40%, #143D78 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.16)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Despachos · Seguimiento', gridColumn: '1 / 2', gridRow: '2 / 3' },
-    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#1E1E48', gradient: 'linear-gradient(140deg, #282858 0%, #1E1E48 40%, #141435 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'ingresos.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Analytics · KPIs', gridColumn: '2 / 3', gridRow: '2 / 3' },
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#1058A0', gradient: 'linear-gradient(148deg, #1668C0 0%, #0E4E90 40%, #083262 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comunicaciones.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA', gridColumn: '3 / 4', gridRow: '2 / 4' },
-    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#0C1638', gradient: 'linear-gradient(152deg, #101D4A 0%, #0A1232 40%, #050A1E 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'gps.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'GPS · Cajas · Tractos · Thermos', gridColumn: '1 / 3', gridRow: '3 / 4' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#1B4DB5', gradient: 'linear-gradient(142deg, #1B4DB5 0%, #143A8E 40%, #0B2157 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Tickets · KPIs · Programación', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#1B4DB5', gradient: 'linear-gradient(145deg, #1B4DB5 0%, #143A8E 40%, #0B2157 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comercial.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics', gridColumn: '4 / 5', gridRow: '1 / 3' },
+    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#B04500', gradient: 'linear-gradient(136deg, #FF6600 0%, #C74F00 40%, #8A3600 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.16)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Despachos · Seguimiento', gridColumn: '1 / 2', gridRow: '2 / 3' },
+    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#B04500', gradient: 'linear-gradient(140deg, #FF6600 0%, #C74F00 40%, #8A3600 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'ingresos.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Analytics · KPIs', gridColumn: '2 / 3', gridRow: '2 / 3' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#B04500', gradient: 'linear-gradient(148deg, #FF6600 0%, #C74F00 40%, #8A3600 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comunicaciones.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA', gridColumn: '3 / 4', gridRow: '2 / 4' },
+    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#B04500', gradient: 'linear-gradient(152deg, #FF6600 0%, #C74F00 40%, #8A3600 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'gps.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'GPS · Cajas · Tractos · Thermos', gridColumn: '1 / 3', gridRow: '3 / 4' },
     { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#1C1F26', gradient: 'linear-gradient(144deg, #2A2D35 0%, #1C1F26 40%, #131518 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'configuracion.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: '', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
@@ -581,8 +585,8 @@ export default function HomeDashboard() {
           style={{
           position: 'absolute', top: '16px', right: '16px',
           width: '7px', height: '7px', borderRadius: '50%',
-          backgroundColor: '#FF7A00',
-          boxShadow: '0 0 10px rgba(255,122,0,0.50)',
+          backgroundColor: '#CCFF00',
+          boxShadow: '0 0 12px rgba(204,255,0,0.75), 0 0 3px rgba(204,255,0,0.95)',
           zIndex: 3,
         }} />
         {/* Title */}
@@ -706,15 +710,3 @@ export default function HomeDashboard() {
     </div>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
-
