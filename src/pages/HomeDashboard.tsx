@@ -1,8 +1,9 @@
-// HomeDashboard V28 - Paleta dual azul/naranja + dots verde limón fosforescente
-// Cambios sobre V27k autorizados por JJ 21/Abr/2026 noche:
-//   - Servicio al Cliente + Comercial → mismo gradient que Oportunidades
-//   - Operaciones + Ventas + Comunicaciones + Control de equipo → paleta naranja #FF6600
-//   - 8 dots de status → verde limón fosforescente #CCFF00
+// HomeDashboard V29 - Paleta azul unificada premium + acento dorado #D6A84F
+// Cambios sobre V28 autorizados por JJ 21/Abr/2026 noche (refresh premium enterprise):
+//   - ELIMINADO cualquier naranja y cualquier verde fosforescente
+//   - 8 cards con gradientes diagonales 135° azules (Configuración gris oscuro)
+//   - Acento global único: dorado #D6A84F (dots, outline, hover glow)
+//   - Estética sobria, corporativa, plataforma enterprise de alto nivel
 // AppHeader, banner, layout 7+2, KPIs, rutas = INTACTO
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -33,8 +34,9 @@ interface CardConfig {
 // (icon 83px + margen derecho 18px + padding ~9px → 110px)
 const CARD_STATUS_PADDING_RIGHT = '110px'
 
+// Acento dorado unificado — reemplaza verde/naranja de versiones previas
 const DOT_COLORS: Record<string, string> = {
-  green: '#CCFF00', yellow: '#CCFF00', red: '#CCFF00', gray: '#CCFF00',
+  green: '#D6A84F', yellow: '#D6A84F', red: '#D6A84F', gray: '#D6A84F',
 }
 
 export default function HomeDashboard() {
@@ -109,15 +111,16 @@ export default function HomeDashboard() {
     return () => clearInterval(interval)
   }, [fetchKpis])
 
+  // V29 Paleta azul premium unificada — todos los cards con gradient 135° top-left → bottom-right
   const mainCards: CardConfig[] = [
-    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#1B4DB5', gradient: 'linear-gradient(138deg, #1B4DB5 0%, #143A8E 40%, #0B2157 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'oportunidades.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Mis Leads · Funnel · Oportunidades', gridColumn: '1 / 2', gridRow: '1 / 2' },
-    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#1B4DB5', gradient: 'linear-gradient(142deg, #1B4DB5 0%, #143A8E 40%, #0B2157 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Tickets · KPIs · Programación', gridColumn: '2 / 4', gridRow: '1 / 2' },
-    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#1B4DB5', gradient: 'linear-gradient(145deg, #1B4DB5 0%, #143A8E 40%, #0B2157 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comercial.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics', gridColumn: '4 / 5', gridRow: '1 / 3' },
-    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#B04500', gradient: 'linear-gradient(136deg, #FF6600 0%, #C74F00 40%, #8A3600 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.16)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Despachos · Seguimiento', gridColumn: '1 / 2', gridRow: '2 / 3' },
-    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#B04500', gradient: 'linear-gradient(140deg, #FF6600 0%, #C74F00 40%, #8A3600 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'ingresos.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Analytics · KPIs', gridColumn: '2 / 3', gridRow: '2 / 3' },
-    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#B04500', gradient: 'linear-gradient(148deg, #FF6600 0%, #C74F00 40%, #8A3600 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.10)', iconFile: 'comunicaciones.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA', gridColumn: '3 / 4', gridRow: '2 / 4' },
-    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#B04500', gradient: 'linear-gradient(152deg, #FF6600 0%, #C74F00 40%, #8A3600 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'gps.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'GPS · Cajas · Tractos · Thermos', gridColumn: '1 / 3', gridRow: '3 / 4' },
-    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#1C1F26', gradient: 'linear-gradient(144deg, #2A2D35 0%, #1C1F26 40%, #131518 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.07)', iconFile: 'configuracion.svg', iconOpacity: 0.24, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: '', gridColumn: '4 / 5', gridRow: '3 / 4' },
+    { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#1E5BB8', gradient: 'linear-gradient(135deg, #1E5BB8 0%, #0A2A66 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.06)', iconFile: 'oportunidades.svg', iconOpacity: 0.12, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Mis Leads · Funnel · Oportunidades', gridColumn: '1 / 2', gridRow: '1 / 2' },
+    { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#2A5DB0', gradient: 'linear-gradient(135deg, #2A5DB0 0%, #0C2A5A 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.06)', iconFile: 'servicio-al-cliente.svg', iconOpacity: 0.12, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Tickets · KPIs · Programación', gridColumn: '2 / 4', gridRow: '1 / 2' },
+    { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#1F57A5', gradient: 'linear-gradient(135deg, #1F57A5 0%, #092555 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.06)', iconFile: 'comercial.svg', iconOpacity: 0.12, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics', gridColumn: '4 / 5', gridRow: '1 / 3' },
+    { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#2F6CD1', gradient: 'linear-gradient(135deg, #2F6CD1 0%, #123A78 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.08)', iconFile: 'camion-contenedor-v2.svg', iconOpacity: 0.12, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Despachos · Seguimiento', gridColumn: '1 / 2', gridRow: '2 / 3' },
+    { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#2C6FE0', gradient: 'linear-gradient(135deg, #2C6FE0 0%, #102F6A 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.06)', iconFile: 'ingresos.svg', iconOpacity: 0.12, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Analytics · KPIs', gridColumn: '2 / 3', gridRow: '2 / 3' },
+    { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#3A7AE0', gradient: 'linear-gradient(135deg, #3A7AE0 0%, #12366F 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.06)', iconFile: 'comunicaciones.svg', iconOpacity: 0.12, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA', gridColumn: '3 / 4', gridRow: '2 / 4' },
+    { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#2D68C2', gradient: 'linear-gradient(135deg, #2D68C2 0%, #0F2E63 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.06)', iconFile: 'gps.svg', iconOpacity: 0.12, kpiValue: '', kpiLabel: '', statusDot: 'green', statusText: 'GPS · Cajas · Tractos · Thermos', gridColumn: '1 / 3', gridRow: '3 / 4' },
+    { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#374151', gradient: 'linear-gradient(135deg, #374151 0%, #111827 100%)', decorType: 'silk', decorColor: 'rgba(255,255,255,0.06)', iconFile: 'configuracion.svg', iconOpacity: 0.12, kpiValue: '', kpiLabel: '', statusDot: 'gray', statusText: '', gridColumn: '4 / 5', gridRow: '3 / 4' },
   ]
 
   // (helper hexToRgba eliminado — fue dead code tras el rediseño premium)
@@ -148,7 +151,7 @@ export default function HomeDashboard() {
     } else if (isHovered) {
       transform = 'translateY(-10px) scale(1.012)'
       boxShadow = `
-        0 0 20px rgba(255,122,0,0.20),
+        0 12px 32px rgba(214,168,79,0.18),
         0 4px 8px rgba(0,0,0,0.80),
         0 18px 36px -6px rgba(0,0,0,0.60),
         0 50px 90px -16px rgba(0,0,0,0.65),
@@ -183,8 +186,8 @@ export default function HomeDashboard() {
       background: card.gradient,
       border: 'none',
       outline: isHovered || isPressed
-        ? '1.5px solid rgba(255,140,0,0.60)'
-        : '1.5px solid rgba(255,122,0,0.22)',
+        ? '1.5px solid rgba(214,168,79,0.60)'
+        : '1.5px solid rgba(255,255,255,0.08)',
       outlineOffset: '-1px',
       cursor: 'pointer',
       position: 'relative',
@@ -193,21 +196,21 @@ export default function HomeDashboard() {
       flexDirection: 'column',
       alignItems: 'flex-start',
       justifyContent: 'flex-start',
-      transition: 'transform 0.18s cubic-bezier(0.4,0,0.2,1), box-shadow 0.18s cubic-bezier(0.4,0,0.2,1), border-color 0.3s ease',
+      transition: 'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
       transform,
       boxShadow,
     })
   }
 
   // renderDecor — geometría EXACTA por card según spec numérico.
-  // Cada card tiene su combinación única (ver validación spec 10).
+  // V29: overlays blanco reducidos a opacity máximo 0.10 (spec JJ)
   const renderDecor = (card: CardConfig, isHovered: boolean) => {
     const baseTransition = 'transform 1s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease'
 
     // Geometría exacta por card
     const geometry = (() => {
       switch (card.id) {
-        // CARD 1 — Oportunidades: 3 líneas diagonales 48° + patrón de puntos 5×6
+        // CARD 1 — Oportunidades: 3 líneas diagonales 48°
         case 'oportunidades':
           return (
             <>
@@ -216,7 +219,7 @@ export default function HomeDashboard() {
                   position: 'absolute',
                   right: '42%', top: '60%',
                   width: '62%', height: '3px',
-                  background: 'rgba(255,255,255,0.08)',
+                  background: 'rgba(255,255,255,0.06)',
                   transformOrigin: '100% 50%',
                   transform: `rotate(-48deg) translateY(${-i * 24}px)`,
                   pointerEvents: 'none',
@@ -246,17 +249,16 @@ export default function HomeDashboard() {
                 transformOrigin: 'top left',
                 pointerEvents: 'none',
               }} />
-              {/* brillo superior — color spec rgba(255,255,255,0.10) */}
               <div style={{
                 position: 'absolute',
                 left: 0, top: 0,
                 width: '100%', height: '30%',
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 100%)',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%)',
                 pointerEvents: 'none',
               }} />
             </>
           )
-        // CARD 3 — Comercial: 2 planos facetados 18° + bloque facetado superior-derecho
+        // CARD 3 — Comercial: 2 planos facetados 18°
         case 'comercial':
           return (
             <>
@@ -264,7 +266,7 @@ export default function HomeDashboard() {
                 position: 'absolute',
                 left: 'calc(58% - 14%)', top: '-30%',
                 width: '28%', height: '160%',
-                background: 'rgba(255,255,255,0.05)',
+                background: 'rgba(255,255,255,0.04)',
                 transform: 'rotate(18deg)',
                 transformOrigin: 'center center',
                 pointerEvents: 'none',
@@ -273,17 +275,16 @@ export default function HomeDashboard() {
                 position: 'absolute',
                 left: 'calc(78% - 9%)', top: '-30%',
                 width: '18%', height: '160%',
-                background: 'rgba(255,255,255,0.05)',
+                background: 'rgba(255,255,255,0.04)',
                 transform: 'rotate(18deg)',
                 transformOrigin: 'center center',
                 pointerEvents: 'none',
               }} />
-              {/* Bloque facetado superior-derecho — reflejo lateral rgba(255,255,255,0.07) */}
               <div style={{
                 position: 'absolute',
                 right: 0, top: 0,
                 width: '16%', height: '18%',
-                background: 'rgba(255,255,255,0.07)',
+                background: 'rgba(255,255,255,0.06)',
                 clipPath: 'polygon(28% 0%, 100% 0%, 100% 72%, 0% 100%)',
                 pointerEvents: 'none',
               }} />
@@ -293,29 +294,27 @@ export default function HomeDashboard() {
         case 'operaciones':
           return (
             <>
-              {/* Plano secundario detrás del camión (zona inferior-derecha), 26% ancho, 22° */}
               <div style={{
                 position: 'absolute',
                 right: '-4%', top: '10%',
                 width: '26%', height: '140%',
-                background: 'rgba(255,255,255,0.06)',
+                background: 'rgba(255,255,255,0.05)',
                 transform: 'rotate(22deg)',
                 transformOrigin: 'center center',
                 pointerEvents: 'none',
               }} />
-              {/* Franja luminosa principal — 16% ancho, 34°, centro x=34% */}
               <div style={{
                 position: 'absolute',
                 left: 'calc(34% - 8%)', top: '-30%',
                 width: '16%', height: '160%',
-                background: 'rgba(255,255,255,0.14)',
+                background: 'rgba(255,255,255,0.10)',
                 transform: 'rotate(34deg)',
                 transformOrigin: 'center center',
                 pointerEvents: 'none',
               }} />
             </>
           )
-        // CARD 5 — Ventas: 2 planos angulares + brillo circular focal 120px
+        // CARD 5 — Ventas: 2 planos angulares + brillo focal 120px
         case 'ventas':
           return (
             <>
@@ -323,7 +322,7 @@ export default function HomeDashboard() {
                 position: 'absolute',
                 left: '52%', top: '-30%',
                 width: '31%', height: '160%',
-                background: 'rgba(255,255,255,0.07)',
+                background: 'rgba(255,255,255,0.06)',
                 transform: 'rotate(38deg)',
                 transformOrigin: 'top left',
                 pointerEvents: 'none',
@@ -332,23 +331,22 @@ export default function HomeDashboard() {
                 position: 'absolute',
                 left: '70%', top: '-30%',
                 width: '14%', height: '160%',
-                background: 'rgba(255,255,255,0.05)',
+                background: 'rgba(255,255,255,0.04)',
                 transform: 'rotate(44deg)',
                 transformOrigin: 'top left',
                 pointerEvents: 'none',
               }} />
-              {/* Brillo circular focal — 120px, centro x=60%, y=18% */}
               <div style={{
                 position: 'absolute',
                 left: '60%', top: '18%',
                 width: '120px', height: '120px',
                 transform: 'translate(-50%, -50%)',
-                background: 'radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%)',
+                background: 'radial-gradient(circle, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 70%)',
                 pointerEvents: 'none',
               }} />
             </>
           )
-        // CARD 6 — Comunicaciones: 2 planos largos superpuestos (sombra interna extra va en getCardStyle)
+        // CARD 6 — Comunicaciones: 2 planos largos
         case 'comunicaciones':
           return (
             <>
@@ -356,7 +354,7 @@ export default function HomeDashboard() {
                 position: 'absolute',
                 left: 'calc(46% - 12%)', top: '-30%',
                 width: '24%', height: '160%',
-                background: 'rgba(255,255,255,0.05)',
+                background: 'rgba(255,255,255,0.04)',
                 transform: 'rotate(20deg)',
                 transformOrigin: 'center center',
                 pointerEvents: 'none',
@@ -365,14 +363,14 @@ export default function HomeDashboard() {
                 position: 'absolute',
                 left: 'calc(63% - 7%)', top: '-30%',
                 width: '14%', height: '160%',
-                background: 'rgba(255,255,255,0.05)',
+                background: 'rgba(255,255,255,0.04)',
                 transform: 'rotate(28deg)',
                 transformOrigin: 'center center',
                 pointerEvents: 'none',
               }} />
             </>
           )
-        // CARD 7 — Control de equipo: 2 planos cruzados + brillo horizontal superior largo
+        // CARD 7 — Control de equipo: 2 planos cruzados + brillo superior
         case 'autofomento':
           return (
             <>
@@ -394,17 +392,16 @@ export default function HomeDashboard() {
                 transformOrigin: 'center center',
                 pointerEvents: 'none',
               }} />
-              {/* Brillo horizontal superior — ancho 46%, alto 18%, centrado */}
               <div style={{
                 position: 'absolute',
                 left: '27%', top: 0,
                 width: '46%', height: '18%',
-                background: 'radial-gradient(ellipse at center top, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 80%)',
+                background: 'radial-gradient(ellipse at center top, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 80%)',
                 pointerEvents: 'none',
               }} />
             </>
           )
-        // CARD 8 — Configuración: 1 plano diagonal 30° + 1 plano delgado 33° + brillo puntual 90px
+        // CARD 8 — Configuración: 1 plano 30° + 1 plano 33° + brillo 90px
         case 'config':
           return (
             <>
@@ -412,7 +409,7 @@ export default function HomeDashboard() {
                 position: 'absolute',
                 left: '56%', top: '-30%',
                 width: '29%', height: '160%',
-                background: 'rgba(255,255,255,0.05)',
+                background: 'rgba(255,255,255,0.04)',
                 transform: 'rotate(30deg)',
                 transformOrigin: 'top left',
                 pointerEvents: 'none',
@@ -421,18 +418,17 @@ export default function HomeDashboard() {
                 position: 'absolute',
                 left: '73%', top: '-30%',
                 width: '10%', height: '160%',
-                background: 'rgba(255,255,255,0.05)',
+                background: 'rgba(255,255,255,0.04)',
                 transform: 'rotate(33deg)',
                 transformOrigin: 'top left',
                 pointerEvents: 'none',
               }} />
-              {/* Brillo puntual pequeño — 90px, centro x=76%, y=20% */}
               <div style={{
                 position: 'absolute',
                 left: '76%', top: '20%',
                 width: '90px', height: '90px',
                 transform: 'translate(-50%, -50%)',
-                background: 'radial-gradient(circle, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0) 70%)',
+                background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%)',
                 pointerEvents: 'none',
               }} />
             </>
@@ -442,7 +438,7 @@ export default function HomeDashboard() {
       }
     })()
 
-    // Íconos planos, integrados al material del card — sin emboss
+    // Íconos planos, integrados al material del card — V29 opacity 0.12 sobrio
     const iconSize = (() => {
       switch (card.id) {
         case 'operaciones': return 143
@@ -482,7 +478,7 @@ export default function HomeDashboard() {
             objectFit: 'contain',
             objectPosition: 'center center',
             filter: 'brightness(0) invert(1)',
-            opacity: 0.18,
+            opacity: 0.12,
           }}
         />
       </div>
@@ -500,11 +496,6 @@ export default function HomeDashboard() {
   const renderCard = (card: CardConfig) => {
     const isHovered = hoveredCard === card.id
     const isPressed = pressedCard === card.id
-    // Paleta tipográfica — colores integrados al material de la card
-    const textColor = 'rgba(255,255,255,0.95)'
-    const kpiColor = '#FFFFFF'
-    const mutedColor = 'rgba(255,255,255,0.55)'
-    const labelColor = 'rgba(255,255,255,0.40)'
     return (
       <div
         key={card.id}
@@ -516,12 +507,12 @@ export default function HomeDashboard() {
         style={getCardStyle(isHovered, isPressed, card)}
       >
         {renderDecor(card, isHovered)}
-        {/* Filo de luz superior — 2px brillante, más intenso */}
+        {/* Filo de luz superior — 2px brillante */}
         <div style={{
           position: 'absolute',
           left: '2px', top: 0, right: '2px',
           height: '2px',
-          background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.50) 15%, rgba(255,255,255,0.60) 50%, rgba(255,255,255,0.50) 85%, rgba(255,255,255,0) 100%)',
+          background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.45) 15%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0.45) 85%, rgba(255,255,255,0) 100%)',
           pointerEvents: 'none',
           borderRadius: '22px 22px 0 0',
           zIndex: 5,
@@ -531,21 +522,21 @@ export default function HomeDashboard() {
           position: 'absolute',
           left: 0, top: '2px', bottom: '2px',
           width: '1px',
-          background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.20) 15%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.10) 85%, rgba(255,255,255,0) 100%)',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.18) 15%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.10) 85%, rgba(255,255,255,0) 100%)',
           pointerEvents: 'none',
           zIndex: 5,
         }} />
-        {/* Specular highlight — gradiente fuerte para volumen de botón inflado */}
+        {/* Specular highlight superior */}
         <div style={{
           position: 'absolute',
           left: 0, top: 0,
           width: '100%', height: '55%',
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0) 100%)',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0) 100%)',
           pointerEvents: 'none',
           borderRadius: 'inherit',
           zIndex: 1,
         }} />
-        {/* Oscurecimiento inferior — da volumen de botón curvado */}
+        {/* Oscurecimiento inferior */}
         <div style={{
           position: 'absolute',
           left: 0, bottom: 0,
@@ -555,7 +546,7 @@ export default function HomeDashboard() {
           borderRadius: 'inherit',
           zIndex: 1,
         }} />
-        {/* Sheen sweep — banda de luz diagonal solo visible en hover (HOVER INTACTO) */}
+        {/* Sheen sweep — banda de luz diagonal solo visible en hover */}
         <div style={{
           position: 'absolute',
           inset: 0,
@@ -570,7 +561,7 @@ export default function HomeDashboard() {
             left: '-90%',
             width: '55%',
             height: '220%',
-            background: 'linear-gradient(115deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.08) 60%, rgba(255,255,255,0) 100%)',
+            background: 'linear-gradient(115deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.06) 60%, rgba(255,255,255,0) 100%)',
             transform: isHovered ? 'translateX(360%) skewX(-14deg)' : 'translateX(0%) skewX(-14deg)',
             opacity: isHovered ? 1 : 0,
             transition: isHovered
@@ -580,13 +571,14 @@ export default function HomeDashboard() {
             filter: 'blur(0.5px)',
           }} />
         </div>
+        {/* Status dot V29 — dorado #D6A84F */}
         <div
           className={card.statusDot === 'green' ? 'status-dot-pulse-green' : undefined}
           style={{
           position: 'absolute', top: '16px', right: '16px',
           width: '7px', height: '7px', borderRadius: '50%',
-          backgroundColor: '#CCFF00',
-          boxShadow: '0 0 12px rgba(204,255,0,0.75), 0 0 3px rgba(204,255,0,0.95)',
+          backgroundColor: '#D6A84F',
+          boxShadow: '0 0 8px rgba(214,168,79,0.6)',
           zIndex: 3,
         }} />
         {/* Title */}
@@ -619,14 +611,14 @@ export default function HomeDashboard() {
             marginTop: '6px',
             position: 'relative',
             zIndex: 2,
-            textShadow: '0 2px 8px rgba(0,0,0,0.35), 0 0 20px rgba(255,255,255,0.06)',
+            textShadow: '0 2px 8px rgba(0,0,0,0.35)',
           }}>
             {card.kpiValue}
             {card.kpiLabel && (
               <span style={{
                 fontSize: '15px',
                 fontWeight: 600,
-                color: 'rgba(255,255,255,0.50)',
+                color: 'rgba(255,255,255,0.72)',
                 letterSpacing: '0.4px',
                 marginLeft: '10px',
                 textShadow: 'none',
@@ -641,7 +633,7 @@ export default function HomeDashboard() {
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '12px',
           fontWeight: 600,
-          color: 'rgba(255,255,255,0.50)',
+          color: 'rgba(255,255,255,0.72)',
           letterSpacing: '0.3px',
           textAlign: 'left', width: '100%',
           marginTop: '6px',
@@ -665,7 +657,7 @@ export default function HomeDashboard() {
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      background: '#F4F5F8', // fondo ligeramente más claro — premium light
+      background: '#ECEEF2', // V29 fondo gris premium uniforme
       fontFamily: "'Montserrat', sans-serif",
       color: '#1E293B',
     }}>
@@ -683,18 +675,7 @@ export default function HomeDashboard() {
         flexDirection: 'column',
         gap: '14px',
         overflow: 'hidden',
-        background: `
-          radial-gradient(ellipse 75% 65% at 50% 40%, transparent 55%, rgba(0,0,0,0.14) 100%),
-          linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.06) 82%, rgba(0,0,0,0.12) 100%),
-          radial-gradient(ellipse 100% 80% at 50% 38%,
-            #F2F3F6 0%,
-            #E8E9ED 20%,
-            #D6D8DE 45%,
-            #C0C2C9 70%,
-            #AAACB4 92%,
-            #9FA1A9 100%
-          )
-        `,
+        background: '#ECEEF2',
       }}>
         <div style={{
           display: 'grid',
