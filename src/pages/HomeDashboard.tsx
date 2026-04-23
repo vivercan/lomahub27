@@ -481,29 +481,33 @@ export default function HomeDashboard() {
                  : 'mid'
       const shadowMult = tier === 'primary' ? 1.14 : tier === 'secondary' ? 1.09 : tier === 'strong' ? 1.03 : tier === 'technical' ? 0.92 : 1
       const lightMult = tier === 'primary' ? 1.14 : tier === 'secondary' ? 1.08 : tier === 'strong' ? 1.04 : 1
-      const topLight = (0.13 * lightMult).toFixed(3)
+      const topLight = (0.12 * lightMult).toFixed(3)
       const topLeftLight = (0.10 * lightMult).toFixed(3)
-      /* V50 — Comercial: +12% adicional internal tonal depth (0.392→0.439, 0.235→0.263, 0.047→0.053) */
+      /* V51 — Comercial: +14% adicional internal tonal depth (0.439→0.500, 0.263→0.300, 0.053→0.060) */
       const comercialAuthority = card.id === 'comercial'
-        ? `, inset 0 -60px 80px rgba(0,0,0,0.439), inset -40px -50px 72px rgba(0,0,0,0.263), inset 40px 30px 80px rgba(255,255,255,0.053)`
+        ? `, inset 0 -60px 80px rgba(0,0,0,0.500), inset -40px -50px 72px rgba(0,0,0,0.300), inset 40px 30px 80px rgba(255,255,255,0.060)`
         : ''
-      /* V50 — Servicio: +8% adicional tonal richness (0.137→0.148, 0.030→0.032) */
+      /* V51 — Servicio: +9% adicional tonal richness (0.148→0.161, 0.032→0.035) */
       const servicioDepth = card.id === 'servicio-clientes'
-        ? `, inset 0 -32px 60px rgba(0,0,0,0.148), inset 30px 20px 60px rgba(255,255,255,0.032)`
+        ? `, inset 0 -32px 60px rgba(0,0,0,0.161), inset 30px 20px 60px rgba(255,255,255,0.035)`
         : ''
-      /* V50 — Strong support: +4% adicional richness (0.098→0.102, 0.019→0.020) */
+      /* V51 — Strong support: +5% adicional richness (0.102→0.107, 0.020→0.021) */
       const strongDepth = (card.id === 'autofomento' || card.id === 'comunicaciones')
-        ? `, inset 0 -26px 52px rgba(0,0,0,0.102), inset 20px 10px 50px rgba(255,255,255,0.020)`
+        ? `, inset 0 -26px 52px rgba(0,0,0,0.107), inset 20px 10px 50px rgba(255,255,255,0.021)`
+        : ''
+      /* V51 — Config: +4% tonal richness restrained, intencional sobriedad */
+      const configDepth = card.id === 'config'
+        ? `, inset 0 -22px 48px rgba(0,0,0,0.05)`
         : ''
       boxShadow = `
         inset 1px 0 0 rgba(255,255,255,${topLeftLight}),
         inset -1px 0 0 rgba(255,255,255,0.06),
         inset 0 1px 0 rgba(255,255,255,${topLight}),
-        inset 0 -1px 0 rgba(0,0,0,0.17),
+        inset 0 -1px 0 rgba(0,0,0,0.16),
         inset 0 -20px 36px rgba(0,0,0,0.18),
         0 2px 4px rgba(0,0,0,${(0.20 * shadowMult).toFixed(3)}),
         0 16px 32px -4px rgba(0,0,0,${(0.30 * shadowMult).toFixed(3)}),
-        0 48px 72px -12px rgba(0,0,0,${(0.36 * shadowMult).toFixed(3)})${comercialAuthority}${servicioDepth}${strongDepth}
+        0 48px 72px -12px rgba(0,0,0,${(0.36 * shadowMult).toFixed(3)})${comercialAuthority}${servicioDepth}${strongDepth}${configDepth}
       `
     }
 
@@ -542,11 +546,17 @@ export default function HomeDashboard() {
     const baseTransition = 'opacity 0.3s ease'
     const mult = isHovered ? 2.2 : 1
     const geometry = (() => {
-      // V50 — diagonales atmosféricas mínimas: opacidad -10% adicional + bright width -8% adicional
-      const opacityMult = 0.455 /* 0.506 * 0.90 */
-      const brightWidthMult = 0.554 /* 0.602 * 0.92 */
-      const baseOpacity = 0.06 * mult * opacityMult
-      const strongerOpacity = 0.08 * mult * opacityMult
+      // V51 — diagonales atmosféricas + variación por tier hierarchy
+      const opacityMult = 0.410 /* 0.455 * 0.90 */
+      const brightWidthMult = 0.510 /* 0.554 * 0.92 */
+      /* V51 — Per-tier diagonal strength: primary 1.10, secondary 1.05, strong 0.90, standard 0.80, technical 0.65 */
+      const tierDiagonal = card.id === 'comercial' ? 1.10
+                         : card.id === 'servicio-clientes' ? 1.05
+                         : (card.id === 'autofomento' || card.id === 'comunicaciones') ? 0.90
+                         : card.id === 'config' ? 0.65
+                         : 0.80
+      const baseOpacity = 0.06 * mult * opacityMult * tierDiagonal
+      const strongerOpacity = 0.08 * mult * opacityMult * tierDiagonal
       switch (card.id) {
         case 'oportunidades':
           return (
@@ -579,11 +589,11 @@ export default function HomeDashboard() {
             </>
           )
         case 'ventas':
-          /* V50 — Ventas: -6% adicional (0.813 * 0.94 = 0.764) */
+          /* V51 — Ventas: -6% adicional (0.764 * 0.94 = 0.718) */
           return (
             <>
-              <div style={{ position: 'absolute', left: '52%', top: '-30%', width: `${30 * brightWidthMult}%`, height: '160%', background: `rgba(255,255,255,${strongerOpacity * 0.764})`, transform: 'rotate(38deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
-              <div style={{ position: 'absolute', left: '70%', top: '-30%', width: '12%', height: '160%', background: `rgba(255,255,255,${baseOpacity * 0.764})`, transform: 'rotate(44deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
+              <div style={{ position: 'absolute', left: '52%', top: '-30%', width: `${30 * brightWidthMult}%`, height: '160%', background: `rgba(255,255,255,${strongerOpacity * 0.718})`, transform: 'rotate(38deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
+              <div style={{ position: 'absolute', left: '70%', top: '-30%', width: '12%', height: '160%', background: `rgba(255,255,255,${baseOpacity * 0.718})`, transform: 'rotate(44deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
             </>
           )
         case 'comunicaciones':
@@ -625,8 +635,8 @@ export default function HomeDashboard() {
         default: return 110
       }
     })()
-    // V48 ULTRA — icono profundamente embedded: white 0.64 + shadow 0.12 (integrado al material del card)
-    const iconOpacity = isHovered ? 0.70 : 0.64
+    // V51 — icono máximo embedded: white 0.62 + shadow 0.12 (profundamente fusionado al material)
+    const iconOpacity = isHovered ? 0.68 : 0.62
     const iconBottom = card.id === 'operaciones' ? '-26px' : card.id === 'oportunidades' ? '4px' : '8px'
     const iconRight = card.id === 'operaciones' ? '8px' : card.id === 'oportunidades' ? '20px' : '16px'
     /* V44 PRECISION — icono único, embedded, elegante. White 0.72 + subtle shadow 0.18 per spec. */
