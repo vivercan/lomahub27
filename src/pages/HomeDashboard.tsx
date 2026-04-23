@@ -600,10 +600,24 @@ export default function HomeDashboard() {
       }
     })()
     // V43 — iconos 3D laser-cut salidos (P20): opacity alta, filter full chain en img
-    const iconOpacity = isHovered ? 0.92 : 0.88
+    const iconOpacity = isHovered ? 0.95 : 0.90
     const iconBottom = card.id === 'operaciones' ? '-26px' : card.id === 'oportunidades' ? '4px' : '8px'
     /* V43 — Oportunidades 4px más a la izquierda (JJ fix) */
     const iconRight = card.id === 'operaciones' ? '8px' : card.id === 'oportunidades' ? '20px' : '16px'
+    /* V43 — Icono monocroma por card (color del gradient top + brightness boost) */
+    const iconColor = (() => {
+      switch (card.id) {
+        case 'oportunidades': return '#5A8CD9'
+        case 'servicio-clientes': return '#5F8CD2'
+        case 'comercial': return '#5378C4'
+        case 'operaciones': return '#6B9AE8'
+        case 'ventas': return '#F5B360'
+        case 'comunicaciones': return '#70A0E5'
+        case 'autofomento': return '#6894E3'
+        case 'config': return '#7A8494'
+        default: return '#E5E8EC'
+      }
+    })()
     const icon = card.iconFile ? (
       <div style={{
         position: 'absolute',
@@ -652,21 +666,25 @@ export default function HomeDashboard() {
             opacity: 0.48,
           }}
         />
-        {/* Capa 1 — Base icon white metal (cuerpo principal) — renders arriba */}
-        <img
-          src={`/icons/dashboard/${card.iconFile}`}
-          alt=""
+        {/* Capa 1 — Base icon COLOR DEL CARD via CSS mask (monocroma luxury) */}
+        <div
           style={{
             position: 'absolute',
             top: 0,
             left: 0,
             width: '100%',
             height: '100%',
-            objectFit: 'contain',
-            objectPosition: 'center center',
-            filter: 'brightness(0) invert(0.95)',
+            backgroundColor: iconColor,
+            maskImage: `url(/icons/dashboard/${card.iconFile})`,
+            WebkitMaskImage: `url(/icons/dashboard/${card.iconFile})`,
+            maskRepeat: 'no-repeat',
+            WebkitMaskRepeat: 'no-repeat',
+            maskPosition: 'center center',
+            WebkitMaskPosition: 'center center',
+            maskSize: 'contain',
+            WebkitMaskSize: 'contain',
             opacity: iconOpacity,
-            transition: 'opacity 0.24s ease',
+            transition: 'opacity 0.24s ease, background-color 0.24s ease',
           }}
         />
       </div>
@@ -747,30 +765,29 @@ export default function HomeDashboard() {
             }} />
           </div>
         )}
-        {/* V43 — Wrapper título + subtítulo (matchea estructura demo P20) */}
+        {/* V43 — Wrapper título + subtítulo */}
         <div style={{ position: 'relative', zIndex: 2, width: '100%' }}>
-          {/* V43 Title — Rubber Deboss BLANCO hundido PROFUNDO (4-layer cavity) */}
+          {/* V43 Title — BLANCO TRANSLÚCIDO 0.40 (card se transparenta = real pressed cavity) */}
           <div style={{
             fontFamily: "'Montserrat', sans-serif",
             fontSize: '27px',
             fontWeight: 900,
-            color: 'rgba(255,255,255,0.96)',
+            color: 'rgba(255,255,255,0.42)',
             letterSpacing: '-0.024em',
             lineHeight: 1.12,
             textAlign: 'left',
             width: '100%',
             textShadow: [
-              '0 -2px 0 rgba(0,0,0,0.92)',             /* top-dark REFORZADO (cavidad) */
-              '0 -1px 2px rgba(0,0,0,0.55)',           /* cavity blur adicional */
-              '0 1px 0 rgba(255,255,255,0.36)',        /* bottom-light (lip iluminado) */
-              '0 2px 4px rgba(0,0,0,0.50)',            /* drop profundo */
-              '0 3px 6px rgba(0,0,0,0.28)',            /* drop extendido */
+              '0 -1.5px 0 rgba(0,0,0,0.88)',           /* top-dark crisp (cavidad profunda) */
+              '0 1.5px 0 rgba(255,255,255,0.32)',      /* bottom-light lip iluminado */
+              '0 3px 5px rgba(0,0,0,0.40)',            /* drop ambient profundo */
+              '0 1px 0 rgba(0,0,0,0.35)',              /* deep cavity reinforce */
             ].join(', '),
             pointerEvents: 'none',
           }}>
             {card.label}
           </div>
-          {/* V43 Subtitle — Rubber Deboss NEGRO MÁS HUNDIDO */}
+          {/* V43 Subtitle — NEGRO deboss, separación +10px (de 10 → 20) */}
           <div style={{
             fontFamily: "'Montserrat', sans-serif",
             fontSize: '14px',
@@ -779,15 +796,15 @@ export default function HomeDashboard() {
             letterSpacing: '0.015em',
             textAlign: 'left',
             width: '100%',
-            marginTop: '10px',
+            marginTop: '20px',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             boxSizing: 'border-box',
             textShadow: [
-              '0 -1px 0 rgba(0,0,0,0.82)',             /* top-dark REFORZADO 0.66 → 0.82 */
-              '0 1px 0 rgba(255,255,255,0.26)',        /* bottom-light reforzada 0.20 → 0.26 */
-              '0 2px 2px rgba(0,0,0,0.22)',            /* drop adicional para profundidad */
+              '0 -1px 0 rgba(0,0,0,0.82)',
+              '0 1px 0 rgba(255,255,255,0.26)',
+              '0 2px 2px rgba(0,0,0,0.22)',
             ].join(', '),
             pointerEvents: 'none',
           }}>
