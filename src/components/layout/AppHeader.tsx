@@ -176,9 +176,9 @@ export default function AppHeader({
         position: 'relative',
         height: 64,
         background: '#FFFFFF',
-        // V32: shadow premium más limpia (antes 3-layer cloud)
-        boxShadow: '0 1px 0 rgba(15,23,42,0.06), 0 2px 8px rgba(15,23,42,0.04)',
-        borderBottom: '1px solid rgba(15,23,42,0.05)',
+        // V44 precision pass: shadow más premium + divider spec
+        boxShadow: '0 1px 0 rgba(15,23,42,0.06), 0 2px 8px rgba(15,23,42,0.04), 0 4px 14px rgba(15,23,42,0.06)',
+        borderBottom: '1px solid rgba(15,23,42,0.08)',
         zIndex: 50,
         fontFamily: 'Montserrat, sans-serif',
         flexShrink: 0,
@@ -205,7 +205,7 @@ export default function AppHeader({
         </div>
 
         {/* CENTER — Fecha, Semana, Tipo Cambio — V32 spacing rhythm refinado */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 48, marginRight: 'auto', marginLeft: 48 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 60, marginRight: 'auto', marginLeft: 60 }}>
           <div style={{ textAlign: 'center' }}>
             <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: '#1E293B', fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.01em' }}>
               {fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1)}
@@ -233,7 +233,7 @@ export default function AppHeader({
             <span style={{ fontSize: 13, color: '#0F172A', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.01em' }}>
               {userName}
             </span>
-            <span style={{ fontSize: 11, color: '#64748B', fontWeight: 500, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.02em', textTransform: 'lowercase' }}>
+            <span style={{ fontSize: 11, color: 'rgba(15,23,42,0.52)', fontWeight: 500, fontFamily: "'Montserrat', sans-serif", letterSpacing: '0.02em', textTransform: 'lowercase' }}>
               {userRole}
             </span>
           </div>

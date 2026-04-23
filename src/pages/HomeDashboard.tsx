@@ -448,38 +448,47 @@ export default function HomeDashboard() {
         0 4px 8px rgba(0,0,0,0.12)
       `
     } else if (isHovered) {
-      // V43 HOVER — parallax reducido ±2° (±6° rompía el render de filters laser-cut) + translateY -10 + translateZ +24 + scale 1.02
+      // V44 HOVER — parallax reducido ±2° + bevels 1px per precision spec + hero boost +12%/+8% para Comercial y Servicio
       const reducedRx = tilt.rx * 0.33
       const reducedRy = tilt.ry * 0.33
       transform = `${basePerspective} rotateX(${reducedRx}deg) rotateY(${reducedRy}deg) translateY(-10px) translateZ(24px) scale(1.02)`
+      const isHero = card.id === 'comercial' || card.id === 'servicio-clientes'
+      const heroShadowMult = isHero ? 1.12 : 1
+      const heroLightMult = isHero ? 1.08 : 1
+      const topLight = (0.20 * heroLightMult).toFixed(3)
+      const topLeftLight = (0.14 * heroLightMult).toFixed(3)
       boxShadow = `
-        inset 1px 0 0 rgba(255,255,255,0.12),
+        inset 1px 0 0 rgba(255,255,255,${topLeftLight}),
         inset -1px 0 0 rgba(255,255,255,0.08),
-        inset 0 3px 0 rgba(255,255,255,0.30),
-        inset 0 -3px 0 rgba(0,0,0,0.42),
+        inset 0 1px 0 rgba(255,255,255,${topLight}),
+        inset 0 -1px 0 rgba(0,0,0,0.26),
         inset 0 -22px 38px rgba(0,0,0,0.18),
-        0 4px 8px rgba(0,0,0,0.22),
-        0 20px 36px rgba(0,0,0,0.34),
-        0 44px 72px -10px rgba(0,0,0,0.42),
-        0 72px 104px -18px rgba(0,0,0,0.38)
+        0 4px 8px rgba(0,0,0,${(0.22 * heroShadowMult).toFixed(3)}),
+        0 20px 36px rgba(0,0,0,${(0.34 * heroShadowMult).toFixed(3)}),
+        0 44px 72px -10px rgba(0,0,0,${(0.42 * heroShadowMult).toFixed(3)}),
+        0 72px 104px -18px rgba(0,0,0,${(0.38 * heroShadowMult).toFixed(3)})
       `
     } else {
-      // V41 RESTING — sombras arquitectónicas (spread negative + 4 layers calibradas)
-      // + Comercial con inset extra para reforzar autoridad visual ("rey" por tamaño 1x2)
+      // V44 RESTING — bevels 1px (reemplaza 3px, más premium) + hero boost Comercial/Servicio +12% shadow / +8% light
       transform = `${basePerspective} translateY(0) translateZ(0)`
+      const isHero = card.id === 'comercial' || card.id === 'servicio-clientes'
+      const heroShadowMult = isHero ? 1.12 : 1
+      const heroLightMult = isHero ? 1.08 : 1
+      const topLight = (0.16 * heroLightMult).toFixed(3)
+      const topLeftLight = (0.10 * heroLightMult).toFixed(3)
       const comercialAuthority = card.id === 'comercial'
-        ? `, inset 0 -60px 80px rgba(0,0,0,0.22)` /* masa oscura inferior extra para dominancia */
+        ? `, inset 0 -60px 80px rgba(0,0,0,0.22)`
         : ''
       boxShadow = `
-        inset 1px 0 0 rgba(255,255,255,0.10),
+        inset 1px 0 0 rgba(255,255,255,${topLeftLight}),
         inset -1px 0 0 rgba(255,255,255,0.06),
-        inset 0 3px 0 rgba(255,255,255,0.24),
-        inset 0 -3px 0 rgba(0,0,0,0.38),
+        inset 0 1px 0 rgba(255,255,255,${topLight}),
+        inset 0 -1px 0 rgba(0,0,0,0.22),
         inset 0 -20px 36px rgba(0,0,0,0.18),
-        0 2px 4px rgba(0,0,0,0.18),
-        0 14px 24px rgba(0,0,0,0.28),
-        0 32px 52px -8px rgba(0,0,0,0.36),
-        0 56px 80px -14px rgba(0,0,0,0.32)${comercialAuthority}
+        0 2px 4px rgba(0,0,0,${(0.18 * heroShadowMult).toFixed(3)}),
+        0 14px 24px rgba(0,0,0,${(0.28 * heroShadowMult).toFixed(3)}),
+        0 32px 52px -8px rgba(0,0,0,${(0.36 * heroShadowMult).toFixed(3)}),
+        0 56px 80px -14px rgba(0,0,0,${(0.32 * heroShadowMult).toFixed(3)})${comercialAuthority}
       `
     }
 
@@ -516,12 +525,13 @@ export default function HomeDashboard() {
 
   const renderDecor = (card: CardConfig, isHovered: boolean) => {
     const baseTransition = 'opacity 0.3s ease'
-    // V38 — patterns reveal en hover (opacity bump)
     const mult = isHovered ? 2.2 : 1
     const geometry = (() => {
-      // V41 — patterns reducidos 25% (baseline 0.06 / stronger 0.08). Dejan de dominar.
-      const baseOpacity = 0.06 * mult
-      const strongerOpacity = 0.08 * mult
+      // V44 PRECISION — diagonales integradas, no dominantes: opacidad -22% + width bright bands -15%
+      const opacityMult = 0.78 /* -22% */
+      const brightWidthMult = 0.85 /* -15% solo para bright bands */
+      const baseOpacity = 0.06 * mult * opacityMult
+      const strongerOpacity = 0.08 * mult * opacityMult
       switch (card.id) {
         case 'oportunidades':
           return (
@@ -549,14 +559,14 @@ export default function HomeDashboard() {
         case 'operaciones':
           return (
             <>
-              <div style={{ position: 'absolute', right: '-4%', top: '10%', width: '26%', height: '140%', background: `rgba(255,255,255,${strongerOpacity})`, transform: 'rotate(22deg)', transformOrigin: 'center center', pointerEvents: 'none', transition: baseTransition }} />
-              <div style={{ position: 'absolute', left: 'calc(34% - 8%)', top: '-30%', width: '14%', height: '160%', background: `rgba(255,255,255,${0.10 * mult})`, transform: 'rotate(34deg)', transformOrigin: 'center center', pointerEvents: 'none', transition: baseTransition }} />
+              <div style={{ position: 'absolute', right: '-4%', top: '10%', width: `${26 * brightWidthMult}%`, height: '140%', background: `rgba(255,255,255,${strongerOpacity})`, transform: 'rotate(22deg)', transformOrigin: 'center center', pointerEvents: 'none', transition: baseTransition }} />
+              <div style={{ position: 'absolute', left: 'calc(34% - 8%)', top: '-30%', width: `${14 * brightWidthMult}%`, height: '160%', background: `rgba(255,255,255,${0.10 * mult * opacityMult})`, transform: 'rotate(34deg)', transformOrigin: 'center center', pointerEvents: 'none', transition: baseTransition }} />
             </>
           )
         case 'ventas':
           return (
             <>
-              <div style={{ position: 'absolute', left: '52%', top: '-30%', width: '30%', height: '160%', background: `rgba(255,255,255,${strongerOpacity})`, transform: 'rotate(38deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
+              <div style={{ position: 'absolute', left: '52%', top: '-30%', width: `${30 * brightWidthMult}%`, height: '160%', background: `rgba(255,255,255,${strongerOpacity})`, transform: 'rotate(38deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
               <div style={{ position: 'absolute', left: '70%', top: '-30%', width: '12%', height: '160%', background: `rgba(255,255,255,${baseOpacity})`, transform: 'rotate(44deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
             </>
           )
@@ -599,25 +609,11 @@ export default function HomeDashboard() {
         default: return 110
       }
     })()
-    // V43 — iconos 3D laser-cut salidos (P20): opacity alta, filter full chain en img
-    const iconOpacity = isHovered ? 0.95 : 0.90
+    // V44 PRECISION — icono simplificado: white 0.72 + subtle shadow 0.18. Menos agresivo, más premium.
+    const iconOpacity = isHovered ? 0.78 : 0.72
     const iconBottom = card.id === 'operaciones' ? '-26px' : card.id === 'oportunidades' ? '4px' : '8px'
-    /* V43 — Oportunidades 4px más a la izquierda (JJ fix) */
     const iconRight = card.id === 'operaciones' ? '8px' : card.id === 'oportunidades' ? '20px' : '16px'
-    /* V43 — Icono casi blanco con tint sutil del card (75% white + 25% card color) */
-    const iconColor = (() => {
-      switch (card.id) {
-        case 'oportunidades': return '#C9D8F0'
-        case 'servicio-clientes': return '#CAD7EC'
-        case 'comercial': return '#C8D2E8'
-        case 'operaciones': return '#CFDDF3'
-        case 'ventas': return '#FADFC6'
-        case 'comunicaciones': return '#CFDDEF'
-        case 'autofomento': return '#CEDCEF'
-        case 'config': return '#CBCED2'
-        default: return '#EEF2F6'
-      }
-    })()
+    /* V44 PRECISION — icono único, embedded, elegante. White 0.72 + subtle shadow 0.18 per spec. */
     const icon = card.iconFile ? (
       <div style={{
         position: 'absolute',
@@ -629,68 +625,42 @@ export default function HomeDashboard() {
         transition: baseTransition,
         zIndex: 2,
         overflow: 'visible',
-        isolation: 'isolate',
-        transform: 'translateZ(0)',
-        /* V43 Plan B — ambient lift REFORZADO + depth (flotación más evidente) */
-        filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.68)) drop-shadow(0 3px 5px rgba(0,0,0,0.48))',
+        /* Subtle shadow/stroke para separación sutil (per spec: rgba(0,0,0,0.18)) */
+        filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.18))',
       }}>
-        {/* Capa 3 — Edge shadow bottom-right (grosor de placa) — renders al fondo */}
         <img
           src={`/icons/dashboard/${card.iconFile}`}
           alt=""
           style={{
-            position: 'absolute',
-            top: '2px',
-            left: '2px',
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain',
-            objectPosition: 'center center',
-            filter: 'brightness(0)',
-            opacity: 0.62,
-          }}
-        />
-        {/* Capa 2 — Edge highlight top-left (corte láser iluminado) — renders entre */}
-        <img
-          src={`/icons/dashboard/${card.iconFile}`}
-          alt=""
-          style={{
-            position: 'absolute',
-            top: '-1.5px',
-            left: '-1.5px',
             width: '100%',
             height: '100%',
             objectFit: 'contain',
             objectPosition: 'center center',
             filter: 'brightness(0) invert(1)',
-            opacity: 0.48,
-          }}
-        />
-        {/* Capa 1 — Base icon COLOR DEL CARD via CSS mask (monocroma luxury) */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: iconColor,
-            maskImage: `url(/icons/dashboard/${card.iconFile})`,
-            WebkitMaskImage: `url(/icons/dashboard/${card.iconFile})`,
-            maskRepeat: 'no-repeat',
-            WebkitMaskRepeat: 'no-repeat',
-            maskPosition: 'center center',
-            WebkitMaskPosition: 'center center',
-            maskSize: 'contain',
-            WebkitMaskSize: 'contain',
             opacity: iconOpacity,
-            transition: 'opacity 0.24s ease, background-color 0.24s ease',
+            transition: 'opacity 0.24s ease',
           }}
         />
       </div>
     ) : null
-    /* V43 — sin diagonales geométricas para matchear demo P20 limpio */
-    return <>{icon}</>
+    /* V44 PRECISION — grain overlay ultra-fino 1.5% opacity (casi imperceptible, premium materiality) */
+    const grain = (
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          zIndex: 1,
+          opacity: 0.015,
+          backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
+          backgroundSize: '180px 180px',
+          mixBlendMode: 'overlay',
+          borderRadius: '20px',
+        }}
+      />
+    )
+    /* V44 PRECISION — geometry -22%/-15%, grain 1.5%, icon white 0.72 */
+    return <>{geometry}{grain}{icon}</>
   }
 
   const renderCard = (slotIndex: number) => {
@@ -767,12 +737,12 @@ export default function HomeDashboard() {
         )}
         {/* V43 — Wrapper título + subtítulo */}
         <div style={{ position: 'relative', zIndex: 2, width: '100%' }}>
-          {/* V43 Title — CASI BLANCO 0.94 con shadow crisp agresiva (pressed real) */}
+          {/* V44 PRECISION — Title con hierarchy: Comercial/Servicio 0.96, resto 0.94 */}
           <div style={{
             fontFamily: "'Montserrat', sans-serif",
             fontSize: '27px',
             fontWeight: 900,
-            color: 'rgba(255,255,255,0.94)',
+            color: (card.id === 'comercial' || card.id === 'servicio-clientes') ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.94)',
             letterSpacing: '-0.024em',
             lineHeight: 1.12,
             textAlign: 'left',
