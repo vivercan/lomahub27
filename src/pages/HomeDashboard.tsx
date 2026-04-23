@@ -448,47 +448,58 @@ export default function HomeDashboard() {
         0 4px 8px rgba(0,0,0,0.12)
       `
     } else if (isHovered) {
-      // V44 HOVER — parallax reducido ±2° + bevels 1px per precision spec + hero boost +12%/+8% para Comercial y Servicio
+      // V45 HOVER — 3-layer architectural shadows + per-tier hierarchy multipliers
       const reducedRx = tilt.rx * 0.33
       const reducedRy = tilt.ry * 0.33
       transform = `${basePerspective} rotateX(${reducedRx}deg) rotateY(${reducedRy}deg) translateY(-10px) translateZ(24px) scale(1.02)`
-      const isHero = card.id === 'comercial' || card.id === 'servicio-clientes'
-      const heroShadowMult = isHero ? 1.12 : 1
-      const heroLightMult = isHero ? 1.08 : 1
-      const topLight = (0.20 * heroLightMult).toFixed(3)
-      const topLeftLight = (0.14 * heroLightMult).toFixed(3)
+      const tier = card.id === 'comercial' ? 'primary'
+                 : card.id === 'servicio-clientes' ? 'secondary'
+                 : (card.id === 'autofomento' || card.id === 'comunicaciones') ? 'strong'
+                 : card.id === 'config' ? 'technical'
+                 : 'mid'
+      const shadowMult = tier === 'primary' ? 1.14 : tier === 'secondary' ? 1.10 : tier === 'strong' ? 1.05 : tier === 'technical' ? 0.92 : 1
+      const lightMult = tier === 'primary' ? 1.12 : tier === 'secondary' ? 1.08 : tier === 'strong' ? 1.04 : 1
+      const topLight = (0.22 * lightMult).toFixed(3)
+      const topLeftLight = (0.15 * lightMult).toFixed(3)
       boxShadow = `
         inset 1px 0 0 rgba(255,255,255,${topLeftLight}),
         inset -1px 0 0 rgba(255,255,255,0.08),
         inset 0 1px 0 rgba(255,255,255,${topLight}),
-        inset 0 -1px 0 rgba(0,0,0,0.26),
+        inset 0 -1px 0 rgba(0,0,0,0.24),
         inset 0 -22px 38px rgba(0,0,0,0.18),
-        0 4px 8px rgba(0,0,0,${(0.22 * heroShadowMult).toFixed(3)}),
-        0 20px 36px rgba(0,0,0,${(0.34 * heroShadowMult).toFixed(3)}),
-        0 44px 72px -10px rgba(0,0,0,${(0.42 * heroShadowMult).toFixed(3)}),
-        0 72px 104px -18px rgba(0,0,0,${(0.38 * heroShadowMult).toFixed(3)})
+        0 3px 6px rgba(0,0,0,${(0.22 * shadowMult).toFixed(3)}),
+        0 22px 40px -4px rgba(0,0,0,${(0.36 * shadowMult).toFixed(3)}),
+        0 56px 88px -14px rgba(0,0,0,${(0.40 * shadowMult).toFixed(3)})
       `
     } else {
-      // V44 RESTING — bevels 1px (reemplaza 3px, más premium) + hero boost Comercial/Servicio +12% shadow / +8% light
+      // V45 RESTING — 3-layer architectural shadows + hierarchy tiered multipliers + Comercial darker lower-right authority
       transform = `${basePerspective} translateY(0) translateZ(0)`
-      const isHero = card.id === 'comercial' || card.id === 'servicio-clientes'
-      const heroShadowMult = isHero ? 1.12 : 1
-      const heroLightMult = isHero ? 1.08 : 1
-      const topLight = (0.16 * heroLightMult).toFixed(3)
-      const topLeftLight = (0.10 * heroLightMult).toFixed(3)
+      const tier = card.id === 'comercial' ? 'primary'
+                 : card.id === 'servicio-clientes' ? 'secondary'
+                 : (card.id === 'autofomento' || card.id === 'comunicaciones') ? 'strong'
+                 : card.id === 'config' ? 'technical'
+                 : 'mid'
+      const shadowMult = tier === 'primary' ? 1.14 : tier === 'secondary' ? 1.10 : tier === 'strong' ? 1.05 : tier === 'technical' ? 0.92 : 1
+      const lightMult = tier === 'primary' ? 1.12 : tier === 'secondary' ? 1.08 : tier === 'strong' ? 1.04 : 1
+      const topLight = (0.15 * lightMult).toFixed(3)
+      const topLeftLight = (0.10 * lightMult).toFixed(3)
+      /* V45 — Comercial: +10% internal contrast depth (inset interno más profundo) + darker lower-right (masa autoridad) */
       const comercialAuthority = card.id === 'comercial'
-        ? `, inset 0 -60px 80px rgba(0,0,0,0.22)`
+        ? `, inset 0 -60px 80px rgba(0,0,0,0.26), inset -40px -50px 72px rgba(0,0,0,0.16)`
+        : ''
+      /* Servicio: reduce overly flat center via very subtle interior darken */
+      const servicioDepth = card.id === 'servicio-clientes'
+        ? `, inset 0 -30px 60px rgba(0,0,0,0.10)`
         : ''
       boxShadow = `
         inset 1px 0 0 rgba(255,255,255,${topLeftLight}),
         inset -1px 0 0 rgba(255,255,255,0.06),
         inset 0 1px 0 rgba(255,255,255,${topLight}),
-        inset 0 -1px 0 rgba(0,0,0,0.22),
+        inset 0 -1px 0 rgba(0,0,0,0.20),
         inset 0 -20px 36px rgba(0,0,0,0.18),
-        0 2px 4px rgba(0,0,0,${(0.18 * heroShadowMult).toFixed(3)}),
-        0 14px 24px rgba(0,0,0,${(0.28 * heroShadowMult).toFixed(3)}),
-        0 32px 52px -8px rgba(0,0,0,${(0.36 * heroShadowMult).toFixed(3)}),
-        0 56px 80px -14px rgba(0,0,0,${(0.32 * heroShadowMult).toFixed(3)})${comercialAuthority}
+        0 2px 4px rgba(0,0,0,${(0.20 * shadowMult).toFixed(3)}),
+        0 16px 32px -4px rgba(0,0,0,${(0.30 * shadowMult).toFixed(3)}),
+        0 48px 72px -12px rgba(0,0,0,${(0.36 * shadowMult).toFixed(3)})${comercialAuthority}${servicioDepth}
       `
     }
 
@@ -527,9 +538,9 @@ export default function HomeDashboard() {
     const baseTransition = 'opacity 0.3s ease'
     const mult = isHovered ? 2.2 : 1
     const geometry = (() => {
-      // V44 PRECISION — diagonales integradas, no dominantes: opacidad -22% + width bright bands -15%
-      const opacityMult = 0.78 /* -22% */
-      const brightWidthMult = 0.85 /* -15% solo para bright bands */
+      // V45 PRECISION — diagonales aún más integradas: opacidad -18% + width bright bands -12%
+      const opacityMult = 0.82 /* -18% */
+      const brightWidthMult = 0.88 /* -12% solo para bright bands */
       const baseOpacity = 0.06 * mult * opacityMult
       const strongerOpacity = 0.08 * mult * opacityMult
       switch (card.id) {
@@ -609,8 +620,8 @@ export default function HomeDashboard() {
         default: return 110
       }
     })()
-    // V44 PRECISION — icono simplificado: white 0.72 + subtle shadow 0.18. Menos agresivo, más premium.
-    const iconOpacity = isHovered ? 0.78 : 0.72
+    // V45 PRECISION — icono más embedded: white 0.68 + shadow 0.16 (menos pasted-on)
+    const iconOpacity = isHovered ? 0.74 : 0.68
     const iconBottom = card.id === 'operaciones' ? '-26px' : card.id === 'oportunidades' ? '4px' : '8px'
     const iconRight = card.id === 'operaciones' ? '8px' : card.id === 'oportunidades' ? '20px' : '16px'
     /* V44 PRECISION — icono único, embedded, elegante. White 0.72 + subtle shadow 0.18 per spec. */
@@ -625,8 +636,8 @@ export default function HomeDashboard() {
         transition: baseTransition,
         zIndex: 2,
         overflow: 'visible',
-        /* Subtle shadow/stroke para separación sutil (per spec: rgba(0,0,0,0.18)) */
-        filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.18))',
+        /* V45 — Subtle shadow/stroke reducido a rgba(0,0,0,0.16) para menos sensación pasted-on */
+        filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.16))',
       }}>
         <img
           src={`/icons/dashboard/${card.iconFile}`}
@@ -651,7 +662,7 @@ export default function HomeDashboard() {
           inset: 0,
           pointerEvents: 'none',
           zIndex: 1,
-          opacity: 0.015,
+          opacity: 0.012,
           backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
           backgroundSize: '180px 180px',
           mixBlendMode: 'overlay',
@@ -737,12 +748,15 @@ export default function HomeDashboard() {
         )}
         {/* V43 — Wrapper título + subtítulo */}
         <div style={{ position: 'relative', zIndex: 2, width: '100%' }}>
-          {/* V44 PRECISION — Title con hierarchy: Comercial/Servicio 0.96, resto 0.94 */}
+          {/* V45 PRECISION — Title tiered hierarchy 0.93-0.97 per card role */}
           <div style={{
             fontFamily: "'Montserrat', sans-serif",
             fontSize: '27px',
             fontWeight: 900,
-            color: (card.id === 'comercial' || card.id === 'servicio-clientes') ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.94)',
+            color: card.id === 'comercial' ? 'rgba(255,255,255,0.97)'
+                 : card.id === 'servicio-clientes' ? 'rgba(255,255,255,0.95)'
+                 : (card.id === 'autofomento' || card.id === 'comunicaciones') ? 'rgba(255,255,255,0.94)'
+                 : 'rgba(255,255,255,0.93)',
             letterSpacing: '-0.024em',
             lineHeight: 1.12,
             textAlign: 'left',
