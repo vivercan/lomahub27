@@ -457,7 +457,7 @@ export default function HomeDashboard() {
                  : (card.id === 'autofomento' || card.id === 'comunicaciones') ? 'strong'
                  : card.id === 'config' ? 'technical'
                  : 'mid'
-      const shadowMult = tier === 'primary' ? 1.14 : tier === 'secondary' ? 1.09 : tier === 'strong' ? 1.03 : tier === 'technical' ? 0.92 : 1
+      const shadowMult = tier === 'primary' ? 1.16 : tier === 'secondary' ? 1.10 : tier === 'strong' ? 1.03 : tier === 'technical' ? 0.92 : 1
       const lightMult = tier === 'primary' ? 1.14 : tier === 'secondary' ? 1.08 : tier === 'strong' ? 1.04 : 1
       const topLight = (0.19 * lightMult).toFixed(3)
       const topLeftLight = (0.13 * lightMult).toFixed(3)
@@ -479,31 +479,31 @@ export default function HomeDashboard() {
                  : (card.id === 'autofomento' || card.id === 'comunicaciones') ? 'strong'
                  : card.id === 'config' ? 'technical'
                  : 'mid'
-      const shadowMult = tier === 'primary' ? 1.14 : tier === 'secondary' ? 1.09 : tier === 'strong' ? 1.03 : tier === 'technical' ? 0.92 : 1
+      const shadowMult = tier === 'primary' ? 1.16 : tier === 'secondary' ? 1.10 : tier === 'strong' ? 1.03 : tier === 'technical' ? 0.92 : 1
       const lightMult = tier === 'primary' ? 1.14 : tier === 'secondary' ? 1.08 : tier === 'strong' ? 1.04 : 1
-      const topLight = (0.12 * lightMult).toFixed(3)
-      const topLeftLight = (0.10 * lightMult).toFixed(3)
-      /* V52 — Comercial: +14% adicional internal tonal depth (0.500→0.570, 0.300→0.342, 0.060→0.068) */
+      const topLight = (0.11 * lightMult).toFixed(3)
+      const topLeftLight = (0.09 * lightMult).toFixed(3)
+      /* V53 — Comercial: +16% adicional internal tonal depth (0.570→0.661, 0.342→0.397, 0.068→0.079) */
       const comercialAuthority = card.id === 'comercial'
-        ? `, inset 0 -60px 80px rgba(0,0,0,0.570), inset -40px -50px 72px rgba(0,0,0,0.342), inset 40px 30px 80px rgba(255,255,255,0.068)`
+        ? `, inset 0 -60px 80px rgba(0,0,0,0.661), inset -40px -50px 72px rgba(0,0,0,0.397), inset 40px 30px 80px rgba(255,255,255,0.079)`
         : ''
-      /* V52 — Servicio: +9% adicional tonal richness (0.161→0.176, 0.035→0.038) */
+      /* V53 — Servicio: +10% adicional tonal richness (0.176→0.194, 0.038→0.042) */
       const servicioDepth = card.id === 'servicio-clientes'
-        ? `, inset 0 -32px 60px rgba(0,0,0,0.176), inset 30px 20px 60px rgba(255,255,255,0.038)`
+        ? `, inset 0 -32px 60px rgba(0,0,0,0.194), inset 30px 20px 60px rgba(255,255,255,0.042)`
         : ''
-      /* V52 — Strong support: +5% adicional richness (0.107→0.112, 0.021→0.022) */
+      /* V53 — Strong support: +6% adicional richness (0.112→0.119, 0.022→0.023) */
       const strongDepth = (card.id === 'autofomento' || card.id === 'comunicaciones')
-        ? `, inset 0 -26px 52px rgba(0,0,0,0.112), inset 20px 10px 50px rgba(255,255,255,0.022)`
+        ? `, inset 0 -26px 52px rgba(0,0,0,0.119), inset 20px 10px 50px rgba(255,255,255,0.023)`
         : ''
-      /* V52 — Config: +4% tonal richness (0.05→0.052) */
+      /* V53 — Config: +4% tonal richness (0.052→0.054) */
       const configDepth = card.id === 'config'
-        ? `, inset 0 -22px 48px rgba(0,0,0,0.052)`
+        ? `, inset 0 -22px 48px rgba(0,0,0,0.054)`
         : ''
       boxShadow = `
         inset 1px 0 0 rgba(255,255,255,${topLeftLight}),
         inset -1px 0 0 rgba(255,255,255,0.06),
         inset 0 1px 0 rgba(255,255,255,${topLight}),
-        inset 0 -1px 0 rgba(0,0,0,0.16),
+        inset 0 -1px 0 rgba(0,0,0,0.15),
         inset 0 -20px 36px rgba(0,0,0,0.18),
         0 2px 4px rgba(0,0,0,${(0.20 * shadowMult).toFixed(3)}),
         0 16px 32px -4px rgba(0,0,0,${(0.30 * shadowMult).toFixed(3)}),
@@ -546,9 +546,9 @@ export default function HomeDashboard() {
     const baseTransition = 'opacity 0.3s ease'
     const mult = isHovered ? 2.2 : 1
     const geometry = (() => {
-      // V52 — diagonales casi imperceptibles + tier hierarchy
-      const opacityMult = 0.369 /* 0.410 * 0.90 */
-      const brightWidthMult = 0.469 /* 0.510 * 0.92 */
+      // V53 GOD-TIER — diagonales silencio luxury + tier hierarchy
+      const opacityMult = 0.332 /* 0.369 * 0.90 */
+      const brightWidthMult = 0.431 /* 0.469 * 0.92 */
       /* V51 — Per-tier diagonal strength: primary 1.10, secondary 1.05, strong 0.90, standard 0.80, technical 0.65 */
       const tierDiagonal = card.id === 'comercial' ? 1.10
                          : card.id === 'servicio-clientes' ? 1.05
@@ -589,11 +589,11 @@ export default function HomeDashboard() {
             </>
           )
         case 'ventas':
-          /* V52 — Ventas: -6% adicional (0.718 * 0.94 = 0.675) */
+          /* V53 — Ventas: -6% adicional (0.675 * 0.94 = 0.635) */
           return (
             <>
-              <div style={{ position: 'absolute', left: '52%', top: '-30%', width: `${30 * brightWidthMult}%`, height: '160%', background: `rgba(255,255,255,${strongerOpacity * 0.675})`, transform: 'rotate(38deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
-              <div style={{ position: 'absolute', left: '70%', top: '-30%', width: '12%', height: '160%', background: `rgba(255,255,255,${baseOpacity * 0.675})`, transform: 'rotate(44deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
+              <div style={{ position: 'absolute', left: '52%', top: '-30%', width: `${30 * brightWidthMult}%`, height: '160%', background: `rgba(255,255,255,${strongerOpacity * 0.635})`, transform: 'rotate(38deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
+              <div style={{ position: 'absolute', left: '70%', top: '-30%', width: '12%', height: '160%', background: `rgba(255,255,255,${baseOpacity * 0.635})`, transform: 'rotate(44deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
             </>
           )
         case 'comunicaciones':
@@ -635,8 +635,8 @@ export default function HomeDashboard() {
         default: return 110
       }
     })()
-    // V51 — icono máximo embedded: white 0.62 + shadow 0.12 (profundamente fusionado al material)
-    const iconOpacity = isHovered ? 0.68 : 0.62
+    // V53 GOD-TIER — icono engraved en material: white 0.58 + shadow 0.10 (carved into surface)
+    const iconOpacity = isHovered ? 0.64 : 0.58
     const iconBottom = card.id === 'operaciones' ? '-26px' : card.id === 'oportunidades' ? '4px' : '8px'
     const iconRight = card.id === 'operaciones' ? '8px' : card.id === 'oportunidades' ? '20px' : '16px'
     /* V44 PRECISION — icono único, embedded, elegante. White 0.72 + subtle shadow 0.18 per spec. */
@@ -651,8 +651,8 @@ export default function HomeDashboard() {
         transition: baseTransition,
         zIndex: 2,
         overflow: 'visible',
-        /* V48 — Subtle shadow rgba(0,0,0,0.12): icono prácticamente fusionado al card */
-        filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.12))',
+        /* V53 GOD-TIER — Subtle shadow rgba(0,0,0,0.10): icon engraved into surface */
+        filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.10))',
       }}>
         <img
           src={`/icons/dashboard/${card.iconFile}`}
@@ -677,7 +677,7 @@ export default function HomeDashboard() {
           inset: 0,
           pointerEvents: 'none',
           zIndex: 1,
-          opacity: 0.008,
+          opacity: 0.007,
           backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
           backgroundSize: '180px 180px',
           mixBlendMode: 'overlay',
