@@ -604,18 +604,18 @@ export default function HomeDashboard() {
     const iconBottom = card.id === 'operaciones' ? '-26px' : card.id === 'oportunidades' ? '4px' : '8px'
     /* V43 — Oportunidades 4px más a la izquierda (JJ fix) */
     const iconRight = card.id === 'operaciones' ? '8px' : card.id === 'oportunidades' ? '20px' : '16px'
-    /* V43 — Icono monocroma por card (color del gradient top + brightness boost) */
+    /* V43 — Icono casi blanco con tint sutil del card (75% white + 25% card color) */
     const iconColor = (() => {
       switch (card.id) {
-        case 'oportunidades': return '#5A8CD9'
-        case 'servicio-clientes': return '#5F8CD2'
-        case 'comercial': return '#5378C4'
-        case 'operaciones': return '#6B9AE8'
-        case 'ventas': return '#F5B360'
-        case 'comunicaciones': return '#70A0E5'
-        case 'autofomento': return '#6894E3'
-        case 'config': return '#7A8494'
-        default: return '#E5E8EC'
+        case 'oportunidades': return '#C9D8F0'
+        case 'servicio-clientes': return '#CAD7EC'
+        case 'comercial': return '#C8D2E8'
+        case 'operaciones': return '#CFDDF3'
+        case 'ventas': return '#FADFC6'
+        case 'comunicaciones': return '#CFDDEF'
+        case 'autofomento': return '#CEDCEF'
+        case 'config': return '#CBCED2'
+        default: return '#EEF2F6'
       }
     })()
     const icon = card.iconFile ? (
@@ -767,21 +767,21 @@ export default function HomeDashboard() {
         )}
         {/* V43 — Wrapper título + subtítulo */}
         <div style={{ position: 'relative', zIndex: 2, width: '100%' }}>
-          {/* V43 Title — BLANCO TRANSLÚCIDO 0.40 (card se transparenta = real pressed cavity) */}
+          {/* V43 Title — CASI BLANCO 0.94 con shadow crisp agresiva (pressed real) */}
           <div style={{
             fontFamily: "'Montserrat', sans-serif",
             fontSize: '27px',
             fontWeight: 900,
-            color: 'rgba(255,255,255,0.42)',
+            color: 'rgba(255,255,255,0.94)',
             letterSpacing: '-0.024em',
             lineHeight: 1.12,
             textAlign: 'left',
             width: '100%',
             textShadow: [
-              '0 -1.5px 0 rgba(0,0,0,0.88)',           /* top-dark crisp (cavidad profunda) */
+              '0 -1.5px 0 rgba(0,0,0,0.92)',           /* top-dark crisp FUERTE (cavidad) */
               '0 1.5px 0 rgba(255,255,255,0.32)',      /* bottom-light lip iluminado */
-              '0 3px 5px rgba(0,0,0,0.40)',            /* drop ambient profundo */
-              '0 1px 0 rgba(0,0,0,0.35)',              /* deep cavity reinforce */
+              '0 2px 3px rgba(0,0,0,0.52)',            /* drop profundo */
+              '0 4px 7px rgba(0,0,0,0.30)',            /* drop ambient extendido */
             ].join(', '),
             pointerEvents: 'none',
           }}>
