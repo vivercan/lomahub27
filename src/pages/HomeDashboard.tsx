@@ -1,3 +1,19 @@
+// HomeDashboard V43 — P20 Rubber Salidos + Títulos Blancos Hundidos (Bloque 1)
+//
+// Cambios V43 sobre V42:
+//   • TÍTULO: 22px → 27px · weight 800 → 900 · letter-spacing -0.02 → -0.024em
+//     · color BLANCO 0.96 + textShadow rubber deboss (top-dark 0.74 + bottom-light 0.26 + drop 0.32)
+//   • SUBTÍTULO: 12px → 14px · weight 500 → 600 · color NEGRO rubber (rgba(0,0,0,0.42))
+//     + textShadow dual (top 0.66 + bottom 0.20)
+//   • ICONOS: +10% tamaño (138→152, 136→150, 118→130, 116→128, 108→119, 100→110)
+//     · Oportunidades se queda 100 (evita empalme con subtitle largo)
+//     · opacity 0.12/0.15 → 0.88/0.92
+//     · filter full chain en img: brightness(0) invert(0.95) + 4 drop-shadows
+//       [highlight -1.5/-1.5 + shadow 2/2 + lift 6px + depth 2px]
+//   • OPORTUNIDADES FIX: iconRight 16 → 20px · iconBottom 8 → 4px
+//   • DIAGONALES REMOVIDAS: renderDecor ya no incluye geometry, solo icon
+//     (matchea demo P20 limpio sin patrones que peleen con el 3D laser-cut)
+//
 // HomeDashboard V42 — All-in: verde enterprise + Ventas vibrante + parallax reforzado + ritmo orgánico
 //
 // 8 cambios sobre V41:
@@ -569,27 +585,42 @@ export default function HomeDashboard() {
     })()
 
     const iconSize = (() => {
+      /* V43 — tamaños +10% (P20 Bloque 1) */
       switch (card.id) {
-        case 'operaciones': return 138
-        case 'comercial': return 136 /* V42 — refuerza dominancia del "rey" visual (antes 124) */
-        case 'comunicaciones': return 118
-        case 'servicio-clientes': return 116
-        case 'oportunidades': return 108
-        case 'autofomento': return 108
-        case 'config': return 108
-        default: return 100
+        case 'operaciones': return 152
+        case 'comercial': return 150
+        case 'comunicaciones': return 130
+        case 'servicio-clientes': return 128
+        case 'oportunidades': return 100 /* se queda chico para no empalmar con subtitle largo */
+        case 'autofomento': return 119
+        case 'config': return 119
+        default: return 110
       }
     })()
-    // V41 — iconos con más definición (opacity 0.12→0.15 hover, contrast 1.1, drop-shadow más fino)
-    const iconOpacity = isHovered ? 0.15 : 0.12
-    const iconBottom = card.id === 'operaciones' ? '-26px' : '8px'
-    const iconRight = card.id === 'operaciones' ? '8px' : '16px'
+    // V43 — iconos 3D laser-cut salidos (P20): opacity alta, filter full chain en img
+    const iconOpacity = isHovered ? 0.92 : 0.88
+    const iconBottom = card.id === 'operaciones' ? '-26px' : card.id === 'oportunidades' ? '4px' : '8px'
+    /* V43 — Oportunidades 4px más a la izquierda (JJ fix) */
+    const iconRight = card.id === 'operaciones' ? '8px' : card.id === 'oportunidades' ? '20px' : '16px'
     const icon = card.iconFile ? (
-      <div style={{ position: 'absolute', right: iconRight, bottom: iconBottom, width: `${iconSize}px`, height: `${iconSize}px`, pointerEvents: 'none', transition: baseTransition, zIndex: 2, filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.30))' }}>
-        <img src={`/icons/dashboard/${card.iconFile}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center center', filter: 'brightness(0) invert(1) contrast(1.1)', opacity: iconOpacity, transition: 'opacity 0.24s ease' }} />
+      <div style={{ position: 'absolute', right: iconRight, bottom: iconBottom, width: `${iconSize}px`, height: `${iconSize}px`, pointerEvents: 'none', transition: baseTransition, zIndex: 2, overflow: 'visible' }}>
+        <img
+          src={`/icons/dashboard/${card.iconFile}`}
+          alt=""
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            objectPosition: 'center center',
+            filter: 'brightness(0) invert(0.95) drop-shadow(-1.5px -1.5px 0 rgba(255,255,255,0.48)) drop-shadow(2px 2px 0 rgba(0,0,0,0.62)) drop-shadow(0 6px 9px rgba(0,0,0,0.58)) drop-shadow(0 2px 4px rgba(0,0,0,0.40))',
+            opacity: iconOpacity,
+            transition: 'opacity 0.24s ease',
+          }}
+        />
       </div>
     ) : null
-    return <>{geometry}{icon}</>
+    /* V43 — sin diagonales geométricas para matchear demo P20 limpio */
+    return <>{icon}</>
   }
 
   const renderCard = (slotIndex: number) => {
@@ -624,21 +655,20 @@ export default function HomeDashboard() {
         }}
       >
         {renderDecor(card, isHovered)}
-        {/* V42 — Dot verde enterprise + pulse ring desincronizado
-            Config: SIN pulse (módulo sistema, no operación) — solo dot estático dorado. */}
-        <div style={{ position: 'absolute', top: '14px', right: '14px', width: '14px', height: '14px', pointerEvents: 'none', zIndex: 3 }}>
-          {card.id !== 'config' && (
-            /* Pulse ring — delay random por card para ritmo orgánico (no marea sincronizada) */
+        {/* V43 — Dot verde enterprise con pulse (SOLO cards operacionales)
+            Config: SIN nada (matchea demo P20 — grafito limpio sin dot). */}
+        {card.id !== 'config' && (
+          <div style={{ position: 'absolute', top: '14px', right: '14px', width: '14px', height: '14px', pointerEvents: 'none', zIndex: 3 }}>
+            {/* Pulse ring — delay determinístico por card para ritmo orgánico */}
             <div style={{
               position: 'absolute',
               top: '50%', left: '50%',
               width: '14px', height: '14px',
               borderRadius: '50%',
-              border: '1.5px solid rgba(16,185,129,0.75)', /* verde enterprise #10B981 */
+              border: '1.5px solid rgba(16,185,129,0.75)',
               transform: 'translate(-50%, -50%)',
               animation: 'lhDotPulse 2.2s ease-in-out infinite',
               animationDelay: (() => {
-                /* Delay determinístico por card — 8 valores spread 0-1.6s */
                 const delayMap: Record<string, string> = {
                   'oportunidades': '0s',
                   'servicio-clientes': '0.3s',
@@ -647,70 +677,66 @@ export default function HomeDashboard() {
                   'ventas': '1.5s',
                   'comunicaciones': '0.5s',
                   'autofomento': '0.9s',
-                  'config': '0s',
                 }
                 return delayMap[card.id] || '0s'
               })(),
               pointerEvents: 'none',
             }} />
-          )}
-          {/* Dot central:
-              - Config: dorado estático (módulo sistema)
-              - Otros: verde enterprise con gradient radial (operacional, "active") */}
-          <div style={{
-            position: 'absolute',
-            top: '50%', left: '50%',
-            width: '6px', height: '6px',
-            borderRadius: '50%',
-            background: card.id === 'config'
-              ? 'radial-gradient(circle at 35% 30%, #FFD270 0%, #D6A84F 65%, #B8892B 100%)'
-              : 'radial-gradient(circle at 35% 30%, #34D399 0%, #10B981 65%, #047857 100%)',
-            boxShadow: card.id === 'config'
-              ? '0 0 0 1px rgba(255,255,255,0.12), 0 0 8px rgba(214,168,79,0.55)'
-              : '0 0 0 1px rgba(255,255,255,0.14), 0 0 10px rgba(16,185,129,0.62)',
-            transform: 'translate(-50%, -50%)',
-            pointerEvents: 'none',
-          }} />
-        </div>
-        {/* V38 Title — engraved triple */}
+            {/* Dot verde central */}
+            <div style={{
+              position: 'absolute',
+              top: '50%', left: '50%',
+              width: '6px', height: '6px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle at 35% 30%, #34D399 0%, #10B981 65%, #047857 100%)',
+              boxShadow: '0 0 0 1px rgba(255,255,255,0.14), 0 0 10px rgba(16,185,129,0.62)',
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'none',
+            }} />
+          </div>
+        )}
+        {/* V43 Title — Rubber Deboss BLANCO hundido (P20 Bloque 1) */}
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
-          fontSize: '22px',
-          fontWeight: 800,
-          color: '#FFFFFF',
-          letterSpacing: '-0.02em',
-          lineHeight: 1.15,
+          fontSize: '27px',
+          fontWeight: 900,
+          color: 'rgba(255,255,255,0.96)',
+          letterSpacing: '-0.024em',
+          lineHeight: 1.12,
           marginBottom: 'auto',
           textAlign: 'left',
           width: '100%',
           position: 'relative',
           zIndex: 2,
-          /* V41 — halo top reducido 0.40 → 0.28 (menos "impresión", más engraving sutil) */
           textShadow: [
-            '0 -1px 0 rgba(0,0,0,0.28)',
-            '0 1px 0 rgba(255,255,255,0.12)',
-            '0 2px 5px rgba(0,0,0,0.30)',
+            '0 -1px 0 rgba(0,0,0,0.74)',
+            '0 1px 0 rgba(255,255,255,0.26)',
+            '0 2px 3px rgba(0,0,0,0.32)',
           ].join(', '),
           pointerEvents: 'none',
         }}>
           {card.label}
         </div>
+        {/* V43 Subtitle — Rubber Deboss NEGRO (P20 Bloque 1) */}
         <div style={{
           fontFamily: "'Montserrat', sans-serif",
-          fontSize: '12px',
-          fontWeight: 500,
-          color: 'rgba(255,255,255,0.88)', /* V41 — 0.78 → 0.88 (más legible sobre cards oscuros) */
-          letterSpacing: '0.2px',
+          fontSize: '14px',
+          fontWeight: 600,
+          color: 'rgba(0,0,0,0.42)',
+          letterSpacing: '0.015em',
           textAlign: 'left',
           width: '100%',
-          marginTop: '8px',
+          marginTop: '10px',
           position: 'relative',
           zIndex: 3,
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           boxSizing: 'border-box',
-          textShadow: '0 1px 3px rgba(0,0,0,0.28)',
+          textShadow: [
+            '0 -1px 0 rgba(0,0,0,0.66)',
+            '0 1px 0 rgba(255,255,255,0.20)',
+          ].join(', '),
           pointerEvents: 'none',
         }}>
           {card.statusText}
