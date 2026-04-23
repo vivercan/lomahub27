@@ -617,8 +617,8 @@ export default function HomeDashboard() {
         overflow: 'visible',
         isolation: 'isolate',
         transform: 'translateZ(0)',
-        /* V43 Plan B — ambient lift + depth en el wrapper (capas 4 y 5 del efecto 3D laser-cut) */
-        filter: 'drop-shadow(0 6px 9px rgba(0,0,0,0.58)) drop-shadow(0 2px 4px rgba(0,0,0,0.40))',
+        /* V43 Plan B — ambient lift REFORZADO + depth (flotación más evidente) */
+        filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.68)) drop-shadow(0 3px 5px rgba(0,0,0,0.48))',
       }}>
         {/* Capa 3 — Edge shadow bottom-right (grosor de placa) — renders al fondo */}
         <img
@@ -749,7 +749,7 @@ export default function HomeDashboard() {
         )}
         {/* V43 — Wrapper título + subtítulo (matchea estructura demo P20) */}
         <div style={{ position: 'relative', zIndex: 2, width: '100%' }}>
-          {/* V43 Title — Rubber Deboss BLANCO hundido (P20 Bloque 1) */}
+          {/* V43 Title — Rubber Deboss BLANCO hundido PROFUNDO (4-layer cavity) */}
           <div style={{
             fontFamily: "'Montserrat', sans-serif",
             fontSize: '27px',
@@ -760,20 +760,22 @@ export default function HomeDashboard() {
             textAlign: 'left',
             width: '100%',
             textShadow: [
-              '0 -1px 0 rgba(0,0,0,0.74)',
-              '0 1px 0 rgba(255,255,255,0.26)',
-              '0 2px 3px rgba(0,0,0,0.32)',
+              '0 -2px 0 rgba(0,0,0,0.92)',             /* top-dark REFORZADO (cavidad) */
+              '0 -1px 2px rgba(0,0,0,0.55)',           /* cavity blur adicional */
+              '0 1px 0 rgba(255,255,255,0.36)',        /* bottom-light (lip iluminado) */
+              '0 2px 4px rgba(0,0,0,0.50)',            /* drop profundo */
+              '0 3px 6px rgba(0,0,0,0.28)',            /* drop extendido */
             ].join(', '),
             pointerEvents: 'none',
           }}>
             {card.label}
           </div>
-          {/* V43 Subtitle — Rubber Deboss NEGRO (P20 Bloque 1) */}
+          {/* V43 Subtitle — Rubber Deboss NEGRO MÁS HUNDIDO */}
           <div style={{
             fontFamily: "'Montserrat', sans-serif",
             fontSize: '14px',
             fontWeight: 600,
-            color: 'rgba(0,0,0,0.42)',
+            color: 'rgba(0,0,0,0.48)',
             letterSpacing: '0.015em',
             textAlign: 'left',
             width: '100%',
@@ -783,8 +785,9 @@ export default function HomeDashboard() {
             textOverflow: 'ellipsis',
             boxSizing: 'border-box',
             textShadow: [
-              '0 -1px 0 rgba(0,0,0,0.66)',
-              '0 1px 0 rgba(255,255,255,0.20)',
+              '0 -1px 0 rgba(0,0,0,0.82)',             /* top-dark REFORZADO 0.66 → 0.82 */
+              '0 1px 0 rgba(255,255,255,0.26)',        /* bottom-light reforzada 0.20 → 0.26 */
+              '0 2px 2px rgba(0,0,0,0.22)',            /* drop adicional para profundidad */
             ].join(', '),
             pointerEvents: 'none',
           }}>
