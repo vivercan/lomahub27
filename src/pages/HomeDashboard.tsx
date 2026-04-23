@@ -448,8 +448,10 @@ export default function HomeDashboard() {
         0 4px 8px rgba(0,0,0,0.12)
       `
     } else if (isHovered) {
-      // V42 HOVER — parallax reforzado ±6° + translateY -10 + translateZ +24 + scale 1.02
-      transform = `${basePerspective} rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateY(-10px) translateZ(24px) scale(1.02)`
+      // V43 HOVER — parallax reducido ±2° (±6° rompía el render de filters laser-cut) + translateY -10 + translateZ +24 + scale 1.02
+      const reducedRx = tilt.rx * 0.33
+      const reducedRy = tilt.ry * 0.33
+      transform = `${basePerspective} rotateX(${reducedRx}deg) rotateY(${reducedRy}deg) translateY(-10px) translateZ(24px) scale(1.02)`
       boxShadow = `
         inset 1px 0 0 rgba(255,255,255,0.12),
         inset -1px 0 0 rgba(255,255,255,0.08),
@@ -603,7 +605,19 @@ export default function HomeDashboard() {
     /* V43 — Oportunidades 4px más a la izquierda (JJ fix) */
     const iconRight = card.id === 'operaciones' ? '8px' : card.id === 'oportunidades' ? '20px' : '16px'
     const icon = card.iconFile ? (
-      <div style={{ position: 'absolute', right: iconRight, bottom: iconBottom, width: `${iconSize}px`, height: `${iconSize}px`, pointerEvents: 'none', transition: baseTransition, zIndex: 2, overflow: 'visible' }}>
+      <div style={{
+        position: 'absolute',
+        right: iconRight,
+        bottom: iconBottom,
+        width: `${iconSize}px`,
+        height: `${iconSize}px`,
+        pointerEvents: 'none',
+        transition: baseTransition,
+        zIndex: 2,
+        overflow: 'visible',
+        isolation: 'isolate', /* V43 — aísla del 3D context del card para que filter laser-cut rinda clean */
+        transform: 'translateZ(0)', /* V43 — promote layer GPU para filter rendering consistente */
+      }}>
         <img
           src={`/icons/dashboard/${card.iconFile}`}
           alt=""
@@ -615,6 +629,7 @@ export default function HomeDashboard() {
             filter: 'brightness(0) invert(0.95) drop-shadow(-1.5px -1.5px 0 rgba(255,255,255,0.48)) drop-shadow(2px 2px 0 rgba(0,0,0,0.62)) drop-shadow(0 6px 9px rgba(0,0,0,0.58)) drop-shadow(0 2px 4px rgba(0,0,0,0.40))',
             opacity: iconOpacity,
             transition: 'opacity 0.24s ease',
+            willChange: 'filter', /* V43 — promote filter rendering */
           }}
         />
       </div>
@@ -695,51 +710,49 @@ export default function HomeDashboard() {
             }} />
           </div>
         )}
-        {/* V43 Title — Rubber Deboss BLANCO hundido (P20 Bloque 1) */}
-        <div style={{
-          fontFamily: "'Montserrat', sans-serif",
-          fontSize: '27px',
-          fontWeight: 900,
-          color: 'rgba(255,255,255,0.96)',
-          letterSpacing: '-0.024em',
-          lineHeight: 1.12,
-          marginBottom: 'auto',
-          textAlign: 'left',
-          width: '100%',
-          position: 'relative',
-          zIndex: 2,
-          textShadow: [
-            '0 -1px 0 rgba(0,0,0,0.74)',
-            '0 1px 0 rgba(255,255,255,0.26)',
-            '0 2px 3px rgba(0,0,0,0.32)',
-          ].join(', '),
-          pointerEvents: 'none',
-        }}>
-          {card.label}
-        </div>
-        {/* V43 Subtitle — Rubber Deboss NEGRO (P20 Bloque 1) */}
-        <div style={{
-          fontFamily: "'Montserrat', sans-serif",
-          fontSize: '14px',
-          fontWeight: 600,
-          color: 'rgba(0,0,0,0.42)',
-          letterSpacing: '0.015em',
-          textAlign: 'left',
-          width: '100%',
-          marginTop: '10px',
-          position: 'relative',
-          zIndex: 3,
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          boxSizing: 'border-box',
-          textShadow: [
-            '0 -1px 0 rgba(0,0,0,0.66)',
-            '0 1px 0 rgba(255,255,255,0.20)',
-          ].join(', '),
-          pointerEvents: 'none',
-        }}>
-          {card.statusText}
+        {/* V43 — Wrapper título + subtítulo (matchea estructura demo P20) */}
+        <div style={{ position: 'relative', zIndex: 2, width: '100%' }}>
+          {/* V43 Title — Rubber Deboss BLANCO hundido (P20 Bloque 1) */}
+          <div style={{
+            fontFamily: "'Montserrat', sans-serif",
+            fontSize: '27px',
+            fontWeight: 900,
+            color: 'rgba(255,255,255,0.96)',
+            letterSpacing: '-0.024em',
+            lineHeight: 1.12,
+            textAlign: 'left',
+            width: '100%',
+            textShadow: [
+              '0 -1px 0 rgba(0,0,0,0.74)',
+              '0 1px 0 rgba(255,255,255,0.26)',
+              '0 2px 3px rgba(0,0,0,0.32)',
+            ].join(', '),
+            pointerEvents: 'none',
+          }}>
+            {card.label}
+          </div>
+          {/* V43 Subtitle — Rubber Deboss NEGRO (P20 Bloque 1) */}
+          <div style={{
+            fontFamily: "'Montserrat', sans-serif",
+            fontSize: '14px',
+            fontWeight: 600,
+            color: 'rgba(0,0,0,0.42)',
+            letterSpacing: '0.015em',
+            textAlign: 'left',
+            width: '100%',
+            marginTop: '10px',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            boxSizing: 'border-box',
+            textShadow: [
+              '0 -1px 0 rgba(0,0,0,0.66)',
+              '0 1px 0 rgba(255,255,255,0.20)',
+            ].join(', '),
+            pointerEvents: 'none',
+          }}>
+            {card.statusText}
+          </div>
         </div>
       </div>
     )
