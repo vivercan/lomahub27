@@ -3,50 +3,42 @@ import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
-
 /* ———————————————————————————————————————————————————————————————
 SERVICIO A CLIENTES — Landing Page
 Dark glass cards with amber hover glow — premium AAA style
+V2 — Añadido 3D depth boxShadow stack (V43 DNA) sin tocar
+     backgrounds, border gradient, iconos ni KPIs.
 —————————————————————————————————————————————————————————————— */
-
 const D = {
   bg: '#E8EBF0',
   font: tokens.fonts.heading,
   fontBody: tokens.fonts.body,
 } as const
-
 /* ── Amber glow color for hover ── */
 const AMBER = '255,120,0'
-
 /* ── Icon component — centered, prominent, thin-stroke ── */
 const STROKE_SCALE = 0.75
-
 const IcoCenter = ({ set, name, hovered }: { set: string; name: string; hovered?: boolean }) => {
   const [srcWhite, setSrcWhite] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
   const [srcOrange, setSrcOrange] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ff7800`)
-
   useEffect(() => {
     const thinify = (raw: string) =>
       raw.replace(/stroke-width="([^"]+)"/g, (_, w) =>
         `stroke-width="${(parseFloat(w) * STROKE_SCALE).toFixed(2)}"`)
-
     fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
       .then(r => r.text())
       .then(raw => setSrcWhite(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
       .catch(() => {})
-
     fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ff9940`)
       .then(r => r.text())
       .then(raw => setSrcOrange(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
       .catch(() => {})
   }, [set, name])
-
   return (
     <img src={hovered ? srcOrange : srcWhite} alt=""
       style={{ width: '79px', height: '79px', opacity: hovered ? 0.55 : 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))', transition: 'opacity 0.3s ease' }} />
   )
 }
-
 /* ── Card config ── */
 interface CardDef {
   id: string
@@ -56,7 +48,6 @@ interface CardDef {
   iconSet: string
   iconName: string
 }
-
 const CARDS: CardDef[] = [
   { id: 'tickets',      label: 'Tickets',           route: '/servicio/tickets',         kpiLabel: 'Activos',         iconSet: 'bi',        iconName: 'ticket-perforated' },
   { id: 'clientes',     label: 'Clientes Activos',  route: '/clientes/corporativos',    kpiLabel: 'Clientes',        iconSet: 'gridicons',  iconName: 'multiple-users' },
@@ -66,32 +57,26 @@ const CARDS: CardDef[] = [
   { id: 'metricas',     label: 'Métricas Servicio', route: '/servicio/metricas',        kpiLabel: 'Dashboard',       iconSet: 'bi',        iconName: 'graph-up' },
   { id: 'actividades',  label: 'Actividades',       route: '/actividades',              kpiLabel: 'Pendientes',      iconSet: 'bi',        iconName: 'list-check' },
 ]
-
 /* ── Supabase helpers ── */
 async function countViajesAnodosByTipo(tipoViaje: number): Promise<number> {
   const hace30d = new Date()
   hace30d.setDate(hace30d.getDate() - 30)
   const desde = hace30d.toISOString()
-
   const { count, error } = await supabase
     .from('viajes_anodos')
     .select('*', { count: 'exact', head: true })
     .eq('tipo_viaje', tipoViaje)
     .gte('inicia_viaje', desde)
-
   if (error) { console.error(`viajes_anodos tipo ${tipoViaje}:`, error); return 0 }
   if (count && count > 0) return count
-
   const { count: c2, error: e2 } = await supabase
     .from('viajes_anodos')
     .select('*', { count: 'exact', head: true })
     .eq('tipo_viaje', tipoViaje)
     .gte('fecha_crea', desde)
-
   if (e2) { console.error(`viajes_anodos tipo ${tipoViaje} fallback:`, e2); return 0 }
   return c2 || 0
 }
-
 /* ── Component ── */
 export default function DashboardCS() {
   const navigate = useNavigate()
@@ -99,7 +84,6 @@ export default function DashboardCS() {
   const [pressed, setPressed] = useState<string | null>(null)
   const [kpis, setKpis] = useState<Record<string, number>>({ tickets: 0, clientes: 0, impo: 0, expo: 0, despacho_ia: 0, metricas: 0, actividades: 0 })
   const [loading, setLoading] = useState(true)
-
   const fetchKpis = useCallback(async () => {
     try {
       const [tix, cli, act, viajesActivos] = await Promise.all([
@@ -124,9 +108,7 @@ export default function DashboardCS() {
     } catch (e) { console.error('KPI fetch error:', e) }
     finally { setLoading(false) }
   }, [])
-
   useEffect(() => { fetchKpis() }, [fetchKpis])
-
   return (
     <ModuleLayout titulo="Servicio a Clientes">
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
@@ -134,7 +116,6 @@ export default function DashboardCS() {
           {CARDS.map(card => {
             const isH = hovered === card.id
             const isP = pressed === card.id
-
             /* ── Double-layer gradient (from tokens.ts pattern) ── */
             const bgNormal =
               'linear-gradient(155deg, rgba(18,32,58,0.96) 0%, rgba(12,22,42,0.98) 35%, rgba(8,16,32,1) 70%, rgba(6,12,24,1) 100%), ' +
@@ -142,7 +123,6 @@ export default function DashboardCS() {
             const bgHover =
               'linear-gradient(155deg, rgba(28,48,82,1) 0%, rgba(20,35,62,1) 35%, rgba(14,24,45,1) 70%, rgba(10,18,35,1) 100%), ' +
               'linear-gradient(135deg, rgba(240,160,80,0.65) 0%, rgba(220,140,70,0.6) 25%, rgba(70,110,170,0.4) 50%, rgba(220,140,70,0.6) 75%, rgba(240,160,80,0.65) 100%)'
-
             return (
               <div
                 key={card.id}
@@ -165,11 +145,13 @@ export default function DashboardCS() {
                   gap: '0px',
                   transition: 'all 0.3s ease',
                   transform: isP ? 'translateY(0px)' : isH ? 'translateY(-6px)' : 'translateY(0)',
+                  /* V2 — 3D depth boxShadow stack (V43 DNA): insets top+bottom+edges + outer 4-layer shadows.
+                     Conserva el border gradient porque los insets viven DENTRO del padding-box. */
                   boxShadow: isP
-                    ? '0 1px 2px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(0,0,0,0.2)'
+                    ? 'inset 1px 0 0 rgba(255,255,255,0.08), inset -1px 0 0 rgba(255,255,255,0.04), inset 0 2px 0 rgba(255,255,255,0.18), inset 0 -2px 0 rgba(0,0,0,0.32), inset 0 4px 12px rgba(0,0,0,0.28), 0 1px 2px rgba(0,0,0,0.30), 0 3px 6px rgba(0,0,0,0.22)'
                     : isH
-                    ? '0 4px 8px rgba(0,0,0,0.4), 0 10px 24px rgba(0,0,0,0.6), 0 0 30px rgba(240,160,80,0.15), inset 0 1px 0 rgba(255,255,255,0.05)'
-                    : '0 2px 4px rgba(0,0,0,0.3), 0 6px 16px rgba(0,0,0,0.5), inset -2px -2px 4px rgba(0,0,0,0.2)',
+                    ? 'inset 1px 0 0 rgba(255,255,255,0.12), inset -1px 0 0 rgba(255,255,255,0.08), inset 0 3px 0 rgba(255,255,255,0.30), inset 0 -3px 0 rgba(0,0,0,0.42), inset 0 -22px 38px rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.22), 0 20px 36px rgba(0,0,0,0.34), 0 44px 72px -10px rgba(0,0,0,0.42), 0 0 30px rgba(240,160,80,0.18)'
+                    : 'inset 1px 0 0 rgba(255,255,255,0.10), inset -1px 0 0 rgba(255,255,255,0.06), inset 0 3px 0 rgba(255,255,255,0.24), inset 0 -3px 0 rgba(0,0,0,0.38), inset 0 -20px 36px rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.18), 0 14px 24px rgba(0,0,0,0.28), 0 32px 52px -8px rgba(0,0,0,0.36), 0 56px 80px -14px rgba(0,0,0,0.32)',
                   fontFamily: D.font,
                 }}
                 onMouseEnter={() => setHovered(card.id)}
@@ -186,7 +168,6 @@ export default function DashboardCS() {
                   pointerEvents: 'none', opacity: isH ? 0.5 : 0.3,
                   transition: 'opacity 0.3s ease',
                 }} />
-
                 {/* Label — at TOP */}
                 <div style={{
                   fontFamily: D.font, fontSize: '17px', fontWeight: 600, color: '#ffffff',
@@ -195,12 +176,10 @@ export default function DashboardCS() {
                 }}>
                   {card.label}
                 </div>
-
                 {/* Icon — centered, prominent */}
                 <div style={{ position: 'relative', zIndex: 1, transition: 'transform 0.3s ease', transform: isH ? 'scale(1.05)' : 'none' }}>
                   <IcoCenter set={card.iconSet} name={card.iconName} hovered={isH} />
                 </div>
-
                 {/* KPI + sublabel */}
                 <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
                   <div style={{
