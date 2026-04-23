@@ -483,17 +483,17 @@ export default function HomeDashboard() {
       const lightMult = tier === 'primary' ? 1.14 : tier === 'secondary' ? 1.08 : tier === 'strong' ? 1.04 : 1
       const topLight = (0.13 * lightMult).toFixed(3)
       const topLeftLight = (0.10 * lightMult).toFixed(3)
-      /* V48 — Comercial: +12% internal tonal depth (0.31→0.35) + refined top-left to lower-right gradient (0.19→0.21 + ambient 0.035→0.042) */
+      /* V49 — Comercial: +12% adicional internal tonal depth (0.35→0.392, 0.21→0.235, 0.042→0.047) */
       const comercialAuthority = card.id === 'comercial'
-        ? `, inset 0 -60px 80px rgba(0,0,0,0.35), inset -40px -50px 72px rgba(0,0,0,0.21), inset 40px 30px 80px rgba(255,255,255,0.042)`
+        ? `, inset 0 -60px 80px rgba(0,0,0,0.392), inset -40px -50px 72px rgba(0,0,0,0.235), inset 40px 30px 80px rgba(255,255,255,0.047)`
         : ''
-      /* V48 — Servicio: +8% tonal richness (0.118→0.127) para reducir uniform flatness center */
+      /* V49 — Servicio: +8% adicional tonal richness (0.127→0.137, 0.028→0.030) */
       const servicioDepth = card.id === 'servicio-clientes'
-        ? `, inset 0 -32px 60px rgba(0,0,0,0.127), inset 30px 20px 60px rgba(255,255,255,0.028)`
+        ? `, inset 0 -32px 60px rgba(0,0,0,0.137), inset 30px 20px 60px rgba(255,255,255,0.030)`
         : ''
-      /* V48 — Strong support (Control + Comunicaciones): +4% richness adicional (0.09→0.094) con contrast depth sutil */
+      /* V49 — Strong support (Control + Comunicaciones): +4% adicional richness (0.094→0.098, 0.018→0.019) */
       const strongDepth = (card.id === 'autofomento' || card.id === 'comunicaciones')
-        ? `, inset 0 -26px 52px rgba(0,0,0,0.094), inset 20px 10px 50px rgba(255,255,255,0.018)`
+        ? `, inset 0 -26px 52px rgba(0,0,0,0.098), inset 20px 10px 50px rgba(255,255,255,0.019)`
         : ''
       boxShadow = `
         inset 1px 0 0 rgba(255,255,255,${topLeftLight}),
@@ -542,9 +542,9 @@ export default function HomeDashboard() {
     const baseTransition = 'opacity 0.3s ease'
     const mult = isHovered ? 2.2 : 1
     const geometry = (() => {
-      // V48 ULTRA — diagonales atmosférico-sutil: opacidad -10% adicional + width bright -8% adicional
-      const opacityMult = 0.5625 /* 0.625 * 0.90 */
-      const brightWidthMult = 0.654 /* 0.711 * 0.92 */
+      // V49 WORLD-CLASS — diagonales casi imperceptibles: opacidad -10% adicional + bright width -8% adicional
+      const opacityMult = 0.506 /* 0.5625 * 0.90 */
+      const brightWidthMult = 0.602 /* 0.654 * 0.92 */
       const baseOpacity = 0.06 * mult * opacityMult
       const strongerOpacity = 0.08 * mult * opacityMult
       switch (card.id) {
@@ -579,11 +579,11 @@ export default function HomeDashboard() {
             </>
           )
         case 'ventas':
-          /* V48 — Ventas: -6% adicional (0.92*0.94=0.865) sobre brightness de sus diagonales */
+          /* V49 — Ventas: -6% adicional sobre V48 (0.865 * 0.94 = 0.813) */
           return (
             <>
-              <div style={{ position: 'absolute', left: '52%', top: '-30%', width: `${30 * brightWidthMult}%`, height: '160%', background: `rgba(255,255,255,${strongerOpacity * 0.865})`, transform: 'rotate(38deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
-              <div style={{ position: 'absolute', left: '70%', top: '-30%', width: '12%', height: '160%', background: `rgba(255,255,255,${baseOpacity * 0.865})`, transform: 'rotate(44deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
+              <div style={{ position: 'absolute', left: '52%', top: '-30%', width: `${30 * brightWidthMult}%`, height: '160%', background: `rgba(255,255,255,${strongerOpacity * 0.813})`, transform: 'rotate(38deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
+              <div style={{ position: 'absolute', left: '70%', top: '-30%', width: '12%', height: '160%', background: `rgba(255,255,255,${baseOpacity * 0.813})`, transform: 'rotate(44deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
             </>
           )
         case 'comunicaciones':
