@@ -143,24 +143,24 @@ export default function DashboardCS() {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   gap: '0px',
-                  transition: 'transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s ease, outline 0.18s ease',
-                  /* V2.1 — pressed se HUNDE (translateY +3px + scale 0.97) = apachurrable real */
+                  transition: 'transform 0.15s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s ease, outline 0.18s ease',
+                  /* V2.2 — pressed se HUNDE MÁS (translateY +5px + scale 0.96) = apachurrable muy notable */
                   transform: isP
-                    ? 'translateY(3px) scale(0.97)'
+                    ? 'translateY(5px) scale(0.96)'
                     : isH
-                    ? 'translateY(-6px)'
-                    : 'translateY(0)',
-                  /* V2.1 — outline rim blanco sutil recupera el contorno perdido */
+                    ? 'translateY(-7px) scale(1.015)'
+                    : 'translateY(0) scale(1)',
+                  /* V2.2 — outline rim blanco más visible */
                   outline: isH
-                    ? '1px solid rgba(255,255,255,0.22)'
-                    : '1px solid rgba(255,255,255,0.14)',
+                    ? '1px solid rgba(255,255,255,0.28)'
+                    : '1px solid rgba(255,255,255,0.18)',
                   outlineOffset: '-1px',
-                  /* V2.1 — 3D depth boxShadow stack: insets + 4 outer shadows + pressed con cavity profunda */
+                  /* V2.2 — 3D REFORZADO (top rim más brillante + outer shadows más lift + pressed cavity más profunda) */
                   boxShadow: isP
-                    ? 'inset 0 3px 8px rgba(0,0,0,0.45), inset 0 -1px 0 rgba(255,255,255,0.06), inset 1px 0 0 rgba(0,0,0,0.22), inset -1px 0 0 rgba(0,0,0,0.22), 0 1px 2px rgba(0,0,0,0.32), 0 2px 4px rgba(0,0,0,0.20)'
+                    ? 'inset 0 5px 14px rgba(0,0,0,0.60), inset 0 2px 4px rgba(0,0,0,0.42), inset 0 -1px 0 rgba(255,255,255,0.04), inset 1px 0 0 rgba(0,0,0,0.26), inset -1px 0 0 rgba(0,0,0,0.26), 0 0 0 rgba(0,0,0,0), 0 1px 2px rgba(0,0,0,0.28)'
                     : isH
-                    ? 'inset 1px 0 0 rgba(255,255,255,0.14), inset -1px 0 0 rgba(255,255,255,0.10), inset 0 3px 0 rgba(255,255,255,0.36), inset 0 -3px 0 rgba(0,0,0,0.42), inset 0 -22px 38px rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.22), 0 20px 36px rgba(0,0,0,0.34), 0 44px 72px -10px rgba(0,0,0,0.42), 0 0 30px rgba(240,160,80,0.20)'
-                    : 'inset 1px 0 0 rgba(255,255,255,0.12), inset -1px 0 0 rgba(255,255,255,0.08), inset 0 3px 0 rgba(255,255,255,0.32), inset 0 -3px 0 rgba(0,0,0,0.38), inset 0 -20px 36px rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.18), 0 14px 24px rgba(0,0,0,0.28), 0 32px 52px -8px rgba(0,0,0,0.36), 0 56px 80px -14px rgba(0,0,0,0.32)',
+                    ? 'inset 1px 0 0 rgba(255,255,255,0.18), inset -1px 0 0 rgba(255,255,255,0.12), inset 0 4px 0 rgba(255,255,255,0.52), inset 0 -4px 0 rgba(0,0,0,0.46), inset 0 -24px 42px rgba(0,0,0,0.22), 0 6px 10px rgba(0,0,0,0.26), 0 26px 44px rgba(0,0,0,0.40), 0 52px 80px -12px rgba(0,0,0,0.48), 0 0 36px rgba(240,160,80,0.26)'
+                    : 'inset 1px 0 0 rgba(255,255,255,0.16), inset -1px 0 0 rgba(255,255,255,0.10), inset 0 4px 0 rgba(255,255,255,0.44), inset 0 -4px 0 rgba(0,0,0,0.42), inset 0 -22px 40px rgba(0,0,0,0.20), 0 3px 6px rgba(0,0,0,0.22), 0 18px 30px rgba(0,0,0,0.32), 0 38px 60px -8px rgba(0,0,0,0.40), 0 64px 90px -14px rgba(0,0,0,0.36)',
                   fontFamily: D.font,
                 }}
                 onMouseEnter={() => setHovered(card.id)}
@@ -169,12 +169,20 @@ export default function DashboardCS() {
                 onMouseUp={() => setPressed(null)}
                 onClick={() => navigate(card.route)}
               >
-                {/* Top shine — glass reflection (35% height like reference) */}
+                {/* Top shine — glass reflection REFORZADA (V2.2 — visible al arribar) */}
                 <div style={{
-                  position: 'absolute', top: 0, left: 0, right: 0, height: '35%',
-                  background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%)',
+                  position: 'absolute', top: 0, left: 0, right: 0, height: '42%',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 50%, transparent 100%)',
                   borderTopLeftRadius: '10px', borderTopRightRadius: '10px',
-                  pointerEvents: 'none', opacity: isH ? 0.5 : 0.3,
+                  pointerEvents: 'none', opacity: isH ? 0.85 : 0.70,
+                  transition: 'opacity 0.3s ease',
+                }} />
+                {/* Top edge light — línea brillante en el borde superior (V2.2) */}
+                <div style={{
+                  position: 'absolute', top: 0, left: '10%', right: '10%', height: '1px',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%)',
+                  pointerEvents: 'none',
+                  opacity: isH ? 1 : 0.75,
                   transition: 'opacity 0.3s ease',
                 }} />
                 {/* Label — at TOP */}
