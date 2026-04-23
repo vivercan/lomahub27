@@ -615,21 +615,58 @@ export default function HomeDashboard() {
         transition: baseTransition,
         zIndex: 2,
         overflow: 'visible',
-        isolation: 'isolate', /* V43 — aísla del 3D context del card para que filter laser-cut rinda clean */
-        transform: 'translateZ(0)', /* V43 — promote layer GPU para filter rendering consistente */
+        isolation: 'isolate',
+        transform: 'translateZ(0)',
+        /* V43 Plan B — ambient lift + depth en el wrapper (capas 4 y 5 del efecto 3D laser-cut) */
+        filter: 'drop-shadow(0 6px 9px rgba(0,0,0,0.58)) drop-shadow(0 2px 4px rgba(0,0,0,0.40))',
       }}>
+        {/* Capa 3 — Edge shadow bottom-right (grosor de placa) — renders al fondo */}
         <img
           src={`/icons/dashboard/${card.iconFile}`}
           alt=""
           style={{
+            position: 'absolute',
+            top: '2px',
+            left: '2px',
             width: '100%',
             height: '100%',
             objectFit: 'contain',
             objectPosition: 'center center',
-            filter: 'brightness(0) invert(0.95) drop-shadow(-1.5px -1.5px 0 rgba(255,255,255,0.48)) drop-shadow(2px 2px 0 rgba(0,0,0,0.62)) drop-shadow(0 6px 9px rgba(0,0,0,0.58)) drop-shadow(0 2px 4px rgba(0,0,0,0.40))',
+            filter: 'brightness(0)',
+            opacity: 0.62,
+          }}
+        />
+        {/* Capa 2 — Edge highlight top-left (corte láser iluminado) — renders entre */}
+        <img
+          src={`/icons/dashboard/${card.iconFile}`}
+          alt=""
+          style={{
+            position: 'absolute',
+            top: '-1.5px',
+            left: '-1.5px',
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            objectPosition: 'center center',
+            filter: 'brightness(0) invert(1)',
+            opacity: 0.48,
+          }}
+        />
+        {/* Capa 1 — Base icon white metal (cuerpo principal) — renders arriba */}
+        <img
+          src={`/icons/dashboard/${card.iconFile}`}
+          alt=""
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            objectPosition: 'center center',
+            filter: 'brightness(0) invert(0.95)',
             opacity: iconOpacity,
             transition: 'opacity 0.24s ease',
-            willChange: 'filter', /* V43 — promote filter rendering */
           }}
         />
       </div>
