@@ -169,20 +169,12 @@ export default function DashboardCS() {
                 onMouseUp={() => setPressed(null)}
                 onClick={() => navigate(card.route)}
               >
-                {/* Top shine — glass reflection REFORZADA (V2.2 — visible al arribar) */}
+                {/* V2.3 — Top shine SUAVE (blend progresivo, sin banda visible) */}
                 <div style={{
-                  position: 'absolute', top: 0, left: 0, right: 0, height: '42%',
-                  background: 'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 50%, transparent 100%)',
+                  position: 'absolute', top: 0, left: 0, right: 0, height: '60%',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 30%, rgba(255,255,255,0.01) 60%, transparent 100%)',
                   borderTopLeftRadius: '10px', borderTopRightRadius: '10px',
-                  pointerEvents: 'none', opacity: isH ? 0.85 : 0.70,
-                  transition: 'opacity 0.3s ease',
-                }} />
-                {/* Top edge light — línea brillante en el borde superior (V2.2) */}
-                <div style={{
-                  position: 'absolute', top: 0, left: '10%', right: '10%', height: '1px',
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%)',
-                  pointerEvents: 'none',
-                  opacity: isH ? 1 : 0.75,
+                  pointerEvents: 'none', opacity: isH ? 0.95 : 0.80,
                   transition: 'opacity 0.3s ease',
                 }} />
                 {/* Label — at TOP */}
