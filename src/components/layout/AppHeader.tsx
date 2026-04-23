@@ -205,7 +205,7 @@ export default function AppHeader({
         </div>
 
         {/* CENTER — Fecha, Semana, Tipo Cambio — V32 spacing rhythm refinado */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 70, marginRight: 'auto', marginLeft: 70 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 78, marginRight: 'auto', marginLeft: 78 }}>
           <div style={{ textAlign: 'center' }}>
             <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: '#1E293B', fontFamily: "'Montserrat', sans-serif", letterSpacing: '-0.01em' }}>
               {fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1)}
