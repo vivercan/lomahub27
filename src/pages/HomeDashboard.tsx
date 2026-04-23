@@ -483,21 +483,21 @@ export default function HomeDashboard() {
       const lightMult = tier === 'primary' ? 1.14 : tier === 'secondary' ? 1.08 : tier === 'strong' ? 1.04 : 1
       const topLight = (0.12 * lightMult).toFixed(3)
       const topLeftLight = (0.10 * lightMult).toFixed(3)
-      /* V51 — Comercial: +14% adicional internal tonal depth (0.439→0.500, 0.263→0.300, 0.053→0.060) */
+      /* V52 — Comercial: +14% adicional internal tonal depth (0.500→0.570, 0.300→0.342, 0.060→0.068) */
       const comercialAuthority = card.id === 'comercial'
-        ? `, inset 0 -60px 80px rgba(0,0,0,0.500), inset -40px -50px 72px rgba(0,0,0,0.300), inset 40px 30px 80px rgba(255,255,255,0.060)`
+        ? `, inset 0 -60px 80px rgba(0,0,0,0.570), inset -40px -50px 72px rgba(0,0,0,0.342), inset 40px 30px 80px rgba(255,255,255,0.068)`
         : ''
-      /* V51 — Servicio: +9% adicional tonal richness (0.148→0.161, 0.032→0.035) */
+      /* V52 — Servicio: +9% adicional tonal richness (0.161→0.176, 0.035→0.038) */
       const servicioDepth = card.id === 'servicio-clientes'
-        ? `, inset 0 -32px 60px rgba(0,0,0,0.161), inset 30px 20px 60px rgba(255,255,255,0.035)`
+        ? `, inset 0 -32px 60px rgba(0,0,0,0.176), inset 30px 20px 60px rgba(255,255,255,0.038)`
         : ''
-      /* V51 — Strong support: +5% adicional richness (0.102→0.107, 0.020→0.021) */
+      /* V52 — Strong support: +5% adicional richness (0.107→0.112, 0.021→0.022) */
       const strongDepth = (card.id === 'autofomento' || card.id === 'comunicaciones')
-        ? `, inset 0 -26px 52px rgba(0,0,0,0.107), inset 20px 10px 50px rgba(255,255,255,0.021)`
+        ? `, inset 0 -26px 52px rgba(0,0,0,0.112), inset 20px 10px 50px rgba(255,255,255,0.022)`
         : ''
-      /* V51 — Config: +4% tonal richness restrained, intencional sobriedad */
+      /* V52 — Config: +4% tonal richness (0.05→0.052) */
       const configDepth = card.id === 'config'
-        ? `, inset 0 -22px 48px rgba(0,0,0,0.05)`
+        ? `, inset 0 -22px 48px rgba(0,0,0,0.052)`
         : ''
       boxShadow = `
         inset 1px 0 0 rgba(255,255,255,${topLeftLight}),
@@ -546,9 +546,9 @@ export default function HomeDashboard() {
     const baseTransition = 'opacity 0.3s ease'
     const mult = isHovered ? 2.2 : 1
     const geometry = (() => {
-      // V51 — diagonales atmosféricas + variación por tier hierarchy
-      const opacityMult = 0.410 /* 0.455 * 0.90 */
-      const brightWidthMult = 0.510 /* 0.554 * 0.92 */
+      // V52 — diagonales casi imperceptibles + tier hierarchy
+      const opacityMult = 0.369 /* 0.410 * 0.90 */
+      const brightWidthMult = 0.469 /* 0.510 * 0.92 */
       /* V51 — Per-tier diagonal strength: primary 1.10, secondary 1.05, strong 0.90, standard 0.80, technical 0.65 */
       const tierDiagonal = card.id === 'comercial' ? 1.10
                          : card.id === 'servicio-clientes' ? 1.05
@@ -589,11 +589,11 @@ export default function HomeDashboard() {
             </>
           )
         case 'ventas':
-          /* V51 — Ventas: -6% adicional (0.764 * 0.94 = 0.718) */
+          /* V52 — Ventas: -6% adicional (0.718 * 0.94 = 0.675) */
           return (
             <>
-              <div style={{ position: 'absolute', left: '52%', top: '-30%', width: `${30 * brightWidthMult}%`, height: '160%', background: `rgba(255,255,255,${strongerOpacity * 0.718})`, transform: 'rotate(38deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
-              <div style={{ position: 'absolute', left: '70%', top: '-30%', width: '12%', height: '160%', background: `rgba(255,255,255,${baseOpacity * 0.718})`, transform: 'rotate(44deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
+              <div style={{ position: 'absolute', left: '52%', top: '-30%', width: `${30 * brightWidthMult}%`, height: '160%', background: `rgba(255,255,255,${strongerOpacity * 0.675})`, transform: 'rotate(38deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
+              <div style={{ position: 'absolute', left: '70%', top: '-30%', width: '12%', height: '160%', background: `rgba(255,255,255,${baseOpacity * 0.675})`, transform: 'rotate(44deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
             </>
           )
         case 'comunicaciones':
