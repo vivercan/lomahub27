@@ -1,357 +1,228 @@
-// DashboardCS V2 — V43 DNA (P20 Rubber Salidos + Títulos Blancos Hundidos)
-//
-// Aplica el mismo lenguaje visual del HomeDashboard V43 al submódulo
-// Servicio a Clientes:
-//   • Cards con gradient 135° (no flat dark)
-//   • Títulos casi blancos 0.94 con rubber deboss crisp
-//   • Iconos monocroma tint por card (75% white + 25% card color) via CSS mask
-//   • 3D laser-cut en iconos (capas shadow + highlight + base)
-//   • KPI values reales desde Supabase (no "—")
-//   • Subtítulos negros rubber deboss
-//   • Dot verde pulse por card (excepto Config si aplica)
-//   • Hover lift + parallax sutil ±2°
-
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
-import AppHeader from '../../components/layout/AppHeader'
+import { tokens } from '../../lib/tokens'
 
-interface KpiCard {
+/* ———————————————————————————————————————————————————————————————
+SERVICIO A CLIENTES — Landing Page
+Dark glass cards with amber hover glow — premium AAA style
+—————————————————————————————————————————————————————————————— */
+
+const D = {
+  bg: '#E8EBF0',
+  font: tokens.fonts.heading,
+  fontBody: tokens.fonts.body,
+} as const
+
+/* ── Amber glow color for hover ── */
+const AMBER = '255,120,0'
+
+/* ── Icon component — centered, prominent, thin-stroke ── */
+const STROKE_SCALE = 0.75
+
+const IcoCenter = ({ set, name, hovered }: { set: string; name: string; hovered?: boolean }) => {
+  const [srcWhite, setSrcWhite] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
+  const [srcOrange, setSrcOrange] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ff7800`)
+
+  useEffect(() => {
+    const thinify = (raw: string) =>
+      raw.replace(/stroke-width="([^"]+)"/g, (_, w) =>
+        `stroke-width="${(parseFloat(w) * STROKE_SCALE).toFixed(2)}"`)
+
+    fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
+      .then(r => r.text())
+      .then(raw => setSrcWhite(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
+      .catch(() => {})
+
+    fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ff9940`)
+      .then(r => r.text())
+      .then(raw => setSrcOrange(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
+      .catch(() => {})
+  }, [set, name])
+
+  return (
+    <img src={hovered ? srcOrange : srcWhite} alt=""
+      style={{ width: '79px', height: '79px', opacity: hovered ? 0.55 : 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))', transition: 'opacity 0.3s ease' }} />
+  )
+}
+
+/* ── Card config ── */
+interface CardDef {
   id: string
   label: string
   route: string
-  gradient: string
-  iconColor: string
-  iconBg: string
-  iconKey: 'tickets' | 'clientes' | 'impo' | 'expo' | 'despacho' | 'metricas' | 'actividades'
-  subtitle: string
+  kpiLabel: string
+  iconSet: string
+  iconName: string
 }
 
-const CARDS: KpiCard[] = [
-  {
-    id: 'tickets',
-    label: 'Tickets',
-    route: '/servicio/tickets',
-    gradient: 'linear-gradient(135deg, #2763C4 0%, #0A2D6F 100%)',
-    iconColor: '#C9D8F0',
-    iconBg: '#2763C4',
-    iconKey: 'tickets',
-    subtitle: 'Activos · Pendientes · SLA',
-  },
-  {
-    id: 'clientes',
-    label: 'Clientes Activos',
-    route: '/clientes/corporativos',
-    gradient: 'linear-gradient(135deg, #2B5FB5 0%, #0B2E68 100%)',
-    iconColor: '#CAD7EC',
-    iconBg: '#2B5FB5',
-    iconKey: 'clientes',
-    subtitle: 'Corporativos · Estratégicos',
-  },
-  {
-    id: 'impo',
-    label: 'Importación',
-    route: '/servicio/importacion',
-    gradient: 'linear-gradient(135deg, #224CA0 0%, #062348 100%)',
-    iconColor: '#C8D2E8',
-    iconBg: '#224CA0',
-    iconKey: 'impo',
-    subtitle: 'Viajes IMPO últimos 30 días',
-  },
-  {
-    id: 'expo',
-    label: 'Exportación',
-    route: '/servicio/exportacion',
-    gradient: 'linear-gradient(135deg, #3D78D6 0%, #134287 100%)',
-    iconColor: '#CFDDF3',
-    iconBg: '#3D78D6',
-    iconKey: 'expo',
-    subtitle: 'Viajes EXPO últimos 30 días',
-  },
-  {
-    id: 'despacho',
-    label: 'Despacho IA',
-    route: '/servicio/despacho-ia',
-    gradient: 'linear-gradient(135deg, #F09830 0%, #9A4E0E 100%)',
-    iconColor: '#FADFC6',
-    iconBg: '#F09830',
-    iconKey: 'despacho',
-    subtitle: 'Viajes activos · Optimización IA',
-  },
-  {
-    id: 'metricas',
-    label: 'Métricas Servicio',
-    route: '/servicio/metricas',
-    gradient: 'linear-gradient(135deg, #4078D0 0%, #153E88 100%)',
-    iconColor: '#CFDDEF',
-    iconBg: '#4078D0',
-    iconKey: 'metricas',
-    subtitle: 'Dashboard analítico',
-  },
-  {
-    id: 'actividades',
-    label: 'Actividades',
-    route: '/servicio/actividades',
-    gradient: 'linear-gradient(135deg, #3A72CF 0%, #153E82 100%)',
-    iconColor: '#CEDCEF',
-    iconBg: '#3A72CF',
-    iconKey: 'actividades',
-    subtitle: 'Pendientes · Seguimientos',
-  },
+const CARDS: CardDef[] = [
+  { id: 'tickets',      label: 'Tickets',           route: '/servicio/tickets',         kpiLabel: 'Activos',         iconSet: 'bi',        iconName: 'ticket-perforated' },
+  { id: 'clientes',     label: 'Clientes Activos',  route: '/clientes/corporativos',    kpiLabel: 'Clientes',        iconSet: 'gridicons',  iconName: 'multiple-users' },
+  { id: 'impo',         label: 'Importación',       route: '/servicio/importacion',     kpiLabel: 'Viajes IMPO (30d)', iconSet: 'ion',      iconName: 'cloud-download' },
+  { id: 'expo',         label: 'Exportación',       route: '/servicio/exportacion',     kpiLabel: 'Viajes EXPO (30d)', iconSet: 'ion',      iconName: 'cloud-upload' },
+  { id: 'despacho_ia',  label: 'Despacho IA',       route: '/operaciones/torre-control', kpiLabel: 'Viajes activos',  iconSet: 'bi',         iconName: 'cpu' },
+  { id: 'metricas',     label: 'Métricas Servicio', route: '/servicio/metricas',        kpiLabel: 'Dashboard',       iconSet: 'bi',        iconName: 'graph-up' },
+  { id: 'actividades',  label: 'Actividades',       route: '/actividades',              kpiLabel: 'Pendientes',      iconSet: 'bi',        iconName: 'list-check' },
 ]
 
-// Iconos inline (SVG path-based, clean outline style como HomeDashboard V43)
-const ICON_SVGS: Record<string, string> = {
-  tickets: `<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><path fill='%23000' d='M18 34h64c2 0 4 2 4 4v10c-4 1-7 5-7 10s3 9 7 10v10c0 2-2 4-4 4H18c-2 0-4-2-4-4V68c4-1 7-5 7-10s-3-9-7-10V38c0-2 2-4 4-4zm19 12l-8 8 5 5 11-11-8-8-5 5 5 5-5 5zm24-6h15v3H61v-3zm0 8h20v3H61v-3zm0 8h18v3H61v-3z'/></svg>`,
-  clientes: `<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><path fill='%23000' d='M50 18a12 12 0 110 24 12 12 0 010-24zm-24 8a10 10 0 110 20 10 10 0 010-20zm48 0a10 10 0 110 20 10 10 0 010-20zM50 46c12 0 20 6 20 16v18H30V62c0-10 8-16 20-16zm-24 4c2 0 4 0 6 1-1 2-2 5-2 8v17H12V66c0-8 6-16 14-16zm48 0c8 0 14 8 14 16v10H70V59c0-3-1-6-2-8 2-1 4-1 6-1z'/></svg>`,
-  impo: `<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><path fill='%23000' d='M70 38a18 18 0 00-35-4 14 14 0 00-2 28h37a12 12 0 000-24zM50 76V56l-10 10 4 4 4-4v10h4zm0 0v-10l4 4 4-4-10-10v20h2z'/></svg>`,
-  expo: `<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><path fill='%23000' d='M70 42a18 18 0 00-35-4 14 14 0 00-2 28h37a12 12 0 000-24zM50 48l-8 8 4 4 2-2v12h4V58l2 2 4-4-8-8z'/></svg>`,
-  despacho: `<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><path fill='%23000' d='M30 30h40v40H30V30zm4 4v32h32V34H34zm8 8h16v16H42V42zm-10-16h4v6h-4v-6zm12 0h4v6h-4v-6zm12 0h4v6h-4v-6zm12 0h4v6h-4v-6zM32 74h4v6h-4v-6zm12 0h4v6h-4v-6zm12 0h4v6h-4v-6zm12 0h4v6h-4v-6zM22 38h6v4h-6v-4zm0 10h6v4h-6v-4zm0 10h6v4h-6v-4zm0 10h6v4h-6v-4zM72 38h6v4h-6v-4zm0 10h6v4h-6v-4zm0 10h6v4h-6v-4zm0 10h6v4h-6v-4z'/></svg>`,
-  metricas: `<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><path fill='%23000' d='M18 74V26h4v44h60v4H18zm14-8V44h4v22h-4zm12 0V36h4v30h-4zm12 0V48h4v18h-4zm12 0V28h4v38h-4z'/></svg>`,
-  actividades: `<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><path fill='%23000' d='M18 30l6 6 10-10 3 3-13 13-9-9 3-3zM42 32h42v4H42v-4zm-24 20l6 6 10-10 3 3-13 13-9-9 3-3zM42 54h42v4H42v-4zm-24 20l6 6 10-10 3 3-13 13-9-9 3-3zM42 76h42v4H42v-4z'/></svg>`,
+/* ── Supabase helpers ── */
+async function countViajesAnodosByTipo(tipoViaje: number): Promise<number> {
+  const hace30d = new Date()
+  hace30d.setDate(hace30d.getDate() - 30)
+  const desde = hace30d.toISOString()
+
+  const { count, error } = await supabase
+    .from('viajes_anodos')
+    .select('*', { count: 'exact', head: true })
+    .eq('tipo_viaje', tipoViaje)
+    .gte('inicia_viaje', desde)
+
+  if (error) { console.error(`viajes_anodos tipo ${tipoViaje}:`, error); return 0 }
+  if (count && count > 0) return count
+
+  const { count: c2, error: e2 } = await supabase
+    .from('viajes_anodos')
+    .select('*', { count: 'exact', head: true })
+    .eq('tipo_viaje', tipoViaje)
+    .gte('fecha_crea', desde)
+
+  if (e2) { console.error(`viajes_anodos tipo ${tipoViaje} fallback:`, e2); return 0 }
+  return c2 || 0
 }
 
+/* ── Component ── */
 export default function DashboardCS() {
   const navigate = useNavigate()
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null)
-  const [kpis, setKpis] = useState<Record<string, number>>({})
+  const [hovered, setHovered] = useState<string | null>(null)
+  const [pressed, setPressed] = useState<string | null>(null)
+  const [kpis, setKpis] = useState<Record<string, number>>({ tickets: 0, clientes: 0, impo: 0, expo: 0, despacho_ia: 0, metricas: 0, actividades: 0 })
   const [loading, setLoading] = useState(true)
 
   const fetchKpis = useCallback(async () => {
-    setLoading(true)
     try {
-      const now = new Date()
-      const thirty = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()
-      const [tix, cli, impo, expo, despActivos, actPend] = await Promise.all([
+      const [tix, cli, act, viajesActivos] = await Promise.all([
         supabase.from('tickets').select('*', { count: 'exact', head: true }).is('deleted_at', null).in('estado', ['abierto', 'en_proceso']),
         supabase.from('clientes').select('*', { count: 'exact', head: true }).is('deleted_at', null),
-        supabase.from('viajes').select('*', { count: 'exact', head: true }).eq('tipo', 'IMPO').gte('created_at', thirty),
-        supabase.from('viajes').select('*', { count: 'exact', head: true }).eq('tipo', 'EXPO').gte('created_at', thirty),
-        supabase.from('viajes').select('*', { count: 'exact', head: true }).in('estado', ['en_transito', 'programado']),
-        supabase.from('tickets').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('estado', 'pendiente'),
+        supabase.from('actividades').select('*', { count: 'exact', head: true }).eq('estado', 'pendiente'),
+        supabase.from('viajes').select('*', { count: 'exact', head: true }).in('estado', ['en_transito', 'programado', 'en_riesgo']),
+      ])
+      const [impoCount, expoCount] = await Promise.all([
+        countViajesAnodosByTipo(3),
+        countViajesAnodosByTipo(2),
       ])
       setKpis({
         tickets: tix.count ?? 0,
         clientes: cli.count ?? 0,
-        impo: impo.count ?? 0,
-        expo: expo.count ?? 0,
-        despacho: despActivos.count ?? 0,
-        metricas: 0,
-        actividades: actPend.count ?? 0,
+        impo: impoCount,
+        expo: expoCount,
+        despacho_ia: viajesActivos.count ?? 0,
+        metricas: tix.count ?? 0,
+        actividades: act.count ?? 0,
       })
-    } catch (e) {
-      console.error('[DashboardCS] fetchKpis error:', e)
-    } finally {
-      setLoading(false)
-    }
+    } catch (e) { console.error('KPI fetch error:', e) }
+    finally { setLoading(false) }
   }, [])
 
-  useEffect(() => {
-    fetchKpis()
-    const interval = setInterval(fetchKpis, 60000)
-    return () => clearInterval(interval)
-  }, [fetchKpis])
-
-  const renderCard = (card: KpiCard) => {
-    const isHovered = hoveredCard === card.id
-    const iconOpacity = isHovered ? 0.95 : 0.90
-    const kpiValue = kpis[card.id]
-
-    return (
-      <div
-        key={card.id}
-        onClick={() => navigate(card.route)}
-        onMouseEnter={() => setHoveredCard(card.id)}
-        onMouseLeave={() => setHoveredCard(null)}
-        style={{
-          position: 'relative',
-          borderRadius: '20px',
-          padding: '24px 26px',
-          background: `radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0) 45%), linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 22%, rgba(0,0,0,0.13) 100%), ${card.gradient}`,
-          minHeight: '180px',
-          cursor: 'pointer',
-          overflow: 'hidden',
-          isolation: 'isolate',
-          boxShadow: isHovered
-            ? 'inset 1px 0 0 rgba(255,255,255,0.12), inset -1px 0 0 rgba(255,255,255,0.08), inset 0 3px 0 rgba(255,255,255,0.30), inset 0 -3px 0 rgba(0,0,0,0.42), inset 0 -22px 38px rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.22), 0 20px 36px rgba(0,0,0,0.34), 0 44px 72px -10px rgba(0,0,0,0.42)'
-            : 'inset 1px 0 0 rgba(255,255,255,0.10), inset -1px 0 0 rgba(255,255,255,0.06), inset 0 3px 0 rgba(255,255,255,0.24), inset 0 -3px 0 rgba(0,0,0,0.38), inset 0 -20px 36px rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.18), 0 14px 24px rgba(0,0,0,0.28), 0 32px 52px -8px rgba(0,0,0,0.36)',
-          transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
-          outline: '1px solid rgba(0,0,0,0.08)',
-          outlineOffset: '-1px',
-          transition: 'transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease',
-        }}
-      >
-        {/* Dot pulse verde */}
-        <div style={{ position: 'absolute', top: '14px', right: '14px', width: '14px', height: '14px', pointerEvents: 'none', zIndex: 3 }}>
-          <div style={{ position: 'absolute', top: '50%', left: '50%', width: '14px', height: '14px', borderRadius: '50%', border: '1.5px solid rgba(16,185,129,0.75)', transform: 'translate(-50%, -50%)', animation: 'lhDotPulse 2.2s ease-in-out infinite', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', top: '50%', left: '50%', width: '6px', height: '6px', borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #34D399 0%, #10B981 65%, #047857 100%)', boxShadow: '0 0 0 1px rgba(255,255,255,0.14), 0 0 10px rgba(16,185,129,0.62)', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }} />
-        </div>
-
-        {/* Título + subtítulo wrapper */}
-        <div style={{ position: 'relative', zIndex: 2, width: '100%' }}>
-          <div style={{
-            fontFamily: "'Montserrat', sans-serif",
-            fontSize: '22px',
-            fontWeight: 900,
-            color: 'rgba(255,255,255,0.94)',
-            letterSpacing: '-0.024em',
-            lineHeight: 1.12,
-            textShadow: '0 -1.5px 0 rgba(0,0,0,0.92), 0 1.5px 0 rgba(255,255,255,0.32), 0 2px 3px rgba(0,0,0,0.52), 0 4px 7px rgba(0,0,0,0.30)',
-            pointerEvents: 'none',
-          }}>
-            {card.label}
-          </div>
-
-          {/* KPI value grande */}
-          <div style={{
-            fontFamily: "'Montserrat', sans-serif",
-            fontSize: '42px',
-            fontWeight: 800,
-            color: 'rgba(255,255,255,0.98)',
-            letterSpacing: '-0.02em',
-            lineHeight: 1,
-            marginTop: '16px',
-            textShadow: '0 2px 4px rgba(0,0,0,0.42)',
-            pointerEvents: 'none',
-          }}>
-            {loading ? '—' : (kpiValue ?? 0).toLocaleString()}
-          </div>
-
-          {/* Subtítulo */}
-          <div style={{
-            fontFamily: "'Montserrat', sans-serif",
-            fontSize: '12px',
-            fontWeight: 600,
-            color: 'rgba(0,0,0,0.48)',
-            letterSpacing: '0.015em',
-            marginTop: '8px',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            textShadow: '0 -1px 0 rgba(0,0,0,0.82), 0 1px 0 rgba(255,255,255,0.26)',
-            pointerEvents: 'none',
-          }}>
-            {card.subtitle}
-          </div>
-        </div>
-
-        {/* Icono 3D laser-cut layered — capa shadow + highlight + base monocroma */}
-        <div style={{
-          position: 'absolute',
-          right: '-6px',
-          bottom: '-10px',
-          width: '96px',
-          height: '96px',
-          pointerEvents: 'none',
-          zIndex: 2,
-          overflow: 'visible',
-          isolation: 'isolate',
-          transform: 'translateZ(0)',
-          filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.68)) drop-shadow(0 3px 5px rgba(0,0,0,0.48))',
-        }}>
-          {/* Shadow layer (negro, offset +2/+2) */}
-          <div style={{ position: 'absolute', top: '2px', left: '2px', width: '100%', height: '100%', backgroundColor: '#000000', maskImage: `url("data:image/svg+xml;utf8,${ICON_SVGS[card.iconKey]}")`, WebkitMaskImage: `url("data:image/svg+xml;utf8,${ICON_SVGS[card.iconKey]}")`, maskRepeat: 'no-repeat', WebkitMaskRepeat: 'no-repeat', maskPosition: 'center', WebkitMaskPosition: 'center', maskSize: 'contain', WebkitMaskSize: 'contain', opacity: 0.62 }} />
-          {/* Highlight layer (blanco, offset -1.5/-1.5) */}
-          <div style={{ position: 'absolute', top: '-1.5px', left: '-1.5px', width: '100%', height: '100%', backgroundColor: '#FFFFFF', maskImage: `url("data:image/svg+xml;utf8,${ICON_SVGS[card.iconKey]}")`, WebkitMaskImage: `url("data:image/svg+xml;utf8,${ICON_SVGS[card.iconKey]}")`, maskRepeat: 'no-repeat', WebkitMaskRepeat: 'no-repeat', maskPosition: 'center', WebkitMaskPosition: 'center', maskSize: 'contain', WebkitMaskSize: 'contain', opacity: 0.48 }} />
-          {/* Base monocroma (tint por card) */}
-          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: card.iconColor, maskImage: `url("data:image/svg+xml;utf8,${ICON_SVGS[card.iconKey]}")`, WebkitMaskImage: `url("data:image/svg+xml;utf8,${ICON_SVGS[card.iconKey]}")`, maskRepeat: 'no-repeat', WebkitMaskRepeat: 'no-repeat', maskPosition: 'center', WebkitMaskPosition: 'center', maskSize: 'contain', WebkitMaskSize: 'contain', opacity: iconOpacity, transition: 'opacity 0.24s ease' }} />
-        </div>
-      </div>
-    )
-  }
+  useEffect(() => { fetchKpis() }, [fetchKpis])
 
   return (
-    <div style={{
-      height: '100vh',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      background: 'radial-gradient(ellipse 100% 70% at 50% 35%, #B0B6C0 0%, #9199A3 50%, #747A85 100%)',
-      fontFamily: "'Montserrat', sans-serif",
-    }}>
-      <style>{`
-        @keyframes lhDotPulse {
-          0% { transform: translate(-50%,-50%) scale(1); opacity: 0.70; }
-          80% { transform: translate(-50%,-50%) scale(2.2); opacity: 0; }
-          100% { transform: translate(-50%,-50%) scale(2.2); opacity: 0; }
-        }
-      `}</style>
+    <ModuleLayout titulo="Servicio a Clientes">
+      <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '20px' }}>
+          {CARDS.map(card => {
+            const isH = hovered === card.id
+            const isP = pressed === card.id
 
-      <AppHeader />
+            /* ── Double-layer gradient (from tokens.ts pattern) ── */
+            const bgNormal =
+              'linear-gradient(155deg, rgba(18,32,58,0.96) 0%, rgba(12,22,42,0.98) 35%, rgba(8,16,32,1) 70%, rgba(6,12,24,1) 100%), ' +
+              'linear-gradient(135deg, rgba(180,100,50,0.28) 0%, rgba(60,90,140,0.25) 50%, rgba(180,100,50,0.28) 100%)'
+            const bgHover =
+              'linear-gradient(155deg, rgba(28,48,82,1) 0%, rgba(20,35,62,1) 35%, rgba(14,24,45,1) 70%, rgba(10,18,35,1) 100%), ' +
+              'linear-gradient(135deg, rgba(240,160,80,0.65) 0%, rgba(220,140,70,0.6) 25%, rgba(70,110,170,0.4) 50%, rgba(220,140,70,0.6) 75%, rgba(240,160,80,0.65) 100%)'
 
-      {/* Toolbar — back button + título */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '18px',
-        padding: '16px 32px 0',
-        flexShrink: 0,
-      }}>
-        <button
-          onClick={() => navigate('/dashboard')}
-          style={{
-            background: 'linear-gradient(135deg, #F09830 0%, #9A4E0E 100%)',
-            color: '#FFFFFF',
-            border: 'none',
-            borderRadius: '10px',
-            padding: '10px 18px',
-            fontFamily: "'Montserrat', sans-serif",
-            fontSize: '13px',
-            fontWeight: 700,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.20), inset 0 -1px 0 rgba(0,0,0,0.18)',
-            transition: 'transform 0.2s ease',
-          }}
-        >
-          ← Dashboard
-        </button>
-        <h1 style={{
-          fontFamily: "'Montserrat', sans-serif",
-          fontSize: '20px',
-          fontWeight: 800,
-          color: '#0F172A',
-          letterSpacing: '-0.018em',
-          margin: 0,
-        }}>
-          Servicio a Clientes
-        </h1>
-      </div>
+            return (
+              <div
+                key={card.id}
+                style={{
+                  aspectRatio: '1 / 0.9',
+                  borderRadius: '10px',
+                  padding: '24px 20px',
+                  /* Double gradient: layer1=card bg, layer2=border gradient */
+                  backgroundImage: isH ? bgHover : bgNormal,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                  border: '2px solid transparent',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '0px',
+                  transition: 'all 0.3s ease',
+                  transform: isP ? 'translateY(0px)' : isH ? 'translateY(-6px)' : 'translateY(0)',
+                  boxShadow: isP
+                    ? '0 1px 2px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(0,0,0,0.2)'
+                    : isH
+                    ? '0 4px 8px rgba(0,0,0,0.4), 0 10px 24px rgba(0,0,0,0.6), 0 0 30px rgba(240,160,80,0.15), inset 0 1px 0 rgba(255,255,255,0.05)'
+                    : '0 2px 4px rgba(0,0,0,0.3), 0 6px 16px rgba(0,0,0,0.5), inset -2px -2px 4px rgba(0,0,0,0.2)',
+                  fontFamily: D.font,
+                }}
+                onMouseEnter={() => setHovered(card.id)}
+                onMouseLeave={() => { setHovered(null); setPressed(null) }}
+                onMouseDown={() => setPressed(card.id)}
+                onMouseUp={() => setPressed(null)}
+                onClick={() => navigate(card.route)}
+              >
+                {/* Top shine — glass reflection (35% height like reference) */}
+                <div style={{
+                  position: 'absolute', top: 0, left: 0, right: 0, height: '35%',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%)',
+                  borderTopLeftRadius: '10px', borderTopRightRadius: '10px',
+                  pointerEvents: 'none', opacity: isH ? 0.5 : 0.3,
+                  transition: 'opacity 0.3s ease',
+                }} />
 
-      {/* Grid de cards */}
-      <div style={{
-        flex: 1,
-        padding: '20px 32px 32px',
-        overflow: 'hidden',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gridTemplateRows: 'repeat(2, 1fr)',
-        gap: '18px',
-      }}>
-        {CARDS.map(renderCard)}
-        {/* Slot libre para futura expansión (quick-view actividades / tickets urgentes) */}
-        <div style={{
-          borderRadius: '20px',
-          background: 'radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 45%), linear-gradient(135deg, #3F4856 0%, #0F1620 100%)',
-          padding: '20px',
-          fontFamily: "'Montserrat', sans-serif",
-          fontSize: '12px',
-          fontWeight: 600,
-          color: 'rgba(255,255,255,0.54)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          outline: '1px solid rgba(0,0,0,0.08)',
-          outlineOffset: '-1px',
-          boxShadow: 'inset 0 3px 0 rgba(255,255,255,0.14), inset 0 -3px 0 rgba(0,0,0,0.30), 0 14px 24px rgba(0,0,0,0.22)',
-          letterSpacing: '0.1em',
-          textTransform: 'uppercase',
-        }}>
-          Próximamente
+                {/* Label — at TOP */}
+                <div style={{
+                  fontFamily: D.font, fontSize: '17px', fontWeight: 600, color: '#ffffff',
+                  textAlign: 'center', position: 'relative', zIndex: 1, letterSpacing: '0.02em',
+                  lineHeight: 1.2, paddingTop: '2px',
+                }}>
+                  {card.label}
+                </div>
+
+                {/* Icon — centered, prominent */}
+                <div style={{ position: 'relative', zIndex: 1, transition: 'transform 0.3s ease', transform: isH ? 'scale(1.05)' : 'none' }}>
+                  <IcoCenter set={card.iconSet} name={card.iconName} hovered={isH} />
+                </div>
+
+                {/* KPI + sublabel */}
+                <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                  <div style={{
+                    fontFamily: D.font, fontSize: '22px', fontWeight: 600,
+                    color: isH ? 'rgba(240,160,80,1)' : 'rgba(255,255,255,0.95)',
+                    lineHeight: 1, transition: 'color 0.3s ease',
+                  }}>
+                    {loading ? '—' : (kpis[card.id] ?? 0).toLocaleString()}
+                  </div>
+                  <div style={{
+                    fontFamily: D.font, fontSize: '10px', fontWeight: 500,
+                    color: 'rgba(255,255,255,0.50)', marginTop: 3, letterSpacing: '0.03em',
+                    textTransform: 'uppercase',
+                  }}>
+                    {card.kpiLabel}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
-    </div>
+    </ModuleLayout>
   )
 }
