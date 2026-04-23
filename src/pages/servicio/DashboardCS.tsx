@@ -143,15 +143,24 @@ export default function DashboardCS() {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   gap: '0px',
-                  transition: 'all 0.3s ease',
-                  transform: isP ? 'translateY(0px)' : isH ? 'translateY(-6px)' : 'translateY(0)',
-                  /* V2 — 3D depth boxShadow stack (V43 DNA): insets top+bottom+edges + outer 4-layer shadows.
-                     Conserva el border gradient porque los insets viven DENTRO del padding-box. */
-                  boxShadow: isP
-                    ? 'inset 1px 0 0 rgba(255,255,255,0.08), inset -1px 0 0 rgba(255,255,255,0.04), inset 0 2px 0 rgba(255,255,255,0.18), inset 0 -2px 0 rgba(0,0,0,0.32), inset 0 4px 12px rgba(0,0,0,0.28), 0 1px 2px rgba(0,0,0,0.30), 0 3px 6px rgba(0,0,0,0.22)'
+                  transition: 'transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s ease, outline 0.18s ease',
+                  /* V2.1 — pressed se HUNDE (translateY +3px + scale 0.97) = apachurrable real */
+                  transform: isP
+                    ? 'translateY(3px) scale(0.97)'
                     : isH
-                    ? 'inset 1px 0 0 rgba(255,255,255,0.12), inset -1px 0 0 rgba(255,255,255,0.08), inset 0 3px 0 rgba(255,255,255,0.30), inset 0 -3px 0 rgba(0,0,0,0.42), inset 0 -22px 38px rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.22), 0 20px 36px rgba(0,0,0,0.34), 0 44px 72px -10px rgba(0,0,0,0.42), 0 0 30px rgba(240,160,80,0.18)'
-                    : 'inset 1px 0 0 rgba(255,255,255,0.10), inset -1px 0 0 rgba(255,255,255,0.06), inset 0 3px 0 rgba(255,255,255,0.24), inset 0 -3px 0 rgba(0,0,0,0.38), inset 0 -20px 36px rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.18), 0 14px 24px rgba(0,0,0,0.28), 0 32px 52px -8px rgba(0,0,0,0.36), 0 56px 80px -14px rgba(0,0,0,0.32)',
+                    ? 'translateY(-6px)'
+                    : 'translateY(0)',
+                  /* V2.1 — outline rim blanco sutil recupera el contorno perdido */
+                  outline: isH
+                    ? '1px solid rgba(255,255,255,0.22)'
+                    : '1px solid rgba(255,255,255,0.14)',
+                  outlineOffset: '-1px',
+                  /* V2.1 — 3D depth boxShadow stack: insets + 4 outer shadows + pressed con cavity profunda */
+                  boxShadow: isP
+                    ? 'inset 0 3px 8px rgba(0,0,0,0.45), inset 0 -1px 0 rgba(255,255,255,0.06), inset 1px 0 0 rgba(0,0,0,0.22), inset -1px 0 0 rgba(0,0,0,0.22), 0 1px 2px rgba(0,0,0,0.32), 0 2px 4px rgba(0,0,0,0.20)'
+                    : isH
+                    ? 'inset 1px 0 0 rgba(255,255,255,0.14), inset -1px 0 0 rgba(255,255,255,0.10), inset 0 3px 0 rgba(255,255,255,0.36), inset 0 -3px 0 rgba(0,0,0,0.42), inset 0 -22px 38px rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.22), 0 20px 36px rgba(0,0,0,0.34), 0 44px 72px -10px rgba(0,0,0,0.42), 0 0 30px rgba(240,160,80,0.20)'
+                    : 'inset 1px 0 0 rgba(255,255,255,0.12), inset -1px 0 0 rgba(255,255,255,0.08), inset 0 3px 0 rgba(255,255,255,0.32), inset 0 -3px 0 rgba(0,0,0,0.38), inset 0 -20px 36px rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.18), 0 14px 24px rgba(0,0,0,0.28), 0 32px 52px -8px rgba(0,0,0,0.36), 0 56px 80px -14px rgba(0,0,0,0.32)',
                   fontFamily: D.font,
                 }}
                 onMouseEnter={() => setHovered(card.id)}
