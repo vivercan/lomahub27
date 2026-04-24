@@ -29,11 +29,15 @@ Deno.serve(async (req) => {
     })
     const xml = await r.text()
     // Contar tags comunes
-    const tags = ['Plate', 'Mobile', 'Device', 'Unit', 'Vehiculo', 'Unidad', 'Item', 'Row', 'Person']
+    const tags = ['Plate', 'Mobile', 'Device', 'Unit', 'Vehiculo', 'Unidad', 'ITEM', 'Row', 'Person']
     const counts: Record<string, number> = {}
     for (const t of tags) {
       counts[t] = (xml.match(new RegExp(`<${t}[\\s>]`, 'g')) || []).length
     }
+    // Si es GetMobileList, extraer VEH_LCNS (números económicos)
+    const vehLcnsList = [...xml.matchAll(/<VEH_LCNS>([^<]+)<\/VEH_LCNS>/g)].map(m => m[1])
+    const vehNamList = [...xml.matchAll(/<VEH_NAM>([^<]+)<\/VEH_NAM>/g)].map(m => m[1])
+    const imgTypes = [...new Set([...xml.matchAll(/<vehImgPath>([^<]+)<\/vehImgPath>/g)].map(m => m[1]))]
     // Extraer muestra de los primeros 3 nodos que encuentre
     const firstMatches: string[] = []
     for (const t of tags) {
@@ -44,8 +48,11 @@ Deno.serve(async (req) => {
       ok: true, mode: 'raw', method: rawMethod,
       body_length: xml.length,
       tag_counts: counts,
+      total_vehiculos_VEH_LCNS: vehLcnsList.length,
+      imagen_tipos_unicos: imgTypes,
+      primeros_20: vehLcnsList.slice(0, 20),
+      ultimos_20: vehLcnsList.slice(-20),
       first_matches: firstMatches,
-      raw_xml: xml.substring(0, 5000),
     })
   }
 
