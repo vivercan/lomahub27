@@ -49,18 +49,17 @@ Deno.serve(async (req) => {
   const fechaIni = new Date(Date.now() - 30 * 86400 * 1000).toISOString().slice(0, 19)
   const fechaFin = new Date().toISOString().slice(0, 19)
 
-  // Métodos candidatos — la mayoría son guessing pero ShareService típicamente los tiene
+  // Métodos REALES del WSDL — 24/Abr 2026
   const methods = [
-    { name: 'HistoyDataLastLocationByUser', body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
-    { name: 'HistoyDataLastLocation',        body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
-    { name: 'LastLocationByUser',            body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
-    { name: 'ListUnitsByUser',               body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
-    { name: 'GetUnitsByUser',                body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
-    { name: 'GetDevicesByUser',              body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
-    { name: 'ListDevicesByUser',             body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
-    { name: 'HistoyDataByUser',              body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword><sFechaInicio>${fechaIni}</sFechaInicio><sFechaFin>${fechaFin}</sFechaFin>` },
-    { name: 'GetUnitsStatusByUser',          body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
-    { name: 'ObtenerUnidadesUsuario',        body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
+    { name: 'HistoyDataLastLocationByUser',              body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
+    { name: 'HistoryDataLastLocationByUserAttributes',   body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
+    { name: 'HistoryDataLastLocationByUserRenderExcel',  body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
+    { name: 'HistoyDataLastLocationByUser_JSON',         body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
+    { name: 'GetMobileList',                             body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
+    { name: 'GetPersonList',                             body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
+    { name: 'GetDataReplicator',                         body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
+    { name: 'GetEventsHighPriority',                     body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
+    { name: 'GetLastTransmissionPegaso',                 body: `<sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>` },
   ]
 
   const results = []
