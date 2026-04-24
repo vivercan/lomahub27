@@ -112,7 +112,7 @@ export default function DashboardCS() {
   useEffect(() => { fetchKpis() }, [fetchKpis])
   return (
     <ModuleLayout titulo="Servicio a Clientes">
-      {/* V2.5 — keyframes para ráfaga luz single-pass al hover */}
+      {/* V2.6 — keyframes ráfaga luz 30% de velocidad (3.3s, era 1s) */}
       <style>{`
         @keyframes csCardSweep {
           0%   { transform: translateX(-40%) skewX(-18deg); opacity: 0; }
@@ -121,11 +121,12 @@ export default function DashboardCS() {
           100% { transform: translateX(480%) skewX(-18deg); opacity: 0; }
         }
         .cs-card:hover .cs-sweep {
-          animation: csCardSweep 1s cubic-bezier(0.22,1,0.36,1) forwards;
+          animation: csCardSweep 3.3s cubic-bezier(0.22,1,0.36,1) forwards;
         }
       `}</style>
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '20px' }}>
+        {/* V2.6 — Grid 5 columnas: fila 1 con 5 cards orilla-a-orilla, fila 2 con los sobrantes mismo tamaño */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '20px' }}>
           {CARDS.map(card => {
             const isH = hovered === card.id
             const isP = pressed === card.id
