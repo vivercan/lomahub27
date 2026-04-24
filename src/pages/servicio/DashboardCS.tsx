@@ -5,7 +5,13 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 /* ———————————————————————————————————————————————————————————————
-SERVICIO A CLIENTES — Landing Page V3.4 (proporción Linear/Notion refinada)
+SERVICIO A CLIENTES — Landing Page V3.5 (snapshot pattern + proporción AAA)
+V3.5 — Instant render via kpis_snapshot:
+  — Patrón snapshot-first: 1 query a kpis_snapshot (instant ~50ms)
+  — Fallback resiliente: si snapshot no existe, queries directas (como V3.4)
+  — Requiere migración SQL: KPIS_SNAPSHOT_MIGRATION_23Abr2026.sql
+  — Cron pg_cron cada 5min refresh_kpis_snapshot() mantiene data fresca
+  — Beneficio: elimina delay de 500-2000ms al entrar al dashboard
 V3.4 — Balance final icono/número:
   — Número 46→40px (−13%, menos agresivo)
   — Icono 50→58px (+16%, ancla visual protagonista)
@@ -208,30 +214,63 @@ export default function DashboardCS() {
     CARDS.forEach(c => { map[c.id] = randomSweepParams() })
     return map
   })
+  /* V3.5 — Snapshot-first pattern: 1 query instant a kpis_snapshot, fallback a queries directas si no existe */
+  const fetchKpisFromSnapshot = useCallback(async (): Promise<Record<string, number> | null> => {
+    try {
+      const { data, error } = await supabase
+        .from('kpis_snapshot')
+        .select('data')
+        .eq('modulo', 'servicio_cs')
+        .maybeSingle()
+      if (error || !data?.data) return null
+      const d = data.data as Record<string, number>
+      return {
+        tickets: d.tickets ?? 0,
+        clientes: d.clientes ?? 0,
+        impo: d.impo ?? 0,
+        expo: d.expo ?? 0,
+        despacho_ia: d.despacho_ia ?? 0,
+        metricas: d.metricas ?? 0,
+        actividades: d.actividades ?? 0,
+      }
+    } catch { return null }
+  }, [])
+  const fetchKpisDirect = useCallback(async (): Promise<Record<string, number>> => {
+    const [tix, cli, act, viajesActivos] = await Promise.all([
+      supabase.from('tickets').select('*', { count: 'exact', head: true }).is('deleted_at', null).in('estado', ['abierto', 'en_proceso']),
+      supabase.from('clientes').select('*', { count: 'exact', head: true }).is('deleted_at', null),
+      supabase.from('actividades').select('*', { count: 'exact', head: true }).eq('estado', 'pendiente'),
+      supabase.from('viajes').select('*', { count: 'exact', head: true }).in('estado', ['en_transito', 'programado', 'en_riesgo']),
+    ])
+    const [impoCount, expoCount] = await Promise.all([
+      countViajesAnodosByTipo(3),
+      countViajesAnodosByTipo(2),
+    ])
+    return {
+      tickets: tix.count ?? 0,
+      clientes: cli.count ?? 0,
+      impo: impoCount,
+      expo: expoCount,
+      despacho_ia: viajesActivos.count ?? 0,
+      metricas: tix.count ?? 0,
+      actividades: act.count ?? 0,
+    }
+  }, [])
   const fetchKpis = useCallback(async () => {
     try {
-      const [tix, cli, act, viajesActivos] = await Promise.all([
-        supabase.from('tickets').select('*', { count: 'exact', head: true }).is('deleted_at', null).in('estado', ['abierto', 'en_proceso']),
-        supabase.from('clientes').select('*', { count: 'exact', head: true }).is('deleted_at', null),
-        supabase.from('actividades').select('*', { count: 'exact', head: true }).eq('estado', 'pendiente'),
-        supabase.from('viajes').select('*', { count: 'exact', head: true }).in('estado', ['en_transito', 'programado', 'en_riesgo']),
-      ])
-      const [impoCount, expoCount] = await Promise.all([
-        countViajesAnodosByTipo(3),
-        countViajesAnodosByTipo(2),
-      ])
-      setKpis({
-        tickets: tix.count ?? 0,
-        clientes: cli.count ?? 0,
-        impo: impoCount,
-        expo: expoCount,
-        despacho_ia: viajesActivos.count ?? 0,
-        metricas: tix.count ?? 0,
-        actividades: act.count ?? 0,
-      })
+      /* 1) Intenta snapshot primero — instant render si tabla kpis_snapshot existe */
+      const snap = await fetchKpisFromSnapshot()
+      if (snap) {
+        setKpis(snap)
+        setLoading(false)
+        return
+      }
+      /* 2) Fallback a queries directas (si snapshot no existe o modulo no poblado) */
+      const direct = await fetchKpisDirect()
+      setKpis(direct)
     } catch (e) { console.error('KPI fetch error:', e) }
     finally { setLoading(false) }
-  }, [])
+  }, [fetchKpisFromSnapshot, fetchKpisDirect])
   useEffect(() => { fetchKpis() }, [fetchKpis])
   return (
     <ModuleLayout titulo="Servicio a Clientes">
