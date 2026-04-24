@@ -85,7 +85,6 @@ import Notificaciones from './pages/comunicaciones/Notificaciones'
 import BriefingChiefOfStaff from './pages/comunicaciones/BriefingChiefOfStaff'
 import ChiefOfStaffHome from './pages/comunicaciones/ChiefOfStaffHome'
 import PanelIntegraciones from './pages/admin/PanelIntegraciones'
-import ParametrosConfig from './pages/admin/ParametrosConfig'
 import CatalogosTab from './pages/admin/CatalogosTab'
 import ProgramacionDedicados from './pages/operaciones/ProgramacionDedicados'
 import ConfigIntegraciones from './pages/admin/ConfigIntegraciones'
@@ -469,12 +468,8 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* ——— Cerebro Tarifario ——— */}
-          <Route path="/pricing/cerebro-tarifario" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'pricing', 'gerente_comercial', 'direccion']}>
-              <CerebroTarifario />
-            </ProtectedRoute>
-          } />
+          {/* ——— Redirect legacy Cerebro Tarifario ——— */}
+          <Route path="/pricing/cerebro-tarifario" element={<Navigate to="/admin/configuracion/parametros" replace />} />
 
           {/* ——— Correos Automáticos ——— */}
           <Route path="/comunicaciones/correos" element={
@@ -533,8 +528,8 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path="/admin/configuracion/parametros" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
-              <ParametrosConfig />
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'pricing', 'gerente_comercial', 'direccion']}>
+              <CerebroTarifario />
             </ProtectedRoute>
           } />
           <Route path="/admin/configuracion/integraciones" element={
