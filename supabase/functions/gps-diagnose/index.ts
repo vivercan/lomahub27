@@ -4,13 +4,44 @@
 // Objetivo: encontrar cuál método SOAP regresa TODAS las unidades del login
 // (no solo las con reporte reciente, que es lo que hace HistoyDataLastLocationByUser)
 
-Deno.serve(async (_req) => {
+Deno.serve(async (req) => {
   const GPS_URL = Deno.env.get('GPS_API_URL')!
   const GPS_USER = Deno.env.get('GPS_API_USER')!
   const GPS_PASS = Deno.env.get('GPS_API_PASS')!
 
   if (!GPS_URL || !GPS_USER || !GPS_PASS) {
     return json({ ok: false, error: 'Missing GPS secrets' }, 500)
+  }
+
+  // ═══ MODE: WSDL dump — lista todos los métodos disponibles ═══
+  const url = new URL(req.url)
+  if (url.searchParams.get('mode') === 'wsdl') {
+    const wsdlUrls = [
+      `${GPS_URL}?WSDL`,
+      `${GPS_URL}?wsdl`,
+      `${GPS_URL.replace(/\.asmx$/, '')}.asmx?WSDL`,
+    ]
+    for (const wsdlUrl of wsdlUrls) {
+      try {
+        const r = await fetch(wsdlUrl, { method: 'GET' })
+        if (r.status === 200) {
+          const text = await r.text()
+          // Extraer todos los operation names
+          const ops = [...text.matchAll(/<(?:wsdl:)?operation\s+name="([^"]+)"/g)].map(m => m[1])
+          const unique = [...new Set(ops)].sort()
+          return json({
+            ok: true,
+            mode: 'wsdl',
+            url_used: wsdlUrl,
+            body_length: text.length,
+            operations_count: unique.length,
+            operations: unique,
+            preview: text.substring(0, 500)
+          })
+        }
+      } catch (_e) { /* try next */ }
+    }
+    return json({ ok: false, error: 'Could not fetch WSDL from any URL', triedUrls: wsdlUrls })
   }
 
   const NS = 'http://shareservice.co/'
