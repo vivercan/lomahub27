@@ -5,7 +5,12 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 /* ———————————————————————————————————————————————————————————————
-SERVICIO A CLIENTES — Landing Page V3.3 (10/10 AAA refinement)
+SERVICIO A CLIENTES — Landing Page V3.4 (proporción Linear/Notion refinada)
+V3.4 — Balance final icono/número:
+  — Número 46→40px (−13%, menos agresivo)
+  — Icono 50→58px (+16%, ancla visual protagonista)
+  — Proporción 58:40 = 1.45 (patrón Linear, Notion, Retool AAA)
+  — El icono vuelve a ser el elemento visual dominante, número como data
 V3.3 — Rediseño interior card armónico AAA:
   (1) JERARQUÍA KPI INVERTIDA (fix crítico):
       — Título 30→17px (eyebrow role, alpha 0.85)
@@ -76,8 +81,8 @@ const IcoCenter = ({ set, name, hovered }: { set: string; name: string; hovered?
   return (
     <div
       style={{
-        width: '50px',
-        height: '50px',
+        width: '58px',
+        height: '58px',
         backgroundColor: hovered ? '#ff9940' : '#ffffff',
         WebkitMaskImage: `url("${maskUrl}")`,
         maskImage: `url("${maskUrl}")`,
@@ -348,10 +353,10 @@ export default function DashboardCS() {
                   <IcoCenter set={card.iconSet} name={card.iconName} hovered={isH} />
                 </div>
 
-                {/* KPI + sublabel — V3.3: número HERO 46px (jerarquía AAA invertida, número domina) */}
+                {/* KPI + sublabel — V3.4: número 40px + icono 58px (proporción Linear/Notion 1.45:1) */}
                 <div style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
                   <div style={{
-                    fontFamily: D.font, fontSize: '46px', fontWeight: 600,
+                    fontFamily: D.font, fontSize: '40px', fontWeight: 600,
                     color: isH ? 'rgba(240,160,80,1)' : 'rgba(255,255,255,0.98)',
                     lineHeight: 1, letterSpacing: '-0.01em',
                     fontVariantNumeric: 'tabular-nums',
