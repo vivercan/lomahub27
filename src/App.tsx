@@ -70,6 +70,7 @@ import Analisis8020 from './pages/inteligencia/Analisis8020'
 
 // Admin
 import Configuracion from './pages/admin/Configuracion'
+import FlotaMaster from './pages/admin/FlotaMaster'
 import UsuariosPermisos from './pages/admin/UsuariosPermisos'
 import FunnelVentas from './pages/ventas/FunnelVentas'
 import TicketsQuejas from './pages/servicio/TicketsQuejas'
@@ -539,6 +540,11 @@ function App() {
           <Route path="/admin/configuracion/integraciones" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
               <PanelIntegraciones />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/configuracion/flota-master" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
+              <FlotaMaster />
             </ProtectedRoute>
           } />
           <Route path="/admin/configuracion/auditoria" element={

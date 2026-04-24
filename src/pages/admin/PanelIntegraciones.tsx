@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Plug, Wifi, WifiOff, RefreshCw, Clock, CheckCircle, AlertTriangle, Settings } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
@@ -6,6 +7,9 @@ import { Button } from '../../components/ui/Button'
 import { KPICard } from '../../components/ui/KPICard'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
+
+// Rutas de gestion por tipo de integracion
+const INTEGRATION_ROUTES: Record<string, string> = { gps: "/admin/configuracion/flota-master" }
 
 interface Integracion {
   id: string
@@ -37,6 +41,7 @@ const estadoConfig: Record<string, { color: string; icon: React.ReactNode; label
 }
 
 export default function PanelIntegraciones() {
+  const navigate = useNavigate()
   const [integraciones, setIntegraciones] = useState<Integracion[]>(defaultIntegraciones)
   const [loading, setLoading] = useState(true)
 
@@ -90,7 +95,8 @@ export default function PanelIntegraciones() {
           {integraciones.map(integ => {
             const cfg = estadoConfig[integ.estado] || estadoConfig.desconectado
             return (
-              <Card key={integ.id}>
+              <div key={integ.id} onClick={INTEGRATION_ROUTES[integ.tipo] ? () => navigate(INTEGRATION_ROUTES[integ.tipo]!) : undefined} style={{ cursor: INTEGRATION_ROUTES[integ.tipo] ? "pointer" : "default" }}>
+              <Card>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: tokens.spacing.md }}>
                   <div style={{
                     width: '44px', height: '44px', borderRadius: tokens.radius.lg,
@@ -149,6 +155,7 @@ export default function PanelIntegraciones() {
                   </div>
                 </div>
               </Card>
+              </div>
             )
           })}
         </div>
