@@ -483,21 +483,21 @@ export default function HomeDashboard() {
       const lightMult = tier === 'primary' ? 1.14 : tier === 'secondary' ? 1.08 : tier === 'strong' ? 1.04 : 1
       const topLight = (0.10 * lightMult).toFixed(3)
       const topLeftLight = (0.08 * lightMult).toFixed(3)
-      /* V60 — Comercial: +10% depth (1.0 cap, 0.861→0.947, 0.172→0.189) */
+      /* V61 — Comercial authority preserved at cap (1.0/0.947/0.189) */
       const comercialAuthority = card.id === 'comercial'
         ? `, inset 0 -60px 80px rgba(0,0,0,1), inset -40px -50px 72px rgba(0,0,0,0.947), inset 40px 30px 80px rgba(255,255,255,0.189)`
         : ''
-      /* V60 — Servicio: +6% richness (0.312→0.331, 0.069→0.073) */
+      /* V61 — Servicio: +3% richness adicional (0.331→0.341, 0.073→0.075) */
       const servicioDepth = card.id === 'servicio-clientes'
-        ? `, inset 0 -32px 60px rgba(0,0,0,0.331), inset 30px 20px 60px rgba(255,255,255,0.073)`
+        ? `, inset 0 -32px 60px rgba(0,0,0,0.341), inset 30px 20px 60px rgba(255,255,255,0.075)`
         : ''
-      /* V60 — Strong: +4% richness (0.163→0.170, 0.031→0.032) */
+      /* V61 — Strong: +4% richness (0.170→0.177, 0.032→0.033) */
       const strongDepth = (card.id === 'autofomento' || card.id === 'comunicaciones')
-        ? `, inset 0 -26px 52px rgba(0,0,0,0.170), inset 20px 10px 50px rgba(255,255,255,0.032)`
+        ? `, inset 0 -26px 52px rgba(0,0,0,0.177), inset 20px 10px 50px rgba(255,255,255,0.033)`
         : ''
-      /* V60 — Config: +4% richness (0.067→0.070) */
+      /* V61 — Config: +3% richness (0.070→0.072) */
       const configDepth = card.id === 'config'
-        ? `, inset 0 -22px 48px rgba(0,0,0,0.070)`
+        ? `, inset 0 -22px 48px rgba(0,0,0,0.072)`
         : ''
       boxShadow = `
         inset 1px 0 0 rgba(255,255,255,${topLeftLight}),
@@ -835,7 +835,8 @@ export default function HomeDashboard() {
       flexDirection: 'column',
       // V39 BACKGROUND — radial vignette MÁS oscuro para drama máximo
       background: `
-        radial-gradient(ellipse 100% 70% at 50% 35%, #B0B6C0 0%, #9199A3 50%, #747A85 100%)
+        linear-gradient(180deg, rgba(15,23,42,0.045) 0%, rgba(15,23,42,0) 38%, rgba(255,255,255,0.015) 100%),
+        radial-gradient(ellipse 110% 75% at 50% 58%, #B8BEC8 0%, #9CA3AD 55%, #7C828C 100%)
       `,
       fontFamily: "'Montserrat', sans-serif",
       color: '#1E293B',
