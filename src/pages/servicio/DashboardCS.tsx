@@ -4,11 +4,15 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 /* ———————————————————————————————————————————————————————————————
-SERVICIO A CLIENTES — Landing Page V2.4
-Base V2.3 preservada + 3 enhancements:
-  (1) Pressed más apachurrable (scale 0.94 + translateY 6px + cavity 0.72)
+SERVICIO A CLIENTES — Landing Page V2.7
+V2.7 ajustes JJ 23/Abr:
+  (A) aspectRatio 1/0.72 (20% más bajo vs 1/0.9 anterior)
+  (B) sweep duration 16.5s (20% velocidad = 5× más lento vs 3.3s anterior)
+Base V2.3 preservada + enhancements V2.4-V2.6:
+  (1) Pressed apachurrable (scale 0.92 + translateY 9px + cavity 0.85)
   (2) "Infladito colchón": radial-gradient overlay + inset ambient edge-darken
-  (3) Ráfaga de luz al hover: light sweep diagonal 105deg translateX -120→220
+  (3) Ráfaga de luz al hover (single-pass via CSS @keyframes)
+  (4) Grid 5 columnas (fila 1: 5 cards; fila 2: 2 cards mismo tamaño)
 Preservado: Iconify icons + double-gradient border + amber hover glow + outline.
 —————————————————————————————————————————————————————————————— */
 const D = {
@@ -112,7 +116,7 @@ export default function DashboardCS() {
   useEffect(() => { fetchKpis() }, [fetchKpis])
   return (
     <ModuleLayout titulo="Servicio a Clientes">
-      {/* V2.6 — keyframes ráfaga luz 30% de velocidad (3.3s, era 1s) */}
+      {/* V2.7 — ráfaga luz 20% velocidad (16.5s = 3.3s × 5) + cards 20% más bajas */}
       <style>{`
         @keyframes csCardSweep {
           0%   { transform: translateX(-40%) skewX(-18deg); opacity: 0; }
@@ -121,7 +125,7 @@ export default function DashboardCS() {
           100% { transform: translateX(480%) skewX(-18deg); opacity: 0; }
         }
         .cs-card:hover .cs-sweep {
-          animation: csCardSweep 3.3s cubic-bezier(0.22,1,0.36,1) forwards;
+          animation: csCardSweep 16.5s cubic-bezier(0.22,1,0.36,1) forwards;
         }
       `}</style>
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
@@ -142,7 +146,7 @@ export default function DashboardCS() {
                 key={card.id}
                 className="cs-card"
                 style={{
-                  aspectRatio: '1 / 0.9',
+                  aspectRatio: '1 / 0.72',
                   borderRadius: '10px',
                   padding: '24px 20px',
                   backgroundImage: isH ? bgHover : bgNormal,
