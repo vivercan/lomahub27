@@ -116,49 +116,49 @@ function App() {
           } />
 
           {/* ——— 03. Dashboard Ventas ——— */}
-          <Route path="/ventas/dashboard" element={
+          <Route path="/comercial/dashboard" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <DashboardVentas />
             </ProtectedRoute>
           } />
 
           {/* ——— 04. Panel Personal Vendedor ——— */}
-          <Route path="/ventas/mis-leads" element={
+          <Route path="/comercial/mis-leads" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <MisLeads />
             </ProtectedRoute>
           } />
 
           {/* ——— 05. Captura de Lead ——— */}
-          <Route path="/ventas/leads/nuevo" element={
+          <Route path="/comercial/leads/nuevo" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <NuevoLead />
             </ProtectedRoute>
           } />
 
           {/* ——— 06. Ficha del Lead ——— */}
-          <Route path="/ventas/leads/:id" element={
+          <Route path="/comercial/leads/:id" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <FichaLead />
             </ProtectedRoute>
           } />
 
           {/* ——— 26. Programa Semanal ——— */}
-          <Route path="/ventas/programa-semanal" element={
+          <Route path="/comercial/programa-semanal" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'direccion']}>
               <ProgramaSemanal />
             </ProtectedRoute>
           } />
 
           {/* ——— Prospección Externa ——— */}
-          <Route path="/ventas/prospeccion" element={
+          <Route path="/comercial/prospeccion" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial']}>
               <ProspeccionExterna />
             </ProtectedRoute>
           } />
 
           {/* ––– Ventas Analytics ––– */}
-          <Route path="/ventas/analytics" element={
+          <Route path="/comercial/analytics" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'direccion']}>
               <VentasAnalytics />
             </ProtectedRoute>
@@ -413,7 +413,7 @@ function App() {
 
           {/* ——— 28. Comisiones por Ejecutivo ——— */}
 
-          <Route path="/ventas/funnel" element={
+          <Route path="/comercial/funnel" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial', 'direccion']}>
               <FunnelVentas />
             </ProtectedRoute>
@@ -566,10 +566,10 @@ function App() {
           } />
 
           {/* --- Redirects legacy a rutas canonicas (P0-03) --- */}
-          <Route path="/ventas/nuevo-lead" element={<Navigate to="/ventas/leads/nuevo" replace />} />
-          <Route path="/ventas/leads" element={<Navigate to="/ventas/mis-leads" replace />} />
-          <Route path="/ventas/comisiones" element={<Navigate to="/ventas/dashboard" replace />} />
-          <Route path="/ventas/prospeccion-externa" element={<Navigate to="/ventas/prospeccion" replace />} />
+          <Route path="/comercial/nuevo-lead" element={<Navigate to="/comercial/leads/nuevo" replace />} />
+          <Route path="/comercial/leads" element={<Navigate to="/comercial/mis-leads" replace />} />
+          <Route path="/comercial/comisiones" element={<Navigate to="/comercial/dashboard" replace />} />
+          <Route path="/comercial/prospeccion-externa" element={<Navigate to="/comercial/prospeccion" replace />} />
           <Route path="/clientes" element={<Navigate to="/clientes/alta" replace />} />
           <Route path="/operaciones/mapa-gps" element={<Navigate to="/operaciones/mapa" replace />} />
           <Route path="/operaciones/control-tractos" element={<Navigate to="/operaciones/tractos" replace />} />
@@ -582,7 +582,18 @@ function App() {
           {/* ——— Default ——— */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
+        
+
+          {/* ——— Legacy /ventas/ redirects ——— */}
+          <Route path="/ventas/dashboard" element={<Navigate to="/comercial/dashboard" replace />} />
+          <Route path="/ventas/mis-leads" element={<Navigate to="/comercial/mis-leads" replace />} />
+          <Route path="/ventas/leads/nuevo" element={<Navigate to="/comercial/leads/nuevo" replace />} />
+          <Route path="/ventas/leads/:id" element={<Navigate to="/comercial/leads/:id" replace />} />
+          <Route path="/ventas/programa-semanal" element={<Navigate to="/comercial/programa-semanal" replace />} />
+          <Route path="/ventas/prospeccion" element={<Navigate to="/comercial/prospeccion" replace />} />
+          <Route path="/ventas/analytics" element={<Navigate to="/comercial/analytics" replace />} />
+          <Route path="/ventas/funnel" element={<Navigate to="/comercial/funnel" replace />} />
+          </Routes>
         </ErrorBoundary>
       </AuthProvider>
     </BrowserRouter>
