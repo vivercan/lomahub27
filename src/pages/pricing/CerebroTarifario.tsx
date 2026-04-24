@@ -240,7 +240,7 @@ function AddModal({ tab, onSave, onClose }: { tab: TabKey; onSave: (data: Record
 }
 
 /* –– Main Component –– */
-export default function CerebroTarifario() {
+export default function CerebroTarifario() /* renamed: Parámetros de Cotización */ {
   const [tab, setTab] = useState<TabKey>('mx')
   const [loading, setLoading] = useState(true)
   const [busqueda, setBusqueda] = useState('')
@@ -594,8 +594,8 @@ export default function CerebroTarifario() {
 
   return (
     <ModuleLayout
-      titulo="Cerebro Tarifario"
-      subtitulo="Motor de pricing — tarifas MX/USA, cruces fronterizos y accesoriales"
+      titulo="Parámetros de Cotización"
+      subtitulo="Configuración de tarifas — tarifas MX/USA, cruces fronterizos y accesoriales"
       moduloPadre={{ nombre: 'Configuraci\u00f3n', ruta: '/admin/configuracion' }}
       acciones={
         <div style={{ display: 'flex', gap: tokens.spacing.sm }}>
