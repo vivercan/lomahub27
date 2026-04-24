@@ -13,8 +13,42 @@ Deno.serve(async (req) => {
     return json({ ok: false, error: 'Missing GPS secrets' }, 500)
   }
 
-  // ═══ MODE: WSDL dump — lista todos los métodos disponibles ═══
+  // ═══ MODE: raw — ejecuta UN método específico y regresa XML completo ═══
   const url = new URL(req.url)
+  const rawMethod = url.searchParams.get('raw')
+  if (rawMethod) {
+    const NS = 'http://shareservice.co/'
+    const soap = `<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body><${rawMethod} xmlns="${NS}"><sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword></${rawMethod}></soap:Body>
+</soap:Envelope>`
+    const r = await fetch(GPS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/xml; charset=utf-8', 'SOAPAction': `"${NS}${rawMethod}"` },
+      body: soap
+    })
+    const xml = await r.text()
+    // Contar tags comunes
+    const tags = ['Plate', 'Mobile', 'Device', 'Unit', 'Vehiculo', 'Unidad', 'Item', 'Row', 'Person']
+    const counts: Record<string, number> = {}
+    for (const t of tags) {
+      counts[t] = (xml.match(new RegExp(`<${t}[\\s>]`, 'g')) || []).length
+    }
+    // Extraer muestra de los primeros 3 nodos que encuentre
+    const firstMatches: string[] = []
+    for (const t of tags) {
+      const m = xml.match(new RegExp(`<${t}[\\s>][\\s\\S]{0,500}?</${t}>`, 'g'))
+      if (m && m.length > 0) firstMatches.push(`${t}: ${m[0].substring(0, 400)}`)
+    }
+    return json({
+      ok: true, mode: 'raw', method: rawMethod,
+      body_length: xml.length,
+      tag_counts: counts,
+      first_matches: firstMatches,
+      raw_xml: xml.substring(0, 5000),
+    })
+  }
+
   if (url.searchParams.get('mode') === 'wsdl') {
     const wsdlUrls = [
       `${GPS_URL}?WSDL`,
