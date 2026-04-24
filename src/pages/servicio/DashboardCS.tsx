@@ -112,6 +112,18 @@ export default function DashboardCS() {
   useEffect(() => { fetchKpis() }, [fetchKpis])
   return (
     <ModuleLayout titulo="Servicio a Clientes">
+      {/* V2.5 — keyframes para ráfaga luz single-pass al hover */}
+      <style>{`
+        @keyframes csCardSweep {
+          0%   { transform: translateX(-40%) skewX(-18deg); opacity: 0; }
+          12%  { opacity: 1; }
+          88%  { opacity: 1; }
+          100% { transform: translateX(480%) skewX(-18deg); opacity: 0; }
+        }
+        .cs-card:hover .cs-sweep {
+          animation: csCardSweep 1s cubic-bezier(0.22,1,0.36,1) forwards;
+        }
+      `}</style>
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '20px' }}>
           {CARDS.map(card => {
@@ -127,6 +139,7 @@ export default function DashboardCS() {
             return (
               <div
                 key={card.id}
+                className="cs-card"
                 style={{
                   aspectRatio: '1 / 0.9',
                   borderRadius: '10px',
@@ -143,10 +156,12 @@ export default function DashboardCS() {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   gap: '0px',
-                  transition: 'transform 0.14s cubic-bezier(0.22,1,0.36,1), box-shadow 0.26s ease, outline 0.18s ease',
-                  /* V2.4 FIX 1 — pressed más marcado: scale 0.94, translateY 6px */
+                  transition: isP
+                    ? 'transform 0.08s cubic-bezier(0.4,0,0.6,1), box-shadow 0.08s ease'
+                    : 'transform 0.24s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, outline 0.18s ease',
+                  /* V2.5 FIX — pressed dramático: scale 0.92, translateY 9px */
                   transform: isP
-                    ? 'translateY(6px) scale(0.94)'
+                    ? 'translateY(9px) scale(0.92)'
                     : isH
                     ? 'translateY(-6px)'
                     : 'translateY(0)',
@@ -155,12 +170,12 @@ export default function DashboardCS() {
                     ? '1px solid rgba(255,255,255,0.28)'
                     : '1px solid rgba(255,255,255,0.18)',
                   outlineOffset: '-1px',
-                  /* V2.4 FIX 1 — pressed cavity más profunda 0.72 (era 0.60) */
+                  /* V2.5 FIX — pressed cavity extrema 0.85 + infladito edge-darken 80px ambient */
                   boxShadow: isP
-                    ? 'inset 0 5px 16px rgba(0,0,0,0.72), inset 0 2px 6px rgba(0,0,0,0.48), inset 0 -1px 0 rgba(255,255,255,0.04), inset 1px 0 0 rgba(0,0,0,0.30), inset -1px 0 0 rgba(0,0,0,0.30), 0 0 0 rgba(0,0,0,0), 0 1px 2px rgba(0,0,0,0.32)'
+                    ? 'inset 0 8px 24px rgba(0,0,0,0.85), inset 0 3px 10px rgba(0,0,0,0.58), inset 0 -1px 0 rgba(255,255,255,0.04), inset 2px 0 0 rgba(0,0,0,0.36), inset -2px 0 0 rgba(0,0,0,0.36), 0 0 0 rgba(0,0,0,0), 0 1px 2px rgba(0,0,0,0.30)'
                     : isH
-                    ? 'inset 1px 0 0 rgba(255,255,255,0.18), inset -1px 0 0 rgba(255,255,255,0.12), inset 0 4px 0 rgba(255,255,255,0.52), inset 0 -4px 0 rgba(0,0,0,0.46), inset 0 -24px 42px rgba(0,0,0,0.22), inset 0 0 60px rgba(0,0,0,0.18), 0 6px 10px rgba(0,0,0,0.26), 0 26px 44px rgba(0,0,0,0.40), 0 52px 80px -12px rgba(0,0,0,0.48), 0 0 36px rgba(240,160,80,0.26)'
-                    : 'inset 1px 0 0 rgba(255,255,255,0.16), inset -1px 0 0 rgba(255,255,255,0.10), inset 0 4px 0 rgba(255,255,255,0.44), inset 0 -4px 0 rgba(0,0,0,0.42), inset 0 -22px 40px rgba(0,0,0,0.20), inset 0 0 50px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.22), 0 18px 30px rgba(0,0,0,0.32), 0 38px 60px -8px rgba(0,0,0,0.40), 0 64px 90px -14px rgba(0,0,0,0.36)',
+                    ? 'inset 1px 0 0 rgba(255,255,255,0.20), inset -1px 0 0 rgba(255,255,255,0.14), inset 0 4px 0 rgba(255,255,255,0.58), inset 0 -4px 0 rgba(0,0,0,0.50), inset 0 -30px 52px rgba(0,0,0,0.30), inset 0 0 90px rgba(0,0,0,0.32), 0 8px 14px rgba(0,0,0,0.30), 0 30px 52px rgba(0,0,0,0.44), 0 60px 92px -12px rgba(0,0,0,0.52), 0 0 40px rgba(240,160,80,0.30)'
+                    : 'inset 1px 0 0 rgba(255,255,255,0.18), inset -1px 0 0 rgba(255,255,255,0.12), inset 0 4px 0 rgba(255,255,255,0.50), inset 0 -4px 0 rgba(0,0,0,0.46), inset 0 -26px 46px rgba(0,0,0,0.26), inset 0 0 80px rgba(0,0,0,0.28), 0 4px 8px rgba(0,0,0,0.24), 0 22px 36px rgba(0,0,0,0.36), 0 44px 70px -8px rgba(0,0,0,0.44), 0 72px 100px -14px rgba(0,0,0,0.38)',
                   fontFamily: D.font,
                 }}
                 onMouseEnter={() => setHovered(card.id)}
@@ -179,30 +194,32 @@ export default function DashboardCS() {
                   zIndex: 0,
                 }} />
 
-                {/* V2.4 FIX 2 — "Infladito colchón": radial-gradient centro-brillante + edges oscuros = surface bulge */}
+                {/* V2.5 FIX 2 — "Infladito colchón" REFORZADO: centro bright 0.14 → edges dark 0.32 */}
                 <div style={{
                   position: 'absolute', inset: 0,
-                  background: 'radial-gradient(ellipse 85% 70% at 50% 42%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 40%, rgba(0,0,0,0.10) 85%, rgba(0,0,0,0.16) 100%)',
+                  background: 'radial-gradient(ellipse 80% 65% at 50% 40%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 35%, rgba(0,0,0,0.20) 78%, rgba(0,0,0,0.32) 100%)',
                   pointerEvents: 'none',
                   borderRadius: 'inherit',
-                  opacity: isH ? 0.85 : 1,
+                  opacity: isH ? 0.75 : 1,
                   transition: 'opacity 0.3s ease',
                   zIndex: 0,
                 }} />
 
-                {/* V2.4 FIX 3 — Ráfaga de luz al hover: franja diagonal que barre izq→der en 900ms */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-20%', bottom: '-20%',
-                  left: '-50%',
-                  width: '45%',
-                  background: 'linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.10) 55%, transparent 70%)',
-                  transform: isH ? 'translateX(420%) skewX(-18deg)' : 'translateX(-20%) skewX(-18deg)',
-                  transition: isH ? 'transform 0.9s cubic-bezier(0.22,1,0.36,1)' : 'none',
-                  pointerEvents: 'none',
-                  opacity: isH ? 1 : 0,
-                  zIndex: 1,
-                }} />
+                {/* V2.5 FIX 3 — Ráfaga de luz single-pass via @keyframes (className cs-sweep) */}
+                <div
+                  className="cs-sweep"
+                  style={{
+                    position: 'absolute',
+                    top: '-20%', bottom: '-20%',
+                    left: 0,
+                    width: '42%',
+                    background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.10) 45%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0.10) 55%, transparent 70%)',
+                    transform: 'translateX(-40%) skewX(-18deg)',
+                    pointerEvents: 'none',
+                    opacity: 0,
+                    zIndex: 1,
+                  }}
+                />
 
                 {/* Label — TOP */}
                 <div style={{
