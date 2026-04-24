@@ -5,7 +5,11 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 /* ———————————————————————————————————————————————————————————————
-SERVICIO A CLIENTES — Landing Page V3.0
+SERVICIO A CLIENTES — Landing Page V3.1
+V3.1 ajustes JJ 23/Abr:
+  Título 17→26px, icono 79→54px, padding vertical 24→28px
+  — iconos respiran (~44px aire arriba/abajo), títulos más presentes
+  — whiteSpace nowrap + ellipsis para safety (no se salen del card)
 V3.0 ajustes JJ 23/Abr:
   (I) Sweep 50% más rápido — duración base 11s (±2s variación aleatoria, 9-13s)
   (II) Sweep params 100% random por card: dirección (0-360°) + skew (±25°)
@@ -54,7 +58,7 @@ const IcoCenter = ({ set, name, hovered }: { set: string; name: string; hovered?
   }, [set, name])
   return (
     <img src={hovered ? srcOrange : srcWhite} alt=""
-      style={{ width: '79px', height: '79px', opacity: hovered ? 0.55 : 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))', transition: 'opacity 0.3s ease' }} />
+      style={{ width: '54px', height: '54px', opacity: hovered ? 0.55 : 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))', transition: 'opacity 0.3s ease' }} />
   )
 }
 /* ── Card config ── */
@@ -223,7 +227,7 @@ export default function DashboardCS() {
                 style={{
                   aspectRatio: '1 / 0.612',
                   borderRadius: '10px',
-                  padding: '24px 20px',
+                  padding: '28px 20px',
                   backgroundImage: isH ? bgHover : bgNormal,
                   backgroundOrigin: 'border-box',
                   backgroundClip: 'padding-box, border-box',
@@ -291,11 +295,13 @@ export default function DashboardCS() {
                   style={sweepStyleFromParams(sweepMap[card.id])}
                 />
 
-                {/* Label — TOP */}
+                {/* Label — TOP (V3.1: 26px, tamaño máximo que cabe sin overflow) */}
                 <div style={{
-                  fontFamily: D.font, fontSize: '17px', fontWeight: 600, color: '#ffffff',
-                  textAlign: 'center', position: 'relative', zIndex: 2, letterSpacing: '0.02em',
-                  lineHeight: 1.2, paddingTop: '2px',
+                  fontFamily: D.font, fontSize: '26px', fontWeight: 600, color: '#ffffff',
+                  textAlign: 'center', position: 'relative', zIndex: 2, letterSpacing: '0.01em',
+                  lineHeight: 1.15, paddingTop: '2px',
+                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                  maxWidth: '100%',
                 }}>
                   {card.label}
                 </div>
