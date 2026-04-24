@@ -11,7 +11,7 @@ import type { CardDef } from '../../components/dashboard/ModuleDashboardGrid'
 const CARDS: CardDef[] = [
   { id: 'cotizador',        label: 'Cotizador',         route: '/cotizador/nueva',               kpiLabel: 'Pendientes', iconSet: 'hugeicons', iconName: 'invoice-03' },
   { id: 'mis_cotizaciones', label: 'Mis Cotizaciones',  route: '/cotizador/mis-cotizaciones',    kpiLabel: 'Total',      iconSet: 'hugeicons', iconName: 'file-management' },
-  { id: 'programa',         label: 'Programa Semanal',  route: '/ventas/programa-semanal',       kpiLabel: 'Esta semana', iconSet: 'hugeicons', iconName: 'calendar-03' },
+  { id: 'programa',         label: 'Programa Semanal',  route: '/comercial/programa-semanal',       kpiLabel: 'Esta semana', iconSet: 'hugeicons', iconName: 'calendar-03' },
   { id: 'alta_clientes',    label: 'Alta de Clientes',  route: '/clientes/alta',                 kpiLabel: 'Formulario',  iconSet: 'hugeicons', iconName: 'user-add-01' },
   { id: 'inteligencia',     label: 'Inteligencia',      route: '/inteligencia',                  kpiLabel: 'Rankings',    iconSet: 'hugeicons', iconName: 'analytics-01' },
   { id: 'presupuesto',      label: 'Presupuesto',       route: '/inteligencia/presupuesto',      kpiLabel: 'Mensual',     iconSet: 'hugeicons', iconName: 'money-bag-02' },
