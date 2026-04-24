@@ -56,6 +56,7 @@ export default function MapaGPS(): ReactElement {
       const { data, error } = await supabase
         .from('gps_tracking')
         .select('*')
+        .or('tipo_unidad.is.null,tipo_unidad.eq.tracto')
         .order('ultima_actualizacion', { ascending: false });
 
       if (!error && data) {
@@ -120,10 +121,10 @@ export default function MapaGPS(): ReactElement {
         '<b>Empresa:</b> ' + (r.empresa || '-') + '<br/>' +
         '<b>Segmento:</b> ' + (r.segmento || '-') + '<br/>' +
         '<b>Velocidad:</b> ' + vel + ' km/h<br/>' +
-        '<b>Ubicación:</b> ' + (r.ubicacion || r.municipio_geo || '-') + '<br/>' +
+        '<b>UbicaciÃ³n:</b> ' + (r.ubicacion || r.municipio_geo || '-') + '<br/>' +
         '<b>Estado:</b> ' + (r.estado_geo || '-') + '<br/>' +
         '<b>Estatus:</b> ' + (r.estatus || '-') + '<br/>' +
-        '<b>Actualización:</b> ' + updStr +
+        '<b>ActualizaciÃ³n:</b> ' + updStr +
         '</div>'
       );
       markersRef.current.push(marker);
@@ -155,7 +156,7 @@ export default function MapaGPS(): ReactElement {
       {/* KPI Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.md }}>
         {[
-          { label: 'Total Unidades', value: gpsData.length, color: tokens.colors.textPrimary },
+          { label: 'Total Tractos', value: gpsData.length, color: tokens.colors.textPrimary },
           { label: 'En Movimiento', value: enMovimiento, color: '#22c55e' },
           { label: 'Detenidas', value: detenidas, color: '#f59e0b' },
           { label: 'Empresas', value: empresas.length, color: tokens.colors.textPrimary },
@@ -189,13 +190,15 @@ export default function MapaGPS(): ReactElement {
       <Card>
         <div style={{ marginBottom: tokens.spacing.sm, paddingBottom: tokens.spacing.sm, borderBottom: '1px solid ' + tokens.colors.border, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>
-            Mapa GPS {loading ? '— Cargando...' : '— ' + gpsData.length + ' unidades rastreadas'}
+            Mapa GPS {loading ? 'â Cargando...' : 'â ' + gpsData.length + ' tractos rastreados'}
           </h3>
         </div>
         <div
           ref={mapRef}
           style={{
-            height: '550px',
+            height: 'calc(100vh - 340px)',
+            minHeight: '300px',
+            maxHeight: '600px',
             borderRadius: tokens.radius.lg,
             border: '1px solid ' + tokens.colors.border,
             backgroundColor: '#e5e7eb',
@@ -215,10 +218,10 @@ export default function MapaGPS(): ReactElement {
         </span>
         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <span style={{ display: 'inline-block', width: 12, height: 12, borderRadius: '50%', background: '#ef4444' }} />
-          Sin señal
+          Sin seÃ±al
         </span>
         <span style={{ marginLeft: 'auto' }}>
-          Última actualización: {new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
+          Ãltima actualizaciÃ³n: {new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
         </span>
       </div>
     </ModuleLayout>
