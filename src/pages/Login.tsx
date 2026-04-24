@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import type React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthContext } from '../hooks/AuthContext'
 import { AlertCircle } from 'lucide-react'
@@ -262,6 +263,57 @@ const S = {
     justifyContent: 'center' as const,
     animation: 'lhSeqUp 1.1s ease 3.8s both',
   },
+  // V27 — Remember me toggle (iOS-style switch + label)
+  rememberWrap: {
+    width: '80%',
+    margin: '14px auto 0',
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+    gap: '12px',
+    cursor: 'pointer' as const,
+    userSelect: 'none' as const,
+    animation: 'lhSeqUp 1.1s ease 4.1s both',
+  },
+  rememberLabel: {
+    fontFamily: L.font,
+    fontSize: '13px',
+    fontWeight: 500,
+    color: 'rgba(250,250,250,0.78)',
+    letterSpacing: '0.01em',
+    transition: 'color 0.22s ease',
+  },
+  rememberLabelActive: {
+    color: L.orangeBright,
+  },
+  switchTrack: (active: boolean): React.CSSProperties => ({
+    width: '40px',
+    height: '22px',
+    borderRadius: '999px',
+    background: active
+      ? `linear-gradient(135deg, ${L.orange} 0%, ${L.orangeBright} 100%)`
+      : 'rgba(255,255,255,0.12)',
+    border: active
+      ? '1px solid rgba(255,180,120,0.5)'
+      : '1px solid rgba(255,255,255,0.18)',
+    position: 'relative',
+    transition: 'background 0.25s ease, border-color 0.25s ease',
+    boxShadow: active
+      ? '0 0 14px rgba(232,97,26,0.35), inset 0 1px 2px rgba(0,0,0,0.18)'
+      : 'inset 0 1px 2px rgba(0,0,0,0.35)',
+    flexShrink: 0,
+  }),
+  switchThumb: (active: boolean): React.CSSProperties => ({
+    position: 'absolute',
+    top: '2px',
+    left: active ? '20px' : '2px',
+    width: '16px',
+    height: '16px',
+    borderRadius: '999px',
+    background: '#FFFFFF',
+    transition: 'left 0.25s cubic-bezier(0.4,0,0.2,1), transform 0.2s ease',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(0,0,0,0.05)',
+  }),
   // Botón -20% de ancho (80% del bloque) manteniendo height
   gbtn: {
     display: 'inline-flex' as const,
@@ -439,11 +491,20 @@ export default function Login() {
   const [error, setError] = useState('')
   const [googleLoading, setGoogleLoading] = useState(false)
   const [hover, setHover] = useState(false)
+  /* V27 — Recordar mi sesion: lee de localStorage, default TRUE (mejor UX para retornos frecuentes) */
+  const [rememberMe, setRememberMe] = useState<boolean>(() => {
+    try { return localStorage.getItem('lhub-remember') !== 'false' } catch { return true }
+  })
   const { user, loading, loginWithGoogleIdToken, getRutaInicial } = useAuthContext()
   const navigate = useNavigate()
   const hiddenGoogleRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => { injectKF() }, [])
+
+  /* V27 — persistir rememberMe en cada cambio */
+  useEffect(() => {
+    try { localStorage.setItem('lhub-remember', rememberMe ? 'true' : 'false') } catch { /* noop */ }
+  }, [rememberMe])
 
   useEffect(() => {
     if (!loading && user) {
@@ -476,7 +537,8 @@ export default function Login() {
         window.google.accounts.id.initialize({
           client_id: GOOGLE_CLIENT_ID,
           callback: handleCredential,
-          auto_select: false,
+          /* V27 — auto_select ligado a rememberMe: si usuario marco "Recordar", Google auto-selecciona su cuenta */
+          auto_select: rememberMe,
           cancel_on_tap_outside: true,
           itp_support: true,
         })
@@ -526,7 +588,7 @@ export default function Login() {
     }
 
     return () => { mounted = false }
-  }, [handleCredential])
+  }, [handleCredential, rememberMe])
 
   const triggerGoogle = () => {
     setError('')
@@ -610,6 +672,28 @@ export default function Login() {
                 {googleLoading ? 'Conectando...' : 'Continuar con Google'}
               </span>
             </button>
+          </div>
+
+          {/* V27 — Toggle "Recordar mi sesion" — visible y contundente */}
+          <div
+            style={S.rememberWrap}
+            onClick={() => setRememberMe(v => !v)}
+            role="switch"
+            aria-checked={rememberMe}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault()
+                setRememberMe(v => !v)
+              }
+            }}
+          >
+            <div style={S.switchTrack(rememberMe)}>
+              <div style={S.switchThumb(rememberMe)} />
+            </div>
+            <span style={{ ...S.rememberLabel, ...(rememberMe ? S.rememberLabelActive : {}) }}>
+              Recordar mi sesi{'\u00f3'}n
+            </span>
           </div>
 
           {error && (

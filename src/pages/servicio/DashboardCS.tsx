@@ -395,7 +395,7 @@ export default function DashboardCS() {
                 {/* KPI + sublabel — V3.4: número 40px + icono 58px (proporción Linear/Notion 1.45:1) */}
                 <div style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
                   <div style={{
-                    fontFamily: D.font, fontSize: '40px', fontWeight: 600,
+                    fontFamily: D.font, fontSize: '32px', fontWeight: 600,
                     color: isH ? 'rgba(240,160,80,1)' : 'rgba(255,255,255,0.98)',
                     lineHeight: 1, letterSpacing: '-0.01em',
                     fontVariantNumeric: 'tabular-nums',
