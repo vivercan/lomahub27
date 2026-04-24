@@ -5,7 +5,9 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 /* ———————————————————————————————————————————————————————————————
-SERVICIO A CLIENTES — Landing Page V2.8
+SERVICIO A CLIENTES — Landing Page V2.9
+V2.9 ajuste JJ 23/Abr:
+  aspectRatio 1/0.612 (−20% altura desde V2.8 0.765)
 V2.8 ajustes JJ 23/Abr:
   (A) aspectRatio 1/0.765 (ajuste +25% menos reducido vs V2.7 0.72 — compromise)
   (B) sweep 50% más tenue (alpha pico 0.28→0.14 y periferia 0.10→0.05)
@@ -205,7 +207,7 @@ export default function DashboardCS() {
                 key={card.id}
                 className="cs-card"
                 style={{
-                  aspectRatio: '1 / 0.765',
+                  aspectRatio: '1 / 0.612',
                   borderRadius: '10px',
                   padding: '24px 20px',
                   backgroundImage: isH ? bgHover : bgNormal,
