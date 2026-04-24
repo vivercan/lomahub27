@@ -1,13 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
+import type { CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 /* ———————————————————————————————————————————————————————————————
-SERVICIO A CLIENTES — Landing Page V2.7
-V2.7 ajustes JJ 23/Abr:
-  (A) aspectRatio 1/0.72 (20% más bajo vs 1/0.9 anterior)
-  (B) sweep duration 16.5s (20% velocidad = 5× más lento vs 3.3s anterior)
+SERVICIO A CLIENTES — Landing Page V2.8
+V2.8 ajustes JJ 23/Abr:
+  (A) aspectRatio 1/0.765 (ajuste +25% menos reducido vs V2.7 0.72 — compromise)
+  (B) sweep 50% más tenue (alpha pico 0.28→0.14 y periferia 0.10→0.05)
+  (C) sweep 6 direcciones aleatorias por card: LR, RL, TB, BT, DNE, DNW
+      — asignación random al mount (useState init), duración 16.5s preservada
+  (D) Grid fijo 5 cols: 2-3 cards se quedan a la izquierda, mismo tamaño
 Base V2.3 preservada + enhancements V2.4-V2.6:
   (1) Pressed apachurrable (scale 0.92 + translateY 9px + cavity 0.85)
   (2) "Infladito colchón": radial-gradient overlay + inset ambient edge-darken
@@ -62,6 +66,28 @@ const CARDS: CardDef[] = [
   { id: 'metricas',     label: 'Métricas Servicio', route: '/servicio/metricas',        kpiLabel: 'Dashboard',       iconSet: 'bi',        iconName: 'graph-up' },
   { id: 'actividades',  label: 'Actividades',       route: '/actividades',              kpiLabel: 'Pendientes',      iconSet: 'bi',        iconName: 'list-check' },
 ]
+/* ── V2.8 — Sweep variants (6 direcciones aleatorias) ── */
+const SWEEP_VARIANTS = ['LR', 'RL', 'TB', 'BT', 'DNE', 'DNW'] as const
+type SweepVariant = typeof SWEEP_VARIANTS[number]
+/* Gradient tenue (50% alpha vs V2.7): centro 0.14 (era 0.28), periferia 0.05 (era 0.10) */
+const SWEEP_TENUE = 'transparent 30%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.05) 55%, transparent 70%'
+function sweepStyle(v: SweepVariant): CSSProperties {
+  const base = { position: 'absolute' as const, pointerEvents: 'none' as const, opacity: 0, zIndex: 1 }
+  switch (v) {
+    case 'LR': return { ...base, top: '-20%', bottom: '-20%', left: 0, width: '42%',
+      background: `linear-gradient(105deg, ${SWEEP_TENUE})`, transform: 'translateX(-40%) skewX(-18deg)' }
+    case 'RL': return { ...base, top: '-20%', bottom: '-20%', right: 0, width: '42%',
+      background: `linear-gradient(-105deg, ${SWEEP_TENUE})`, transform: 'translateX(40%) skewX(18deg)' }
+    case 'TB': return { ...base, left: '-20%', right: '-20%', top: 0, height: '42%',
+      background: `linear-gradient(195deg, ${SWEEP_TENUE})`, transform: 'translateY(-40%) skewY(-18deg)' }
+    case 'BT': return { ...base, left: '-20%', right: '-20%', bottom: 0, height: '42%',
+      background: `linear-gradient(15deg, ${SWEEP_TENUE})`, transform: 'translateY(40%) skewY(18deg)' }
+    case 'DNE': return { ...base, top: '-20%', bottom: '-20%', left: 0, width: '42%',
+      background: `linear-gradient(135deg, ${SWEEP_TENUE})`, transform: 'translate(-40%, 120%) skewX(-18deg)' }
+    case 'DNW': return { ...base, top: '-20%', bottom: '-20%', right: 0, width: '42%',
+      background: `linear-gradient(-135deg, ${SWEEP_TENUE})`, transform: 'translate(40%, 120%) skewX(18deg)' }
+  }
+}
 /* ── Supabase helpers ── */
 async function countViajesAnodosByTipo(tipoViaje: number): Promise<number> {
   const hace30d = new Date()
@@ -89,6 +115,12 @@ export default function DashboardCS() {
   const [pressed, setPressed] = useState<string | null>(null)
   const [kpis, setKpis] = useState<Record<string, number>>({ tickets: 0, clientes: 0, impo: 0, expo: 0, despacho_ia: 0, metricas: 0, actividades: 0 })
   const [loading, setLoading] = useState(true)
+  /* V2.8 — Asignación random de dirección de sweep por card (se fija al mount) */
+  const [sweepMap] = useState<Record<string, SweepVariant>>(() => {
+    const map: Record<string, SweepVariant> = {}
+    CARDS.forEach(c => { map[c.id] = SWEEP_VARIANTS[Math.floor(Math.random() * SWEEP_VARIANTS.length)] })
+    return map
+  })
   const fetchKpis = useCallback(async () => {
     try {
       const [tix, cli, act, viajesActivos] = await Promise.all([
@@ -116,21 +148,48 @@ export default function DashboardCS() {
   useEffect(() => { fetchKpis() }, [fetchKpis])
   return (
     <ModuleLayout titulo="Servicio a Clientes">
-      {/* V2.7 — ráfaga luz 20% velocidad (16.5s = 3.3s × 5) + cards 20% más bajas */}
+      {/* V2.8 — 6 keyframes por dirección aleatoria + alpha 50% más tenue */}
       <style>{`
-        @keyframes csCardSweep {
+        @keyframes csSweepLR {
           0%   { transform: translateX(-40%) skewX(-18deg); opacity: 0; }
-          12%  { opacity: 1; }
-          88%  { opacity: 1; }
+          12%  { opacity: 1; } 88% { opacity: 1; }
           100% { transform: translateX(480%) skewX(-18deg); opacity: 0; }
         }
-        .cs-card:hover .cs-sweep {
-          animation: csCardSweep 16.5s cubic-bezier(0.22,1,0.36,1) forwards;
+        @keyframes csSweepRL {
+          0%   { transform: translateX(40%) skewX(18deg); opacity: 0; }
+          12%  { opacity: 1; } 88% { opacity: 1; }
+          100% { transform: translateX(-480%) skewX(18deg); opacity: 0; }
         }
+        @keyframes csSweepTB {
+          0%   { transform: translateY(-40%) skewY(-18deg); opacity: 0; }
+          12%  { opacity: 1; } 88% { opacity: 1; }
+          100% { transform: translateY(480%) skewY(-18deg); opacity: 0; }
+        }
+        @keyframes csSweepBT {
+          0%   { transform: translateY(40%) skewY(18deg); opacity: 0; }
+          12%  { opacity: 1; } 88% { opacity: 1; }
+          100% { transform: translateY(-480%) skewY(18deg); opacity: 0; }
+        }
+        @keyframes csSweepDNE {
+          0%   { transform: translate(-40%, 120%) skewX(-18deg); opacity: 0; }
+          12%  { opacity: 1; } 88% { opacity: 1; }
+          100% { transform: translate(480%, -120%) skewX(-18deg); opacity: 0; }
+        }
+        @keyframes csSweepDNW {
+          0%   { transform: translate(40%, 120%) skewX(18deg); opacity: 0; }
+          12%  { opacity: 1; } 88% { opacity: 1; }
+          100% { transform: translate(-480%, -120%) skewX(18deg); opacity: 0; }
+        }
+        .cs-card:hover .cs-sweep-LR  { animation: csSweepLR  16.5s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .cs-card:hover .cs-sweep-RL  { animation: csSweepRL  16.5s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .cs-card:hover .cs-sweep-TB  { animation: csSweepTB  16.5s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .cs-card:hover .cs-sweep-BT  { animation: csSweepBT  16.5s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .cs-card:hover .cs-sweep-DNE { animation: csSweepDNE 16.5s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .cs-card:hover .cs-sweep-DNW { animation: csSweepDNW 16.5s cubic-bezier(0.22,1,0.36,1) forwards; }
       `}</style>
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
-        {/* V2.6 — Grid 5 columnas: fila 1 con 5 cards orilla-a-orilla, fila 2 con los sobrantes mismo tamaño */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '20px' }}>
+        {/* V2.8 — Grid 5 cols FIJO: si hay 2-3 cards mantienen 1/5 del ancho, alineados a la izquierda (como fila 2 de 2 cards) */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '20px', justifyContent: 'start' }}>
           {CARDS.map(card => {
             const isH = hovered === card.id
             const isP = pressed === card.id
@@ -146,7 +205,7 @@ export default function DashboardCS() {
                 key={card.id}
                 className="cs-card"
                 style={{
-                  aspectRatio: '1 / 0.72',
+                  aspectRatio: '1 / 0.765',
                   borderRadius: '10px',
                   padding: '24px 20px',
                   backgroundImage: isH ? bgHover : bgNormal,
@@ -210,20 +269,10 @@ export default function DashboardCS() {
                   zIndex: 0,
                 }} />
 
-                {/* V2.5 FIX 3 — Ráfaga de luz single-pass via @keyframes (className cs-sweep) */}
+                {/* V2.8 — Ráfaga tenue (alpha 50%) con dirección random por card */}
                 <div
-                  className="cs-sweep"
-                  style={{
-                    position: 'absolute',
-                    top: '-20%', bottom: '-20%',
-                    left: 0,
-                    width: '42%',
-                    background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.10) 45%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0.10) 55%, transparent 70%)',
-                    transform: 'translateX(-40%) skewX(-18deg)',
-                    pointerEvents: 'none',
-                    opacity: 0,
-                    zIndex: 1,
-                  }}
+                  className={`cs-sweep cs-sweep-${sweepMap[card.id]}`}
+                  style={sweepStyle(sweepMap[card.id])}
                 />
 
                 {/* Label — TOP */}
