@@ -5,7 +5,14 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 /* ———————————————————————————————————————————————————————————————
-SERVICIO A CLIENTES — Landing Page V2.9
+SERVICIO A CLIENTES — Landing Page V3.0
+V3.0 ajustes JJ 23/Abr:
+  (I) Sweep 50% más rápido — duración base 11s (±2s variación aleatoria, 9-13s)
+  (II) Sweep params 100% random por card: dirección (0-360°) + skew (±25°)
+       + alpha (0.08-0.18) + ancho (32-55%) + travel (280-360%)
+       = efectivamente infinitas variaciones, cada refresh reordena
+  (III) Hover card scale(1.03) + translateY(-7px) + icono scale(1.08)
+        — sensación de "agrandarse al pasar" mucho más marcada
 V2.9 ajuste JJ 23/Abr:
   aspectRatio 1/0.612 (−20% altura desde V2.8 0.765)
 V2.8 ajustes JJ 23/Abr:
@@ -68,26 +75,60 @@ const CARDS: CardDef[] = [
   { id: 'metricas',     label: 'Métricas Servicio', route: '/servicio/metricas',        kpiLabel: 'Dashboard',       iconSet: 'bi',        iconName: 'graph-up' },
   { id: 'actividades',  label: 'Actividades',       route: '/actividades',              kpiLabel: 'Pendientes',      iconSet: 'bi',        iconName: 'list-check' },
 ]
-/* ── V2.8 — Sweep variants (6 direcciones aleatorias) ── */
-const SWEEP_VARIANTS = ['LR', 'RL', 'TB', 'BT', 'DNE', 'DNW'] as const
-type SweepVariant = typeof SWEEP_VARIANTS[number]
-/* Gradient tenue (50% alpha vs V2.7): centro 0.14 (era 0.28), periferia 0.05 (era 0.10) */
-const SWEEP_TENUE = 'transparent 30%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.05) 55%, transparent 70%'
-function sweepStyle(v: SweepVariant): CSSProperties {
-  const base = { position: 'absolute' as const, pointerEvents: 'none' as const, opacity: 0, zIndex: 1 }
-  switch (v) {
-    case 'LR': return { ...base, top: '-20%', bottom: '-20%', left: 0, width: '42%',
-      background: `linear-gradient(105deg, ${SWEEP_TENUE})`, transform: 'translateX(-40%) skewX(-18deg)' }
-    case 'RL': return { ...base, top: '-20%', bottom: '-20%', right: 0, width: '42%',
-      background: `linear-gradient(-105deg, ${SWEEP_TENUE})`, transform: 'translateX(40%) skewX(18deg)' }
-    case 'TB': return { ...base, left: '-20%', right: '-20%', top: 0, height: '42%',
-      background: `linear-gradient(195deg, ${SWEEP_TENUE})`, transform: 'translateY(-40%) skewY(-18deg)' }
-    case 'BT': return { ...base, left: '-20%', right: '-20%', bottom: 0, height: '42%',
-      background: `linear-gradient(15deg, ${SWEEP_TENUE})`, transform: 'translateY(40%) skewY(18deg)' }
-    case 'DNE': return { ...base, top: '-20%', bottom: '-20%', left: 0, width: '42%',
-      background: `linear-gradient(135deg, ${SWEEP_TENUE})`, transform: 'translate(-40%, 120%) skewX(-18deg)' }
-    case 'DNW': return { ...base, top: '-20%', bottom: '-20%', right: 0, width: '42%',
-      background: `linear-gradient(-135deg, ${SWEEP_TENUE})`, transform: 'translate(40%, 120%) skewX(18deg)' }
+/* ── V3.0 — Sweep params 100% aleatorios (efectivamente infinitas variaciones) ── */
+type SweepParams = {
+  angleRad: number      // dirección del movimiento 0-2π
+  duration: number      // 9-13s (50% más rápido vs V2.9 16.5s; avg 11s)
+  skew: number          // -25 a +25 deg
+  peakAlpha: number     // 0.08-0.18
+  peripheryAlpha: number // 0.03-0.08
+  beamWidth: number     // 32-55%
+  travelDistance: number // 280-360% (cuánto recorre la ráfaga)
+}
+function randomSweepParams(): SweepParams {
+  return {
+    angleRad: Math.random() * Math.PI * 2,
+    duration: 9 + Math.random() * 4,
+    skew: (Math.random() - 0.5) * 50,
+    peakAlpha: 0.08 + Math.random() * 0.10,
+    peripheryAlpha: 0.03 + Math.random() * 0.05,
+    beamWidth: 32 + Math.random() * 23,
+    travelDistance: 280 + Math.random() * 80,
+  }
+}
+function sweepStyleFromParams(p: SweepParams): CSSProperties {
+  const cosA = Math.cos(p.angleRad)
+  const sinA = Math.sin(p.angleRad)
+  const half = p.travelDistance / 2
+  const startX = -cosA * half
+  const startY = -sinA * half
+  const endX   =  cosA * half
+  const endY   =  sinA * half
+  /* Ángulo del gradient: perpendicular al movimiento para que el haz cruce la card */
+  const gradientAngle = ((p.angleRad * 180 / Math.PI) + 90) % 360
+  /* Beam thickness: beamWidth en % del div contenedor (32-55) — más ancho = más soft */
+  const spread = p.beamWidth / 2
+  const s1 = (50 - spread).toFixed(1)
+  const s2 = (50 - spread / 2).toFixed(1)
+  const s3 = (50 + spread / 2).toFixed(1)
+  const s4 = (50 + spread).toFixed(1)
+  const peri = p.peripheryAlpha.toFixed(3)
+  const peak = p.peakAlpha.toFixed(3)
+  return {
+    ['--sx' as any]: `${startX}%`,
+    ['--sy' as any]: `${startY}%`,
+    ['--ex' as any]: `${endX}%`,
+    ['--ey' as any]: `${endY}%`,
+    ['--rot' as any]: `${p.skew}deg`,
+    ['--dur' as any]: `${p.duration.toFixed(2)}s`,
+    position: 'absolute',
+    /* Oversized 200% × 200% (inset -50%) para que la rotación no deje huecos visibles */
+    top: '-50%', bottom: '-50%', left: '-50%', right: '-50%',
+    background: `linear-gradient(${gradientAngle}deg, transparent ${s1}%, rgba(255,255,255,${peri}) ${s2}%, rgba(255,255,255,${peak}) 50%, rgba(255,255,255,${peri}) ${s3}%, transparent ${s4}%)`,
+    transform: `translate(var(--sx), var(--sy)) rotate(var(--rot))`,
+    pointerEvents: 'none',
+    zIndex: 1,
+    opacity: 0,
   }
 }
 /* ── Supabase helpers ── */
@@ -117,10 +158,10 @@ export default function DashboardCS() {
   const [pressed, setPressed] = useState<string | null>(null)
   const [kpis, setKpis] = useState<Record<string, number>>({ tickets: 0, clientes: 0, impo: 0, expo: 0, despacho_ia: 0, metricas: 0, actividades: 0 })
   const [loading, setLoading] = useState(true)
-  /* V2.8 — Asignación random de dirección de sweep por card (se fija al mount) */
-  const [sweepMap] = useState<Record<string, SweepVariant>>(() => {
-    const map: Record<string, SweepVariant> = {}
-    CARDS.forEach(c => { map[c.id] = SWEEP_VARIANTS[Math.floor(Math.random() * SWEEP_VARIANTS.length)] })
+  /* V3.0 — Params aleatorios por card (dirección, duración, skew, alpha, ancho) — fijados al mount */
+  const [sweepMap] = useState<Record<string, SweepParams>>(() => {
+    const map: Record<string, SweepParams> = {}
+    CARDS.forEach(c => { map[c.id] = randomSweepParams() })
     return map
   })
   const fetchKpis = useCallback(async () => {
@@ -150,44 +191,17 @@ export default function DashboardCS() {
   useEffect(() => { fetchKpis() }, [fetchKpis])
   return (
     <ModuleLayout titulo="Servicio a Clientes">
-      {/* V2.8 — 6 keyframes por dirección aleatoria + alpha 50% más tenue */}
+      {/* V3.0 — Keyframe único parametrizado con CSS vars (cada card trae sus propias vars) */}
       <style>{`
-        @keyframes csSweepLR {
-          0%   { transform: translateX(-40%) skewX(-18deg); opacity: 0; }
-          12%  { opacity: 1; } 88% { opacity: 1; }
-          100% { transform: translateX(480%) skewX(-18deg); opacity: 0; }
+        @keyframes csSweepRand {
+          0%   { transform: translate(var(--sx), var(--sy)) rotate(var(--rot)); opacity: 0; }
+          10%  { opacity: 1; }
+          90%  { opacity: 1; }
+          100% { transform: translate(var(--ex), var(--ey)) rotate(var(--rot)); opacity: 0; }
         }
-        @keyframes csSweepRL {
-          0%   { transform: translateX(40%) skewX(18deg); opacity: 0; }
-          12%  { opacity: 1; } 88% { opacity: 1; }
-          100% { transform: translateX(-480%) skewX(18deg); opacity: 0; }
+        .cs-card:hover .cs-sweep {
+          animation: csSweepRand var(--dur) cubic-bezier(0.22,1,0.36,1) forwards;
         }
-        @keyframes csSweepTB {
-          0%   { transform: translateY(-40%) skewY(-18deg); opacity: 0; }
-          12%  { opacity: 1; } 88% { opacity: 1; }
-          100% { transform: translateY(480%) skewY(-18deg); opacity: 0; }
-        }
-        @keyframes csSweepBT {
-          0%   { transform: translateY(40%) skewY(18deg); opacity: 0; }
-          12%  { opacity: 1; } 88% { opacity: 1; }
-          100% { transform: translateY(-480%) skewY(18deg); opacity: 0; }
-        }
-        @keyframes csSweepDNE {
-          0%   { transform: translate(-40%, 120%) skewX(-18deg); opacity: 0; }
-          12%  { opacity: 1; } 88% { opacity: 1; }
-          100% { transform: translate(480%, -120%) skewX(-18deg); opacity: 0; }
-        }
-        @keyframes csSweepDNW {
-          0%   { transform: translate(40%, 120%) skewX(18deg); opacity: 0; }
-          12%  { opacity: 1; } 88% { opacity: 1; }
-          100% { transform: translate(-480%, -120%) skewX(18deg); opacity: 0; }
-        }
-        .cs-card:hover .cs-sweep-LR  { animation: csSweepLR  16.5s cubic-bezier(0.22,1,0.36,1) forwards; }
-        .cs-card:hover .cs-sweep-RL  { animation: csSweepRL  16.5s cubic-bezier(0.22,1,0.36,1) forwards; }
-        .cs-card:hover .cs-sweep-TB  { animation: csSweepTB  16.5s cubic-bezier(0.22,1,0.36,1) forwards; }
-        .cs-card:hover .cs-sweep-BT  { animation: csSweepBT  16.5s cubic-bezier(0.22,1,0.36,1) forwards; }
-        .cs-card:hover .cs-sweep-DNE { animation: csSweepDNE 16.5s cubic-bezier(0.22,1,0.36,1) forwards; }
-        .cs-card:hover .cs-sweep-DNW { animation: csSweepDNW 16.5s cubic-bezier(0.22,1,0.36,1) forwards; }
       `}</style>
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
         {/* V2.8 — Grid 5 cols FIJO: si hay 2-3 cards mantienen 1/5 del ancho, alineados a la izquierda (como fila 2 de 2 cards) */}
@@ -225,11 +239,11 @@ export default function DashboardCS() {
                   transition: isP
                     ? 'transform 0.08s cubic-bezier(0.4,0,0.6,1), box-shadow 0.08s ease'
                     : 'transform 0.24s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, outline 0.18s ease',
-                  /* V2.5 FIX — pressed dramático: scale 0.92, translateY 9px */
+                  /* V3.0 — pressed + hover ahora CON scale(1.03) para sensación de "agrandarse" */
                   transform: isP
                     ? 'translateY(9px) scale(0.92)'
                     : isH
-                    ? 'translateY(-6px)'
+                    ? 'translateY(-7px) scale(1.03)'
                     : 'translateY(0)',
                   /* V2.3 outline rim blanco */
                   outline: isH
@@ -271,10 +285,10 @@ export default function DashboardCS() {
                   zIndex: 0,
                 }} />
 
-                {/* V2.8 — Ráfaga tenue (alpha 50%) con dirección random por card */}
+                {/* V3.0 — Ráfaga con parámetros 100% aleatorios por card (dirección/duración/skew/alpha) */}
                 <div
-                  className={`cs-sweep cs-sweep-${sweepMap[card.id]}`}
-                  style={sweepStyle(sweepMap[card.id])}
+                  className="cs-sweep"
+                  style={sweepStyleFromParams(sweepMap[card.id])}
                 />
 
                 {/* Label — TOP */}
@@ -287,7 +301,7 @@ export default function DashboardCS() {
                 </div>
 
                 {/* Icon — centered */}
-                <div style={{ position: 'relative', zIndex: 2, transition: 'transform 0.3s ease', transform: isH ? 'scale(1.05)' : 'none' }}>
+                <div style={{ position: 'relative', zIndex: 2, transition: 'transform 0.3s ease', transform: isH ? 'scale(1.08)' : 'none' }}>
                   <IcoCenter set={card.iconSet} name={card.iconName} hovered={isH} />
                 </div>
 
