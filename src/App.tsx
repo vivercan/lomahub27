@@ -85,6 +85,7 @@ import Notificaciones from './pages/comunicaciones/Notificaciones'
 import BriefingChiefOfStaff from './pages/comunicaciones/BriefingChiefOfStaff'
 import ChiefOfStaffHome from './pages/comunicaciones/ChiefOfStaffHome'
 import PanelIntegraciones from './pages/admin/PanelIntegraciones'
+import ParametrosConfig from './pages/admin/ParametrosConfig'
 import CatalogosTab from './pages/admin/CatalogosTab'
 import ProgramacionDedicados from './pages/operaciones/ProgramacionDedicados'
 import ConfigIntegraciones from './pages/admin/ConfigIntegraciones'
@@ -116,49 +117,49 @@ function App() {
           } />
 
           {/* ——— 03. Dashboard Ventas ——— */}
-          <Route path="/comercial/dashboard" element={
+          <Route path="/ventas/dashboard" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <DashboardVentas />
             </ProtectedRoute>
           } />
 
           {/* ——— 04. Panel Personal Vendedor ——— */}
-          <Route path="/comercial/mis-leads" element={
+          <Route path="/ventas/mis-leads" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <MisLeads />
             </ProtectedRoute>
           } />
 
           {/* ——— 05. Captura de Lead ——— */}
-          <Route path="/comercial/leads/nuevo" element={
+          <Route path="/ventas/leads/nuevo" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <NuevoLead />
             </ProtectedRoute>
           } />
 
           {/* ——— 06. Ficha del Lead ——— */}
-          <Route path="/comercial/leads/:id" element={
+          <Route path="/ventas/leads/:id" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial']}>
               <FichaLead />
             </ProtectedRoute>
           } />
 
           {/* ——— 26. Programa Semanal ——— */}
-          <Route path="/comercial/programa-semanal" element={
+          <Route path="/ventas/programa-semanal" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'direccion']}>
               <ProgramaSemanal />
             </ProtectedRoute>
           } />
 
           {/* ——— Prospección Externa ——— */}
-          <Route path="/comercial/prospeccion" element={
+          <Route path="/ventas/prospeccion" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial']}>
               <ProspeccionExterna />
             </ProtectedRoute>
           } />
 
           {/* ––– Ventas Analytics ––– */}
-          <Route path="/comercial/analytics" element={
+          <Route path="/ventas/analytics" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'gerente_comercial', 'direccion']}>
               <VentasAnalytics />
             </ProtectedRoute>
@@ -413,7 +414,7 @@ function App() {
 
           {/* ——— 28. Comisiones por Ejecutivo ——— */}
 
-          <Route path="/comercial/funnel" element={
+          <Route path="/ventas/funnel" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas', 'gerente_comercial', 'direccion']}>
               <FunnelVentas />
             </ProtectedRoute>
@@ -468,8 +469,12 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* ——— Redirect legacy Cerebro Tarifario ——— */}
-          <Route path="/pricing/cerebro-tarifario" element={<Navigate to="/admin/configuracion/parametros" replace />} />
+          {/* ——— Cerebro Tarifario ——— */}
+          <Route path="/pricing/cerebro-tarifario" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'pricing', 'gerente_comercial', 'direccion']}>
+              <CerebroTarifario />
+            </ProtectedRoute>
+          } />
 
           {/* ——— Correos Automáticos ——— */}
           <Route path="/comunicaciones/correos" element={
@@ -528,8 +533,13 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path="/admin/configuracion/parametros" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
+              <ParametrosConfig />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/configuracion/tarifas-ia" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'pricing', 'gerente_comercial', 'direccion']}>
-              <CerebroTarifario />
+              <ParametrosConfig />
             </ProtectedRoute>
           } />
           <Route path="/admin/configuracion/integraciones" element={
@@ -566,10 +576,10 @@ function App() {
           } />
 
           {/* --- Redirects legacy a rutas canonicas (P0-03) --- */}
-          <Route path="/comercial/nuevo-lead" element={<Navigate to="/comercial/leads/nuevo" replace />} />
-          <Route path="/comercial/leads" element={<Navigate to="/comercial/mis-leads" replace />} />
-          <Route path="/comercial/comisiones" element={<Navigate to="/comercial/dashboard" replace />} />
-          <Route path="/comercial/prospeccion-externa" element={<Navigate to="/comercial/prospeccion" replace />} />
+          <Route path="/ventas/nuevo-lead" element={<Navigate to="/ventas/leads/nuevo" replace />} />
+          <Route path="/ventas/leads" element={<Navigate to="/ventas/mis-leads" replace />} />
+          <Route path="/ventas/comisiones" element={<Navigate to="/ventas/dashboard" replace />} />
+          <Route path="/ventas/prospeccion-externa" element={<Navigate to="/ventas/prospeccion" replace />} />
           <Route path="/clientes" element={<Navigate to="/clientes/alta" replace />} />
           <Route path="/operaciones/mapa-gps" element={<Navigate to="/operaciones/mapa" replace />} />
           <Route path="/operaciones/control-tractos" element={<Navigate to="/operaciones/tractos" replace />} />
@@ -582,18 +592,7 @@ function App() {
           {/* ——— Default ——— */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
-        
-
-          {/* ——— Legacy /ventas/ redirects ——— */}
-          <Route path="/ventas/dashboard" element={<Navigate to="/comercial/dashboard" replace />} />
-          <Route path="/ventas/mis-leads" element={<Navigate to="/comercial/mis-leads" replace />} />
-          <Route path="/ventas/leads/nuevo" element={<Navigate to="/comercial/leads/nuevo" replace />} />
-          <Route path="/ventas/leads/:id" element={<Navigate to="/comercial/leads/:id" replace />} />
-          <Route path="/ventas/programa-semanal" element={<Navigate to="/comercial/programa-semanal" replace />} />
-          <Route path="/ventas/prospeccion" element={<Navigate to="/comercial/prospeccion" replace />} />
-          <Route path="/ventas/analytics" element={<Navigate to="/comercial/analytics" replace />} />
-          <Route path="/ventas/funnel" element={<Navigate to="/comercial/funnel" replace />} />
-          </Routes>
+        </Routes>
         </ErrorBoundary>
       </AuthProvider>
     </BrowserRouter>
