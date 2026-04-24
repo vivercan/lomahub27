@@ -5,7 +5,21 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 /* ———————————————————————————————————————————————————————————————
-SERVICIO A CLIENTES — Landing Page V3.2
+SERVICIO A CLIENTES — Landing Page V3.3 (10/10 AAA refinement)
+V3.3 — Rediseño interior card armónico AAA:
+  (1) JERARQUÍA KPI INVERTIDA (fix crítico):
+      — Título 30→17px (eyebrow role, alpha 0.85)
+      — Número KPI 22→46px (HERO, alpha 0.98, tabular-nums, letterSpacing -0.01em)
+      — Sublabel 10→10px, alpha 0.45, letterSpacing 0.08em (eyebrow AAA)
+  (2) ICONOS UNIFORMES (fix inconsistencia orange/white):
+      — Refactor IcoCenter: mask-image en lugar de img src
+      — SVG aporta SOLO forma, color 100% controlado por backgroundColor
+      — Elimina paths con fill hardcoded que no respetaban ?color= param
+      — Icon 54→50px (mejor proporción con número 46px dominante)
+  (3) TRUNCACIÓN "Métricas Servi..." resuelta:
+      — 17px cabe cómodamente "Métricas Servicio" sin ellipsis
+  (4) Gradient de jerarquía por alpha: título 85% → número 98% → sublabel 45%
+Patrón AAA de: Stripe Dashboard, Linear, Retool, Grafana, Attio, Notion
 V3.2 ajustes JJ 23/Abr:
   — Título 26→30px, padding card 28→18px (título sube ~10px + KPI baja ~10px)
   — Mantenido Title Case (patrón AAA CRM vs ALL CAPS industrial/brutalist)
@@ -44,27 +58,40 @@ const D = {
   fontBody: tokens.fonts.body,
 } as const
 const AMBER = '255,120,0'
-/* ── Icon component — centered, prominent, thin-stroke ── */
+/* ── Icon component V3.3 — MASK-IMAGE approach para 100% uniformidad monocroma ── */
+/* Problema previo: algunos SVGs de Iconify tienen paths con fill hardcoded que no respetan
+   el param ?color. Con mask-image el SVG solo aporta FORMA, el color viene del bg. */
 const STROKE_SCALE = 0.75
 const IcoCenter = ({ set, name, hovered }: { set: string; name: string; hovered?: boolean }) => {
-  const [srcWhite, setSrcWhite] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
-  const [srcOrange, setSrcOrange] = useState(`https://api.iconify.design/${set}:${name}.svg?color=%23ff7800`)
+  const [maskUrl, setMaskUrl] = useState(`https://api.iconify.design/${set}:${name}.svg`)
   useEffect(() => {
     const thinify = (raw: string) =>
       raw.replace(/stroke-width="([^"]+)"/g, (_, w) =>
         `stroke-width="${(parseFloat(w) * STROKE_SCALE).toFixed(2)}"`)
-    fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ffffff`)
+    fetch(`https://api.iconify.design/${set}:${name}.svg`)
       .then(r => r.text())
-      .then(raw => setSrcWhite(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
-      .catch(() => {})
-    fetch(`https://api.iconify.design/${set}:${name}.svg?color=%23ff9940`)
-      .then(r => r.text())
-      .then(raw => setSrcOrange(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
+      .then(raw => setMaskUrl(`data:image/svg+xml,${encodeURIComponent(thinify(raw))}`))
       .catch(() => {})
   }, [set, name])
   return (
-    <img src={hovered ? srcOrange : srcWhite} alt=""
-      style={{ width: '54px', height: '54px', opacity: hovered ? 0.55 : 0.90, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))', transition: 'opacity 0.3s ease' }} />
+    <div
+      style={{
+        width: '50px',
+        height: '50px',
+        backgroundColor: hovered ? '#ff9940' : '#ffffff',
+        WebkitMaskImage: `url("${maskUrl}")`,
+        maskImage: `url("${maskUrl}")`,
+        WebkitMaskRepeat: 'no-repeat',
+        maskRepeat: 'no-repeat',
+        WebkitMaskPosition: 'center',
+        maskPosition: 'center',
+        WebkitMaskSize: 'contain',
+        maskSize: 'contain',
+        opacity: hovered ? 0.95 : 0.88,
+        filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.35))',
+        transition: 'opacity 0.3s ease, background-color 0.3s ease',
+      }}
+    />
   )
 }
 /* ── Card config ── */
@@ -303,13 +330,15 @@ export default function DashboardCS() {
                   style={sweepStyleFromParams(sweepMap[card.id])}
                 />
 
-                {/* Label — TOP (V3.2: 30px, más arriba con padding card 18px) */}
+                {/* Label — TOP (V3.3: eyebrow 17px, muted alpha 85%, Title Case AAA) */}
                 <div style={{
-                  fontFamily: D.font, fontSize: '30px', fontWeight: 600, color: '#ffffff',
-                  textAlign: 'center', position: 'relative', zIndex: 2, letterSpacing: '0.005em',
-                  lineHeight: 1.1,
+                  fontFamily: D.font, fontSize: '17px', fontWeight: 600,
+                  color: isH ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.85)',
+                  textAlign: 'center', position: 'relative', zIndex: 2, letterSpacing: '0.01em',
+                  lineHeight: 1.2,
                   whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                   maxWidth: '100%',
+                  transition: 'color 0.3s ease',
                 }}>
                   {card.label}
                 </div>
@@ -319,18 +348,20 @@ export default function DashboardCS() {
                   <IcoCenter set={card.iconSet} name={card.iconName} hovered={isH} />
                 </div>
 
-                {/* KPI + sublabel */}
+                {/* KPI + sublabel — V3.3: número HERO 46px (jerarquía AAA invertida, número domina) */}
                 <div style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
                   <div style={{
-                    fontFamily: D.font, fontSize: '22px', fontWeight: 600,
-                    color: isH ? 'rgba(240,160,80,1)' : 'rgba(255,255,255,0.95)',
-                    lineHeight: 1, transition: 'color 0.3s ease',
+                    fontFamily: D.font, fontSize: '46px', fontWeight: 600,
+                    color: isH ? 'rgba(240,160,80,1)' : 'rgba(255,255,255,0.98)',
+                    lineHeight: 1, letterSpacing: '-0.01em',
+                    fontVariantNumeric: 'tabular-nums',
+                    transition: 'color 0.3s ease',
                   }}>
                     {loading ? '—' : (kpis[card.id] ?? 0).toLocaleString()}
                   </div>
                   <div style={{
                     fontFamily: D.font, fontSize: '10px', fontWeight: 500,
-                    color: 'rgba(255,255,255,0.50)', marginTop: 3, letterSpacing: '0.03em',
+                    color: 'rgba(255,255,255,0.45)', marginTop: 5, letterSpacing: '0.08em',
                     textTransform: 'uppercase',
                   }}>
                     {card.kpiLabel}
