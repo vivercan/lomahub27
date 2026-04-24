@@ -193,7 +193,7 @@ export default function NuevoLead(): ReactElement {
       }])
       if (err) throw err
       setSuccess(true)
-      setTimeout(() => navigate('/ventas/mis-leads'), 1200)
+      setTimeout(() => navigate('/comercial/mis-leads'), 1200)
     } catch (e: any) {
       setError(e.message || 'Error al guardar')
     } finally { setSaving(false) }
@@ -339,7 +339,7 @@ export default function NuevoLead(): ReactElement {
   }
 
   return (
-    <ModuleLayout titulo="Agregar Lead" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/mis-leads' }}>
+    <ModuleLayout titulo="Agregar Lead" moduloPadre={{ nombre: 'Comercial', ruta: '/comercial/mis-leads' }}>
       {/* MAIN CONTENT — premium V29 sectioned layout */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px', padding: '8px 16px', height: 'calc(100vh - 160px)', overflow: 'hidden' }}>
 
