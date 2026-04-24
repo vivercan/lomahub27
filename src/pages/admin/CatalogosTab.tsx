@@ -526,7 +526,7 @@ export default function CatalogosTab() {
                   onMouseEnter={() => setHoveredCard(cat.key)}
                   onMouseLeave={() => setHoveredCard(null)}
                   style={{
-                    aspectRatio: '1 / 0.78',
+                    minHeight: 140,
                     borderRadius: 10,
                     padding: '22px 20px',
                     backgroundImage: isH ? bgHover : bgNormal,
