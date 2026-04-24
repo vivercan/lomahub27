@@ -49,6 +49,8 @@ Deno.serve(async (req) => {
     }
     return json({
       ok: true, mode: 'raw', method: rawMethod,
+      plate_param: sPlate,
+      http_status: r.status,
       body_length: xml.length,
       tag_counts: counts,
       total_vehiculos_VEH_LCNS: vehLcnsList.length,
@@ -56,6 +58,8 @@ Deno.serve(async (req) => {
       primeros_20: vehLcnsList.slice(0, 20),
       ultimos_20: vehLcnsList.slice(-20),
       first_matches: firstMatches,
+      // V3: raw XML completo si es corto (<2000), para diagnosticar faults y responses vacios
+      raw_xml_full: xml.length < 2000 ? xml : xml.substring(0, 2000) + '...[TRUNCATED]',
     })
   }
 
