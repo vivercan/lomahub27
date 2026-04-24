@@ -5,7 +5,13 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 /* ———————————————————————————————————————————————————————————————
-SERVICIO A CLIENTES — Landing Page V3.1
+SERVICIO A CLIENTES — Landing Page V3.2
+V3.2 ajustes JJ 23/Abr:
+  — Título 26→30px, padding card 28→18px (título sube ~10px + KPI baja ~10px)
+  — Mantenido Title Case (patrón AAA CRM vs ALL CAPS industrial/brutalist)
+  — Fade-in sweep 10%→2% (elimina delay de 1s percibido al inicio del hover)
+  — Ease cubic-bezier(0.4,0,0.6,1) — arranque/final simétricos (vs ease-out lento)
+  — Haz 50% más flaco (beamWidth 14-28% vs 32-55%) + alpha −40% (más sutil)
 V3.1 ajustes JJ 23/Abr:
   Título 17→26px, icono 79→54px, padding vertical 24→28px
   — iconos respiran (~44px aire arriba/abajo), títulos más presentes
@@ -94,9 +100,11 @@ function randomSweepParams(): SweepParams {
     angleRad: Math.random() * Math.PI * 2,
     duration: 9 + Math.random() * 4,
     skew: (Math.random() - 0.5) * 50,
-    peakAlpha: 0.08 + Math.random() * 0.10,
-    peripheryAlpha: 0.03 + Math.random() * 0.05,
-    beamWidth: 32 + Math.random() * 23,
+    /* V3.2 — alpha más sutil (−40% pico) para elegancia de "sistema premium" */
+    peakAlpha: 0.06 + Math.random() * 0.06,
+    peripheryAlpha: 0.02 + Math.random() * 0.03,
+    /* V3.2 — haz más flaco: 14-28% vs 32-55% anterior (−50% ancho) */
+    beamWidth: 14 + Math.random() * 14,
     travelDistance: 280 + Math.random() * 80,
   }
 }
@@ -195,16 +203,16 @@ export default function DashboardCS() {
   useEffect(() => { fetchKpis() }, [fetchKpis])
   return (
     <ModuleLayout titulo="Servicio a Clientes">
-      {/* V3.0 — Keyframe único parametrizado con CSS vars (cada card trae sus propias vars) */}
+      {/* V3.2 — Fade-in inmediato (2%) y ease lineal al inicio para eliminar delay percibido */}
       <style>{`
         @keyframes csSweepRand {
           0%   { transform: translate(var(--sx), var(--sy)) rotate(var(--rot)); opacity: 0; }
-          10%  { opacity: 1; }
-          90%  { opacity: 1; }
+          2%   { opacity: 1; }
+          97%  { opacity: 1; }
           100% { transform: translate(var(--ex), var(--ey)) rotate(var(--rot)); opacity: 0; }
         }
         .cs-card:hover .cs-sweep {
-          animation: csSweepRand var(--dur) cubic-bezier(0.22,1,0.36,1) forwards;
+          animation: csSweepRand var(--dur) cubic-bezier(0.4,0,0.6,1) forwards;
         }
       `}</style>
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
@@ -227,7 +235,7 @@ export default function DashboardCS() {
                 style={{
                   aspectRatio: '1 / 0.612',
                   borderRadius: '10px',
-                  padding: '28px 20px',
+                  padding: '18px 20px',
                   backgroundImage: isH ? bgHover : bgNormal,
                   backgroundOrigin: 'border-box',
                   backgroundClip: 'padding-box, border-box',
@@ -295,11 +303,11 @@ export default function DashboardCS() {
                   style={sweepStyleFromParams(sweepMap[card.id])}
                 />
 
-                {/* Label — TOP (V3.1: 26px, tamaño máximo que cabe sin overflow) */}
+                {/* Label — TOP (V3.2: 30px, más arriba con padding card 18px) */}
                 <div style={{
-                  fontFamily: D.font, fontSize: '26px', fontWeight: 600, color: '#ffffff',
-                  textAlign: 'center', position: 'relative', zIndex: 2, letterSpacing: '0.01em',
-                  lineHeight: 1.15, paddingTop: '2px',
+                  fontFamily: D.font, fontSize: '30px', fontWeight: 600, color: '#ffffff',
+                  textAlign: 'center', position: 'relative', zIndex: 2, letterSpacing: '0.005em',
+                  lineHeight: 1.1,
                   whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                   maxWidth: '100%',
                 }}>
