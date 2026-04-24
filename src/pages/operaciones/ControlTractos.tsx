@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { supabase } from '../../lib/supabase'
+import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import {
   Plus,
   Search,
@@ -389,9 +390,10 @@ const ControlTractos: React.FC = () => {
   ]
 
   return (
+    <ModuleLayout titulo="Control de Tractos" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
     <div style={{ fontFamily: tokens.fontFamily }}>
       {/* Header */}
-      <div style={{ marginBottom: '2rem' }}>
+      <div style={{ marginBottom: '2rem', display: 'none' }}>
         <h1
           style={{
             fontSize: '2rem',
@@ -891,6 +893,7 @@ const ControlTractos: React.FC = () => {
         }
       `}</style>
     </div>
+    </ModuleLayout>
   )
 }
 
