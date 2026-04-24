@@ -1,9 +1,9 @@
-// GPS Worker — V38 — PRODUCTION (Batch optimized)
+// GPS Worker — V39 — FIX PARSER: capturar TODOS los <Plate> (con o sin <hst>)
+// Bug V38: "if (!hstMatch) continue" descartaba unidades sin reporte reciente
+// Fix V39: Plate sin <hst> = unidad conocida sin posición fresca → se guarda en
+// gps_unidades_conocidas (catálogo completo). Plate con <hst> = gps_tracking (feed live).
 // WideTech SOAP: HistoyDataLastLocationByUser (sLogin, sPassword)
 // Namespace: http://shareservice.co/
-// Response: <Plate id="X" MobileID="Y"><hst><DateTimeGPS/><Latitude/><Longitude/><Speed/><Location/></hst></Plate>
-// Rate limit: 40s between calls. Cron every 10 min = safe.
-// Batch upsert: all units in one call instead of 270+ sequential calls
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const supabase = createClient(
@@ -45,27 +45,40 @@ Deno.serve(async (_req) => {
     const xmlText = await res.text()
 
     if (res.status !== 200) {
-      return json({ ok: false, error: `WideTech HTTP ${res.status}`, version: 'V38', bodyPreview: xmlText.substring(0, 500) })
+      return json({ ok: false, error: `WideTech HTTP ${res.status}`, version: 'V39', bodyPreview: xmlText.substring(0, 500) })
     }
 
     // Rate limit check
     if (xmlText.includes('<code>109</code>')) {
-      return json({ ok: true, units: 0, version: 'V38', rateLimited: true, note: 'Rate limited. Next cron cycle.' })
+      return json({ ok: true, units: 0, version: 'V39', rateLimited: true, note: 'Rate limited. Next cron cycle.' })
     }
 
     // Error code check
     const codeMatch = xmlText.match(/<code>(\d+)<\/code>/)
     const descMatch = xmlText.match(/<description>([^<]+)<\/description>/)
     if (codeMatch && codeMatch[1] !== '100') {
-      return json({ ok: false, error: `WideTech code ${codeMatch[1]}: ${descMatch?.[1] || 'unknown'}`, version: 'V38' })
+      return json({ ok: false, error: `WideTech code ${codeMatch[1]}: ${descMatch?.[1] || 'unknown'}`, version: 'V39' })
     }
 
-    // Parse
-    const units = parsePlateResponse(xmlText)
+    // V39 — Parse devuelve {units (con <hst>), catalog (sin <hst>)}
+    const parsed = parsePlateResponse(xmlText)
+    const units = parsed.units
+    const catalog = parsed.catalog
 
-    if (units.length === 0) {
+    // Catálogo completo: guardar en gps_unidades_conocidas (todos los Plate IDs)
+    if (catalog.length > 0) {
+      const catalogRows = catalog.map(u => ({
+        economico: u.economico,
+        mobile_id: u.mobileId,
+        img: u.img,
+        ultima_vez_visto: new Date().toISOString()
+      }))
+      await supabase.from('gps_unidades_conocidas').upsert(catalogRows, { onConflict: 'economico' })
+    }
+
+    if (units.length === 0 && catalog.length === 0) {
       return json({
-        ok: true, units: 0, version: 'V38',
+        ok: true, units: 0, catalog: 0, version: 'V39',
         diagnostic: { bodyLength: xmlText.length, hasPlateTag: xmlText.includes('<Plate'), bodyPreview: xmlText.substring(0, 800) }
       })
     }
@@ -128,16 +141,18 @@ Deno.serve(async (_req) => {
 
     return json({
       ok: true,
-      units: units.length,
+      units: units.length,                // con posición reciente
+      catalog: catalog.length,             // conocidas sin <hst>
+      total_plates_widetech: units.length + catalog.length,  // TOTAL visto en WideTech
       upserted: trackCount || units.length,
       historial: historialInserted,
       trackError: trackError?.message || null,
-      version: 'V38'
+      version: 'V39'
     })
 
   } catch (error) {
     console.error('GPS Worker error:', error)
-    return json({ ok: false, error: (error as Error).message, version: 'V38' }, 500)
+    return json({ ok: false, error: (error as Error).message, version: 'V39' }, 500)
   }
 })
 
@@ -163,8 +178,14 @@ interface GPSUnit {
   mobileId: string
 }
 
-function parsePlateResponse(xml: string): GPSUnit[] {
+interface ParseResult {
+  units: GPSUnit[]      // Plate CON <hst> → live feed para gps_tracking
+  catalog: GPSUnit[]    // Plate SIN <hst> → catálogo en gps_unidades_conocidas
+}
+
+function parsePlateResponse(xml: string): ParseResult {
   const units: GPSUnit[] = []
+  const catalog: GPSUnit[] = []
   const plateRegex = /<Plate\s+([^>]*)>([\s\S]*?)<\/Plate>/gi
   let plateMatch
 
@@ -176,9 +197,20 @@ function parsePlateResponse(xml: string): GPSUnit[] {
     const img = attrVal(attrs, 'img')
     const mobileId = attrVal(attrs, 'MobileID')
 
-    // Get most recent <hst> entry
+    if (!plateId) continue
+
+    // V39 FIX — si no hay <hst>, capturar al catálogo (no descartar)
     const hstMatch = body.match(/<hst[^>]*>([\s\S]*?)<\/hst>/)
-    if (!hstMatch) continue
+    if (!hstMatch) {
+      catalog.push({
+        economico: plateId,
+        empresa: '', segmento: '',
+        latitude: 0, longitude: 0, speed: 0,
+        location: '', status: 'sin_reporte_reciente',
+        img, mobileId
+      })
+      continue
+    }
 
     const hst = hstMatch[1]
     const get = (tag: string) => {
@@ -201,23 +233,15 @@ function parsePlateResponse(xml: string): GPSUnit[] {
     const location = get('Location') || get('location') || get('Address') || ''
     const status = get('Status') || (speed > 0 ? 'en_movimiento' : 'detenido')
 
-    if (plateId) {
-      units.push({
-        economico: plateId,
-        empresa: '',
-        segmento: '',
-        latitude: lat,
-        longitude: lng,
-        speed,
-        location,
-        status,
-        img,
-        mobileId
-      })
-    }
+    units.push({
+      economico: plateId,
+      empresa: '', segmento: '',
+      latitude: lat, longitude: lng, speed,
+      location, status, img, mobileId
+    })
   }
 
-  return units
+  return { units, catalog }
 }
 
 function attrVal(attrStr: string, name: string): string {
