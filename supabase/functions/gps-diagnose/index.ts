@@ -18,9 +18,12 @@ Deno.serve(async (req) => {
   const rawMethod = url.searchParams.get('raw')
   if (rawMethod) {
     const NS = 'http://shareservice.co/'
+    // V2: acepta sPlate para métodos por placa (HistoryDataLastLocationByPlate)
+    const sPlate = url.searchParams.get('plate')
+    const extraParams = sPlate ? `<sPlate>${sPlate}</sPlate>` : ''
     const soap = `<?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-  <soap:Body><${rawMethod} xmlns="${NS}"><sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword></${rawMethod}></soap:Body>
+  <soap:Body><${rawMethod} xmlns="${NS}"><sLogin>${GPS_USER}</sLogin><sPassword>${GPS_PASS}</sPassword>${extraParams}</${rawMethod}></soap:Body>
 </soap:Envelope>`
     const r = await fetch(GPS_URL, {
       method: 'POST',
