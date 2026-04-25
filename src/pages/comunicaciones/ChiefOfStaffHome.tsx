@@ -76,7 +76,7 @@ export default function ChiefOfStaffHome() {
     }}>
       <div style={{ flex: 1, padding: '24px 32px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
-        {/* âââ HEADER âââ */}
+        {/* ——— HEADER ——— */}
         <div style={{
           display: 'flex', alignItems: 'center', gap: '16px',
           marginBottom: '28px',
@@ -98,12 +98,12 @@ export default function ChiefOfStaffHome() {
             <div style={{
               fontSize: '13px', color: t.colors.textSecondary, marginTop: '2px',
             }}>
-              Tu asistente ejecutivo AI â briefings diarios
+              Tu asistente ejecutivo AI — briefings diarios
             </div>
           </div>
         </div>
 
-        {/* âââ FILTROS âââ */}
+        {/* ——— FILTROS ——— */}
         <div style={{
           display: 'flex', gap: '8px', marginBottom: '24px',
         }}>
@@ -127,7 +127,7 @@ export default function ChiefOfStaffHome() {
           ))}
         </div>
 
-        {/* âââ LISTA âââ */}
+        {/* ——— LISTA ——— */}
         {loading ? (
           <div style={{
             textAlign: 'center', padding: '60px 0',

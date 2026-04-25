@@ -190,7 +190,7 @@ export default function MapaGPS(): ReactElement {
       <Card>
         <div style={{ marginBottom: tokens.spacing.sm, paddingBottom: tokens.spacing.sm, borderBottom: '1px solid ' + tokens.colors.border, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, color: tokens.colors.textPrimary }}>
-            Mapa GPS {loading ? 'â Cargando...' : 'â ' + gpsData.length + ' tractos rastreados'}
+            Mapa GPS {loading ? '— Cargando...' : '— ' + gpsData.length + ' tractos rastreados'}
           </h3>
         </div>
         <div
