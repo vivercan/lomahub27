@@ -16,7 +16,7 @@ interface Ticket {
   tipo: 'queja' | 'solicitud' | 'incidencia' | 'reclamo'
   prioridad: 'alta' | 'media' | 'baja'
   estado: 'abierto' | 'en_proceso' | 'resuelto' | 'cerrado'
-  fecha_creacion: string
+  created_at: string
   asignado_a?: string
   sla_horas?: number
 }
@@ -50,7 +50,7 @@ export default function TicketsQuejas() {
         const { data, error } = await supabase
           .from('tickets')
           .select('*')
-          .order('fecha_creacion', { ascending: false })
+          .order('created_at', { ascending: false })
 
         if (error) {
           console.warn('Tabla tickets no existe o error:', error.message)
@@ -80,7 +80,7 @@ export default function TicketsQuejas() {
     let sumaHoras = 0
 
     allTickets.forEach(ticket => {
-      const horasTranscurridas = calcularSLA(ticket.fecha_creacion).horasTranscurridas
+      const horasTranscurridas = calcularSLA(ticket.created_at).horasTranscurridas
       sumaHoras += horasTranscurridas
 
       const slaTarget = getSLATarget(ticket.prioridad)
@@ -118,7 +118,7 @@ export default function TicketsQuejas() {
   // Obtener estado SLA (verde, amarillo, rojo)
   const getStatusSLA = (ticket: Ticket) => {
     const slaTarget = getSLATarget(ticket.prioridad)
-    const { horasTranscurridas } = calcularSLA(ticket.fecha_creacion)
+    const { horasTranscurridas } = calcularSLA(ticket.created_at)
     const porcentajeUsado = (horasTranscurridas / slaTarget) * 100
 
     if (horasTranscurridas > slaTarget) return 'red'
@@ -207,7 +207,7 @@ export default function TicketsQuejas() {
       width: '80px',
       render: (row) => {
         const slaStatus = getStatusSLA(row)
-        const { horasTranscurridas } = calcularSLA(row.fecha_creacion)
+        const { horasTranscurridas } = calcularSLA(row.created_at)
         const slaTarget = getSLATarget(row.prioridad)
         const hrsRemaining = Math.max(0, slaTarget - horasTranscurridas)
 
@@ -231,11 +231,11 @@ export default function TicketsQuejas() {
       ),
     },
     {
-      key: 'fecha_creacion',
+      key: 'created_at',
       label: 'Fecha',
       width: '100px',
       render: (row) => {
-        const fecha = new Date(row.fecha_creacion)
+        const fecha = new Date(row.created_at)
         return (
           <span style={{ color: tokens.colors.textSecondary, fontSize: '12px' }}>
             {fecha.toLocaleDateString('es-ES')}
