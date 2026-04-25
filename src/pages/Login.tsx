@@ -498,6 +498,48 @@ export default function Login() {
   const { user, loading, loginWithGoogleIdToken, getRutaInicial } = useAuthContext()
   const navigate = useNavigate()
   const hiddenGoogleRef = useRef<HTMLDivElement>(null)
+  const playClickRef = useRef<() => void>(() => {})
+
+  /* V46.2 — Click sintético "premium tactile" (WebAudio API, sin archivo extra) */
+  useEffect(() => {
+    let ctx: AudioContext | null = null
+    playClickRef.current = () => {
+      try {
+        if (!ctx) {
+          const AC = (window as any).AudioContext || (window as any).webkitAudioContext
+          if (!AC) return
+          ctx = new AC()
+        }
+        const c = ctx!
+        const now = c.currentTime
+        // Tono cristalino — sine 1200Hz, envelope decay 90ms
+        const osc = c.createOscillator()
+        osc.type = 'sine'
+        osc.frequency.setValueAtTime(1400, now)
+        osc.frequency.exponentialRampToValueAtTime(900, now + 0.08)
+        const oscGain = c.createGain()
+        oscGain.gain.setValueAtTime(0.0, now)
+        oscGain.gain.linearRampToValueAtTime(0.32, now + 0.002)
+        oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.10)
+        osc.connect(oscGain).connect(c.destination)
+        osc.start(now); osc.stop(now + 0.12)
+        // Burst de ruido alto-paso 6kHz para textura "tactile"
+        const buf = c.createBuffer(1, c.sampleRate * 0.04, c.sampleRate)
+        const data = buf.getChannelData(0)
+        for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length)
+        const noise = c.createBufferSource()
+        noise.buffer = buf
+        const hp = c.createBiquadFilter()
+        hp.type = 'highpass'; hp.frequency.value = 6000
+        const noiseGain = c.createGain()
+        noiseGain.gain.setValueAtTime(0.18, now)
+        noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04)
+        noise.connect(hp).connect(noiseGain).connect(c.destination)
+        noise.start(now); noise.stop(now + 0.05)
+      } catch { /* noop */ }
+    }
+    return () => { try { ctx?.close() } catch { /* noop */ } }
+  }, [])
 
   useEffect(() => { injectKF() }, [])
 
@@ -505,7 +547,7 @@ export default function Login() {
   useEffect(() => {
     const audio = new Audio('/audio/intro_login.ogg')
     audio.loop = true
-    audio.volume = 0.55
+    audio.volume = 0.47
     audio.preload = 'auto'
     let stopped = false
     const stop = () => {
@@ -632,6 +674,7 @@ export default function Login() {
 
   const triggerGoogle = () => {
     setError('')
+    try { playClickRef.current && playClickRef.current() } catch { /* noop */ }
     const node = hiddenGoogleRef.current
     if (!node) return
     const realBtn =
