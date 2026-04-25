@@ -154,6 +154,8 @@ export default function ControlEquipo() {
   const [objetivos, setObjetivos] = useState<Map<string, { seca: number; thermo: number }>>(new Map())
   // V46 - dias sin movimiento por economico (basado en gps_historial velocidad > 5)
   const [diasSinMovMap, setDiasSinMovMap] = useState<Map<string, number>>(new Map())
+  // V46.7 - viajes activos por caja_id (para hacer cajas clickeables hacia su viaje)
+  const [viajesByCajaId, setViajesByCajaId] = useState<Map<string, { id: string; folio?: string; estado?: string }>>(new Map())
 
   // ─── Load Leaflet from CDN ─────────────────────────────────
   useEffect(() => {
@@ -265,6 +267,25 @@ export default function ControlEquipo() {
       setTerminalesLoading(false)
     }
     fetchTerminalesYObjetivos()
+  }, [])
+
+  // V46.7 — Fetch viajes activos por caja_id (para hacer cajas clickeables)
+  useEffect(() => {
+    const fetchViajesActivos = async () => {
+      try {
+        const { data } = await supabase
+          .from('viajes')
+          .select('id, caja_id, folio, estado')
+          .in('estado', ['asignado', 'en_transito', 'en_curso', 'programado', 'en_riesgo', 'activo'])
+        if (!data) return
+        const map = new Map<string, { id: string; folio?: string; estado?: string }>()
+        ;(data as any[]).forEach(v => {
+          if (v.caja_id) map.set(v.caja_id, { id: v.id, folio: v.folio, estado: v.estado })
+        })
+        setViajesByCajaId(map)
+      } catch { /* tabla puede no responder */ }
+    }
+    fetchViajesActivos()
   }, [])
 
   // ─── Fetch dias sin movimiento (gps_historial velocidad > 5) ──
@@ -1244,18 +1265,24 @@ export default function ControlEquipo() {
           </Card>
         )}
 
-        {/* ── INVENTARIOS POR TERMINAL ── */}
+        {/* ── INVENTARIOS POR TERMINAL — V46.7 cards 4-cols + click detalle + cajas → viaje (25/Abr/2026) ── */}
         {vista === 'inventarios' && (
           <Card>
-            <div style={{ marginBottom: '12px', paddingBottom: '10px', borderBottom: '1px solid ' + tokens.colors.border }}>
-              <h3 style={{ margin: 0, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, fontSize: '15px', fontWeight: 600 }}>
+            <div style={{ marginBottom: '14px', paddingBottom: '10px', borderBottom: '1px solid ' + tokens.colors.border, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <h3 style={{ margin: 0, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, fontSize: '15px', fontWeight: 700 }}>
                 Inventarios por Terminal
                 {!terminalesLoading && terminales.length > 0 && (
                   <span style={{ fontWeight: 400, fontSize: '12px', color: tokens.colors.textSecondary, marginLeft: '10px' }}>
-                    {terminales.length} terminales · {inventariosPorTerminal.reduce((s, i) => s + i.total, 0)} cajas en patio · {cajasEnRuta.length} en ruta
+                    {terminales.length} terminales · {inventariosPorTerminal.reduce((s, i) => s + i.total, 0)} en patio · {cajasEnRuta.length} en ruta
                   </span>
                 )}
               </h3>
+              {/* Leyenda colores */}
+              <div style={{ display: 'flex', gap: '14px', fontSize: '11px', color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><span style={{ width:10, height:10, borderRadius:'50%', background:'#0D9668' }}/>OK</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><span style={{ width:10, height:10, borderRadius:'50%', background:'#DC2626' }}/>Déficit</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><span style={{ width:10, height:10, borderRadius:'50%', background:'#B8860B' }}/>Exceso</span>
+              </div>
             </div>
 
             {terminalesLoading ? (
@@ -1265,130 +1292,242 @@ export default function ControlEquipo() {
             ) : terminales.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px', color: tokens.colors.textMuted }}>
                 <p style={{ fontSize: '14px', marginBottom: '8px' }}>No hay terminales configuradas</p>
-                <p style={{ fontSize: '12px' }}>Ve a Configuracion para agregar terminales y geocercas</p>
+                <p style={{ fontSize: '12px' }}>Ve a Configuración para agregar terminales y geocercas</p>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {inventariosPorTerminal.map(inv => {
-                  const isOpen = terminalExpandida === inv.terminal.id
-                  return (
-                    <div key={inv.terminal.id} style={{
-                      border: '1px solid ' + tokens.colors.border,
-                      borderRadius: tokens.radius.md,
-                      background: tokens.colors.bgCard,
-                      overflow: 'hidden',
-                    }}>
+              <>
+                {/* Grid 4 cols cards visuales por terminal + 1 card "En Ruta" */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: terminalExpandida ? '20px' : 0 }}>
+                  {inventariosPorTerminal.map(inv => {
+                    const obj = objetivos.get(inv.terminal.id) || { seca: 2, thermo: 2 }
+                    const colorFor = (a: number, t: number) => {
+                      if (a === t) return '#0D9668'
+                      if (a < t) return '#DC2626'
+                      return '#B8860B'
+                    }
+                    const isOpen = terminalExpandida === inv.terminal.id
+                    return (
                       <div
+                        key={inv.terminal.id}
                         onClick={() => setTerminalExpandida(isOpen ? null : inv.terminal.id)}
                         style={{
-                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                          padding: '12px 16px', cursor: 'pointer',
-                          background: isOpen ? tokens.colors.bgHover : 'transparent',
-                          transition: 'background 0.2s',
+                          background: isOpen ? '#F8FAFC' : '#FFFFFF',
+                          border: isOpen ? '2px solid #FF4500' : '1px solid ' + tokens.colors.border,
+                          borderRadius: '14px',
+                          padding: '16px',
+                          cursor: 'pointer',
+                          transition: 'all 0.18s ease',
+                          boxShadow: isOpen
+                            ? '0 4px 12px rgba(255,69,0,0.15), 0 8px 24px rgba(15,23,42,0.08)'
+                            : '0 1px 2px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.06)',
+                          display: 'flex', flexDirection: 'column', gap: '12px',
+                          minHeight: '128px',
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isOpen) {
+                            e.currentTarget.style.transform = 'translateY(-2px)'
+                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,23,42,0.08), 0 12px 24px rgba(15,23,42,0.10)'
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isOpen) {
+                            e.currentTarget.style.transform = 'translateY(0)'
+                            e.currentTarget.style.boxShadow = '0 1px 2px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.06)'
+                          }
                         }}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                          <div style={{
-                            width: '36px', height: '36px', borderRadius: '8px',
-                            background: inv.total > 0 ? 'rgba(30,102,245,0.15)' : 'rgba(107,114,128,0.1)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: '16px', fontWeight: 700,
-                            color: inv.total > 0 ? tokens.colors.primary : tokens.colors.textMuted,
-                          }}>
-                            {inv.total}
-                          </div>
-                          <div>
-                            <div style={{ color: tokens.colors.textPrimary, fontWeight: 600, fontSize: '14px' }}>
+                        {/* Header card: nombre + total */}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, flex: 1 }}>
+                            <span style={{ fontFamily: tokens.fonts.heading, fontWeight: 700, fontSize: '15px', color: tokens.colors.textPrimary, letterSpacing: '-0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                               {inv.terminal.nombre}
-                            </div>
-                            <div style={{ color: tokens.colors.textMuted, fontSize: '11px' }}>
-                              {inv.terminal.direccion || 'Sin dirección'} · Radio: {inv.terminal.radio_metros}m
-                              {inv.terminal.empresa && (' · ' + inv.terminal.empresa)}
+                            </span>
+                            <span style={{ fontSize: '10px', color: tokens.colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: 2 }}>
+                              {inv.total} en patio
+                            </span>
+                          </div>
+                          <div style={{
+                            width: '34px', height: '34px', borderRadius: '10px',
+                            background: 'rgba(59,108,231,0.10)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: '15px', fontWeight: 700, color: tokens.colors.primary,
+                            fontFamily: tokens.fonts.heading,
+                          }}>{inv.total}</div>
+                        </div>
+
+                        {/* KPIs SECAS y THERMOS — cuadros grandes a golpe de vista */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                          <div style={{
+                            background: 'rgba(249,115,22,0.08)',
+                            borderRadius: '10px',
+                            padding: '10px 12px',
+                            display: 'flex', flexDirection: 'column', gap: '2px',
+                          }}>
+                            <span style={{ fontSize: '10px', fontWeight: 700, color: '#F97316', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Secas</span>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                              <span style={{ fontSize: '20px', fontWeight: 800, color: colorFor(inv.secas, obj.seca), fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>{inv.secas}</span>
+                              <span style={{ fontSize: '12px', color: tokens.colors.textMuted, fontVariantNumeric: 'tabular-nums' }}>/ {obj.seca}</span>
                             </div>
                           </div>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                          {(() => {
-                            const obj = objetivos.get(inv.terminal.id) || { seca: 2, thermo: 2 }
-                            const colorFor = (actual: number, target: number) => {
-                              if (actual === target) return '#0D9668'
-                              if (actual < target) return '#DC2626'
-                              return '#B8860B'
-                            }
-                            return (
-                              <div style={{ display: 'flex', gap: '14px', fontSize: '12px', fontVariantNumeric: 'tabular-nums' }}>
-                                <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.15 }}>
-                                  <span style={{ color: colorFor(inv.secas, obj.seca), fontWeight: 700, fontSize: '13px' }}>
-                                    {inv.secas} / {obj.seca}
-                                  </span>
-                                  <span style={{ color: '#F97316', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>Secas</span>
-                                </span>
-                                <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.15 }}>
-                                  <span style={{ color: colorFor(inv.thermos, obj.thermo), fontWeight: 700, fontSize: '13px' }}>
-                                    {inv.thermos} / {obj.thermo}
-                                  </span>
-                                  <span style={{ color: '#0891B2', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>Thermos</span>
-                                </span>
-                              </div>
-                            )
-                          })()}
-                          <span style={{
-                            color: tokens.colors.textMuted, fontSize: '18px',
-                            transform: isOpen ? 'rotate(180deg)' : 'rotate(0)',
-                            transition: 'transform 0.2s',
-                          }}>▼</span>
+                          <div style={{
+                            background: 'rgba(8,145,178,0.08)',
+                            borderRadius: '10px',
+                            padding: '10px 12px',
+                            display: 'flex', flexDirection: 'column', gap: '2px',
+                          }}>
+                            <span style={{ fontSize: '10px', fontWeight: 700, color: '#0891B2', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Thermos</span>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                              <span style={{ fontSize: '20px', fontWeight: 800, color: colorFor(inv.thermos, obj.thermo), fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>{inv.thermos}</span>
+                              <span style={{ fontSize: '12px', color: tokens.colors.textMuted, fontVariantNumeric: 'tabular-nums' }}>/ {obj.thermo}</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      {isOpen && inv.cajas.length > 0 && (
-                        <div style={{ borderTop: '1px solid ' + tokens.colors.border, maxHeight: '300px', overflow: 'auto' }}>
+                    )
+                  })}
+
+                  {/* Card En Ruta */}
+                  <div
+                    onClick={() => setTerminalExpandida(terminalExpandida === '__ruta__' ? null : '__ruta__')}
+                    style={{
+                      background: terminalExpandida === '__ruta__' ? '#FFF7ED' : '#FFFFFF',
+                      border: terminalExpandida === '__ruta__' ? '2px solid #F59E0B' : '1px solid ' + tokens.colors.border,
+                      borderRadius: '14px', padding: '16px', cursor: 'pointer',
+                      transition: 'all 0.18s ease',
+                      boxShadow: '0 1px 2px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.06)',
+                      display: 'flex', flexDirection: 'column', gap: '12px',
+                      minHeight: '128px',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                        <span style={{ fontFamily: tokens.fonts.heading, fontWeight: 700, fontSize: '15px', color: tokens.colors.textPrimary }}>En Ruta</span>
+                        <span style={{ fontSize: '10px', color: tokens.colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: 2 }}>
+                          Fuera de geocercas
+                        </span>
+                      </div>
+                      <div style={{
+                        width: '34px', height: '34px', borderRadius: '10px',
+                        background: 'rgba(245,158,11,0.15)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '15px', fontWeight: 700, color: '#B8860B',
+                        fontFamily: tokens.fonts.heading,
+                      }}>{cajasEnRuta.length}</div>
+                    </div>
+                    <div style={{ background: 'rgba(245,158,11,0.06)', borderRadius: '10px', padding: '10px 12px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 700, color: '#B8860B', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Total</span>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                        <span style={{ fontSize: '20px', fontWeight: 800, color: '#B8860B', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>{cajasEnRuta.length}</span>
+                        <span style={{ fontSize: '12px', color: tokens.colors.textMuted }}>cajas en tránsito</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Panel detalle expandido — debajo del grid */}
+                {terminalExpandida && (() => {
+                  const isRuta = terminalExpandida === '__ruta__'
+                  const detalleInv = isRuta ? null : inventariosPorTerminal.find(i => i.terminal.id === terminalExpandida)
+                  const cajasDetalle = isRuta ? cajasEnRuta : (detalleInv?.cajas || [])
+                  const tituloDetalle = isRuta ? 'En Ruta — Cajas fuera de geocercas' : (detalleInv?.terminal.nombre || '')
+                  const subtDetalle = isRuta
+                    ? cajasEnRuta.length + ' cajas en tránsito'
+                    : (detalleInv ? (detalleInv.terminal.direccion || '') + ' · ' + cajasDetalle.length + ' cajas en patio' : '')
+
+                  return (
+                    <div style={{
+                      border: '1px solid ' + tokens.colors.border,
+                      borderRadius: '14px',
+                      background: '#FFFFFF',
+                      overflow: 'hidden',
+                      boxShadow: '0 4px 12px rgba(15,23,42,0.04)',
+                    }}>
+                      <div style={{ padding: '14px 18px', borderBottom: '1px solid ' + tokens.colors.border, background: '#F8FAFC', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div>
+                          <div style={{ fontFamily: tokens.fonts.heading, fontWeight: 700, fontSize: '14px', color: tokens.colors.textPrimary }}>{tituloDetalle}</div>
+                          <div style={{ fontSize: '11px', color: tokens.colors.textMuted, marginTop: 2 }}>{subtDetalle}</div>
+                        </div>
+                        <button onClick={() => setTerminalExpandida(null)} style={{
+                          background: 'transparent', border: '1px solid ' + tokens.colors.border, borderRadius: '8px',
+                          padding: '4px 10px', fontSize: '11px', cursor: 'pointer', color: tokens.colors.textSecondary,
+                        }}>Cerrar</button>
+                      </div>
+                      {cajasDetalle.length === 0 ? (
+                        <div style={{ padding: '24px', textAlign: 'center', color: tokens.colors.textMuted, fontSize: '12px' }}>
+                          Sin cajas en esta ubicación
+                        </div>
+                      ) : (
+                        <div style={{ maxHeight: '320px', overflow: 'auto' }}>
                           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                             <thead>
-                              <tr style={{ background: tokens.colors.bgMain }}>
-                                <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Económico</th>
-                                <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Empresa</th>
-                                <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Tipo</th>
-                                <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Estado</th>
-                                <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Última Señal</th>
-                                <th style={{ padding: '8px 12px', textAlign: 'center', color: tokens.colors.textSecondary, fontWeight: 500 }}>Días sin movimiento</th>
-                                <th style={{ padding: '8px 12px', textAlign: 'right', color: tokens.colors.textSecondary, fontWeight: 500 }}>Distancia</th>
+                              <tr style={{ background: '#F1F5F9', position: 'sticky', top: 0 }}>
+                                <th style={{ padding: '10px 14px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Económico</th>
+                                <th style={{ padding: '10px 14px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Empresa</th>
+                                <th style={{ padding: '10px 14px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Tipo</th>
+                                <th style={{ padding: '10px 14px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Estado</th>
+                                <th style={{ padding: '10px 14px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Última Señal</th>
+                                <th style={{ padding: '10px 14px', textAlign: 'center', color: tokens.colors.textSecondary, fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Días sin mov.</th>
+                                <th style={{ padding: '10px 14px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 600, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Viaje</th>
                               </tr>
                             </thead>
                             <tbody>
-                              {inv.cajas.map(c => {
-                                const dist = haversineMeters(inv.terminal.latitud, inv.terminal.longitud, c.latitud!, c.longitud!)
+                              {cajasDetalle.map(c => {
                                 const dSinMov = c.enMovimiento ? 0 : (diasSinMovMap.get(c.numero_economico) ?? c.diasSinSenal ?? null)
                                 const dSinMovColor = dSinMov === null ? tokens.colors.textMuted
                                   : dSinMov === 0 ? '#0D9668'
                                   : dSinMov <= 3 ? tokens.colors.textPrimary
                                   : dSinMov <= 7 ? '#B8860B'
                                   : '#DC2626'
+                                const viaje = viajesByCajaId.get(c.id)
+                                const hasViaje = !!viaje
                                 return (
-                                  <tr key={c.id} style={{ borderTop: '1px solid ' + tokens.colors.border }}>
-                                    <td style={{ padding: '8px 12px', color: tokens.colors.textPrimary, fontWeight: 600 }}>{c.numero_economico}</td>
-                                    <td style={{ padding: '8px 12px', color: tokens.colors.textSecondary }}>{c.empresa}</td>
-                                    <td style={{ padding: '8px 12px' }}>
+                                  <tr
+                                    key={c.id}
+                                    onClick={() => { if (hasViaje) window.location.href = '/operaciones/viajes/' + viaje!.id }}
+                                    style={{
+                                      borderTop: '1px solid ' + tokens.colors.border,
+                                      cursor: hasViaje ? 'pointer' : 'default',
+                                      transition: 'background 0.15s',
+                                    }}
+                                    onMouseEnter={e => { if (hasViaje) e.currentTarget.style.background = 'rgba(59,108,231,0.05)' }}
+                                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+                                    title={hasViaje ? 'Ver viaje ' + (viaje!.folio || viaje!.id.substring(0, 8)) : 'Sin viaje activo'}
+                                  >
+                                    <td style={{ padding: '10px 14px', color: tokens.colors.textPrimary, fontWeight: 600 }}>{c.numero_economico}</td>
+                                    <td style={{ padding: '10px 14px', color: tokens.colors.textSecondary }}>{c.empresa}</td>
+                                    <td style={{ padding: '10px 14px' }}>
                                       <span style={{
                                         padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600,
                                         background: c.tipoNorm === 'seca' ? 'rgba(249,115,22,0.15)' : 'rgba(8,145,178,0.15)',
                                         color: c.tipoNorm === 'seca' ? '#F97316' : '#0891B2',
-                                      }}>
-                                        {c.tipoNorm === 'seca' ? 'Seca' : 'Thermo'}
-                                      </span>
+                                      }}>{c.tipoNorm === 'seca' ? 'Seca' : 'Thermo'}</span>
                                     </td>
-                                    <td style={{ padding: '8px 12px' }}>
+                                    <td style={{ padding: '10px 14px' }}>
                                       <span style={{
                                         padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600,
-                                        background: c.enMovimiento ? 'rgba(16,185,129,0.15)' : 'rgba(107,114,128,0.1)',
+                                        background: c.enMovimiento ? 'rgba(16,185,129,0.15)' : 'rgba(107,114,128,0.10)',
                                         color: c.enMovimiento ? tokens.colors.green : tokens.colors.textMuted,
-                                      }}>
-                                        {c.enMovimiento ? 'Movimiento' : 'Detenida'}
-                                      </span>
+                                      }}>{c.enMovimiento ? 'Movimiento' : 'Detenida'}</span>
                                     </td>
-                                    <td style={{ padding: '8px 12px', color: tokens.colors.textSecondary, fontSize: '11px' }}>{c.ultimaSenal}</td>
-                                    <td style={{ padding: '8px 12px', textAlign: 'center', color: dSinMovColor, fontWeight: 600, fontSize: '12px', fontVariantNumeric: 'tabular-nums' }}>
+                                    <td style={{ padding: '10px 14px', color: tokens.colors.textSecondary, fontSize: '11px' }}>{c.ultimaSenal}</td>
+                                    <td style={{ padding: '10px 14px', textAlign: 'center', color: dSinMovColor, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
                                       {dSinMov === null ? '—' : dSinMov === 0 ? '0' : dSinMov + 'd'}
                                     </td>
-                                    <td style={{ padding: '8px 12px', textAlign: 'right', color: tokens.colors.textMuted, fontSize: '11px' }}>{dist < 1000 ? dist.toFixed(0) + 'm' : (dist / 1000).toFixed(1) + 'km'}</td>
+                                    <td style={{ padding: '10px 14px', fontSize: '11px' }}>
+                                      {hasViaje ? (
+                                        <span style={{
+                                          display: 'inline-flex', alignItems: 'center', gap: '6px',
+                                          padding: '3px 10px', borderRadius: '20px',
+                                          background: 'rgba(59,108,231,0.10)',
+                                          color: tokens.colors.primary, fontWeight: 600,
+                                        }}>
+                                          {viaje!.folio || ('Viaje #' + viaje!.id.substring(0, 6))}
+                                          <span style={{ fontSize: '10px', color: tokens.colors.textMuted }}>↗</span>
+                                        </span>
+                                      ) : (
+                                        <span style={{ color: tokens.colors.textMuted, fontStyle: 'italic' }}>Sin viaje</span>
+                                      )}
+                                    </td>
                                   </tr>
                                 )
                               })}
@@ -1396,102 +1535,10 @@ export default function ControlEquipo() {
                           </table>
                         </div>
                       )}
-                      {isOpen && inv.cajas.length === 0 && (
-                        <div style={{ borderTop: '1px solid ' + tokens.colors.border, padding: '20px', textAlign: 'center', color: tokens.colors.textMuted, fontSize: '12px' }}>
-                          Sin cajas en esta terminal
-                        </div>
-                      )}
                     </div>
                   )
-                })}
-
-                {/* En ruta section */}
-                <div style={{
-                  border: '1px solid ' + tokens.colors.border,
-                  borderRadius: tokens.radius.md,
-                  background: tokens.colors.bgCard,
-                  overflow: 'hidden',
-                }}>
-                  <div
-                    onClick={() => setTerminalExpandida(terminalExpandida === '__ruta__' ? null : '__ruta__')}
-                    style={{
-                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                      padding: '12px 16px', cursor: 'pointer',
-                      background: terminalExpandida === '__ruta__' ? tokens.colors.bgHover : 'transparent',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{
-                        width: '36px', height: '36px', borderRadius: '8px',
-                        background: 'rgba(245,158,11,0.15)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '16px', fontWeight: 700, color: tokens.colors.yellow,
-                      }}>
-                        {cajasEnRuta.length}
-                      </div>
-                      <div>
-                        <div style={{ color: tokens.colors.textPrimary, fontWeight: 600, fontSize: '14px' }}>
-                          En Ruta / Fuera de Terminal
-                        </div>
-                        <div style={{ color: tokens.colors.textMuted, fontSize: '11px' }}>
-                          Cajas con GPS fuera de todas las geocercas
-                        </div>
-                      </div>
-                    </div>
-                    <span style={{
-                      color: tokens.colors.textMuted, fontSize: '18px',
-                      transform: terminalExpandida === '__ruta__' ? 'rotate(180deg)' : 'rotate(0)',
-                      transition: 'transform 0.2s',
-                    }}>▼</span>
-                  </div>
-                  {terminalExpandida === '__ruta__' && cajasEnRuta.length > 0 && (
-                    <div style={{ borderTop: '1px solid ' + tokens.colors.border, maxHeight: '300px', overflow: 'auto' }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
-                        <thead>
-                          <tr style={{ background: tokens.colors.bgMain }}>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Económico</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Empresa</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Tipo</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Ubicación</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Última Señal</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'center', color: tokens.colors.textSecondary, fontWeight: 500 }}>Días sin movimiento</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {cajasEnRuta.map(c => {
-                            const dSinMov = c.enMovimiento ? 0 : (diasSinMovMap.get(c.numero_economico) ?? c.diasSinSenal ?? null)
-                            const dSinMovColor = dSinMov === null ? tokens.colors.textMuted
-                              : dSinMov === 0 ? '#0D9668'
-                              : dSinMov <= 3 ? tokens.colors.textPrimary
-                              : dSinMov <= 7 ? '#B8860B'
-                              : '#DC2626'
-                            return (
-                              <tr key={c.id} style={{ borderTop: '1px solid ' + tokens.colors.border }}>
-                                <td style={{ padding: '8px 12px', color: tokens.colors.textPrimary, fontWeight: 600 }}>{c.numero_economico}</td>
-                                <td style={{ padding: '8px 12px', color: tokens.colors.textSecondary }}>{c.empresa}</td>
-                                <td style={{ padding: '8px 12px' }}>
-                                  <span style={{
-                                    padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600,
-                                    background: c.tipoNorm === 'seca' ? 'rgba(249,115,22,0.15)' : 'rgba(8,145,178,0.15)',
-                                    color: c.tipoNorm === 'seca' ? '#F97316' : '#0891B2',
-                                  }}>
-                                    {c.tipoNorm === 'seca' ? 'Seca' : 'Thermo'}
-                                  </span>
-                                </td>
-                                <td style={{ padding: '8px 12px', color: tokens.colors.textSecondary, fontSize: '11px' }}>{c.ubicacion || '—'}</td>
-                                <td style={{ padding: '8px 12px', color: tokens.colors.textSecondary, fontSize: '11px' }}>{c.ultimaSenal}</td>
-                                <td style={{ padding: '8px 12px', textAlign: 'center', color: dSinMovColor, fontWeight: 600, fontSize: '12px', fontVariantNumeric: 'tabular-nums' }}>
-                                  {dSinMov === null ? '—' : dSinMov === 0 ? '0' : dSinMov + 'd'}
-                                </td>
-                              </tr>
-                            )
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
-              </div>
+                })()}
+              </>
             )}
           </Card>
         )}
