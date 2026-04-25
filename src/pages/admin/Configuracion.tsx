@@ -2,20 +2,20 @@ import { supabase } from '../../lib/supabase'
 import { ModuleDashboardGrid } from '../../components/dashboard/ModuleDashboardGrid'
 import type { CardDef } from '../../components/dashboard/ModuleDashboardGrid'
 
-/* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   CONFIGURACIÃN â Landing Page V4.1
-   6 cards: AuditorÃ­a eliminada, ParÃ¡metros + Cerebro Tarifario
-   fusionados en "TARIFAS IA".
-   ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ──────────────────────────────────────────────────────────────
+   CONFIGURACIÓN — Landing Page V4.2
+   7 cards: Auditoría eliminada, Parámetros + Cerebro Tarifario
+   fusionados en "AI Rate Settings".
+   ────────────────────────────────────────────────────────────── */
 
 const CARDS: CardDef[] = [
-  { id: 'usuarios',      label: 'Usuarios',      route: '/admin/configuracion/usuarios',      kpiLabel: 'Autorizados',  iconSet: 'hugeicons', iconName: 'user-multiple-03' },
-  { id: 'catalogos',     label: 'CatÃ¡logos',     route: '/admin/configuracion/catalogos',     kpiLabel: 'Tipos',        iconSet: 'hugeicons', iconName: 'grid-view' },
-  { id: 'tarifas_ia',    label: 'TARIFAS IA',    route: '/admin/configuracion/tarifas-ia',    kpiLabel: 'Reglas',       iconSet: 'hugeicons', iconName: 'brain' },
-  { id: 'integraciones', label: 'Integraciones', route: '/admin/configuracion/integraciones', kpiLabel: 'Activas',      iconSet: 'hugeicons', iconName: 'plug-socket' },
-  { id: 'plantillas',    label: 'Plantillas',    route: '/admin/configuracion/plantillas',    kpiLabel: 'Activas',      iconSet: 'hugeicons', iconName: 'file-edit' },
-  { id: 'documentos',    label: 'Documentos',    route: '/admin/configuracion/documentos',    kpiLabel: 'Legales',      iconSet: 'hugeicons', iconName: 'file-01' },
-  { id: 'terminales',   label: 'Terminales',   route: '/admin/configuracion/terminales',   kpiLabel: 'Geocercas',    iconSet: 'hugeicons', iconName: 'maps-location-01' },
+  { id: 'usuarios',      label: 'Usuarios',           route: '/admin/configuracion/usuarios',      kpiLabel: 'Autorizados',  iconSet: 'hugeicons', iconName: 'user-multiple-03' },
+  { id: 'catalogos',     label: 'Catálogos',      route: '/admin/configuracion/catalogos',     kpiLabel: 'Tipos',        iconSet: 'hugeicons', iconName: 'grid-view' },
+  { id: 'tarifas_ia',    label: 'AI Rate Settings',   route: '/admin/configuracion/tarifas-ia',    kpiLabel: 'Reglas',       iconSet: 'hugeicons', iconName: 'artificial-intelligence-04' },
+  { id: 'integraciones', label: 'Integraciones',      route: '/admin/configuracion/integraciones', kpiLabel: 'Activas',      iconSet: 'hugeicons', iconName: 'plug-socket' },
+  { id: 'plantillas',    label: 'Plantillas',         route: '/admin/configuracion/plantillas',    kpiLabel: 'Activas',      iconSet: 'hugeicons', iconName: 'file-edit' },
+  { id: 'documentos',    label: 'Documentos',         route: '/admin/configuracion/documentos',    kpiLabel: 'Legales',      iconSet: 'hugeicons', iconName: 'file-01' },
+  { id: 'terminales',    label: 'Terminales',         route: '/admin/configuracion/terminales',    kpiLabel: 'Geocercas',    iconSet: 'hugeicons', iconName: 'maps-location-01' },
 ]
 
 async function fallbackFetch(): Promise<Record<string, number>> {
@@ -36,7 +36,7 @@ async function fallbackFetch(): Promise<Record<string, number>> {
 export default function Configuracion() {
   return (
     <ModuleDashboardGrid
-      titulo="ConfiguraciÃ³n"
+      titulo="Configuración"
       modulo="configuracion"
       cards={CARDS}
       fallbackFetch={fallbackFetch}
