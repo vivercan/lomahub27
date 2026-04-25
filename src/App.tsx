@@ -103,7 +103,6 @@ function App() {
         <Routes>
           {/* ——— Public ——— */}
           <Route path="/login" element={<Login />} />
-} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* ––– Portal Público Alta de Clientes (sin login, acceso por token) ––– */}
@@ -551,10 +550,6 @@ function App() {
           <Route path="/admin/configuracion/flota-master" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
               <FlotaMaster />
-            </ProtectedRoute>
-          } />
-            </ProtectedRoute>
-          } />
             </ProtectedRoute>
           } />
           <Route path="/admin/configuracion/documentos" element={
