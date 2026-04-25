@@ -2,22 +2,22 @@ import { supabase } from '../../lib/supabase'
 import { ModuleDashboardGrid } from '../../components/dashboard/ModuleDashboardGrid'
 import type { CardDef } from '../../components/dashboard/ModuleDashboardGrid'
 
-/* ───────────────────────────────────────────────────────────────
-   COMERCIAL — Landing Page V4.2
-   10 cards: CXC Cartera + Acciones Cobro unificados en Cartera 360.
-   ─────────────────────────────────────────────────────────────── */
+/* ———————————————————————————————————————————————————————————————
+   COMERCIAL — Landing Page V4.1 (patrón Catálogos, 25/Abr/2026)
+   10 cards con subtítulo descriptivo.
+   ——————————————————————————————————————————————————————————————— */
 
 const CARDS: CardDef[] = [
-  { id: 'cotizador',        label: 'Cotizador',         route: '/cotizador/nueva',               kpiLabel: 'Pendientes',  iconSet: 'hugeicons', iconName: 'invoice-03' },
-  { id: 'mis_cotizaciones', label: 'Mis Cotizaciones',  route: '/cotizador/mis-cotizaciones',    kpiLabel: 'Total',       iconSet: 'hugeicons', iconName: 'file-management' },
-  { id: 'programa',         label: 'Programa Semanal',  route: '/ventas/programa-semanal',       kpiLabel: 'Esta semana', iconSet: 'hugeicons', iconName: 'calendar-03' },
-  { id: 'alta_clientes',    label: 'Alta de Clientes',  route: '/clientes/alta',                 kpiLabel: 'Formulario',  iconSet: 'hugeicons', iconName: 'user-add-01' },
-  { id: 'inteligencia',     label: 'Inteligencia',      route: '/inteligencia',                  kpiLabel: 'Rankings',    iconSet: 'hugeicons', iconName: 'analytics-01' },
-  { id: 'presupuesto',      label: 'Presupuesto',       route: '/inteligencia/presupuesto',      kpiLabel: 'Mensual',     iconSet: 'hugeicons', iconName: 'money-bag-02' },
-  { id: 'pareto',           label: 'Análisis 80/20',  route: '/inteligencia/pareto',        kpiLabel: 'Pareto',      iconSet: 'hugeicons', iconName: 'chart-bar-line' },
-  { id: 'rentabilidad',     label: 'Rentabilidad',      route: '/operaciones/rentabilidad',      kpiLabel: 'Por tracto',  iconSet: 'hugeicons', iconName: 'chart-increase' },
-  { id: 'cartera_360',      label: 'Cartera 360',       route: '/cxc/cartera',                   kpiLabel: 'Cuentas',     iconSet: 'hugeicons', iconName: 'wallet-done-01' },
-  { id: 'chief_of_staff',   label: 'Chief of Staff',    route: '/comunicaciones/chief-of-staff', kpiLabel: 'AI Briefing', iconSet: 'hugeicons', iconName: 'artificial-intelligence-04' },
+  { id: 'cotizador',        label: 'Cotizador',         route: '/cotizador/nueva',               kpiLabel: 'Pendientes',  iconSet: 'hugeicons', iconName: 'invoice-03',                subtitle: 'Nueva cotización IMPO/EXPO/NAC' },
+  { id: 'mis_cotizaciones', label: 'Mis Cotizaciones',  route: '/cotizador/mis-cotizaciones',    kpiLabel: 'Total',       iconSet: 'hugeicons', iconName: 'file-management',           subtitle: 'Histórico y seguimiento' },
+  { id: 'programa',         label: 'Programa Semanal',  route: '/ventas/programa-semanal',       kpiLabel: 'Esta semana', iconSet: 'hugeicons', iconName: 'calendar-03',               subtitle: 'Planeación de visitas y leads' },
+  { id: 'alta_clientes',    label: 'Alta de Clientes',  route: '/clientes/alta',                 kpiLabel: 'Formulario',  iconSet: 'hugeicons', iconName: 'user-add-01',               subtitle: 'Captura completa F01' },
+  { id: 'inteligencia',     label: 'Inteligencia',      route: '/inteligencia',                  kpiLabel: 'Rankings',    iconSet: 'hugeicons', iconName: 'analytics-01',              subtitle: 'Rankings y comparativos' },
+  { id: 'presupuesto',      label: 'Presupuesto',       route: '/inteligencia/presupuesto',      kpiLabel: 'Mensual',     iconSet: 'hugeicons', iconName: 'money-bag-02',              subtitle: 'Plan mensual por ejecutivo' },
+  { id: 'pareto',           label: 'Análisis 80/20',    route: '/inteligencia/pareto',           kpiLabel: 'Pareto',      iconSet: 'hugeicons', iconName: 'chart-bar-line',            subtitle: 'Concentración de cartera' },
+  { id: 'cxc_cartera',      label: 'CXC Cartera',       route: '/cxc/cartera',                   kpiLabel: 'Cuentas',     iconSet: 'hugeicons', iconName: 'wallet-02',                 subtitle: 'Cuentas por cobrar y aging' },
+  { id: 'cxc_acciones',     label: 'Acciones Cobro',    route: '/cxc/acciones',                  kpiLabel: 'Pendientes',  iconSet: 'hugeicons', iconName: 'alert-circle',              subtitle: 'Cobranza prioritaria del día' },
+  { id: 'chief_of_staff',   label: 'Chief of Staff',    route: '/comunicaciones/chief-of-staff', kpiLabel: 'AI Briefing', iconSet: 'hugeicons', iconName: 'artificial-intelligence-04', subtitle: 'Briefing ejecutivo con IA' },
 ]
 
 async function fallbackFetch(): Promise<Record<string, number>> {
@@ -37,8 +37,8 @@ async function fallbackFetch(): Promise<Record<string, number>> {
     inteligencia: 0,
     presupuesto: 0,
     pareto: 0,
-    rentabilidad: 0,
-    cartera_360: cxcCuentas.count ?? 0,
+    cxc_cartera: cxcCuentas.count ?? 0,
+    cxc_acciones: 0,
     chief_of_staff: 0,
   }
 }
