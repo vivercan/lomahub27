@@ -559,27 +559,16 @@ export default function Login() {
       document.removeEventListener('touchstart', stop, true)
     }
     // Intentar autoplay; algunos browsers lo bloquean — fallback silencioso
-    const tryPlay = () => audio.play().catch(() => { /* autoplay blocked */ })
-    tryPlay()
-    // Fallback: si autoplay bloqueado, primer mousemove inicia
-    let started = false
-    const startOnInteract = () => {
-      if (started) return
-      started = true
-      tryPlay()
-      document.removeEventListener('mousemove', startOnInteract, true)
-      document.removeEventListener('pointerdown', startOnInteract, true)
-    }
-    document.addEventListener('mousemove', startOnInteract, true)
-    document.addEventListener('pointerdown', startOnInteract, true)
+    const tryPlay = () => audio.play().catch(() => { /* autoplay blocked silently */ })
+    // V46.3 — Arranque a 1 segundo despues de cargar (predecible, no espera interaccion)
+    const startTimer = window.setTimeout(tryPlay, 1000)
     // Stop en primer click/key/touch
     document.addEventListener('click', stop, true)
     document.addEventListener('keydown', stop, true)
     document.addEventListener('touchstart', stop, true)
     return () => {
+      window.clearTimeout(startTimer)
       stop()
-      document.removeEventListener('mousemove', startOnInteract, true)
-      document.removeEventListener('pointerdown', startOnInteract, true)
     }
   }, [])
 
