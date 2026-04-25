@@ -3,20 +3,19 @@ import { ModuleDashboardGrid } from '../../components/dashboard/ModuleDashboardG
 import type { CardDef } from '../../components/dashboard/ModuleDashboardGrid'
 
 /* ──────────────────────────────────────────────────────────────
-   CONFIGURACIÓN — Landing Page V4.2
-   7 cards: Auditoría eliminada, Parámetros + Cerebro Tarifario
-   fusionados en "AI Rate Settings".
+   CONFIGURACIÓN — Landing Page V4.3 (patrón Catálogos, 25/Abr/2026)
+   8 cards con subtítulo descriptivo. Fusionado AI Rate Settings.
    ────────────────────────────────────────────────────────────── */
 
 const CARDS: CardDef[] = [
-  { id: 'usuarios',      label: 'Usuarios',           route: '/admin/configuracion/usuarios',      kpiLabel: 'Autorizados',  iconSet: 'hugeicons', iconName: 'user-multiple-03' },
-  { id: 'catalogos',     label: 'Catálogos',      route: '/admin/configuracion/catalogos',     kpiLabel: 'Tipos',        iconSet: 'hugeicons', iconName: 'grid-view' },
-  { id: 'tarifas_ia',    label: 'AI Rate Settings',   route: '/admin/configuracion/tarifas-ia',    kpiLabel: 'Reglas',       iconSet: 'hugeicons', iconName: 'artificial-intelligence-04' },
-  { id: 'integraciones', label: 'Integraciones',      route: '/admin/configuracion/integraciones', kpiLabel: 'Activas',      iconSet: 'hugeicons', iconName: 'plug-socket' },
-  { id: 'documentos',    label: 'Documentos',         route: '/admin/configuracion/documentos',    kpiLabel: 'Legales',      iconSet: 'hugeicons', iconName: 'file-01' },
-  { id: 'terminales',    label: 'Terminales',         route: '/admin/configuracion/terminales',    kpiLabel: 'Geocercas',    iconSet: 'hugeicons', iconName: 'maps-location-01' },
-  { id: 'inventario',    label: 'Inventario Terminal',route: '/admin/configuracion/inventario',    kpiLabel: 'Objetivo',     iconSet: 'hugeicons', iconName: 'package' },
-  { id: 'flota',         label: 'Flota Master',       route: '/admin/configuracion/flota-master',  kpiLabel: 'Unidades',     iconSet: 'hugeicons', iconName: 'truck' },
+  { id: 'usuarios',      label: 'Usuarios',            route: '/admin/configuracion/usuarios',      kpiLabel: 'Autorizados', iconSet: 'hugeicons', iconName: 'user-multiple-03',           subtitle: 'Equipo y permisos por rol' },
+  { id: 'catalogos',     label: 'Catálogos',           route: '/admin/configuracion/catalogos',     kpiLabel: 'Tipos',       iconSet: 'hugeicons', iconName: 'grid-view',                  subtitle: 'Empresas, plazas, operadores y más' },
+  { id: 'tarifas_ia',    label: 'AI Rate Settings',    route: '/admin/configuracion/tarifas-ia',    kpiLabel: 'Reglas',      iconSet: 'hugeicons', iconName: 'artificial-intelligence-04', subtitle: 'Cerebro tarifario y parámetros' },
+  { id: 'integraciones', label: 'Integraciones',       route: '/admin/configuracion/integraciones', kpiLabel: 'Activas',     iconSet: 'hugeicons', iconName: 'plug-socket',                subtitle: 'GPS, ANODOS, WhatsApp, Mail' },
+  { id: 'documentos',    label: 'Documentos',          route: '/admin/configuracion/documentos',    kpiLabel: 'Legales',     iconSet: 'hugeicons', iconName: 'file-01',                    subtitle: 'Contratos, pólizas y manuales' },
+  { id: 'terminales',    label: 'Terminales',          route: '/admin/configuracion/terminales',    kpiLabel: 'Geocercas',   iconSet: 'hugeicons', iconName: 'maps-location-01',           subtitle: 'Patios, naves y geocercas' },
+  { id: 'inventario',    label: 'Inventario Terminal', route: '/admin/configuracion/inventario',    kpiLabel: 'Objetivo',    iconSet: 'hugeicons', iconName: 'package',                    subtitle: 'Objetivos por terminal y equipo' },
+  { id: 'flota',         label: 'Flota Master',        route: '/admin/configuracion/flota-master',  kpiLabel: 'Unidades',    iconSet: 'hugeicons', iconName: 'truck',                      subtitle: 'Tractos, cajas y termos' },
 ]
 
 async function fallbackFetch(): Promise<Record<string, number>> {
