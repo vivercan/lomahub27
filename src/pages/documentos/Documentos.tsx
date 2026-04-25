@@ -15,7 +15,7 @@ interface Documento {
   tipo: 'contrato' | 'carta_porte' | 'pod' | 'factura' | 'poliza' | 'plantilla' | 'otro'
   cliente?: string
   viaje_id?: string
-  fecha_creacion: string
+  created_at: string
   estado: 'vigente' | 'vencido' | 'borrador' | 'firmado'
   url?: string
   tamano_kb?: number
@@ -54,7 +54,7 @@ export default function Documentos() {
     const { data, error } = await supabase
       .from('documentos')
       .select('*')
-      .order('fecha_creacion', { ascending: false })
+      .order('created_at', { ascending: false })
       .limit(200)
     if (!error && data) setDocumentos(data)
     setLoading(false)
@@ -98,10 +98,10 @@ export default function Documentos() {
       render: (row) => <Badge color={estadoColores[row.estado] || 'gray'}>{row.estado}</Badge>
     },
     {
-      key: 'fecha_creacion', label: 'Fecha', width: '110px',
+      key: 'created_at', label: 'Fecha', width: '110px',
       render: (row) => (
         <span style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body, fontSize: '12px' }}>
-          {row.fecha_creacion}
+          {row.created_at}
         </span>
       )
     },
