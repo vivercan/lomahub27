@@ -44,7 +44,7 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
         userRole={user?.rol || 'admin'}
         userEmail={user?.email}
       />
-      {/* V46 — Navegación rediseñada: Atrás PRIMARIO grande + Casita SECUNDARIO pequeño */}
+      {/* V46.6 — Navegación uniforme: Atrás (blanco) + Casita NARANJA siempre visibles (25/Abr/2026) */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -53,7 +53,7 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
         flexShrink: 0
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {/* PRIMARIO — Atrás (a moduloPadre o navigate(-1) o /dashboard) */}
+          {/* PRIMARIO — Atrás (blanco): label dinámico según padre, fallback "Dashboard" */}
           <button
             onClick={() => {
               if (moduloPadre?.ruta) navigate(moduloPadre.ruta)
@@ -76,34 +76,35 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
               e.currentTarget.style.background = '#FFFFFF'
               e.currentTarget.style.borderColor = '#E2E8F0'
             }}
-            title={moduloPadre?.ruta ? 'Volver' : 'Volver al Dashboard'}
+            title={moduloPadre?.ruta ? 'Volver al módulo padre' : 'Volver al Dashboard'}
           >
             <ArrowLeft size={16} strokeWidth={2.2} />
-            <span>{moduloPadre?.label || moduloPadre?.nombre || 'Atrás'}</span>
+            <span>{moduloPadre?.label || moduloPadre?.nombre || 'Dashboard'}</span>
           </button>
-          {/* SECUNDARIO — Casita Dashboard (solo si hay moduloPadre, sino el Atrás ya va al Dashboard) */}
-          {moduloPadre?.ruta && (
-            <button
-              onClick={() => navigate('/dashboard')}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                width: '36px', height: '36px', padding: 0,
-                background: 'transparent', border: '1px solid #E2E8F0', borderRadius: '10px',
-                color: '#64748B', cursor: 'pointer', transition: 'all 0.18s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#F1F5F9'
-                e.currentTarget.style.color = '#3B6CE7'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent'
-                e.currentTarget.style.color = '#64748B'
-              }}
-              title="Ir al Dashboard"
-            >
-              <Home size={16} strokeWidth={2} />
-            </button>
-          )}
+          {/* SECUNDARIO — Casita NARANJA SIEMPRE visible (excepto Dashboard ppal que no usa este layout) */}
+          <button
+            onClick={() => navigate('/dashboard')}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: '40px', height: '40px', padding: 0,
+              background: 'linear-gradient(180deg, #FF5C1A 0%, #FF4500 50%, #CC3700 100%)',
+              border: '1px solid #B03000', borderRadius: '10px',
+              color: '#FFFFFF', cursor: 'pointer',
+              fontFamily: tokens.fonts.body, transition: 'all 0.18s ease',
+              boxShadow: '0 2px 4px rgba(255,69,0,0.30), 0 6px 14px -3px rgba(255,69,0,0.25), 0 10px 24px -6px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.20)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-1px)'
+              e.currentTarget.style.boxShadow = '0 4px 8px rgba(255,69,0,0.40), 0 10px 20px -3px rgba(255,69,0,0.30), 0 14px 30px -6px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.32), inset 0 -1px 0 rgba(0,0,0,0.20)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 2px 4px rgba(255,69,0,0.30), 0 6px 14px -3px rgba(255,69,0,0.25), 0 10px 24px -6px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.20)'
+            }}
+            title="Ir al Dashboard principal"
+          >
+            <Home size={18} strokeWidth={2.4} color="#FFFFFF" />
+          </button>
           <div style={{
             display: 'flex',
             flexDirection: 'column',

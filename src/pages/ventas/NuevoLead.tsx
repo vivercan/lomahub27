@@ -339,7 +339,7 @@ export default function NuevoLead(): ReactElement {
   }
 
   return (
-    <ModuleLayout titulo="Agregar Lead" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/mis-leads' }}>
+    <ModuleLayout titulo="Agregar Lead" moduloPadre={{ nombre: 'Mis Leads', ruta: '/ventas/mis-leads' }}>
       {/* MAIN CONTENT — premium V29 sectioned layout */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px', padding: '8px 16px', height: 'calc(100vh - 160px)', overflow: 'hidden' }}>
 

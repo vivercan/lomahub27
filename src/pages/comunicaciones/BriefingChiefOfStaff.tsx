@@ -753,7 +753,7 @@ const BriefingChiefOfStaff: React.FC = () => {
   const briefingType = briefing.tipo === 'morning' ? 'Briefing Matutino' : 'Cierre del Día';
 
   return (
-    <ModuleLayout titulo="Briefing Chief of Staff" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
+    <ModuleLayout titulo="Briefing Chief of Staff" moduloPadre={{ nombre: 'Comunicaciones', ruta: '/comunicaciones/dashboard' }}>
     <div
       style={{
         backgroundColor: '#F7F8FA',
