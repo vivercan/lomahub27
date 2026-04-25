@@ -133,30 +133,30 @@ const ControlTractos: React.FC = () => {
         return '#FEE2E2'
       }
       default:
-        return tokens.colors.bgCard
+        return tokens.bgCard
     }
   }
 
   const getStatusDot = (tracto: Tracto): string => {
-    if (!tracto.activo) return tokens.colors.gray
+    if (!tracto.activo) return tokens.gray
 
     switch (tracto.estado_operativo) {
       case 'baja':
       case 'taller':
-        return tokens.colors.gray
+        return tokens.gray
       case 'siniestro':
-        return tokens.colors.red
+        return tokens.red
       case 'en_viaje':
-        return tokens.colors.blue
+        return tokens.blue
       case 'disponible': {
         const hours = tracto.horas_ociosas || 0
-        if (hours < 3) return tokens.colors.green
-        if (hours < 5) return tokens.colors.yellow
-        if (hours < 12) return tokens.colors.orange
-        return tokens.colors.red
+        if (hours < 3) return tokens.green
+        if (hours < 5) return tokens.yellow
+        if (hours < 12) return tokens.orange
+        return tokens.red
       }
       default:
-        return tokens.colors.gray
+        return tokens.gray
     }
   }
 
@@ -350,9 +350,9 @@ const ControlTractos: React.FC = () => {
       return <ChevronDown size={16} style={{ opacity: 0.3 }} />
     }
     return sortDirection === 'asc' ? (
-      <ChevronUp size={16} style={{ color: tokens.colors.primary }} />
+      <ChevronUp size={16} style={{ color: tokens.primary }} />
     ) : (
-      <ChevronDown size={16} style={{ color: tokens.colors.primary }} />
+      <ChevronDown size={16} style={{ color: tokens.primary }} />
     )
   }
 
@@ -360,32 +360,32 @@ const ControlTractos: React.FC = () => {
     {
       label: 'Total Activos',
       value: summary.activos,
-      color: tokens.colors.primary,
-      icon: <CheckCircle size={20} style={{ color: tokens.colors.primary }} />,
+      color: tokens.primary,
+      icon: <CheckCircle size={20} style={{ color: tokens.primary }} />,
     },
     {
       label: 'En Viaje',
       value: summary.enViaje,
-      color: tokens.colors.blue,
-      icon: <CheckCircle size={20} style={{ color: tokens.colors.blue }} />,
+      color: tokens.blue,
+      icon: <CheckCircle size={20} style={{ color: tokens.blue }} />,
     },
     {
       label: 'Disponibles',
       value: summary.disponibles,
-      color: tokens.colors.green,
-      icon: <CheckCircle size={20} style={{ color: tokens.colors.green }} />,
+      color: tokens.green,
+      icon: <CheckCircle size={20} style={{ color: tokens.green }} />,
     },
     {
       label: 'En Taller',
       value: summary.enTaller,
-      color: tokens.colors.gray,
-      icon: <CheckCircle size={20} style={{ color: tokens.colors.gray }} />,
+      color: tokens.gray,
+      icon: <CheckCircle size={20} style={{ color: tokens.gray }} />,
     },
     {
       label: 'Costo Ocioso del Día',
       value: `$${summary.costOciosoTotal.toLocaleString('en-US', { maximumFractionDigits: 2 })}`,
-      color: tokens.colors.red,
-      icon: <AlertCircle size={20} style={{ color: tokens.colors.red }} />,
+      color: tokens.red,
+      icon: <AlertCircle size={20} style={{ color: tokens.red }} />,
     },
   ]
 
@@ -398,13 +398,13 @@ const ControlTractos: React.FC = () => {
           style={{
             fontSize: '2rem',
             fontWeight: 700,
-            color: tokens.colors.textPrimary,
+            color: tokens.textPrimary,
             marginBottom: '0.5rem',
           }}
         >
           Control de Tractos
         </h1>
-        <p style={{ fontSize: '0.95rem', color: tokens.colors.textSecondary }}>
+        <p style={{ fontSize: '0.95rem', color: tokens.textSecondary }}>
           Gestión y monitoreo de tractocamiones de la flota
         </p>
       </div>
@@ -415,15 +415,15 @@ const ControlTractos: React.FC = () => {
           <div
             key={idx}
             style={{
-              background: tokens.colors.bgCard,
-              border: `1px solid ${tokens.colors.border}`,
+              background: tokens.bgCard,
+              border: `1px solid ${tokens.border}`,
               borderRadius: tokens.borderRadius,
               padding: '1.25rem',
               boxShadow: tokens.shadow,
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-              <span style={{ fontSize: '0.85rem', color: tokens.colors.textSecondary, fontWeight: 500 }}>
+              <span style={{ fontSize: '0.85rem', color: tokens.textSecondary, fontWeight: 500 }}>
                 {card.label}
               </span>
               {card.icon}
@@ -440,7 +440,7 @@ const ControlTractos: React.FC = () => {
         <div
           style={{
             background: '#FEE2E2',
-            border: `1px solid ${tokens.colors.red}`,
+            border: `1px solid ${tokens.red}`,
             borderRadius: tokens.borderRadius,
             padding: '1rem',
             marginBottom: '1.5rem',
@@ -449,8 +449,8 @@ const ControlTractos: React.FC = () => {
             gap: '0.75rem',
           }}
         >
-          <AlertCircle size={20} style={{ color: tokens.colors.red, flexShrink: 0 }} />
-          <span style={{ color: tokens.colors.red, fontSize: '0.95rem' }}>{error}</span>
+          <AlertCircle size={20} style={{ color: tokens.red, flexShrink: 0 }} />
+          <span style={{ color: tokens.red, fontSize: '0.95rem' }}>{error}</span>
           <button
             onClick={() => setError(null)}
             style={{
@@ -458,7 +458,7 @@ const ControlTractos: React.FC = () => {
               background: 'none',
               border: 'none',
               cursor: 'pointer',
-              color: tokens.colors.red,
+              color: tokens.red,
               padding: '0.25rem',
             }}
           >
@@ -470,8 +470,8 @@ const ControlTractos: React.FC = () => {
       {/* Controls */}
       <div
         style={{
-          background: tokens.colors.bgCard,
-          border: `1px solid ${tokens.colors.border}`,
+          background: tokens.bgCard,
+          border: `1px solid ${tokens.border}`,
           borderRadius: tokens.borderRadius,
           padding: '1.5rem',
           marginBottom: '1.5rem',
@@ -488,7 +488,7 @@ const ControlTractos: React.FC = () => {
                 left: '0.75rem',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                color: tokens.colors.textSecondary,
+                color: tokens.textSecondary,
               }}
             />
             <input
@@ -499,11 +499,11 @@ const ControlTractos: React.FC = () => {
               style={{
                 width: '100%',
                 padding: '0.75rem 1rem 0.75rem 2.5rem',
-                border: `1px solid ${tokens.colors.border}`,
+                border: `1px solid ${tokens.border}`,
                 borderRadius: '0.5rem',
                 fontSize: '0.95rem',
                 fontFamily: tokens.fontFamily,
-                color: tokens.colors.textPrimary,
+                color: tokens.textPrimary,
               }}
             />
           </div>
@@ -514,12 +514,12 @@ const ControlTractos: React.FC = () => {
             onChange={(e) => setFilterEmpresa(e.target.value)}
             style={{
               padding: '0.75rem',
-              border: `1px solid ${tokens.colors.border}`,
+              border: `1px solid ${tokens.border}`,
               borderRadius: '0.5rem',
               fontSize: '0.95rem',
               fontFamily: tokens.fontFamily,
-              color: tokens.colors.textPrimary,
-              backgroundColor: tokens.colors.bgCard,
+              color: tokens.textPrimary,
+              backgroundColor: tokens.bgCard,
             }}
           >
             <option value="">Todas las empresas</option>
@@ -536,12 +536,12 @@ const ControlTractos: React.FC = () => {
             onChange={(e) => setFilterEstado(e.target.value)}
             style={{
               padding: '0.75rem',
-              border: `1px solid ${tokens.colors.border}`,
+              border: `1px solid ${tokens.border}`,
               borderRadius: '0.5rem',
               fontSize: '0.95rem',
               fontFamily: tokens.fontFamily,
-              color: tokens.colors.textPrimary,
-              backgroundColor: tokens.colors.bgCard,
+              color: tokens.textPrimary,
+              backgroundColor: tokens.bgCard,
             }}
           >
             <option value="">Todos los estados</option>
@@ -561,7 +561,7 @@ const ControlTractos: React.FC = () => {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.75rem 1.25rem',
-            background: tokens.colors.primary,
+            background: tokens.primary,
             color: 'white',
             border: 'none',
             borderRadius: '0.5rem',
@@ -579,8 +579,8 @@ const ControlTractos: React.FC = () => {
       {/* Table */}
       <div
         style={{
-          background: tokens.colors.bgCard,
-          border: `1px solid ${tokens.colors.border}`,
+          background: tokens.bgCard,
+          border: `1px solid ${tokens.border}`,
           borderRadius: tokens.borderRadius,
           overflow: 'hidden',
           boxShadow: tokens.shadowMd,
@@ -594,7 +594,7 @@ const ControlTractos: React.FC = () => {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '1rem',
-              color: tokens.colors.textSecondary,
+              color: tokens.textSecondary,
             }}
           >
             <Loader size={20} style={{ animation: 'spin 1s linear infinite' }} />
@@ -605,7 +605,7 @@ const ControlTractos: React.FC = () => {
             style={{
               padding: '3rem',
               textAlign: 'center',
-              color: tokens.colors.textSecondary,
+              color: tokens.textSecondary,
             }}
           >
             <p style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>No hay tractos para mostrar</p>
@@ -621,7 +621,7 @@ const ControlTractos: React.FC = () => {
               }}
             >
               <thead>
-                <tr style={{ borderBottom: `2px solid ${tokens.colors.border}`, backgroundColor: '#F9FAFB' }}>
+                <tr style={{ borderBottom: `2px solid ${tokens.border}`, backgroundColor: '#F9FAFB' }}>
                   <th style={headerCellStyle('numero_economico')}>
                     <button
                       onClick={() => handleSort('numero_economico')}
@@ -693,7 +693,7 @@ const ControlTractos: React.FC = () => {
                   <tr
                     key={tracto.id}
                     style={{
-                      borderBottom: `1px solid ${tokens.colors.border}`,
+                      borderBottom: `1px solid ${tokens.border}`,
                       backgroundColor: getRowColor(tracto),
                       transition: 'background-color 0.2s',
                       opacity: tracto.activo ? 1 : 0.6,
@@ -710,7 +710,7 @@ const ControlTractos: React.FC = () => {
                             flexShrink: 0,
                           }}
                         />
-                        <span style={{ fontWeight: 600, color: tokens.colors.textPrimary }}>
+                        <span style={{ fontWeight: 600, color: tokens.textPrimary }}>
                           {tracto.numero_economico}
                         </span>
                       </div>
@@ -733,12 +733,12 @@ const ControlTractos: React.FC = () => {
                                   : '#FEE2E2',
                           color:
                             normalizarEstado(tracto.estado_operativo) === 'disponible'
-                              ? tokens.colors.green
+                              ? tokens.green
                               : tracto.estado_operativo === 'en_viaje'
-                                ? tokens.colors.blue
+                                ? tokens.blue
                                 : tracto.estado_operativo === 'taller'
-                                  ? tokens.colors.gray
-                                  : tokens.colors.red,
+                                  ? tokens.gray
+                                  : tokens.red,
                           borderRadius: '0.375rem',
                           fontSize: '0.85rem',
                           fontWeight: 600,
@@ -753,23 +753,23 @@ const ControlTractos: React.FC = () => {
                         <span
                           style={{
                             fontSize: '0.85rem',
-                            color: tokens.colors.primary,
+                            color: tokens.primary,
                             fontWeight: 500,
                           }}
                         >
                           {tracto.viaje_actual}
                         </span>
                       ) : (
-                        <span style={{ fontSize: '0.85rem', color: tokens.colors.textSecondary }}>—</span>
+                        <span style={{ fontSize: '0.85rem', color: tokens.textSecondary }}>—</span>
                       )}
                     </td>
                     <td style={cellStyle}>
                       {tracto.operador_asignado ? (
-                        <span style={{ fontSize: '0.95rem', color: tokens.colors.textPrimary }}>
+                        <span style={{ fontSize: '0.95rem', color: tokens.textPrimary }}>
                           {tracto.operador_asignado}
                         </span>
                       ) : (
-                        <span style={{ fontSize: '0.85rem', color: tokens.colors.textSecondary }}>—</span>
+                        <span style={{ fontSize: '0.85rem', color: tokens.textSecondary }}>—</span>
                       )}
                     </td>
                     <td style={cellStyle}>
@@ -779,19 +779,19 @@ const ControlTractos: React.FC = () => {
                           fontWeight: 500,
                           color:
                             tracto.horas_ociosas >= 12
-                              ? tokens.colors.red
+                              ? tokens.red
                               : tracto.horas_ociosas >= 5
-                                ? tokens.colors.orange
+                                ? tokens.orange
                                 : tracto.horas_ociosas >= 3
-                                  ? tokens.colors.yellow
-                                  : tokens.colors.green,
+                                  ? tokens.yellow
+                                  : tokens.green,
                         }}
                       >
                         {(tracto.horas_ociosas ?? 0).toFixed(1)}h
                       </span>
                     </td>
                     <td style={cellStyle}>
-                      <span style={{ fontSize: '0.95rem', color: tokens.colors.textPrimary }}>
+                      <span style={{ fontSize: '0.95rem', color: tokens.textPrimary }}>
                         {tracto.km_acumulados.toLocaleString('es-MX')}
                       </span>
                     </td>
@@ -801,7 +801,7 @@ const ControlTractos: React.FC = () => {
                           display: 'inline-block',
                           padding: '0.25rem 0.75rem',
                           backgroundColor: tokens.primaryLight,
-                          color: tokens.colors.primary,
+                          color: tokens.primary,
                           borderRadius: '0.375rem',
                           fontSize: '0.85rem',
                           fontWeight: 600,
@@ -816,10 +816,10 @@ const ControlTractos: React.FC = () => {
                         onClick={() => handleToggleActivo(tracto)}
                         style={{
                           padding: '0.5rem 0.75rem',
-                          border: `1px solid ${tracto.activo ? tokens.colors.green : tokens.colors.gray}`,
+                          border: `1px solid ${tracto.activo ? tokens.green : tokens.gray}`,
                           borderRadius: '0.375rem',
                           backgroundColor: tracto.activo ? '#F0FDF4' : '#F3F4F6',
-                          color: tracto.activo ? tokens.colors.green : tokens.colors.gray,
+                          color: tracto.activo ? tokens.green : tokens.gray,
                           fontSize: '0.85rem',
                           fontWeight: 600,
                           cursor: 'pointer',
@@ -837,7 +837,7 @@ const ControlTractos: React.FC = () => {
                             padding: '0.5rem',
                             background: 'none',
                             border: 'none',
-                            color: tokens.colors.primary,
+                            color: tokens.primary,
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
@@ -929,7 +929,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, submitt
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          backgroundColor: tokens.colors.bgCard,
+          backgroundColor: tokens.bgCard,
           borderRadius: tokens.borderRadius,
           padding: '2rem',
           maxWidth: '600px',
@@ -953,7 +953,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, submitt
             style={{
               fontSize: '1.5rem',
               fontWeight: 700,
-              color: tokens.colors.textPrimary,
+              color: tokens.textPrimary,
             }}
           >
             {title}
@@ -965,7 +965,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, submitt
               border: 'none',
               fontSize: '1.5rem',
               cursor: 'pointer',
-              color: tokens.colors.textSecondary,
+              color: tokens.textSecondary,
               padding: '0',
             }}
           >
@@ -990,9 +990,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, submitt
               disabled={submitting}
               style={{
                 padding: '0.75rem 1.5rem',
-                backgroundColor: tokens.colors.bgMain,
-                color: tokens.colors.textPrimary,
-                border: `1px solid ${tokens.colors.border}`,
+                backgroundColor: tokens.bgMain,
+                color: tokens.textPrimary,
+                border: `1px solid ${tokens.border}`,
                 borderRadius: '0.5rem',
                 fontSize: '0.95rem',
                 fontWeight: 600,
@@ -1008,7 +1008,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, submitt
               disabled={submitting}
               style={{
                 padding: '0.75rem 1.5rem',
-                backgroundColor: tokens.colors.primary,
+                backgroundColor: tokens.primary,
                 color: 'white',
                 border: 'none',
                 borderRadius: '0.5rem',
@@ -1208,7 +1208,7 @@ const headerCellStyle = (column: string): React.CSSProperties => ({
   padding: '1rem',
   textAlign: 'left',
   fontWeight: 600,
-  color: tokens.colors.textPrimary,
+  color: tokens.textPrimary,
   fontSize: '0.9rem',
   textTransform: 'uppercase',
   letterSpacing: '0.5px',
@@ -1217,7 +1217,7 @@ const headerCellStyle = (column: string): React.CSSProperties => ({
 
 const cellStyle: React.CSSProperties = {
   padding: '1rem',
-  color: tokens.colors.textPrimary,
+  color: tokens.textPrimary,
   fontSize: '0.95rem',
   whiteSpace: 'nowrap',
 }
@@ -1226,7 +1226,7 @@ const sortButtonStyle: React.CSSProperties = {
   background: 'none',
   border: 'none',
   cursor: 'pointer',
-  color: tokens.colors.textPrimary,
+  color: tokens.textPrimary,
   display: 'flex',
   alignItems: 'center',
   gap: '0.5rem',
@@ -1244,18 +1244,18 @@ const labelStyle: React.CSSProperties = {
   marginBottom: '0.5rem',
   fontSize: '0.95rem',
   fontWeight: 600,
-  color: tokens.colors.textPrimary,
+  color: tokens.textPrimary,
 }
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '0.75rem',
-  border: `1px solid ${tokens.colors.border}`,
+  border: `1px solid ${tokens.border}`,
   borderRadius: '0.5rem',
   fontSize: '0.95rem',
   fontFamily: tokens.fontFamily,
-  color: tokens.colors.textPrimary,
-  backgroundColor: tokens.colors.bgCard,
+  color: tokens.textPrimary,
+  backgroundColor: tokens.bgCard,
   boxSizing: 'border-box',
 }
 
