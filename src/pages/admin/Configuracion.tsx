@@ -13,7 +13,6 @@ const CARDS: CardDef[] = [
   { id: 'catalogos',     label: 'Catálogos',      route: '/admin/configuracion/catalogos',     kpiLabel: 'Tipos',        iconSet: 'hugeicons', iconName: 'grid-view' },
   { id: 'tarifas_ia',    label: 'AI Rate Settings',   route: '/admin/configuracion/tarifas-ia',    kpiLabel: 'Reglas',       iconSet: 'hugeicons', iconName: 'artificial-intelligence-04' },
   { id: 'integraciones', label: 'Integraciones',      route: '/admin/configuracion/integraciones', kpiLabel: 'Activas',      iconSet: 'hugeicons', iconName: 'plug-socket' },
-  { id: 'plantillas',    label: 'Plantillas',         route: '/admin/configuracion/plantillas',    kpiLabel: 'Activas',      iconSet: 'hugeicons', iconName: 'file-edit' },
   { id: 'documentos',    label: 'Documentos',         route: '/admin/configuracion/documentos',    kpiLabel: 'Legales',      iconSet: 'hugeicons', iconName: 'file-01' },
   { id: 'terminales',    label: 'Terminales',         route: '/admin/configuracion/terminales',    kpiLabel: 'Geocercas',    iconSet: 'hugeicons', iconName: 'maps-location-01' },
 ]
