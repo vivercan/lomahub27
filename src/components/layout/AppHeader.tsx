@@ -11,7 +11,7 @@ interface AppHeaderProps {
   userEmail?: string
 }
 
-interface Notificacion {
+interface Notificación {
   id: string
   tipo: 'alerta' | 'info' | 'exito' | 'pendiente'
   titulo: string
@@ -31,7 +31,7 @@ export default function AppHeader({
   userRole = 'Usuario',
   userEmail = '',
 }: AppHeaderProps) {
-  const [notifications, setNotifications] = useState<Notificacion[]>([])
+  const [notifications, setNotifications] = useState<Notificación[]>([])
   const [showNotifPanel, setShowNotifPanel] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -70,7 +70,7 @@ export default function AppHeader({
         return
       }
 
-      const list: Notificacion[] = (data ?? []).map((n: any) => ({
+      const list: Notificación[] = (data ?? []).map((n: any) => ({
         id: n.id,
         tipo: n.tipo,
         titulo: n.titulo,
@@ -141,7 +141,7 @@ export default function AppHeader({
     }
   }
 
-  const handleNotifClick = (n: Notificacion) => {
+  const handleNotifClick = (n: Notificación) => {
     if (!n.leida) markAsRead(n.id)
     if (n.url_destino) window.location.href = n.url_destino
   }

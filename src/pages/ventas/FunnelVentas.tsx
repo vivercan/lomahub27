@@ -32,7 +32,7 @@ const ETAPAS_ORDEN = [
   'Nuevo',
   'Contactado',
   'Cotizado',
-  'Negociacion',
+  'Negociación',
   'Cerrado Ganado',
   'Cerrado Perdido',
 ];
@@ -41,7 +41,7 @@ const etapaColores: Record<string, string> = {
   'Nuevo': tokens.colors.blue,
   'Contactado': '#8B5CF6',
   'Cotizado': tokens.colors.yellow,
-  'Negociacion': tokens.colors.orange2,
+  'Negociación': tokens.colors.orange2,
   'Cerrado Ganado': tokens.colors.green,
   'Cerrado Perdido': tokens.colors.red,
 };
@@ -571,7 +571,7 @@ export default function FunnelVentas() {
                         fontWeight: 600,
                         color: tokens.colors.textPrimary,
                       }}>
-                        {item.etapa === 'Negociacion' ? 'Negociación' : item.etapa}
+                        {item.etapa === 'Negociación' ? 'Negociación' : item.etapa}
                       </div>
 
                       {/* Bar */}

@@ -316,7 +316,7 @@ function MapModal({ viaje, onClose }: MapModalProps) {
     // Create a simple OpenStreetMap embed URL using the route
     // Since we don't have exact GPS coordinates, we'll use a generic map view
     // In production, you'd want to geocode origen and destino
-    const encodedRoute = encodeURIComponent(`${viaje.origen || 'Origen'}, Mexico to ${viaje.destino || 'Destino'}, Mexico`)
+    const encodedRoute = encodeURIComponent(`${viaje.origen || 'Origen'}, México to ${viaje.destino || 'Destino'}, México`)
     setMapUrl(`https://www.openstreetmap.org/export/embed.html?bbox=-120,15,-85,35&layer=mapnik`)
   }, [viaje])
 

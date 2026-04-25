@@ -9,7 +9,7 @@ import { DataTable, type Column } from '../../components/ui/DataTable'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 
-interface Asignacion {
+interface Asignación {
   id: string
   tracto: string
   operador: string
@@ -37,7 +37,7 @@ const turnoColores: Record<string, 'primary' | 'yellow' | 'blue' | 'orange'> = {
 }
 
 export default function ProgramacionDedicados() {
-  const [asignaciones, setAsignaciones] = useState<Asignacion[]>([])
+  const [asignaciones, setAsignaciones] = useState<Asignación[]>([])
   const [loading, setLoading] = useState(true)
   const [semanaOffset, setSemanaOffset] = useState(0)
 

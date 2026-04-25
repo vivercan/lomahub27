@@ -494,8 +494,8 @@ export default function CatalogosTab() {
   if (!selectedCatalog) {
     return (
       <ModuleLayout
-        titulo="Catalogos"
-        moduloPadre={{ nombre: 'Configuracion', ruta: '/admin/configuracion' }}
+        titulo="Catálogos"
+        moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}
       >
         <div style={{ background: '#E8EBF0', minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
           <p style={{ ...styles.body, color: styles.textSecondary, fontSize: 14, margin: '0 0 20px 0' }}>
@@ -614,8 +614,8 @@ export default function CatalogosTab() {
 
   return (
     <ModuleLayout
-      titulo={`Catalogos — ${catalog.title}`}
-      moduloPadre={{ nombre: 'Configuracion', ruta: '/admin/configuracion' }}
+      titulo={`Catálogos — ${catalog.title}`}
+      moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}
     >
     <div
       style={{

@@ -403,7 +403,7 @@ export default function PresupuestoMensual() {
             color={resumen.margenPct >= 25 ? 'green' : resumen.margenPct >= 15 ? 'yellow' : 'red'}
             icono={<Target size={18} />}
           />
-          <KPICard titulo="Top Cliente" valor={resumen.clienteTop} color="primary" icono={<Award size={18} />} />
+          <KPICard titulo="Top Cliente" valor={(resumen.clienteTop || '—').length > 18 ? (resumen.clienteTop || '').slice(0, 16) + '…' : (resumen.clienteTop || '—')} color="primary" icono={<Award size={18} />} />
         </div>
       )}
 

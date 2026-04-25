@@ -50,7 +50,7 @@ const PIPELINE_STAGES = [
   { id: 'Nuevo', label: 'Nuevo', color: tokens.colors.blue },
   { id: 'Contactado', label: 'Contactado', color: tokens.colors.yellow },
   { id: 'Cotizado', label: 'Cotizado', color: tokens.colors.orange },
-  { id: 'Negociacion', label: 'Negociación', color: '#A855F7' },
+  { id: 'Negociación', label: 'Negociación', color: '#A855F7' },
   { id: 'Cerrado Ganado', label: 'Cerrado Ganado', color: tokens.colors.green },
   { id: 'Cerrado Perdido', label: 'Cerrado Perdido', color: tokens.colors.red },
 ]

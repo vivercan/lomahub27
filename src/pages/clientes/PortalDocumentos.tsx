@@ -35,31 +35,31 @@ const DOCUMENT_TYPES = [
 const STATUS_CONFIG = {
   pendiente: {
     label: 'Pendiente',
-    color: tokens.textSecondary,
+    color: tokens.colors.textSecondary,
     bgColor: '#2A2A36',
     icon: '⏳',
   },
   subido: {
     label: 'Subido',
-    color: tokens.primary,
+    color: tokens.colors.primary,
     bgColor: 'rgba(59, 108, 231, 0.1)',
     icon: '📤',
   },
   en_revision: {
     label: 'En Revisión',
-    color: tokens.yellow,
+    color: tokens.colors.yellow,
     bgColor: 'rgba(184, 134, 11, 0.1)',
     icon: '👁️',
   },
   aprobado: {
     label: 'Aprobado',
-    color: tokens.green,
+    color: tokens.colors.green,
     bgColor: 'rgba(13, 150, 104, 0.1)',
     icon: '✓',
   },
   rechazado: {
     label: 'Rechazado',
-    color: tokens.red,
+    color: tokens.colors.red,
     bgColor: 'rgba(197, 48, 48, 0.1)',
     icon: '✕',
   },
@@ -272,12 +272,12 @@ export default function PortalDocumentosStatus() {
         style={{
           width: '100vw',
           height: '100vh',
-          backgroundColor: tokens.bgMain,
+          backgroundColor: tokens.colors.bgMain,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           fontFamily: 'Montserrat, sans-serif',
-          color: tokens.textPrimary,
+          color: tokens.colors.textPrimary,
         }}
       >
         <div style={{ textAlign: 'center' }}>
@@ -295,8 +295,8 @@ export default function PortalDocumentosStatus() {
       style={{
         width: '100vw',
         height: '100vh',
-        backgroundColor: tokens.bgMain,
-        color: tokens.textPrimary,
+        backgroundColor: tokens.colors.bgMain,
+        color: tokens.colors.textPrimary,
         fontFamily: 'Montserrat, sans-serif',
         overflow: 'hidden',
         display: 'flex',
@@ -307,8 +307,8 @@ export default function PortalDocumentosStatus() {
       {/* Header */}
       <div
         style={{
-          backgroundColor: tokens.bgCard,
-          borderBottom: `1px solid ${tokens.border}`,
+          backgroundColor: tokens.colors.bgCard,
+          borderBottom: `1px solid ${tokens.colors.border}`,
           padding: '2rem',
           minHeight: 'fit-content',
         }}
@@ -316,7 +316,7 @@ export default function PortalDocumentosStatus() {
         <h1 style={{ margin: '0 0 0.5rem 0', fontSize: '2rem', fontWeight: 600 }}>
           Portal de Documentos
         </h1>
-        <p style={{ margin: 0, color: tokens.textSecondary, fontSize: '0.95rem' }}>
+        <p style={{ margin: 0, color: tokens.colors.textSecondary, fontSize: '0.95rem' }}>
           Onboarding para {nombreEmpresa}
         </p>
       </div>
@@ -335,8 +335,8 @@ export default function PortalDocumentosStatus() {
         {/* Progress Section */}
         <div
           style={{
-            backgroundColor: tokens.bgCard,
-            border: `1px solid ${tokens.border}`,
+            backgroundColor: tokens.colors.bgCard,
+            border: `1px solid ${tokens.colors.border}`,
             borderRadius: '8px',
             padding: '1.5rem',
           }}
@@ -352,7 +352,7 @@ export default function PortalDocumentosStatus() {
             <h2 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 600 }}>
               Progreso de Onboarding
             </h2>
-            <span style={{ color: tokens.textSecondary, fontSize: '0.9rem' }}>
+            <span style={{ color: tokens.colors.textSecondary, fontSize: '0.9rem' }}>
               {documentos.filter((d) => d.status === 'aprobado').length}/{DOCUMENT_TYPES.length}{' '}
               aprobados
             </span>
@@ -363,7 +363,7 @@ export default function PortalDocumentosStatus() {
             style={{
               width: '100%',
               height: '12px',
-              backgroundColor: tokens.border,
+              backgroundColor: tokens.colors.border,
               borderRadius: '6px',
               overflow: 'hidden',
               marginBottom: '1rem',
@@ -373,13 +373,13 @@ export default function PortalDocumentosStatus() {
               style={{
                 height: '100%',
                 width: `${completionPercentage}%`,
-                backgroundColor: tokens.green,
+                backgroundColor: tokens.colors.green,
                 transition: 'width 0.3s ease',
               }}
             />
           </div>
 
-          <div style={{ textAlign: 'center', color: tokens.textSecondary, fontSize: '0.9rem' }}>
+          <div style={{ textAlign: 'center', color: tokens.colors.textSecondary, fontSize: '0.9rem' }}>
             {completionPercentage}% completado
           </div>
         </div>
@@ -389,10 +389,10 @@ export default function PortalDocumentosStatus() {
           <div
             style={{
               backgroundColor: 'rgba(197, 48, 48, 0.1)',
-              border: `1px solid ${tokens.red}`,
+              border: `1px solid ${tokens.colors.red}`,
               borderRadius: '8px',
               padding: '1rem',
-              color: tokens.red,
+              color: tokens.colors.red,
               fontSize: '0.95rem',
             }}
           >
@@ -404,10 +404,10 @@ export default function PortalDocumentosStatus() {
           <div
             style={{
               backgroundColor: 'rgba(13, 150, 104, 0.1)',
-              border: `1px solid ${tokens.green}`,
+              border: `1px solid ${tokens.colors.green}`,
               borderRadius: '8px',
               padding: '1rem',
-              color: tokens.green,
+              color: tokens.colors.green,
               fontSize: '0.95rem',
             }}
           >
@@ -428,8 +428,8 @@ export default function PortalDocumentosStatus() {
               <div
                 key={docDef.tipo}
                 style={{
-                  backgroundColor: tokens.bgCard,
-                  border: `1px solid ${tokens.border}`,
+                  backgroundColor: tokens.colors.bgCard,
+                  border: `1px solid ${tokens.colors.border}`,
                   borderRadius: '8px',
                   overflow: 'hidden',
                   transition: 'all 0.2s ease',
@@ -446,15 +446,15 @@ export default function PortalDocumentosStatus() {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     cursor: 'pointer',
-                    backgroundColor: tokens.bgCard,
-                    borderBottom: isExpanded ? `1px solid ${tokens.border}` : 'none',
+                    backgroundColor: tokens.colors.bgCard,
+                    borderBottom: isExpanded ? `1px solid ${tokens.colors.border}` : 'none',
                   }}
                 >
                   <div style={{ flex: 1 }}>
                     <h3 style={{ margin: '0 0 0.25rem 0', fontSize: '1rem', fontWeight: 600 }}>
                       {docDef.label}
                     </h3>
-                    <p style={{ margin: 0, color: tokens.textSecondary, fontSize: '0.85rem' }}>
+                    <p style={{ margin: 0, color: tokens.colors.textSecondary, fontSize: '0.85rem' }}>
                       {docDef.required && <span>* Documento requerido</span>}
                     </p>
                   </div>
@@ -484,7 +484,7 @@ export default function PortalDocumentosStatus() {
                       <span>{config.icon}</span>
                       {config.label}
                     </div>
-                    <span style={{ color: tokens.textSecondary, fontSize: '1.2rem' }}>
+                    <span style={{ color: tokens.colors.textSecondary, fontSize: '1.2rem' }}>
                       {isExpanded ? '▼' : '▶'}
                     </span>
                   </div>
@@ -495,7 +495,7 @@ export default function PortalDocumentosStatus() {
                   <div
                     style={{
                       padding: '1.5rem',
-                      borderTop: `1px solid ${tokens.border}`,
+                      borderTop: `1px solid ${tokens.colors.border}`,
                       backgroundColor: `rgba(59, 108, 231, 0.02)`,
                     }}
                   >
@@ -507,7 +507,7 @@ export default function PortalDocumentosStatus() {
                             display: 'block',
                             marginBottom: '0.75rem',
                             fontWeight: 500,
-                            color: tokens.textPrimary,
+                            color: tokens.colors.textPrimary,
                           }}
                         >
                           Selecciona un archivo
@@ -533,7 +533,7 @@ export default function PortalDocumentosStatus() {
                               style={{
                                 flex: 1,
                                 padding: '0.75rem 1rem',
-                                backgroundColor: tokens.border,
+                                backgroundColor: tokens.colors.border,
                                 borderRadius: '6px',
                                 cursor: 'pointer',
                                 textAlign: 'center',
@@ -541,12 +541,12 @@ export default function PortalDocumentosStatus() {
                                 transition: 'all 0.2s ease',
                               }}
                               onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = tokens.primary
+                                e.currentTarget.style.backgroundColor = tokens.colors.primary
                                 e.currentTarget.style.color = 'white'
                               }}
                               onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = tokens.border
-                                e.currentTarget.style.color = tokens.textPrimary
+                                e.currentTarget.style.backgroundColor = tokens.colors.border
+                                e.currentTarget.style.color = tokens.colors.textPrimary
                               }}
                             >
                               📁 Seleccionar archivo
@@ -559,12 +559,12 @@ export default function PortalDocumentosStatus() {
                                 padding: '0.75rem 1.5rem',
                                 backgroundColor:
                                   selectedFile && uploadingDocType === null
-                                    ? tokens.green
-                                    : tokens.border,
+                                    ? tokens.colors.green
+                                    : tokens.colors.border,
                                 color:
                                   selectedFile && uploadingDocType === null
                                     ? 'white'
-                                    : tokens.textSecondary,
+                                    : tokens.colors.textSecondary,
                                 border: 'none',
                                 borderRadius: '6px',
                                 cursor:
@@ -594,10 +594,10 @@ export default function PortalDocumentosStatus() {
                           <div
                             style={{
                               padding: '1rem',
-                              backgroundColor: tokens.border,
+                              backgroundColor: tokens.colors.border,
                               borderRadius: '6px',
                               textAlign: 'center',
-                              color: tokens.textSecondary,
+                              color: tokens.colors.textSecondary,
                             }}
                           >
                             Subiendo archivo...
@@ -605,7 +605,7 @@ export default function PortalDocumentosStatus() {
                         )}
 
                         {selectedFile && uploadingDocType !== docDef.tipo && (
-                          <p style={{ margin: '0.5rem 0 0 0', color: tokens.textSecondary, fontSize: '0.85rem' }}>
+                          <p style={{ margin: '0.5rem 0 0 0', color: tokens.colors.textSecondary, fontSize: '0.85rem' }}>
                             Archivo seleccionado: {selectedFile.name}
                           </p>
                         )}
@@ -617,16 +617,16 @@ export default function PortalDocumentosStatus() {
                       <div
                         style={{
                           backgroundColor: 'rgba(197, 48, 48, 0.1)',
-                          border: `1px solid ${tokens.red}`,
+                          border: `1px solid ${tokens.colors.red}`,
                           borderRadius: '6px',
                           padding: '1rem',
                           marginBottom: '1rem',
                         }}
                       >
-                        <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.red }}>
+                        <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.colors.red }}>
                           ⚠️ Motivo del rechazo
                         </p>
-                        <p style={{ margin: 0, color: tokens.textPrimary, fontSize: '0.95rem' }}>
+                        <p style={{ margin: 0, color: tokens.colors.textPrimary, fontSize: '0.95rem' }}>
                           {docStatus.razon_rechazo}
                         </p>
                       </div>
@@ -636,16 +636,16 @@ export default function PortalDocumentosStatus() {
                     {docStatus && (
                       <div
                         style={{
-                          backgroundColor: tokens.border,
+                          backgroundColor: tokens.colors.border,
                           borderRadius: '6px',
                           padding: '1rem',
                           marginBottom: '1rem',
                         }}
                       >
-                        <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.textPrimary }}>
+                        <p style={{ margin: '0 0 0.5rem 0', fontWeight: 500, color: tokens.colors.textPrimary }}>
                           📄 Archivo actual
                         </p>
-                        <p style={{ margin: 0, color: tokens.textSecondary, fontSize: '0.9rem' }}>
+                        <p style={{ margin: 0, color: tokens.colors.textSecondary, fontSize: '0.9rem' }}>
                           {docStatus.nombre_archivo}
                         </p>
                       </div>
@@ -654,7 +654,7 @@ export default function PortalDocumentosStatus() {
                     {/* Timeline */}
                     {docActivities.length > 0 && (
                       <div style={{ marginTop: '1.5rem' }}>
-                        <p style={{ margin: '0 0 1rem 0', fontWeight: 500, color: tokens.textPrimary }}>
+                        <p style={{ margin: '0 0 1rem 0', fontWeight: 500, color: tokens.colors.textPrimary }}>
                           ⏱️ Historial
                         </p>
                         <div
@@ -675,10 +675,10 @@ export default function PortalDocumentosStatus() {
 
                             return (
                               <div key={idx} style={{ fontSize: '0.85rem' }}>
-                                <p style={{ margin: 0, color: tokens.textPrimary }}>
+                                <p style={{ margin: 0, color: tokens.colors.textPrimary }}>
                                   {actCfg.icon} {actCfg.label}
                                 </p>
-                                <p style={{ margin: '0.25rem 0 0 0', color: tokens.textSecondary, fontSize: '0.8rem' }}>
+                                <p style={{ margin: '0.25rem 0 0 0', color: tokens.colors.textSecondary, fontSize: '0.8rem' }}>
                                   {activity.fecha}
                                   {activity.revisado_por && ` • Revisado por: ${activity.revisado_por}`}
                                 </p>
@@ -698,11 +698,11 @@ export default function PortalDocumentosStatus() {
         {/* Help Footer */}
         <div
           style={{
-            backgroundColor: tokens.bgCard,
-            border: `1px solid ${tokens.border}`,
+            backgroundColor: tokens.colors.bgCard,
+            border: `1px solid ${tokens.colors.border}`,
             borderRadius: '8px',
             padding: '1.5rem',
-            color: tokens.textSecondary,
+            color: tokens.colors.textSecondary,
             fontSize: '0.9rem',
             marginTop: '2rem',
           }}

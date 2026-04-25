@@ -7,7 +7,7 @@ import { Pagination } from '../../components/ui/Pagination'
 import { Plus, FileText, Send, CheckCircle, XCircle, Clock, Eye } from 'lucide-react'
 import { useAuthContext } from '../../hooks/AuthContext'
 
-interface Cotizacion {
+interface Cotización {
   id: string
   folio: string
   estado: string
@@ -32,7 +32,7 @@ const estadoConfig: Record<string, { label: string; color: string; icon: typeof 
 export default function MisCotizaciones() {
   const navigate = useNavigate()
   const { user } = useAuthContext()
-  const [cotizaciones, setCotizaciones] = useState<Cotizacion[]>([])
+  const [cotizaciones, setCotizaciones] = useState<Cotización[]>([])
   const [loading, setLoading] = useState(true)
   const [filtro, setFiltro] = useState('todas')
   const [currentPage, setCurrentPage] = useState(1)
@@ -45,7 +45,7 @@ export default function MisCotizaciones() {
         .select('id, folio, estado, tipo_operacion, moneda, total, created_at, fecha_envio, fecha_vencimiento, cliente:clientes(razon_social)')
         .order('created_at', { ascending: false })
         .limit(100)
-      if (!error && data) setCotizaciones(data as Cotizacion[])
+      if (!error && data) setCotizaciones(data as Cotización[])
     } finally {
       setLoading(false)
     }

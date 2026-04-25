@@ -67,7 +67,7 @@ function getSemaforo(pct: number): SemaforoEstado {
   return 'rojo'
 }
 
-type Categoria = 'clientes' | 'tractos' | 'rutas'
+type Categoría = 'clientes' | 'tractos' | 'rutas'
 
 export default function Inteligencia() {
   const [loading, setLoading] = useState(false)
@@ -402,7 +402,7 @@ export default function Inteligencia() {
             label="Categoría"
             options={categoriaOptions}
             value={categoria}
-            onChange={(e) => setCategoria(e.target.value as Categoria)}
+            onChange={(e) => setCategoria(e.target.value as Categoría)}
           />
         </div>
         <Button variant="primary" size="md" onClick={fetchData} loading={loading}>
@@ -501,7 +501,7 @@ export default function Inteligencia() {
           {categoriaOptions.map((opt) => (
             <button
               key={opt.value}
-              onClick={() => setCategoria(opt.value as Categoria)}
+              onClick={() => setCategoria(opt.value as Categoría)}
               className="px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5"
               style={{
                 background: categoria === opt.value ? `${tokens.colors.primary}22` : tokens.colors.bgHover,
@@ -510,7 +510,7 @@ export default function Inteligencia() {
                 fontFamily: tokens.fonts.body,
               }}
             >
-              {categoriaIcon[opt.value as Categoria]}
+              {categoriaIcon[opt.value as Categoría]}
               {opt.label}
             </button>
           ))}

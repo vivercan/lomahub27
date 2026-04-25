@@ -7,7 +7,7 @@ import { KPICard } from '../../components/ui/KPICard'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 
-interface Notificacion {
+interface Notificación {
   id: string
   titulo: string
   mensaje: string
@@ -46,7 +46,7 @@ const prioridadColores: Record<string, 'red' | 'yellow' | 'gray'> = {
 }
 
 export default function Notificaciones() {
-  const [notificaciones, setNotificaciones] = useState<Notificacion[]>([])
+  const [notificaciones, setNotificaciones] = useState<Notificación[]>([])
   const [loading, setLoading] = useState(true)
   const [filtroTipo, setFiltroTipo] = useState<string | null>(null)
   const [soloNoLeidas, setSoloNoLeidas] = useState(false)
