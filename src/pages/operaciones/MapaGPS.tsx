@@ -121,10 +121,10 @@ export default function MapaGPS(): ReactElement {
         '<b>Empresa:</b> ' + (r.empresa || '-') + '<br/>' +
         '<b>Segmento:</b> ' + (r.segmento || '-') + '<br/>' +
         '<b>Velocidad:</b> ' + vel + ' km/h<br/>' +
-        '<b>UbicaciÃ³n:</b> ' + (r.ubicacion || r.municipio_geo || '-') + '<br/>' +
+        '<b>Ubicación:</b> ' + (r.ubicacion || r.municipio_geo || '-') + '<br/>' +
         '<b>Estado:</b> ' + (r.estado_geo || '-') + '<br/>' +
         '<b>Estatus:</b> ' + (r.estatus || '-') + '<br/>' +
-        '<b>ActualizaciÃ³n:</b> ' + updStr +
+        '<b>Actualización:</b> ' + updStr +
         '</div>'
       );
       markersRef.current.push(marker);
@@ -218,10 +218,10 @@ export default function MapaGPS(): ReactElement {
         </span>
         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <span style={{ display: 'inline-block', width: 12, height: 12, borderRadius: '50%', background: '#ef4444' }} />
-          Sin seÃ±al
+          Sin señal
         </span>
         <span style={{ marginLeft: 'auto' }}>
-          Ãltima actualizaciÃ³n: {new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
+          Última actualización: {new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
         </span>
       </div>
     </ModuleLayout>
