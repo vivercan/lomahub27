@@ -543,18 +543,22 @@ export default function Login() {
 
   useEffect(() => { injectKF() }, [])
 
-  /* V46.4 — Audio intro: autoplay-attempt + start-on-gesture + smart click toggle (25/Abr/2026) */
+  /* V46.5 — Audio intro: arranque inmediato (canplay) + multi-gesture start + smart click toggle (25/Abr/2026) */
   useEffect(() => {
     const audio = new Audio('/audio/intro_login.ogg')
     audio.loop = true
     audio.volume = 0.47
     audio.preload = 'auto'
+    audio.crossOrigin = 'anonymous'
     let stopped = false
-    const tryPlay = () => audio.play().catch(() => { /* browser blocked */ })
-    const onGesture = () => {
+    let started = false
+    const tryPlay = () => {
+      if (stopped) return
+      audio.play().then(() => { started = true }).catch(() => { /* browser blocked, esperando gesture */ })
+    }
+    const onGestureStart = () => {
+      if (started || stopped) return
       tryPlay()
-      document.removeEventListener('mousemove', onGesture, true)
-      document.removeEventListener('pointerdown', onGesture, true)
     }
     const onInteract = () => {
       if (audio.paused || stopped) { tryPlay(); return }
@@ -564,25 +568,34 @@ export default function Login() {
       if (stopped) return
       stopped = true
       try { audio.pause(); audio.currentTime = 0 } catch { /* noop */ }
-      document.removeEventListener('mousemove', onGesture, true)
-      document.removeEventListener('pointerdown', onGesture, true)
+      removeAll()
+    }
+    const removeAll = () => {
+      audio.removeEventListener('canplay', tryPlay)
+      audio.removeEventListener('canplaythrough', tryPlay)
+      ;['mousemove','pointerdown','pointerover','keydown','touchstart','wheel','focus'].forEach(ev => {
+        document.removeEventListener(ev, onGestureStart, true)
+      })
       document.removeEventListener('click', onInteract, true)
       document.removeEventListener('keydown', onInteract, true)
       document.removeEventListener('touchstart', onInteract, true)
     }
-    // 1) Intento autoplay directo a 1s
-    const startTimer = window.setTimeout(tryPlay, 1000)
-    // 2) Primer mousemove o pointerdown INICIA (no detiene)
-    document.addEventListener('mousemove', onGesture, true)
-    document.addEventListener('pointerdown', onGesture, true)
-    // 3) Click/key/touch: detiene si suena, inicia si esta pausado
+    // 1) Intento inmediato (puede fallar si el archivo aún no descargó o hay autoplay block)
+    tryPlay()
+    // 2) En cuanto el browser pueda reproducir, intento de nuevo
+    audio.addEventListener('canplay', tryPlay)
+    audio.addEventListener('canplaythrough', tryPlay)
+    // 3) Cualquier signo de actividad del usuario inicia (no detiene)
+    ;['mousemove','pointerdown','pointerover','keydown','touchstart','wheel','focus'].forEach(ev => {
+      document.addEventListener(ev, onGestureStart, true)
+    })
+    // 4) Click/key/touch: smart toggle (detiene si suena, inicia si pausado)
     document.addEventListener('click', onInteract, true)
     document.addEventListener('keydown', onInteract, true)
     document.addEventListener('touchstart', onInteract, true)
-    return () => {
-      window.clearTimeout(startTimer)
-      stop()
-    }
+    // Forzar load (preload=auto a veces no descarga hasta evento)
+    try { audio.load() } catch { /* noop */ }
+    return () => { stop() }
   }, [])
 
   /* V27 — persistir rememberMe en cada cambio */
