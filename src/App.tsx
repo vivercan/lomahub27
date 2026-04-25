@@ -5,7 +5,7 @@ import HomeDashboard from './pages/HomeDashboard'
 
 // Pages
 import Login from './pages/Login'
-import LoginLab from './pages/LoginLab'
+import Proximamente from './components/Proximamente'
 import Unauthorized from './pages/Unauthorized'
 import WarRoom from './pages/WarRoom'
 import Inteligencia from './pages/Inteligencia'
@@ -103,7 +103,7 @@ function App() {
         <Routes>
           {/* ——— Public ——— */}
           <Route path="/login" element={<Login />} />
-          <Route path="/login-lab" element={<LoginLab />} />
+} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* ––– Portal Público Alta de Clientes (sin login, acceso por token) ––– */}
@@ -553,14 +553,8 @@ function App() {
               <FlotaMaster />
             </ProtectedRoute>
           } />
-          <Route path="/admin/configuracion/auditoria" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
-              <Configuracion />
             </ProtectedRoute>
           } />
-          <Route path="/admin/configuracion/plantillas" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
-              <Configuracion />
             </ProtectedRoute>
           } />
           <Route path="/admin/configuracion/documentos" element={
