@@ -526,9 +526,9 @@ export default function CatalogosTab() {
                   onMouseEnter={() => setHoveredCard(cat.key)}
                   onMouseLeave={() => setHoveredCard(null)}
                   style={{
-                    minHeight: 140,
+                    minHeight: 70,
                     borderRadius: 10,
-                    padding: '22px 20px',
+                    padding: '12px 16px',
                     backgroundImage: isH ? bgHover : bgNormal,
                     backgroundOrigin: 'border-box',
                     backgroundClip: 'padding-box, border-box',
@@ -550,7 +550,7 @@ export default function CatalogosTab() {
                   }}
                 >
                   <div style={{
-                    position: 'absolute', top: 0, left: 0, right: 0, height: '35%',
+                    position: 'absolute', top: 0, left: 0, right: 0, height: '45%',
                     background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%)',
                     borderTopLeftRadius: 10, borderTopRightRadius: 10,
                     pointerEvents: 'none', opacity: isH ? 0.5 : 0.3,
