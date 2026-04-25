@@ -543,29 +543,42 @@ export default function Login() {
 
   useEffect(() => { injectKF() }, [])
 
-  /* V46.1 — Audio intro: autoplay + loop, stop al primer click anywhere (25/Abr/2026) */
+  /* V46.4 — Audio intro: autoplay-attempt + start-on-gesture + smart click toggle (25/Abr/2026) */
   useEffect(() => {
     const audio = new Audio('/audio/intro_login.ogg')
     audio.loop = true
     audio.volume = 0.47
     audio.preload = 'auto'
     let stopped = false
+    const tryPlay = () => audio.play().catch(() => { /* browser blocked */ })
+    const onGesture = () => {
+      tryPlay()
+      document.removeEventListener('mousemove', onGesture, true)
+      document.removeEventListener('pointerdown', onGesture, true)
+    }
+    const onInteract = () => {
+      if (audio.paused || stopped) { tryPlay(); return }
+      stop()
+    }
     const stop = () => {
       if (stopped) return
       stopped = true
       try { audio.pause(); audio.currentTime = 0 } catch { /* noop */ }
-      document.removeEventListener('click', stop, true)
-      document.removeEventListener('keydown', stop, true)
-      document.removeEventListener('touchstart', stop, true)
+      document.removeEventListener('mousemove', onGesture, true)
+      document.removeEventListener('pointerdown', onGesture, true)
+      document.removeEventListener('click', onInteract, true)
+      document.removeEventListener('keydown', onInteract, true)
+      document.removeEventListener('touchstart', onInteract, true)
     }
-    // Intentar autoplay; algunos browsers lo bloquean — fallback silencioso
-    const tryPlay = () => audio.play().catch(() => { /* autoplay blocked silently */ })
-    // V46.3 — Arranque a 1 segundo despues de cargar (predecible, no espera interaccion)
+    // 1) Intento autoplay directo a 1s
     const startTimer = window.setTimeout(tryPlay, 1000)
-    // Stop en primer click/key/touch
-    document.addEventListener('click', stop, true)
-    document.addEventListener('keydown', stop, true)
-    document.addEventListener('touchstart', stop, true)
+    // 2) Primer mousemove o pointerdown INICIA (no detiene)
+    document.addEventListener('mousemove', onGesture, true)
+    document.addEventListener('pointerdown', onGesture, true)
+    // 3) Click/key/touch: detiene si suena, inicia si esta pausado
+    document.addEventListener('click', onInteract, true)
+    document.addEventListener('keydown', onInteract, true)
+    document.addEventListener('touchstart', onInteract, true)
     return () => {
       window.clearTimeout(startTimer)
       stop()
