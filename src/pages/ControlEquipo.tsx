@@ -401,7 +401,7 @@ export default function ControlEquipo() {
       map.remove()
       mapInstanceRef.current = null
     }
-  }, [leafletReady, vista])
+  }, [leafletReady, vista, loading])
 
   // ─── Update markers on filter change ──────────────────────
   useEffect(() => {
@@ -417,7 +417,7 @@ export default function ControlEquipo() {
       const isSeca = c.tipoNorm === 'seca'
       const moving = c.enMovimiento
 
-      const color = moving ? '#0D9668' : (isSeca ? '#3B6CE7' : '#0891B2')
+      const color = moving ? '#0D9668' : (isSeca ? '#F97316' : '#0891B2')
       const shape = isSeca ? 'border-radius:3px;' : 'border-radius:50%;'
       const size = moving ? 16 : 12
 
@@ -649,7 +649,7 @@ export default function ControlEquipo() {
               </h3>
               <div style={{ display: 'flex', gap: '14px', fontSize: '11px', color: tokens.colors.textSecondary }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '2px', background: '#3B6CE7' }} />
+                  <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '2px', background: '#F97316' }} />
                   Seca
                 </span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -742,7 +742,7 @@ export default function ControlEquipo() {
                             borderRadius: '20px',
                             fontSize: '11px',
                             fontWeight: 600,
-                            backgroundColor: c.tipoNorm === 'seca' ? 'rgba(59,108,231,0.1)' : 'rgba(8,145,178,0.1)',
+                            backgroundColor: c.tipoNorm === 'seca' ? 'rgba(249,115,22,0.1)' : 'rgba(8,145,178,0.1)',
                             color: c.tipoNorm === 'seca' ? '#3B6CE7' : '#0891B2',
                           }}>
                             {c.tipoNorm === 'seca' ? 'Seca' : 'Thermo'}
@@ -893,7 +893,7 @@ export default function ControlEquipo() {
                               borderRadius: '20px',
                               fontSize: '11px',
                               fontWeight: 600,
-                              backgroundColor: c.tipoNorm === 'seca' ? 'rgba(59,108,231,0.1)' : 'rgba(8,145,178,0.1)',
+                              backgroundColor: c.tipoNorm === 'seca' ? 'rgba(249,115,22,0.1)' : 'rgba(8,145,178,0.1)',
                               color: c.tipoNorm === 'seca' ? '#3B6CE7' : '#0891B2',
                             }}>
                               {c.tipoNorm === 'seca' ? 'Seca' : 'Thermo'}
@@ -1076,7 +1076,7 @@ export default function ControlEquipo() {
                               borderRadius: '20px',
                               fontSize: '11px',
                               fontWeight: 600,
-                              backgroundColor: r.tipo === 'Thermo' ? 'rgba(8,145,178,0.1)' : 'rgba(59,108,231,0.1)',
+                              backgroundColor: r.tipo === 'Thermo' ? 'rgba(8,145,178,0.1)' : 'rgba(249,115,22,0.1)',
                               color: r.tipo === 'Thermo' ? '#0891B2' : '#3B6CE7',
                             }}>
                               {r.tipo}
