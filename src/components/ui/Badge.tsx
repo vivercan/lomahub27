@@ -15,8 +15,12 @@ const colorStyles: Record<string, { bg: string; text: string }> = {
   orange:  { bg: tokens.colors.orangeLight, text: tokens.colors.orange },
 }
 
+/* V2 — defensive: si llega un color no mapeado (DB con null/valor inesperado),
+   usa fallback "gray" en lugar de crashear toda la pantalla. (25/Abr/2026) */
+const FALLBACK_STYLE = colorStyles.gray
+
 export function Badge({ children, color = 'primary' }: BadgeProps) {
-  const style = colorStyles[color]
+  const style = colorStyles[color] || FALLBACK_STYLE
   return (
     <span
       className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
