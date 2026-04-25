@@ -3,19 +3,18 @@ import { ModuleDashboardGrid } from '../../components/dashboard/ModuleDashboardG
 import type { CardDef } from '../../components/dashboard/ModuleDashboardGrid'
 
 /* ———————————————————————————————————————————————————————————————
-   SERVICIO A CLIENTES — Landing Page V4.0
-   Refactor a componente compartido ModuleDashboardGrid (DNA V3.7 centralizado).
-   Cambios visuales aplicables a todo el sistema via un solo archivo.
+   SERVICIO A CLIENTES — Landing Page V4.1 (patrón Catálogos, 25/Abr/2026)
+   7 cards con subtítulo descriptivo.
    ——————————————————————————————————————————————————————————————— */
 
 const CARDS: CardDef[] = [
-  { id: 'tickets',      label: 'Tickets',           route: '/servicio/tickets',         kpiLabel: 'Activos',         iconSet: 'bi',        iconName: 'ticket-perforated' },
-  { id: 'clientes',     label: 'Clientes Activos',  route: '/clientes/corporativos',    kpiLabel: 'Clientes',        iconSet: 'gridicons', iconName: 'multiple-users' },
-  { id: 'impo',         label: 'Importación',       route: '/servicio/importacion',     kpiLabel: 'Viajes IMPO (30d)', iconSet: 'ion',     iconName: 'cloud-download' },
-  { id: 'expo',         label: 'Exportación',       route: '/servicio/exportacion',     kpiLabel: 'Viajes EXPO (30d)', iconSet: 'ion',     iconName: 'cloud-upload' },
-  { id: 'despacho_ia',  label: 'Despacho IA',       route: '/operaciones/torre-control', kpiLabel: 'Viajes activos',  iconSet: 'bi',        iconName: 'cpu' },
-  { id: 'metricas',     label: 'Métricas Servicio', route: '/servicio/metricas',        kpiLabel: 'Dashboard',       iconSet: 'bi',        iconName: 'graph-up' },
-  { id: 'actividades',  label: 'Actividades',       route: '/actividades',              kpiLabel: 'Pendientes',      iconSet: 'bi',        iconName: 'list-check' },
+  { id: 'tickets',      label: 'Tickets',           route: '/servicio/tickets',          kpiLabel: 'Activos',           iconSet: 'bi',        iconName: 'ticket-perforated', subtitle: 'Solicitudes abiertas y en proceso' },
+  { id: 'clientes',     label: 'Clientes Activos',  route: '/clientes/corporativos',     kpiLabel: 'Clientes',          iconSet: 'gridicons', iconName: 'multiple-users',    subtitle: 'Cartera viva total' },
+  { id: 'impo',         label: 'Importación',       route: '/servicio/importacion',      kpiLabel: 'Viajes IMPO (30d)', iconSet: 'ion',       iconName: 'cloud-download',    subtitle: 'Movimientos IMPO últimos 30 días' },
+  { id: 'expo',         label: 'Exportación',       route: '/servicio/exportacion',      kpiLabel: 'Viajes EXPO (30d)', iconSet: 'ion',       iconName: 'cloud-upload',      subtitle: 'Movimientos EXPO últimos 30 días' },
+  { id: 'despacho_ia',  label: 'Despacho IA',       route: '/operaciones/torre-control', kpiLabel: 'Viajes activos',    iconSet: 'bi',        iconName: 'cpu',               subtitle: 'Asistente operativo en vivo' },
+  { id: 'metricas',     label: 'Métricas Servicio', route: '/servicio/metricas',         kpiLabel: 'Dashboard',         iconSet: 'bi',        iconName: 'graph-up',          subtitle: 'KPIs SLA y satisfacción' },
+  { id: 'actividades',  label: 'Actividades',       route: '/actividades',               kpiLabel: 'Pendientes',        iconSet: 'bi',        iconName: 'list-check',        subtitle: 'Tareas y follow-ups del equipo' },
 ]
 
 async function fallbackFetch(): Promise<Record<string, number>> {
