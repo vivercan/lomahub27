@@ -4,7 +4,7 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { tokens } from '../../lib/tokens'
 
 /* ———————————————————————————————————————————————————————————————
-   COMUNICACIONES — Landing Page (5 cards)
+   COMUNICACIONES — Landing Page (3 cards)
    Dark glass cards with amber hover glow — same FX27 style as DashboardVentas
    ——————————————————————————————————————————————————————————————— */
 
@@ -50,9 +50,7 @@ interface CardDef {
 const CARDS: CardDef[] = [
   { id: 'correos',        label: 'Correos Automaticos', route: '/comunicaciones/correos',          kpiLabel: 'Templates',  iconSet: 'hugeicons', iconName: 'mail-send-02' },
   { id: 'whatsapp',       label: 'WhatsApp',            route: '/servicio/whatsapp',               kpiLabel: 'Bandeja',    iconSet: 'hugeicons', iconName: 'whatsapp' },
-  { id: 'proactiva',      label: 'Com. Proactiva',      route: '/servicio/comunicacion-proactiva', kpiLabel: 'Campanias',  iconSet: 'hugeicons', iconName: 'megaphone-01' },
-  { id: 'escalamiento',   label: 'Escalamiento',        route: '/servicio/escalamiento-whatsapp',  kpiLabel: 'Pendientes', iconSet: 'hugeicons', iconName: 'arrow-up-double' },
-  { id: 'notificaciones', label: 'Notificaciones',      route: '/comunicaciones/notificaciones',   kpiLabel: 'Sin leer',   iconSet: 'hugeicons', iconName: 'notification-03' },
+  { id: 'pulso_comercial', label: 'Pulso Comercial',    route: '/comunicaciones/pulso-comercial',  kpiLabel: 'Actividad',  iconSet: 'hugeicons', iconName: 'activity-01' },
 ]
 
 export default function DashboardComunicaciones() {
