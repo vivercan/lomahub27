@@ -5,9 +5,10 @@ import { tokens } from '../lib/tokens'
 import { supabase } from '../lib/supabase'
 
 /* ———————————————————————————————————————————————————————————————
-   CONTROL DE EQUIPO V2 — Inventario + Mapa + Alertas Críticas
+   CONTROL DE EQUIPO V3 — Inventario + Mapa + Alertas + Reportes
    Fuente de verdad: tabla `cajas` (catálogo maestro ~541 registros)
    Enriquecimiento GPS: tabla `gps_tracking` (tipo_unidad = 'caja')
+   Historial GPS: tabla `gps_historial` (economico, latitud, longitud, velocidad, created_at)
    Tipos en BD: "SECO PROPIO", "THERMO" (uppercase)
    ——————————————————————————————————————————————————————————————— */
 
@@ -29,6 +30,19 @@ interface CajaRecord {
   diasSinSenal: number | null
 }
 
+interface ReporteRow {
+  economico: string
+  empresa: string
+  tipo: string
+  totalRegistros: number
+  registrosConMovimiento: number
+  velocidadMax: number
+  velocidadPromedio: number
+  primeraSenal: string
+  ultimaSenal: string
+  horasActivo: number
+}
+
 declare const L: any
 
 // ─── Helper: normalize tipo ─────────────────────────────────
@@ -48,6 +62,38 @@ function daysSince(isoDate: string | null): number | null {
   return Math.floor((now - then) / (1000 * 60 * 60 * 24))
 }
 
+// ─── Helper: format date for input ─────────────────────────
+function toDateInput(d: Date): string {
+  return d.toISOString().split('T')[0]
+}
+
+// ─── Helper: CSV export ─────────────────────────────────────
+function exportCSV(rows: ReporteRow[], desde: string, hasta: string) {
+  const headers = ['Económico', 'Empresa', 'Tipo', 'Total Registros', 'En Movimiento', 'Vel. Máx (km/h)', 'Vel. Prom (km/h)', 'Primera Señal', 'Última Señal', 'Horas Activo']
+  const csvRows = [headers.join(',')]
+  rows.forEach(r => {
+    csvRows.push([
+      r.economico,
+      '"' + r.empresa.replace(/"/g, '""') + '"',
+      r.tipo,
+      r.totalRegistros,
+      r.registrosConMovimiento,
+      r.velocidadMax.toFixed(1),
+      r.velocidadPromedio.toFixed(1),
+      r.primeraSenal,
+      r.ultimaSenal,
+      r.horasActivo.toFixed(1),
+    ].join(','))
+  })
+  const blob = new Blob(['\uFEFF' + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'reporte_gps_' + desde + '_a_' + hasta + '.csv'
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 export default function ControlEquipo() {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
@@ -59,8 +105,19 @@ export default function ControlEquipo() {
   const [filtroTipo, setFiltroTipo] = useState('')
   const [filtroEstado, setFiltroEstado] = useState('')
   const [busqueda, setBusqueda] = useState('')
-  const [vista, setVista] = useState<'mapa' | 'tabla' | 'criticos'>('mapa')
+  const [vista, setVista] = useState<'mapa' | 'tabla' | 'criticos' | 'reportes'>('mapa')
   const [umbralDias, setUmbralDias] = useState(3)
+
+  // ─── Reportes state ────────────────────────────────────────
+  const hoy = new Date()
+  const ayer = new Date(hoy)
+  ayer.setDate(ayer.getDate() - 1)
+  const [fechaDesde, setFechaDesde] = useState(toDateInput(ayer))
+  const [fechaHasta, setFechaHasta] = useState(toDateInput(hoy))
+  const [reporteData, setReporteData] = useState<ReporteRow[]>([])
+  const [reporteLoading, setReporteLoading] = useState(false)
+  const [reporteError, setReporteError] = useState('')
+  const [reporteGenerado, setReporteGenerado] = useState(false)
 
   // ─── Load Leaflet from CDN ─────────────────────────────────
   useEffect(() => {
@@ -149,6 +206,124 @@ export default function ControlEquipo() {
     fetchData()
   }, [])
 
+  // ─── Fetch reporte histórico ──────────────────────────────
+  const fetchReporte = async () => {
+    setReporteLoading(true)
+    setReporteError('')
+    setReporteData([])
+    try {
+      const desdeISO = fechaDesde + 'T00:00:00.000Z'
+      const hastaISO = fechaHasta + 'T23:59:59.999Z'
+
+      // Fetch gps_historial in paginated batches
+      const allRows: any[] = []
+      let from = 0
+      const PAGE = 1000
+      while (true) {
+        const { data, error } = await supabase
+          .from('gps_historial')
+          .select('economico, latitud, longitud, velocidad, created_at')
+          .gte('created_at', desdeISO)
+          .lte('created_at', hastaISO)
+          .order('created_at', { ascending: true })
+          .range(from, from + PAGE - 1)
+        if (error) {
+          setReporteError('Error consultando historial: ' + error.message)
+          break
+        }
+        if (!data || data.length === 0) break
+        allRows.push(...data)
+        if (data.length < PAGE) break
+        from += PAGE
+      }
+
+      if (allRows.length === 0 && !reporteError) {
+        setReporteError('Sin datos de historial GPS en el rango seleccionado')
+        setReporteLoading(false)
+        setReporteGenerado(true)
+        return
+      }
+
+      // Build map of economico -> cajas for empresa/tipo lookup
+      const cajasLookup = new Map<string, { empresa: string; tipoNorm: string }>()
+      cajas.forEach(c => {
+        cajasLookup.set(c.numero_economico, { empresa: c.empresa, tipoNorm: c.tipoNorm === 'thermo' ? 'Thermo' : 'Seca' })
+      })
+
+      // Aggregate by economico
+      const agg = new Map<string, {
+        economico: string
+        registros: number
+        conMovimiento: number
+        velMax: number
+        velSum: number
+        velCount: number
+        primera: string
+        ultima: string
+        timestamps: number[]
+      }>()
+
+      allRows.forEach((r: any) => {
+        const eco = r.economico
+        if (!agg.has(eco)) {
+          agg.set(eco, {
+            economico: eco,
+            registros: 0,
+            conMovimiento: 0,
+            velMax: 0,
+            velSum: 0,
+            velCount: 0,
+            primera: r.created_at,
+            ultima: r.created_at,
+            timestamps: [],
+          })
+        }
+        const a = agg.get(eco)!
+        a.registros++
+        const vel = r.velocidad || 0
+        if (vel > 0) {
+          a.conMovimiento++
+          a.velSum += vel
+          a.velCount++
+        }
+        if (vel > a.velMax) a.velMax = vel
+        a.ultima = r.created_at
+        a.timestamps.push(new Date(r.created_at).getTime())
+      })
+
+      // Build report rows
+      const reportRows: ReporteRow[] = []
+      agg.forEach((a) => {
+        const info = cajasLookup.get(a.economico) || { empresa: '—', tipoNorm: '—' }
+        // Calculate active hours: time span between first and last record
+        const sorted = a.timestamps.sort((x, y) => x - y)
+        const spanMs = sorted.length > 1 ? sorted[sorted.length - 1] - sorted[0] : 0
+        const horasActivo = spanMs / (1000 * 60 * 60)
+
+        reportRows.push({
+          economico: a.economico,
+          empresa: info.empresa,
+          tipo: info.tipoNorm,
+          totalRegistros: a.registros,
+          registrosConMovimiento: a.conMovimiento,
+          velocidadMax: a.velMax,
+          velocidadPromedio: a.velCount > 0 ? a.velSum / a.velCount : 0,
+          primeraSenal: new Date(a.primera).toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }),
+          ultimaSenal: new Date(a.ultima).toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }),
+          horasActivo,
+        })
+      })
+
+      // Sort: most active first
+      reportRows.sort((a, b) => b.totalRegistros - a.totalRegistros)
+      setReporteData(reportRows)
+      setReporteGenerado(true)
+    } catch (err) {
+      setReporteError('Error inesperado: ' + String(err))
+    }
+    setReporteLoading(false)
+  }
+
   // ─── KPIs ──────────────────────────────────────────────────
   const kpis = useMemo(() => {
     const total = cajas.length
@@ -188,19 +363,26 @@ export default function ControlEquipo() {
   const remolquesCriticos = useMemo(() => {
     return cajas
       .filter(c => {
-        // Crítico: tiene GPS registrado pero lleva >= umbralDias sin señal
-        // O nunca tuvo señal (diasSinSenal === null pero no tiene GPS)
         if (c.diasSinSenal !== null && c.diasSinSenal >= umbralDias) return true
         if (!c.conGPS && c.ultimaSenalRaw === null) return true
         return false
       })
       .sort((a, b) => {
-        // Los que tienen señal antigua primero (más días sin señal)
         const da = a.diasSinSenal ?? 999
         const db = b.diasSinSenal ?? 999
         return db - da
       })
   }, [cajas, umbralDias])
+
+  // ─── Reporte KPIs ─────────────────────────────────────────
+  const reporteKpis = useMemo(() => {
+    if (reporteData.length === 0) return null
+    const totalUnidades = reporteData.length
+    const totalRegistros = reporteData.reduce((s, r) => s + r.totalRegistros, 0)
+    const conMovimiento = reporteData.filter(r => r.registrosConMovimiento > 0).length
+    const velMaxGlobal = Math.max(...reporteData.map(r => r.velocidadMax))
+    return { totalUnidades, totalRegistros, conMovimiento, velMaxGlobal }
+  }, [reporteData])
 
   // ─── Init Leaflet map ─────────────────────────────────────
   useEffect(() => {
@@ -235,11 +417,8 @@ export default function ControlEquipo() {
       const isSeca = c.tipoNorm === 'seca'
       const moving = c.enMovimiento
 
-      // Color: green = movimiento, blue = parada seca, teal = parada thermo
       const color = moving ? '#0D9668' : (isSeca ? '#3B6CE7' : '#0891B2')
-      // Shape: square = seca, circle = thermo
       const shape = isSeca ? 'border-radius:3px;' : 'border-radius:50%;'
-      // Size: bigger if moving
       const size = moving ? 16 : 12
 
       const icon = L.divIcon({
@@ -308,6 +487,12 @@ export default function ControlEquipo() {
     minWidth: '200px',
   }
 
+  const dateInputStyle: React.CSSProperties = {
+    ...selectStyle,
+    minWidth: '150px',
+    cursor: 'pointer',
+  }
+
   const tabStyle = (active: boolean): React.CSSProperties => ({
     padding: '8px 16px',
     borderRadius: tokens.radius.md,
@@ -320,6 +505,26 @@ export default function ControlEquipo() {
     color: active ? '#FFFFFF' : tokens.colors.textSecondary,
     transition: 'all 0.2s ease',
   })
+
+  const btnPrimary: React.CSSProperties = {
+    padding: '8px 20px',
+    borderRadius: tokens.radius.md,
+    border: 'none',
+    cursor: 'pointer',
+    fontFamily: tokens.fonts.body,
+    fontSize: '13px',
+    fontWeight: 600,
+    backgroundColor: tokens.colors.primary,
+    color: '#FFFFFF',
+    transition: 'all 0.2s ease',
+  }
+
+  const btnSecondary: React.CSSProperties = {
+    ...btnPrimary,
+    backgroundColor: 'transparent',
+    border: '1px solid ' + tokens.colors.border,
+    color: tokens.colors.textSecondary,
+  }
 
   // ─── KPI card config ──────────────────────────────────────
   const kpiCards = [
@@ -428,6 +633,9 @@ export default function ControlEquipo() {
                   {kpis.criticos > 99 ? '99+' : kpis.criticos}
                 </span>
               )}
+            </button>
+            <button style={tabStyle(vista === 'reportes')} onClick={() => setVista('reportes')}>
+              Reportes
             </button>
           </div>
         </div>
@@ -712,6 +920,202 @@ export default function ControlEquipo() {
                             }}>
                               {sev.label}
                             </span>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Card>
+        )}
+
+        {/* ── REPORTES VIEW ── */}
+        {vista === 'reportes' && (
+          <Card>
+            <div style={{ marginBottom: '16px', paddingBottom: '10px', borderBottom: '1px solid ' + tokens.colors.border }}>
+              <h3 style={{ margin: 0, color: tokens.colors.textPrimary, fontFamily: tokens.fonts.heading, fontSize: '15px', fontWeight: 600 }}>
+                Reporte GPS por Rango de Fechas
+              </h3>
+              <p style={{ margin: '4px 0 0 0', color: tokens.colors.textSecondary, fontSize: '12px' }}>
+                Consulta el historial de posiciones GPS registradas en el período seleccionado
+              </p>
+            </div>
+
+            {/* Date range controls */}
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '12px', color: tokens.colors.textSecondary, fontWeight: 600 }}>Desde:</span>
+                <input
+                  type="date"
+                  value={fechaDesde}
+                  onChange={(e) => setFechaDesde(e.target.value)}
+                  style={dateInputStyle}
+                />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '12px', color: tokens.colors.textSecondary, fontWeight: 600 }}>Hasta:</span>
+                <input
+                  type="date"
+                  value={fechaHasta}
+                  onChange={(e) => setFechaHasta(e.target.value)}
+                  style={dateInputStyle}
+                />
+              </div>
+              <button
+                onClick={fetchReporte}
+                disabled={reporteLoading}
+                style={{
+                  ...btnPrimary,
+                  opacity: reporteLoading ? 0.6 : 1,
+                  cursor: reporteLoading ? 'wait' : 'pointer',
+                }}
+              >
+                {reporteLoading ? 'Consultando...' : 'Generar Reporte'}
+              </button>
+              {reporteData.length > 0 && (
+                <button
+                  onClick={() => exportCSV(reporteData, fechaDesde, fechaHasta)}
+                  style={btnSecondary}
+                >
+                  Exportar CSV
+                </button>
+              )}
+            </div>
+
+            {/* Reporte KPIs */}
+            {reporteKpis && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
+                {[
+                  { label: 'Unidades con Datos', value: reporteKpis.totalUnidades, color: tokens.colors.primary },
+                  { label: 'Total Registros', value: reporteKpis.totalRegistros.toLocaleString('es-MX'), color: '#0D9668' },
+                  { label: 'Con Movimiento', value: reporteKpis.conMovimiento, color: '#10B981' },
+                  { label: 'Vel. Máx Global', value: reporteKpis.velMaxGlobal.toFixed(0) + ' km/h', color: '#F59E0B' },
+                ].map(k => (
+                  <div key={k.label} style={{
+                    background: tokens.colors.bgMain,
+                    borderRadius: '10px',
+                    padding: '12px 14px',
+                    border: '1px solid ' + tokens.colors.border,
+                  }}>
+                    <div style={{ fontSize: '10px', fontWeight: 600, color: tokens.colors.textSecondary, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>
+                      {k.label}
+                    </div>
+                    <div style={{ fontSize: '22px', fontWeight: 800, color: k.color, fontFamily: tokens.fonts.heading }}>
+                      {k.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Loading / Error / Empty */}
+            {reporteLoading && (
+              <div style={{ textAlign: 'center', padding: '60px 0', color: tokens.colors.textSecondary }}>
+                <div style={{ fontSize: '14px', marginBottom: '8px' }}>Consultando historial GPS...</div>
+                <div style={{ fontSize: '12px', color: tokens.colors.textMuted }}>Esto puede tomar unos segundos según el rango seleccionado</div>
+              </div>
+            )}
+
+            {reporteError && !reporteLoading && (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: tokens.colors.textMuted }}>
+                <div style={{ fontSize: '14px' }}>{reporteError}</div>
+              </div>
+            )}
+
+            {!reporteGenerado && !reporteLoading && (
+              <div style={{ textAlign: 'center', padding: '60px 0', color: tokens.colors.textMuted }}>
+                <div style={{ fontSize: '28px', marginBottom: '8px' }}>📊</div>
+                <div style={{ fontSize: '14px', fontWeight: 500 }}>Selecciona un rango de fechas y presiona "Generar Reporte"</div>
+                <div style={{ fontSize: '12px', marginTop: '4px' }}>Se consultará la tabla gps_historial con las posiciones registradas</div>
+              </div>
+            )}
+
+            {/* Results table */}
+            {reporteData.length > 0 && !reporteLoading && (
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: tokens.fonts.body, fontSize: '13px' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid ' + tokens.colors.border }}>
+                      {['Económico', 'Empresa', 'Tipo', 'Registros', 'En Movimiento', 'Vel. Máx', 'Vel. Prom', 'Primera Señal', 'Última Señal', 'Hrs Activo'].map(h => (
+                        <th key={h} style={{
+                          padding: '10px 12px',
+                          textAlign: 'left',
+                          fontWeight: 600,
+                          color: tokens.colors.textSecondary,
+                          fontSize: '11px',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                          whiteSpace: 'nowrap',
+                        }}>
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reporteData.map(r => {
+                      const movPct = r.totalRegistros > 0 ? (r.registrosConMovimiento / r.totalRegistros * 100) : 0
+                      return (
+                        <tr
+                          key={r.economico}
+                          style={{ borderBottom: '1px solid ' + tokens.colors.border, transition: 'background 0.15s' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = tokens.colors.bgHover }}
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent' }}
+                        >
+                          <td style={{ padding: '10px 12px', fontWeight: 600, color: tokens.colors.textPrimary }}>
+                            {r.economico}
+                          </td>
+                          <td style={{ padding: '10px 12px', color: tokens.colors.textSecondary }}>
+                            {r.empresa}
+                          </td>
+                          <td style={{ padding: '10px 12px' }}>
+                            <span style={{
+                              padding: '3px 10px',
+                              borderRadius: '20px',
+                              fontSize: '11px',
+                              fontWeight: 600,
+                              backgroundColor: r.tipo === 'Thermo' ? 'rgba(8,145,178,0.1)' : 'rgba(59,108,231,0.1)',
+                              color: r.tipo === 'Thermo' ? '#0891B2' : '#3B6CE7',
+                            }}>
+                              {r.tipo}
+                            </span>
+                          </td>
+                          <td style={{ padding: '10px 12px', color: tokens.colors.textPrimary, fontWeight: 600 }}>
+                            {r.totalRegistros}
+                          </td>
+                          <td style={{ padding: '10px 12px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <span style={{ color: r.registrosConMovimiento > 0 ? '#0D9668' : tokens.colors.textMuted, fontWeight: 600 }}>
+                                {r.registrosConMovimiento}
+                              </span>
+                              <span style={{
+                                fontSize: '10px',
+                                padding: '2px 6px',
+                                borderRadius: '10px',
+                                backgroundColor: movPct > 50 ? 'rgba(13,150,104,0.1)' : movPct > 0 ? 'rgba(245,158,11,0.1)' : 'rgba(107,114,128,0.1)',
+                                color: movPct > 50 ? '#0D9668' : movPct > 0 ? '#D97706' : '#6B7280',
+                                fontWeight: 600,
+                              }}>
+                                {movPct.toFixed(0)}%
+                              </span>
+                            </div>
+                          </td>
+                          <td style={{ padding: '10px 12px', color: r.velocidadMax > 80 ? '#DC2626' : r.velocidadMax > 0 ? tokens.colors.textPrimary : tokens.colors.textMuted, fontWeight: r.velocidadMax > 0 ? 600 : 400 }}>
+                            {r.velocidadMax > 0 ? r.velocidadMax.toFixed(0) + ' km/h' : '—'}
+                          </td>
+                          <td style={{ padding: '10px 12px', color: tokens.colors.textSecondary }}>
+                            {r.velocidadPromedio > 0 ? r.velocidadPromedio.toFixed(0) + ' km/h' : '—'}
+                          </td>
+                          <td style={{ padding: '10px 12px', color: tokens.colors.textSecondary, fontSize: '12px', whiteSpace: 'nowrap' }}>
+                            {r.primeraSenal}
+                          </td>
+                          <td style={{ padding: '10px 12px', color: tokens.colors.textSecondary, fontSize: '12px', whiteSpace: 'nowrap' }}>
+                            {r.ultimaSenal}
+                          </td>
+                          <td style={{ padding: '10px 12px', color: r.horasActivo > 0 ? tokens.colors.textPrimary : tokens.colors.textMuted, fontWeight: r.horasActivo > 0 ? 600 : 400 }}>
+                            {r.horasActivo > 0 ? r.horasActivo.toFixed(1) + 'h' : '—'}
                           </td>
                         </tr>
                       )
