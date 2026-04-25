@@ -90,6 +90,7 @@ import CatalogosTab from './pages/admin/CatalogosTab'
 import ProgramacionDedicados from './pages/operaciones/ProgramacionDedicados'
 import ConfigIntegraciones from './pages/admin/ConfigIntegraciones'
 import DocumentosCompania from './pages/admin/DocumentosCompania'
+import TerminalesConfig from './pages/admin/TerminalesConfig'
 import DashboardOperaciones from './pages/operaciones/DashboardOperaciones'
 import ControlEquipo from './pages/ControlEquipo'
 import DashboardComunicaciones from './pages/comunicaciones/DashboardComunicaciones'
@@ -565,6 +566,11 @@ function App() {
           <Route path="/admin/configuracion/documentos" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
               <DocumentosCompania />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/configuracion/terminales" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
+              <TerminalesConfig />
             </ProtectedRoute>
           } />
 
