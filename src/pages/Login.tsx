@@ -501,6 +501,46 @@ export default function Login() {
 
   useEffect(() => { injectKF() }, [])
 
+  /* V46.1 — Audio intro: autoplay + loop, stop al primer click anywhere (25/Abr/2026) */
+  useEffect(() => {
+    const audio = new Audio('/audio/intro_login.ogg')
+    audio.loop = true
+    audio.volume = 0.55
+    audio.preload = 'auto'
+    let stopped = false
+    const stop = () => {
+      if (stopped) return
+      stopped = true
+      try { audio.pause(); audio.currentTime = 0 } catch { /* noop */ }
+      document.removeEventListener('click', stop, true)
+      document.removeEventListener('keydown', stop, true)
+      document.removeEventListener('touchstart', stop, true)
+    }
+    // Intentar autoplay; algunos browsers lo bloquean — fallback silencioso
+    const tryPlay = () => audio.play().catch(() => { /* autoplay blocked */ })
+    tryPlay()
+    // Fallback: si autoplay bloqueado, primer mousemove inicia
+    let started = false
+    const startOnInteract = () => {
+      if (started) return
+      started = true
+      tryPlay()
+      document.removeEventListener('mousemove', startOnInteract, true)
+      document.removeEventListener('pointerdown', startOnInteract, true)
+    }
+    document.addEventListener('mousemove', startOnInteract, true)
+    document.addEventListener('pointerdown', startOnInteract, true)
+    // Stop en primer click/key/touch
+    document.addEventListener('click', stop, true)
+    document.addEventListener('keydown', stop, true)
+    document.addEventListener('touchstart', stop, true)
+    return () => {
+      stop()
+      document.removeEventListener('mousemove', startOnInteract, true)
+      document.removeEventListener('pointerdown', startOnInteract, true)
+    }
+  }, [])
+
   /* V27 — persistir rememberMe en cada cambio */
   useEffect(() => {
     try { localStorage.setItem('lhub-remember', rememberMe ? 'true' : 'false') } catch { /* noop */ }
