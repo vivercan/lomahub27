@@ -103,7 +103,6 @@ const MODULOS: Modulo[] = [
       { id: 'catalogos', label: 'Catálogos', ruta: '/admin/configuracion/catalogos' },
       { id: 'parametros', label: 'Parámetros', ruta: '/admin/configuracion/parametros' },
       { id: 'integraciones_cfg', label: 'Integraciones', ruta: '/admin/configuracion/integraciones' },
-      { id: 'auditoria', label: 'Auditoría', ruta: '/admin/configuracion/auditoria' },
     ],
   },
 ]
