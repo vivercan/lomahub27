@@ -183,7 +183,7 @@ export function ModuleDashboardGrid({ titulo, modulo, cards, fallbackFetch }: Pr
         }
       `}</style>
       <div style={{ background: D.bg, minHeight: 'calc(100vh - 120px)', padding: '32px 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '20px', justifyContent: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', justifyContent: 'start' }}>
           {cards.map(card => {
             const isH = hovered === card.id
             const isP = pressed === card.id

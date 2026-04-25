@@ -54,6 +54,12 @@ interface Terminal {
   activa: boolean
 }
 
+interface InventarioObjetivo {
+  terminal_id: string
+  tipo_caja: 'seca' | 'thermo'
+  cantidad_objetivo: number
+}
+
 declare const L: any
 
 // ─── Helper: normalize tipo ─────────────────────────────────
@@ -144,6 +150,10 @@ export default function ControlEquipo() {
   const [terminales, setTerminales] = useState<Terminal[]>([])
   const [terminalesLoading, setTerminalesLoading] = useState(false)
   const [terminalExpandida, setTerminalExpandida] = useState<string | null>(null)
+  // V46 - objetivos de inventario por terminal (default 2 secas + 2 thermos)
+  const [objetivos, setObjetivos] = useState<Map<string, { seca: number; thermo: number }>>(new Map())
+  // V46 - dias sin movimiento por economico (basado en gps_historial velocidad > 5)
+  const [diasSinMovMap, setDiasSinMovMap] = useState<Map<string, number>>(new Map())
 
   // ─── Load Leaflet from CDN ─────────────────────────────────
   useEffect(() => {
@@ -232,22 +242,59 @@ export default function ControlEquipo() {
     fetchData()
   }, [])
 
-  // ─── Fetch terminales ────────────────────────────────────
+  // ─── Fetch terminales + objetivos de inventario ──────────
   useEffect(() => {
-    const fetchTerminales = async () => {
+    const fetchTerminalesYObjetivos = async () => {
       setTerminalesLoading(true)
       try {
-        const { data, error } = await supabase
-          .from('terminales')
-          .select('*')
-          .eq('activa', true)
-          .is('deleted_at', null)
-          .order('nombre')
-        if (!error && data) setTerminales(data as Terminal[])
+        const [tRes, oRes] = await Promise.all([
+          supabase.from('terminales').select('*').eq('activa', true).is('deleted_at', null).order('nombre'),
+          supabase.from('terminal_inventario_objetivo').select('*'),
+        ])
+        if (!tRes.error && tRes.data) setTerminales(tRes.data as Terminal[])
+        if (!oRes.error && oRes.data) {
+          const map = new Map<string, { seca: number; thermo: number }>()
+          ;(oRes.data as InventarioObjetivo[]).forEach(o => {
+            const cur = map.get(o.terminal_id) || { seca: 2, thermo: 2 }
+            cur[o.tipo_caja] = o.cantidad_objetivo
+            map.set(o.terminal_id, cur)
+          })
+          setObjetivos(map)
+        }
       } catch { /* tabla puede no existir aún */ }
       setTerminalesLoading(false)
     }
-    fetchTerminales()
+    fetchTerminalesYObjetivos()
+  }, [])
+
+  // ─── Fetch dias sin movimiento (gps_historial velocidad > 5) ──
+  useEffect(() => {
+    const fetchDiasSinMov = async () => {
+      try {
+        const desde = new Date()
+        desde.setDate(desde.getDate() - 90)
+        const { data } = await supabase
+          .from('gps_historial')
+          .select('economico, created_at, velocidad')
+          .gte('created_at', desde.toISOString())
+          .gt('velocidad', 5)
+          .order('created_at', { ascending: false })
+          .limit(50000)
+        if (!data) return
+        const map = new Map<string, number>()
+        const now = Date.now()
+        const seen = new Set<string>()
+        ;(data as any[]).forEach(r => {
+          if (!seen.has(r.economico)) {
+            seen.add(r.economico)
+            const days = Math.floor((now - new Date(r.created_at).getTime()) / 86400000)
+            map.set(r.economico, days)
+          }
+        })
+        setDiasSinMovMap(map)
+      } catch { /* tabla puede no existir o estar vacia */ }
+    }
+    fetchDiasSinMov()
   }, [])
 
   // ─── Compute inventarios por terminal ────────────────────
@@ -1205,7 +1252,7 @@ export default function ControlEquipo() {
                 Inventarios por Terminal
                 {!terminalesLoading && terminales.length > 0 && (
                   <span style={{ fontWeight: 400, fontSize: '12px', color: tokens.colors.textSecondary, marginLeft: '10px' }}>
-                    {terminales.length} terminales \u00b7 {inventariosPorTerminal.reduce((s, i) => s + i.total, 0)} cajas en patio \u00b7 {cajasEnRuta.length} en ruta
+                    {terminales.length} terminales · {inventariosPorTerminal.reduce((s, i) => s + i.total, 0)} cajas en patio · {cajasEnRuta.length} en ruta
                   </span>
                 )}
               </h3>
@@ -1255,21 +1302,41 @@ export default function ControlEquipo() {
                               {inv.terminal.nombre}
                             </div>
                             <div style={{ color: tokens.colors.textMuted, fontSize: '11px' }}>
-                              {inv.terminal.direccion || 'Sin direccion'} \u00b7 Radio: {inv.terminal.radio_metros}m
-                              {inv.terminal.empresa && (' \u00b7 ' + inv.terminal.empresa)}
+                              {inv.terminal.direccion || 'Sin dirección'} · Radio: {inv.terminal.radio_metros}m
+                              {inv.terminal.empresa && (' · ' + inv.terminal.empresa)}
                             </div>
                           </div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                          <div style={{ display: 'flex', gap: '10px', fontSize: '12px' }}>
-                            <span style={{ color: '#F97316', fontWeight: 600 }}>{inv.secas} Secas</span>
-                            <span style={{ color: '#0891B2', fontWeight: 600 }}>{inv.thermos} Thermos</span>
-                          </div>
+                          {(() => {
+                            const obj = objetivos.get(inv.terminal.id) || { seca: 2, thermo: 2 }
+                            const colorFor = (actual: number, target: number) => {
+                              if (actual === target) return '#0D9668'
+                              if (actual < target) return '#DC2626'
+                              return '#B8860B'
+                            }
+                            return (
+                              <div style={{ display: 'flex', gap: '14px', fontSize: '12px', fontVariantNumeric: 'tabular-nums' }}>
+                                <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.15 }}>
+                                  <span style={{ color: colorFor(inv.secas, obj.seca), fontWeight: 700, fontSize: '13px' }}>
+                                    {inv.secas} / {obj.seca}
+                                  </span>
+                                  <span style={{ color: '#F97316', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>Secas</span>
+                                </span>
+                                <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.15 }}>
+                                  <span style={{ color: colorFor(inv.thermos, obj.thermo), fontWeight: 700, fontSize: '13px' }}>
+                                    {inv.thermos} / {obj.thermo}
+                                  </span>
+                                  <span style={{ color: '#0891B2', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>Thermos</span>
+                                </span>
+                              </div>
+                            )
+                          })()}
                           <span style={{
                             color: tokens.colors.textMuted, fontSize: '18px',
                             transform: isOpen ? 'rotate(180deg)' : 'rotate(0)',
                             transition: 'transform 0.2s',
-                          }}>\u25bc</span>
+                          }}>▼</span>
                         </div>
                       </div>
                       {isOpen && inv.cajas.length > 0 && (
@@ -1277,17 +1344,24 @@ export default function ControlEquipo() {
                           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                             <thead>
                               <tr style={{ background: tokens.colors.bgMain }}>
-                                <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Economico</th>
+                                <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Económico</th>
                                 <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Empresa</th>
                                 <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Tipo</th>
                                 <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Estado</th>
-                                <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Ultima Senal</th>
+                                <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Última Señal</th>
+                                <th style={{ padding: '8px 12px', textAlign: 'center', color: tokens.colors.textSecondary, fontWeight: 500 }}>Días sin movimiento</th>
                                 <th style={{ padding: '8px 12px', textAlign: 'right', color: tokens.colors.textSecondary, fontWeight: 500 }}>Distancia</th>
                               </tr>
                             </thead>
                             <tbody>
                               {inv.cajas.map(c => {
                                 const dist = haversineMeters(inv.terminal.latitud, inv.terminal.longitud, c.latitud!, c.longitud!)
+                                const dSinMov = c.enMovimiento ? 0 : (diasSinMovMap.get(c.numero_economico) ?? c.diasSinSenal ?? null)
+                                const dSinMovColor = dSinMov === null ? tokens.colors.textMuted
+                                  : dSinMov === 0 ? '#0D9668'
+                                  : dSinMov <= 3 ? tokens.colors.textPrimary
+                                  : dSinMov <= 7 ? '#B8860B'
+                                  : '#DC2626'
                                 return (
                                   <tr key={c.id} style={{ borderTop: '1px solid ' + tokens.colors.border }}>
                                     <td style={{ padding: '8px 12px', color: tokens.colors.textPrimary, fontWeight: 600 }}>{c.numero_economico}</td>
@@ -1311,6 +1385,9 @@ export default function ControlEquipo() {
                                       </span>
                                     </td>
                                     <td style={{ padding: '8px 12px', color: tokens.colors.textSecondary, fontSize: '11px' }}>{c.ultimaSenal}</td>
+                                    <td style={{ padding: '8px 12px', textAlign: 'center', color: dSinMovColor, fontWeight: 600, fontSize: '12px', fontVariantNumeric: 'tabular-nums' }}>
+                                      {dSinMov === null ? '—' : dSinMov === 0 ? '0' : dSinMov + 'd'}
+                                    </td>
                                     <td style={{ padding: '8px 12px', textAlign: 'right', color: tokens.colors.textMuted, fontSize: '11px' }}>{dist < 1000 ? dist.toFixed(0) + 'm' : (dist / 1000).toFixed(1) + 'km'}</td>
                                   </tr>
                                 )
@@ -1365,38 +1442,50 @@ export default function ControlEquipo() {
                       color: tokens.colors.textMuted, fontSize: '18px',
                       transform: terminalExpandida === '__ruta__' ? 'rotate(180deg)' : 'rotate(0)',
                       transition: 'transform 0.2s',
-                    }}>\u25bc</span>
+                    }}>▼</span>
                   </div>
                   {terminalExpandida === '__ruta__' && cajasEnRuta.length > 0 && (
                     <div style={{ borderTop: '1px solid ' + tokens.colors.border, maxHeight: '300px', overflow: 'auto' }}>
                       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                         <thead>
                           <tr style={{ background: tokens.colors.bgMain }}>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Economico</th>
+                            <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Económico</th>
                             <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Empresa</th>
                             <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Tipo</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Ubicacion</th>
-                            <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Ultima Senal</th>
+                            <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Ubicación</th>
+                            <th style={{ padding: '8px 12px', textAlign: 'left', color: tokens.colors.textSecondary, fontWeight: 500 }}>Última Señal</th>
+                            <th style={{ padding: '8px 12px', textAlign: 'center', color: tokens.colors.textSecondary, fontWeight: 500 }}>Días sin movimiento</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {cajasEnRuta.map(c => (
-                            <tr key={c.id} style={{ borderTop: '1px solid ' + tokens.colors.border }}>
-                              <td style={{ padding: '8px 12px', color: tokens.colors.textPrimary, fontWeight: 600 }}>{c.numero_economico}</td>
-                              <td style={{ padding: '8px 12px', color: tokens.colors.textSecondary }}>{c.empresa}</td>
-                              <td style={{ padding: '8px 12px' }}>
-                                <span style={{
-                                  padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600,
-                                  background: c.tipoNorm === 'seca' ? 'rgba(249,115,22,0.15)' : 'rgba(8,145,178,0.15)',
-                                  color: c.tipoNorm === 'seca' ? '#F97316' : '#0891B2',
-                                }}>
-                                  {c.tipoNorm === 'seca' ? 'Seca' : 'Thermo'}
-                                </span>
-                              </td>
-                              <td style={{ padding: '8px 12px', color: tokens.colors.textSecondary, fontSize: '11px' }}>{c.ubicacion || '\u2014'}</td>
-                              <td style={{ padding: '8px 12px', color: tokens.colors.textSecondary, fontSize: '11px' }}>{c.ultimaSenal}</td>
-                            </tr>
-                          ))}
+                          {cajasEnRuta.map(c => {
+                            const dSinMov = c.enMovimiento ? 0 : (diasSinMovMap.get(c.numero_economico) ?? c.diasSinSenal ?? null)
+                            const dSinMovColor = dSinMov === null ? tokens.colors.textMuted
+                              : dSinMov === 0 ? '#0D9668'
+                              : dSinMov <= 3 ? tokens.colors.textPrimary
+                              : dSinMov <= 7 ? '#B8860B'
+                              : '#DC2626'
+                            return (
+                              <tr key={c.id} style={{ borderTop: '1px solid ' + tokens.colors.border }}>
+                                <td style={{ padding: '8px 12px', color: tokens.colors.textPrimary, fontWeight: 600 }}>{c.numero_economico}</td>
+                                <td style={{ padding: '8px 12px', color: tokens.colors.textSecondary }}>{c.empresa}</td>
+                                <td style={{ padding: '8px 12px' }}>
+                                  <span style={{
+                                    padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600,
+                                    background: c.tipoNorm === 'seca' ? 'rgba(249,115,22,0.15)' : 'rgba(8,145,178,0.15)',
+                                    color: c.tipoNorm === 'seca' ? '#F97316' : '#0891B2',
+                                  }}>
+                                    {c.tipoNorm === 'seca' ? 'Seca' : 'Thermo'}
+                                  </span>
+                                </td>
+                                <td style={{ padding: '8px 12px', color: tokens.colors.textSecondary, fontSize: '11px' }}>{c.ubicacion || '—'}</td>
+                                <td style={{ padding: '8px 12px', color: tokens.colors.textSecondary, fontSize: '11px' }}>{c.ultimaSenal}</td>
+                                <td style={{ padding: '8px 12px', textAlign: 'center', color: dSinMovColor, fontWeight: 600, fontSize: '12px', fontVariantNumeric: 'tabular-nums' }}>
+                                  {dSinMov === null ? '—' : dSinMov === 0 ? '0' : dSinMov + 'd'}
+                                </td>
+                              </tr>
+                            )
+                          })}
                         </tbody>
                       </table>
                     </div>

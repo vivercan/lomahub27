@@ -15,13 +15,16 @@ const CARDS: CardDef[] = [
   { id: 'integraciones', label: 'Integraciones',      route: '/admin/configuracion/integraciones', kpiLabel: 'Activas',      iconSet: 'hugeicons', iconName: 'plug-socket' },
   { id: 'documentos',    label: 'Documentos',         route: '/admin/configuracion/documentos',    kpiLabel: 'Legales',      iconSet: 'hugeicons', iconName: 'file-01' },
   { id: 'terminales',    label: 'Terminales',         route: '/admin/configuracion/terminales',    kpiLabel: 'Geocercas',    iconSet: 'hugeicons', iconName: 'maps-location-01' },
+  { id: 'inventario',    label: 'Inventario Terminal',route: '/admin/configuracion/inventario',    kpiLabel: 'Objetivo',     iconSet: 'hugeicons', iconName: 'package' },
+  { id: 'flota',         label: 'Flota Master',       route: '/admin/configuracion/flota-master',  kpiLabel: 'Unidades',     iconSet: 'hugeicons', iconName: 'truck' },
 ]
 
 async function fallbackFetch(): Promise<Record<string, number>> {
-  const [usuarios, parametros, terminales] = await Promise.all([
+  const [usuarios, parametros, terminales, objetivos] = await Promise.all([
     supabase.from('usuarios_autorizados').select('*', { count: 'exact', head: true }),
     supabase.from('parametros_sistema').select('*', { count: 'exact', head: true }),
     supabase.from('terminales').select('*', { count: 'exact', head: true }).eq('activa', true),
+    supabase.from('terminal_inventario_objetivo').select('*', { count: 'exact', head: true }),
   ])
   const out: Record<string, number> = {}
   CARDS.forEach(c => { out[c.id] = 0 })
@@ -29,6 +32,7 @@ async function fallbackFetch(): Promise<Record<string, number>> {
   out.tarifas_ia = parametros.count ?? 0
   out.integraciones = 7  // Supabase, GPS, WA, Resend, Anthropic, Maps, ANODOS
   out.terminales = terminales.count ?? 0
+  out.inventario = objetivos.count ?? 0
   return out
 }
 
