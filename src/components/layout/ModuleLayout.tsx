@@ -134,12 +134,13 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
           {acciones}
         </div>
       </div>
-      {/* Content */}
+      {/* Content — overflow-y auto para permitir scroll en módulos con contenido largo (26/Abr/2026) */}
       <div style={{
         flex: 1,
-        overflow: 'hidden',
+        overflowY: 'auto',
+        overflowX: 'hidden',
         padding: '0 24px 24px',
-        scrollbarWidth: 'none',
+        scrollbarWidth: 'thin',
         display: 'flex',
         flexDirection: 'column' as const
       }}>
