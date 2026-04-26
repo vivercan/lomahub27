@@ -83,10 +83,14 @@ export default function ConfigIntegraciones() {
         .from('cxc_cartera')
         .select('*', { count: 'exact', head: true })
 
-      /* GPS unidades */
-      const { count: gpsUnidadesCount } = await supabase
-        .from('gps_unidades')
-        .select('*', { count: 'exact', head: true })
+      /* GPS unidades — V50 26/Abr/2026 BUG-022: tabla gps_unidades es legacy/vacía.
+         Contar DISTINCT economico desde gps_tracking (la tabla real que pueblan los syncs). */
+      const { data: gpsUnidadesRows } = await supabase
+        .from('gps_tracking')
+        .select('economico')
+      const gpsUnidadesCount = gpsUnidadesRows
+        ? new Set(gpsUnidadesRows.map(r => (r as any).economico)).size
+        : 0
 
       const results: IntegrationStatus[] = [
         {
@@ -108,7 +112,7 @@ export default function ConfigIntegraciones() {
           status: (gpsUnidadesCount || 0) > 0 ? 'connected' : 'pending',
           lastSync: null,
           records: gpsUnidadesCount || 0,
-          endpoint: 'gps_unidades (Supabase)',
+          endpoint: 'gps_tracking distinct economico (Supabase)',
           category: 'gps',
         },
         {

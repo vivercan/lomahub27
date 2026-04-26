@@ -1,295 +1,286 @@
-import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabase';
-import { tokens } from '../../lib/tokens';
-import { ModuleLayout } from '../../components/layout/ModuleLayout';
-import { Save, Plus, Trash2, DollarSign, Truck, Ship, MapPin } from 'lucide-react';
+// OfertaEquipo.tsx — V2 — Real last-trip data from viajes_anodos
+// Shows clients with their most recent trip info for equipment offers
+import { useState, useEffect } from 'react'
+import { ModuleLayout } from '../../components/layout/ModuleLayout'
+import { Card } from '../../components/ui/Card'
+import { Button } from '../../components/ui/Button'
+import { Select } from '../../components/ui/Select'
+import { DataTable } from '../../components/ui/DataTable'
+import type { Column } from '../../components/ui/DataTable'
+import { MessageSquare, RefreshCw, Truck, Users } from 'lucide-react'
+import { KPICard } from '../../components/ui/KPICard'
+import { tokens } from '../../lib/tokens'
+import { supabase } from '../../lib/supabase'
 
-/* ───────── types ───────── */
-interface Tarifa {
-  id?: string;
-  categoria: string;
-  concepto: string;
-  unidad: string;
-  valor: number;
-  moneda: string;
-  notas: string;
+/* ─── Types ─────────────────────────────────────── */
+
+interface ClienteRow {
+  id: string
+  cliente: string
+  ultimaCarga: string
+  rutaHabitual: string
+  totalViajes: number
+  ultimoTracto: string
 }
 
-const CATEGORIAS = [
-  { key: 'km_mexico', label: 'Costo por Kilómetro (México)', icon: Truck, color: '#3B6CE7' },
-  { key: 'milla_usa', label: 'Costo por Milla (USA)', icon: Truck, color: '#0D9668' },
-  { key: 'cruces', label: 'Cruces Fronterizos', icon: MapPin, color: '#F59E0B' },
-  { key: 'accesoriales', label: 'Accesoriales', icon: DollarSign, color: '#8B5CF6' },
-  { key: 'importacion', label: 'Importación', icon: Ship, color: '#C53030' },
-  { key: 'exportacion', label: 'Exportación', icon: Ship, color: '#06B6D4' },
-];
+/* ─── Component ─────────────────────────────────── */
 
-const DEFAULT_TARIFAS: Tarifa[] = [
-  { categoria: 'km_mexico', concepto: 'Full Truck Load (FTL)', unidad: 'MXN/km', valor: 0, moneda: 'MXN', notas: '' },
-  { categoria: 'km_mexico', concepto: 'Less Than Truckload (LTL)', unidad: 'MXN/km', valor: 0, moneda: 'MXN', notas: '' },
-  { categoria: 'km_mexico', concepto: 'Dedicado', unidad: 'MXN/km', valor: 0, moneda: 'MXN', notas: '' },
-  { categoria: 'milla_usa', concepto: 'FTL Interstate', unidad: 'USD/mi', valor: 0, moneda: 'USD', notas: '' },
-  { categoria: 'milla_usa', concepto: 'LTL Interstate', unidad: 'USD/mi', valor: 0, moneda: 'USD', notas: '' },
-  { categoria: 'milla_usa', concepto: 'Drayage', unidad: 'USD/mi', valor: 0, moneda: 'USD', notas: '' },
-  { categoria: 'cruces', concepto: 'Cruce Laredo', unidad: 'USD', valor: 0, moneda: 'USD', notas: '' },
-  { categoria: 'cruces', concepto: 'Cruce El Paso', unidad: 'USD', valor: 0, moneda: 'USD', notas: '' },
-  { categoria: 'cruces', concepto: 'Cruce Nogales', unidad: 'USD', valor: 0, moneda: 'USD', notas: '' },
-  { categoria: 'cruces', concepto: 'Cruce Otay/Tijuana', unidad: 'USD', valor: 0, moneda: 'USD', notas: '' },
-  { categoria: 'accesoriales', concepto: 'Estadía (por hora)', unidad: 'MXN/hr', valor: 0, moneda: 'MXN', notas: '' },
-  { categoria: 'accesoriales', concepto: 'Maniobras carga/descarga', unidad: 'MXN', valor: 0, moneda: 'MXN', notas: '' },
-  { categoria: 'accesoriales', concepto: 'Stop-off adicional', unidad: 'MXN', valor: 0, moneda: 'MXN', notas: '' },
-  { categoria: 'accesoriales', concepto: 'Seguro de carga', unidad: '% valor', valor: 0, moneda: 'MXN', notas: '' },
-  { categoria: 'importacion', concepto: 'Pedimento aduanal', unidad: 'MXN', valor: 0, moneda: 'MXN', notas: '' },
-  { categoria: 'importacion', concepto: 'Previo en aduana', unidad: 'MXN', valor: 0, moneda: 'MXN', notas: '' },
-  { categoria: 'exportacion', concepto: 'Despacho aduanal EXPO', unidad: 'USD', valor: 0, moneda: 'USD', notas: '' },
-  { categoria: 'exportacion', concepto: 'Certificado de origen', unidad: 'USD', valor: 0, moneda: 'USD', notas: '' },
-];
-
-/* ───────── component ───────── */
-export default function ParametrosConfig() {
-  const [tarifas, setTarifas] = useState<Tarifa[]>(DEFAULT_TARIFAS);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [activeTab, setActiveTab] = useState('km_mexico');
+export default function OfertaEquipo() {
+  const [plaza, setPlaza] = useState<string>('')
+  const [tipoEquipo, setTipoEquipo] = useState<string>('')
+  const [selectedClientes, setSelectedClientes] = useState<Set<string>>(new Set())
+  const [clientes, setClientes] = useState<ClienteRow[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const loadTarifas = async () => {
-      try {
-        const { data } = await supabase
-          .from('parametros_tarifas')
-          .select('*')
-          .is('deleted_at', null)
-          .order('categoria');
-        if (data && data.length > 0) setTarifas(data as Tarifa[]);
-      } catch (err) {
-        console.log('Using defaults — table may not exist yet:', err);
-      } finally { setLoading(false) }
-    };
-    loadTarifas();
-  }, []);
-
-  const handleSave = async () => {
-    setSaving(true);
+  const fetchClientes = async () => {
+    setLoading(true)
     try {
-      for (const t of tarifas) {
-        if (t.id) {
-          await supabase.from('parametros_tarifas').update({
-            valor: t.valor, notas: t.notas
-          }).eq('id', t.id);
-        } else {
-          await supabase.from('parametros_tarifas').insert(t);
-        }
+      // 1. Get last 90 days of viajes from ANODOS (paginated)
+      const since = new Date()
+      since.setDate(since.getDate() - 90)
+      const sinceISO = since.toISOString()
+
+      interface ViajeRow {
+        cliente: string | null; tracto: string | null
+        origen: string | null; destino: string | null
+        inicia_viaje: string | null; fecha_crea: string | null
       }
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2500);
+      const allViajes: ViajeRow[] = []
+      let offset = 0
+      while (true) {
+        const { data: vc } = await supabase
+          .from('viajes_anodos')
+          .select('cliente, tracto, origen, destino, inicia_viaje, fecha_crea')
+          .gte('fecha_crea', sinceISO)
+          .order('fecha_crea', { ascending: false })
+          .range(offset, offset + 999)
+        if (!vc || vc.length === 0) break
+        allViajes.push(...vc)
+        if (vc.length < 1000) break
+        offset += 1000
+      }
+
+      // 2. Aggregate by cliente
+      const clienteMap = new Map<string, {
+        viajes: number
+        lastDate: string
+        lastOrigen: string
+        lastDestino: string
+        lastTracto: string
+        rutas: Map<string, number>
+      }>()
+
+      for (const v of allViajes) {
+        const cKey = v.cliente || 'SIN CLIENTE'
+        if (!clienteMap.has(cKey)) {
+          clienteMap.set(cKey, {
+            viajes: 0,
+            lastDate: v.inicia_viaje || v.fecha_crea || '',
+            lastOrigen: v.origen || '?',
+            lastDestino: v.destino || '?',
+            lastTracto: v.tracto || '—',
+            rutas: new Map(),
+          })
+        }
+        const cm = clienteMap.get(cKey)!
+        cm.viajes++
+
+        // Track most frequent route
+        const rKey = `${v.origen || '?'} → ${v.destino || '?'}`
+        cm.rutas.set(rKey, (cm.rutas.get(rKey) || 0) + 1)
+      }
+
+      // 3. Build rows
+      const rows: ClienteRow[] = Array.from(clienteMap.entries())
+        .map(([cKey, cm]) => {
+          // Most frequent route
+          let topRuta = '—'
+          let topRutaCount = 0
+          for (const [ruta, count] of cm.rutas) {
+            if (count > topRutaCount) {
+              topRutaCount = count
+              topRuta = ruta
+            }
+          }
+
+          // Format date
+          let ultimaCarga = '—'
+          if (cm.lastDate) {
+            try {
+              ultimaCarga = new Date(cm.lastDate).toLocaleDateString('es-MX', {
+                day: '2-digit', month: 'short', year: 'numeric',
+              })
+            } catch {
+              ultimaCarga = cm.lastDate.slice(0, 10)
+            }
+          }
+
+          return {
+            id: cKey,
+            cliente: cKey,
+            ultimaCarga,
+            rutaHabitual: topRuta,
+            totalViajes: cm.viajes,
+            ultimoTracto: cm.lastTracto,
+          }
+        })
+        .sort((a, b) => b.totalViajes - a.totalViajes)
+
+      // Filter by plaza if selected
+      const filtered = plaza
+        ? rows.filter(r => {
+            const plazaLower = plaza.toLowerCase()
+            return r.rutaHabitual.toLowerCase().includes(plazaLower) ||
+                   r.cliente.toLowerCase().includes(plazaLower)
+          })
+        : rows
+
+      setClientes(filtered)
     } catch (err) {
-      console.error('Save error:', err);
+      console.error('Error fetching clientes:', err)
+      setClientes([])
+    } finally {
+      setLoading(false)
     }
-    setSaving(false);
-  };
+  }
 
-  const updateTarifa = (idx: number, field: keyof Tarifa, value: string | number) => {
-    setTarifas(prev => prev.map((t, i) => i === idx ? { ...t, [field]: value } : t));
-  };
+  useEffect(() => { fetchClientes() }, [])
 
-  const filteredTarifas = tarifas
-    .map((t, idx) => ({ ...t, _idx: idx }))
-    .filter(t => t.categoria === activeTab);
+  const toggleClienteSelection = (clienteId: string) => {
+    const n = new Set(selectedClientes)
+    if (n.has(clienteId)) n.delete(clienteId)
+    else n.add(clienteId)
+    setSelectedClientes(n)
+  }
 
-  const activeCat = CATEGORIAS.find(c => c.key === activeTab);
+  const handleBuscar = () => fetchClientes()
 
-  /* ───────── styles ───────── */
-  const S = {
-    container: {
-      minHeight: '100vh',
-      background: tokens.colors.bgMain,
-    } as React.CSSProperties,
-    header: {
-      padding: '32px 48px 0',
-    } as React.CSSProperties,
-    title: {
-      fontFamily: tokens.fonts.heading,
-      fontSize: '26px',
-      fontWeight: 700,
-      color: tokens.colors.textPrimary,
-      margin: 0,
-    } as React.CSSProperties,
-    subtitle: {
-      fontFamily: tokens.fonts.body,
-      fontSize: '14px',
-      color: tokens.colors.textSecondary,
-      margin: '6px 0 0',
-    } as React.CSSProperties,
-    tabs: {
-      display: 'flex',
-      gap: '8px',
-      padding: '24px 48px 0',
-      flexWrap: 'wrap' as const,
-    } as React.CSSProperties,
-    tab: (isActive: boolean, color: string) => ({
-      fontFamily: tokens.fonts.body,
-      fontSize: '13px',
-      fontWeight: isActive ? 600 : 400,
-      color: isActive ? '#FFFFFF' : tokens.colors.textSecondary,
-      background: isActive ? color : tokens.colors.bgCard,
-      border: isActive ? 'none' : tokens.effects.glassmorphism.border,
-      borderRadius: '10px',
-      padding: '10px 18px',
-      cursor: 'pointer',
-      transition: 'all 0.2s ease',
-      boxShadow: isActive ? `0 2px 8px ${color}40` : 'none',
-    }),
-    tableWrap: {
-      padding: '24px 48px',
-    } as React.CSSProperties,
-    table: {
-      width: '100%',
-      background: tokens.colors.bgCard,
-      borderRadius: '16px',
-      border: tokens.effects.glassmorphism.border,
-      boxShadow: tokens.effects.cardShadow,
-      overflow: 'hidden',
-    } as React.CSSProperties,
-    th: {
-      fontFamily: tokens.fonts.heading,
-      fontSize: '12px',
-      fontWeight: 600,
-      color: tokens.colors.textMuted,
-      textTransform: 'uppercase' as const,
-      letterSpacing: '0.05em',
-      padding: '14px 16px',
-      textAlign: 'left' as const,
-      borderBottom: `1px solid ${tokens.colors.border}`,
-      background: tokens.colors.bgHover,
-    } as React.CSSProperties,
-    td: {
-      fontFamily: tokens.fonts.body,
-      fontSize: '14px',
-      color: tokens.colors.textPrimary,
-      padding: '12px 16px',
-      borderBottom: `1px solid ${tokens.colors.border}`,
-    } as React.CSSProperties,
-    input: {
-      fontFamily: tokens.fonts.body,
-      fontSize: '14px',
-      color: tokens.colors.textPrimary,
-      background: tokens.colors.bgMain,
-      border: `1px solid ${tokens.colors.border}`,
-      borderRadius: '8px',
-      padding: '8px 12px',
-      width: '100%',
-      outline: 'none',
-      transition: 'border 0.2s',
-    } as React.CSSProperties,
-    numInput: {
-      fontFamily: tokens.fonts.body,
-      fontSize: '14px',
-      fontWeight: 600,
-      color: tokens.colors.textPrimary,
-      background: tokens.colors.bgMain,
-      border: `1px solid ${tokens.colors.border}`,
-      borderRadius: '8px',
-      padding: '8px 12px',
-      width: '120px',
-      textAlign: 'right' as const,
-      outline: 'none',
-    } as React.CSSProperties,
-    saveBtn: {
-      fontFamily: tokens.fonts.heading,
-      fontSize: '14px',
-      fontWeight: 600,
-      color: '#FFFFFF',
-      background: saved ? 'linear-gradient(180deg, #34D399 0%, #0D9668 50%, #047857 100%)' : `linear-gradient(180deg, #4A7AF0 0%, ${tokens.colors.primary} 50%, #2F5BC4 100%)`,
-      border: 'none',
-      borderRadius: '12px',
-      padding: '12px 28px',
-      cursor: 'pointer',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-      transition: 'all 0.18s ease',
-      marginLeft: 'auto',
-      boxShadow: saved
-        ? '0 2px 4px rgba(13,150,104,0.30), 0 6px 14px -3px rgba(13,150,104,0.25), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.18)'
-        : '0 2px 4px rgba(59,108,231,0.30), 0 6px 14px -3px rgba(59,108,231,0.25), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.18)',
-      textShadow: '0 1px 2px rgba(0,0,0,0.20)',
-    } as React.CSSProperties,
-    actions: {
-      display: 'flex',
-      padding: '0 48px 32px',
-      justifyContent: 'flex-end',
-    } as React.CSSProperties,
-  };
+  const handleEnviarOferta = () => {
+    const selected = clientes.filter(c => selectedClientes.has(c.id))
+    const msg = `Oferta de equipo ${tipoEquipo || 'disponible'} en plaza ${plaza || 'general'}.\nClientes: ${selected.map(c => c.cliente).join(', ')}`
+    // console.log('Enviando oferta:', msg)
+  }
+
+  const plazaOptions = [
+    { value: '', label: 'Todas las plazas' },
+    { value: 'monterrey', label: 'Monterrey' },
+    { value: 'cdmx', label: 'CDMX' },
+    { value: 'guadalajara', label: 'Guadalajara' },
+    { value: 'laredo', label: 'Laredo' },
+    { value: 'veracruz', label: 'Veracruz' },
+    { value: 'saltillo', label: 'Saltillo' },
+    { value: 'queretaro', label: 'Querétaro' },
+  ]
+
+  const equipoOptions = [
+    { value: '', label: 'Todos' },
+    { value: 'tractocamion', label: 'Tractocamión' },
+    { value: 'refrigerado', label: 'Refrigerado' },
+    { value: 'flatbed', label: 'Flatbed' },
+    { value: 'volteo', label: 'Volteo' },
+  ]
+
+  const clienteColumns: Column<ClienteRow>[] = [
+    {
+      key: 'select', label: '', width: '40px',
+      render: (row) => (
+        <input
+          type="checkbox"
+          checked={selectedClientes.has(row.id)}
+          onChange={() => toggleClienteSelection(row.id)}
+          style={{ accentColor: tokens.colors.primary }}
+        />
+      ),
+    },
+    {
+      key: 'cliente', label: 'Cliente',
+      render: (row) => (
+        <span style={{ color: tokens.colors.textPrimary, fontWeight: 600, fontFamily: tokens.fonts.body }}>
+          {row.cliente}
+        </span>
+      ),
+    },
+    {
+      key: 'ultimaCarga', label: 'Última Carga',
+      render: (row) => (
+        <span style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body }}>
+          {row.ultimaCarga}
+        </span>
+      ),
+    },
+    {
+      key: 'rutaHabitual', label: 'Ruta Habitual',
+      render: (row) => (
+        <span style={{ color: tokens.colors.textSecondary, fontFamily: tokens.fonts.body, fontSize: '0.85rem' }}>
+          {row.rutaHabitual}
+        </span>
+      ),
+    },
+    {
+      key: 'totalViajes', label: 'Viajes (90d)', align: 'center',
+      render: (row) => (
+        <span style={{ color: tokens.colors.textPrimary, fontWeight: 600 }}>{row.totalViajes}</span>
+      ),
+    },
+    {
+      key: 'ultimoTracto', label: 'Último Tracto',
+      render: (row) => (
+        <span style={{ color: tokens.colors.textMuted, fontSize: '0.85rem' }}>{row.ultimoTracto}</span>
+      ),
+    },
+  ]
 
   return (
-    <ModuleLayout titulo="Parámetros" moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}>
-      <div style={S.container}>
-        <div style={S.header}>
-          <h1 style={S.title}>Parámetros de Cotización</h1>
-          <p style={S.subtitle}>Tarifas base por km/milla, costos de cruce fronterizo y accesoriales para el módulo de cotización</p>
-        </div>
+    <ModuleLayout
+      titulo="Oferta de Equipo"
+      moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}
+      subtitulo="Clientes con historial de carga — datos ANODOS últimos 90 días"
+      acciones={
+        <Button variant="secondary" size="sm" onClick={fetchClientes} loading={loading}>
+          <RefreshCw size={16} />
+          Actualizar
+        </Button>
+      }
+    >
+      {/* KPIs */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <KPICard titulo="Clientes" valor={clientes.length} color="blue" icono={<Users size={18} />} />
+        <KPICard titulo="Seleccionados" valor={selectedClientes.size} color="primary" icono={<MessageSquare size={18} />} />
+        <KPICard titulo="Con Viajes" valor={clientes.filter(c => c.totalViajes > 0).length} color="green" icono={<Truck size={18} />} />
+        <KPICard titulo="Plaza" valor={plaza || 'Todas'} color="gray" />
+      </div>
 
-        <div style={S.tabs}>
-          {CATEGORIAS.map(cat => (
-            <button
-              key={cat.key}
-              style={S.tab(activeTab === cat.key, cat.color)}
-              onClick={() => setActiveTab(cat.key)}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-
-        <div style={S.tableWrap}>
-          <table style={S.table} cellSpacing={0}>
-            <thead>
-              <tr>
-                <th style={S.th}>Concepto</th>
-                <th style={S.th}>Unidad</th>
-                <th style={{ ...S.th, textAlign: 'right' }}>Valor</th>
-                <th style={S.th}>Moneda</th>
-                <th style={S.th}>Notas</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTarifas.map((t) => (
-                <tr key={t._idx}>
-                  <td style={S.td}>{t.concepto}</td>
-                  <td style={{ ...S.td, color: tokens.colors.textMuted, fontSize: '13px' }}>{t.unidad}</td>
-                  <td style={{ ...S.td, textAlign: 'right' }}>
-                    <input
-                      type="number"
-                      style={S.numInput}
-                      value={t.valor || ''}
-                      onChange={(e) => updateTarifa(t._idx, 'valor', parseFloat(e.target.value) || 0)}
-                      placeholder="0.00"
-                    />
-                  </td>
-                  <td style={{ ...S.td, fontWeight: 600, fontSize: '13px' }}>{t.moneda}</td>
-                  <td style={S.td}>
-                    <input
-                      type="text"
-                      style={S.input}
-                      value={t.notas}
-                      onChange={(e) => updateTarifa(t._idx, 'notas', e.target.value)}
-                      placeholder="Notas..."
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div style={S.actions}>
-          <button style={S.saveBtn} onClick={handleSave} disabled={saving}>
-            <Save size={16} />
-            {saving ? 'Guardando...' : saved ? 'Guardado' : 'Guardar Cambios'}
-          </button>
+      {/* Filtros */}
+      <div style={{ marginBottom: tokens.spacing.lg }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: tokens.spacing.md, alignItems: 'end' }}>
+          <Select label="Plaza" value={plaza} onChange={(e) => setPlaza(e.target.value)} options={plazaOptions} />
+          <Select label="Tipo de Equipo" value={tipoEquipo} onChange={(e) => setTipoEquipo(e.target.value)} options={equipoOptions} />
+          <Button onClick={handleBuscar} variant="secondary">Buscar Clientes</Button>
         </div>
       </div>
+
+      {/* Tabla */}
+      <div style={{ marginBottom: tokens.spacing.lg }}>
+        <Card noPadding>
+          <DataTable
+            columns={clienteColumns}
+            data={clientes}
+            loading={loading}
+            emptyMessage="No hay clientes con viajes en los últimos 90 días"
+          />
+        </Card>
+      </div>
+
+      {/* Enviar oferta */}
+      <Button
+        onClick={handleEnviarOferta}
+        variant="primary"
+        disabled={selectedClientes.size === 0}
+        style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing.sm }}
+      >
+        <MessageSquare size={18} />
+        Enviar Oferta por WhatsApp ({selectedClientes.size})
+      </Button>
     </ModuleLayout>
-  );
+  )
 }

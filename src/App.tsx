@@ -91,7 +91,6 @@ import ProgramacionDedicados from './pages/operaciones/ProgramacionDedicados'
 import ConfigIntegraciones from './pages/admin/ConfigIntegraciones'
 import DocumentosCompania from './pages/admin/DocumentosCompania'
 import TerminalesConfig from './pages/admin/TerminalesConfig'
-import InventarioObjetivoConfig from './pages/admin/InventarioObjetivoConfig'
 import DashboardOperaciones from './pages/operaciones/DashboardOperaciones'
 import ControlEquipo from './pages/ControlEquipo'
 import DashboardComunicaciones from './pages/comunicaciones/DashboardComunicaciones'
@@ -177,11 +176,7 @@ function App() {
               <NuevaCotizacion />
             </ProtectedRoute>
           } />
-          <Route path="/cotizador/tarifas" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'pricing']}>
-              <NuevaCotizacion />
-            </ProtectedRoute>
-          } />
+          {/* V50 26/Abr/2026 — BUG-005: ruta /cotizador/tarifas eliminada (duplicaba /cotizador/nueva) */}
 
           {/* ——— Firma Digital ——— */}
           <Route path="/cotizador/firma-digital" element={
@@ -501,12 +496,7 @@ function App() {
           {/* ——— Briefing individual (protegido) ——— */}
           <Route path="/briefing/:id" element={<BriefingChiefOfStaff />} />
 
-          {/* ——— Panel Integraciones ——— */}
-          <Route path="/admin/integraciones" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
-              <PanelIntegraciones />
-            </ProtectedRoute>
-          } />
+          {/* V50 26/Abr/2026 — BUG-017: /admin/integraciones eliminada (duplicaba /admin/configuracion/integraciones) */}
 
           {/* ——— Programación Dedicados ——— */}
           <Route path="/operaciones/programacion-dedicados" element={
@@ -561,12 +551,6 @@ function App() {
           <Route path="/admin/configuracion/terminales" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin']}>
               <TerminalesConfig />
-            </ProtectedRoute>
-          } />
-          {/* V46 Inventario Objetivo por Terminal (25/Abr/2026) */}
-          <Route path="/admin/configuracion/inventario" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones', 'gerente_ops']}>
-              <InventarioObjetivoConfig />
             </ProtectedRoute>
           } />
 

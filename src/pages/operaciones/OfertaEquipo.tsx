@@ -158,7 +158,7 @@ export default function OfertaEquipo() {
   const handleEnviarOferta = () => {
     const selected = clientes.filter(c => selectedClientes.has(c.id))
     const msg = `Oferta de equipo ${tipoEquipo || 'disponible'} en plaza ${plaza || 'general'}.\nClientes: ${selected.map(c => c.cliente).join(', ')}`
-    console.log('Enviando oferta:', msg)
+    // console.log('Enviando oferta:', msg)
   }
 
   const plazaOptions = [

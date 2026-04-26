@@ -101,6 +101,12 @@ export default function PortalAltaPublico() {
     if (!token) { setError('Token inválido'); setLoading(false); return }
     const { data, error: err } = await supabase.from('alta_clientes').select('*').eq('token', token).single()
     if (err || !data) { setError('Solicitud no encontrada o enlace inválido'); setLoading(false); return }
+    // V50 26/Abr/2026 BUG-026 — validar TTL del token (default 14 días desde creación)
+    if ((data as any).token_expira_at && new Date((data as any).token_expira_at) < new Date()) {
+      setError('Este enlace expiró. Solicita uno nuevo a tu ejecutivo de cuenta.')
+      setLoading(false)
+      return
+    }
     setAlta(data)
     // Restore saved data
     if (data.tipo_empresa) setTipoEmpresa(data.tipo_empresa as any)
