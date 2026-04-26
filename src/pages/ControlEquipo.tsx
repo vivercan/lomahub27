@@ -1296,15 +1296,15 @@ export default function ControlEquipo() {
               </div>
             ) : (
               <>
-                {/* V48 — Cards refinadas: paleta sobria, sin border-left grueso, número 36px (25/Abr/2026) */}
+                {/* V49 — Enterprise look: blanco puro, sin tinte cream "papel Claude" (25/Abr/2026) */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: terminalExpandida ? '18px' : 0 }}>
                   {inventariosPorTerminal.map(inv => {
                     const obj = objetivos.get(inv.terminal.id) || { seca: 2, thermo: 2 }
-                    // Paleta refinada — slate-based, premium, baja saturación
+                    // Paleta enterprise — colores corporate, sin pasteles ni cream
                     const PAL = {
-                      ok:    { txt: '#047857', bar: '#10B981', bg: 'rgba(16,185,129,0.04)', bd: 'rgba(16,185,129,0.35)' },
-                      warn:  { txt: '#B45309', bar: '#F59E0B', bg: 'rgba(245,158,11,0.04)', bd: 'rgba(245,158,11,0.40)' },
-                      err:   { txt: '#B91C1C', bar: '#EF4444', bg: 'rgba(239,68,68,0.04)',  bd: 'rgba(239,68,68,0.40)' },
+                      ok:    { txt: '#0F766E', bar: '#14B8A6', dot: '#14B8A6' },
+                      warn:  { txt: '#C2410C', bar: '#F97316', dot: '#F97316' },
+                      err:   { txt: '#BE123C', bar: '#F43F5E', dot: '#F43F5E' },
                     }
                     const stateFor = (a: number, t: number): keyof typeof PAL => {
                       if (a >= t) return 'ok'
@@ -1324,73 +1324,73 @@ export default function ControlEquipo() {
                         key={inv.terminal.id}
                         onClick={() => setTerminalExpandida(isOpen ? null : inv.terminal.id)}
                         style={{
-                          background: isOpen ? '#F8FAFC' : PAL[sGlobal].bg,
-                          border: isOpen ? '1.5px solid #FF4500' : '1px solid ' + PAL[sGlobal].bd,
-                          borderRadius: '12px',
+                          background: '#FFFFFF',
+                          border: isOpen ? '1.5px solid ' + tokens.colors.primary : '1px solid #E5E7EB',
+                          borderRadius: '10px',
                           padding: '16px',
                           cursor: 'pointer',
-                          transition: 'all 0.18s ease',
+                          transition: 'all 0.15s ease',
                           boxShadow: isOpen
-                            ? '0 2px 8px rgba(255,69,0,0.12), 0 6px 16px rgba(15,23,42,0.06)'
-                            : '0 1px 2px rgba(15,23,42,0.03)',
+                            ? '0 0 0 3px rgba(59,108,231,0.08), 0 4px 12px rgba(15,23,42,0.08)'
+                            : '0 1px 2px rgba(15,23,42,0.04), 0 1px 3px rgba(15,23,42,0.06)',
                           display: 'flex', flexDirection: 'column', gap: '12px',
                           minHeight: '158px',
                         }}
                         onMouseEnter={(e) => {
                           if (!isOpen) {
-                            e.currentTarget.style.transform = 'translateY(-1px)'
-                            e.currentTarget.style.boxShadow = '0 4px 10px rgba(15,23,42,0.06), 0 8px 20px rgba(15,23,42,0.08)'
+                            e.currentTarget.style.borderColor = '#CBD5E1'
+                            e.currentTarget.style.boxShadow = '0 2px 4px rgba(15,23,42,0.06), 0 4px 12px rgba(15,23,42,0.08)'
                           }
                         }}
                         onMouseLeave={(e) => {
                           if (!isOpen) {
-                            e.currentTarget.style.transform = 'translateY(0)'
-                            e.currentTarget.style.boxShadow = '0 1px 2px rgba(15,23,42,0.03)'
+                            e.currentTarget.style.borderColor = '#E5E7EB'
+                            e.currentTarget.style.boxShadow = '0 1px 2px rgba(15,23,42,0.04), 0 1px 3px rgba(15,23,42,0.06)'
                           }
                         }}
                       >
-                        {/* Header: dot semáforo + nombre terminal */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', minWidth: 0 }}>
-                          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: PAL[sGlobal].bar, boxShadow: '0 0 0 3px ' + PAL[sGlobal].bar + '22', flexShrink: 0 }} />
-                          <span style={{ fontFamily: tokens.fonts.heading, fontWeight: 700, fontSize: '15px', color: tokens.colors.textPrimary, letterSpacing: '-0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>
+                        {/* Header: dot prominente + nombre + chip estado */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                          <span style={{ width: '9px', height: '9px', borderRadius: '50%', background: PAL[sGlobal].dot, flexShrink: 0 }} />
+                          <span style={{ fontFamily: tokens.fonts.heading, fontWeight: 600, fontSize: '14px', color: '#0F172A', letterSpacing: '-0.005em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>
                             {inv.terminal.nombre}
                           </span>
                         </div>
 
-                        {/* Número EN PATIO — más sobrio */}
+                        {/* Número EN PATIO — slate corporate */}
                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                          <span style={{ fontFamily: tokens.fonts.heading, fontSize: '36px', fontWeight: 700, color: tokens.colors.textPrimary, lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.025em' }}>
+                          <span style={{ fontFamily: tokens.fonts.heading, fontSize: '34px', fontWeight: 700, color: '#0F172A', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.025em' }}>
                             {inv.total}
                           </span>
-                          <span style={{ fontSize: '10px', fontWeight: 600, color: tokens.colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.10em' }}>
+                          <span style={{ fontSize: '11px', fontWeight: 500, color: '#64748B', letterSpacing: '-0.005em' }}>
                             en patio
                           </span>
                         </div>
 
-                        {/* Barras de progreso SECAS y THERMOS — finas y limpias */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: 'auto' }}>
+                        {/* Barras finas alineadas tipo Linear */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '7px', marginTop: 'auto' }}>
                           {/* SECAS */}
                           <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '3px' }}>
-                              <span style={{ fontSize: '10px', fontWeight: 600, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Secas</span>
-                              <span style={{ fontFamily: tokens.fonts.heading, fontSize: '12px', fontWeight: 700, color: PAL[sSecas].txt, fontVariantNumeric: 'tabular-nums' }}>
-                                {inv.secas}<span style={{ color: tokens.colors.textMuted, fontWeight: 500 }}> / {obj.seca}</span> <span style={{ marginLeft: 3, fontSize: '11px' }}>{iconFor(sSecas)}</span>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+                              <span style={{ fontSize: '11px', fontWeight: 500, color: '#64748B' }}>Secas</span>
+                              <span style={{ fontFamily: tokens.fonts.heading, fontSize: '12px', fontWeight: 600, color: PAL[sSecas].txt, fontVariantNumeric: 'tabular-nums' }}>
+                                {inv.secas}<span style={{ color: '#94A3B8', fontWeight: 500 }}> / {obj.seca}</span> <span style={{ marginLeft: 3, fontSize: '11px' }}>{iconFor(sSecas)}</span>
                               </span>
                             </div>
-                            <div style={{ height: '5px', background: '#E2E8F0', borderRadius: '3px', overflow: 'hidden' }}>
-                              <div style={{ height: '100%', width: pctFor(inv.secas, obj.seca) + '%', background: PAL[sSecas].bar, borderRadius: '3px', transition: 'width 0.3s ease' }} />
+                            <div style={{ height: '4px', background: '#F1F5F9', borderRadius: '2px', overflow: 'hidden' }}>
+                              <div style={{ height: '100%', width: pctFor(inv.secas, obj.seca) + '%', background: PAL[sSecas].bar, borderRadius: '2px', transition: 'width 0.3s ease' }} />
                             </div>
                           </div>
                           {/* THERMOS */}
                           <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '3px' }}>
-                              <span style={{ fontSize: '10px', fontWeight: 600, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Thermos</span>
-                              <span style={{ fontFamily: tokens.fonts.heading, fontSize: '12px', fontWeight: 700, color: PAL[sThermos].txt, fontVariantNumeric: 'tabular-nums' }}>
-                                {inv.thermos}<span style={{ color: tokens.colors.textMuted, fontWeight: 500 }}> / {obj.thermo}</span> <span style={{ marginLeft: 3, fontSize: '11px' }}>{iconFor(sThermos)}</span>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+                              <span style={{ fontSize: '11px', fontWeight: 500, color: '#64748B' }}>Thermos</span>
+                              <span style={{ fontFamily: tokens.fonts.heading, fontSize: '12px', fontWeight: 600, color: PAL[sThermos].txt, fontVariantNumeric: 'tabular-nums' }}>
+                                {inv.thermos}<span style={{ color: '#94A3B8', fontWeight: 500 }}> / {obj.thermo}</span> <span style={{ marginLeft: 3, fontSize: '11px' }}>{iconFor(sThermos)}</span>
                               </span>
                             </div>
-                            <div style={{ height: '5px', background: '#E2E8F0', borderRadius: '3px', overflow: 'hidden' }}>
-                              <div style={{ height: '100%', width: pctFor(inv.thermos, obj.thermo) + '%', background: PAL[sThermos].bar, borderRadius: '3px', transition: 'width 0.3s ease' }} />
+                            <div style={{ height: '4px', background: '#F1F5F9', borderRadius: '2px', overflow: 'hidden' }}>
+                              <div style={{ height: '100%', width: pctFor(inv.thermos, obj.thermo) + '%', background: PAL[sThermos].bar, borderRadius: '2px', transition: 'width 0.3s ease' }} />
                             </div>
                           </div>
                         </div>
@@ -1398,46 +1398,46 @@ export default function ControlEquipo() {
                     )
                   })}
 
-                  {/* Card En Ruta — V48 sutil azul-slate (no compite con semáforos) */}
+                  {/* Card En Ruta — V49 enterprise blanco, dot azul brand */}
                   <div
                     onClick={() => setTerminalExpandida(terminalExpandida === '__ruta__' ? null : '__ruta__')}
                     style={{
-                      background: terminalExpandida === '__ruta__' ? '#F8FAFC' : 'rgba(99,102,241,0.03)',
-                      border: terminalExpandida === '__ruta__' ? '1.5px solid #FF4500' : '1px solid rgba(99,102,241,0.20)',
-                      borderRadius: '12px', padding: '16px', cursor: 'pointer',
-                      transition: 'all 0.18s ease',
-                      boxShadow: '0 1px 2px rgba(15,23,42,0.03)',
+                      background: '#FFFFFF',
+                      border: terminalExpandida === '__ruta__' ? '1.5px solid ' + tokens.colors.primary : '1px solid #E5E7EB',
+                      borderRadius: '10px', padding: '16px', cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      boxShadow: '0 1px 2px rgba(15,23,42,0.04), 0 1px 3px rgba(15,23,42,0.06)',
                       display: 'flex', flexDirection: 'column', gap: '12px',
                       minHeight: '158px',
                     }}
                     onMouseEnter={(e) => {
                       if (terminalExpandida !== '__ruta__') {
-                        e.currentTarget.style.transform = 'translateY(-1px)'
-                        e.currentTarget.style.boxShadow = '0 4px 10px rgba(15,23,42,0.06), 0 8px 20px rgba(15,23,42,0.08)'
+                        e.currentTarget.style.borderColor = '#CBD5E1'
+                        e.currentTarget.style.boxShadow = '0 2px 4px rgba(15,23,42,0.06), 0 4px 12px rgba(15,23,42,0.08)'
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (terminalExpandida !== '__ruta__') {
-                        e.currentTarget.style.transform = 'translateY(0)'
-                        e.currentTarget.style.boxShadow = '0 1px 2px rgba(15,23,42,0.03)'
+                        e.currentTarget.style.borderColor = '#E5E7EB'
+                        e.currentTarget.style.boxShadow = '0 1px 2px rgba(15,23,42,0.04), 0 1px 3px rgba(15,23,42,0.06)'
                       }
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '9px', minWidth: 0 }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6366F1', boxShadow: '0 0 0 3px rgba(99,102,241,0.18)', flexShrink: 0 }} />
-                      <span style={{ fontFamily: tokens.fonts.heading, fontWeight: 700, fontSize: '15px', color: tokens.colors.textPrimary, letterSpacing: '-0.01em', flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                      <span style={{ width: '9px', height: '9px', borderRadius: '50%', background: tokens.colors.primary, flexShrink: 0 }} />
+                      <span style={{ fontFamily: tokens.fonts.heading, fontWeight: 600, fontSize: '14px', color: '#0F172A', letterSpacing: '-0.005em', flex: 1 }}>
                         En Ruta
                       </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                      <span style={{ fontFamily: tokens.fonts.heading, fontSize: '36px', fontWeight: 700, color: '#4F46E5', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.025em' }}>
+                      <span style={{ fontFamily: tokens.fonts.heading, fontSize: '34px', fontWeight: 700, color: tokens.colors.primary, lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.025em' }}>
                         {cajasEnRuta.length}
                       </span>
-                      <span style={{ fontSize: '10px', fontWeight: 600, color: tokens.colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.10em' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 500, color: '#64748B' }}>
                         en tránsito
                       </span>
                     </div>
-                    <div style={{ marginTop: 'auto', fontSize: '10px', color: tokens.colors.textMuted }}>
+                    <div style={{ marginTop: 'auto', fontSize: '11px', color: '#94A3B8' }}>
                       Fuera de geocercas · click para detalle
                     </div>
                   </div>
