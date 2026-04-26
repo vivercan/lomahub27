@@ -173,12 +173,21 @@ export default function NuevaCotizacion() {
     e.preventDefault()
     const v = validate()
     if (v.length) { setErrors(v); return }
+    // V50 (26/Abr/2026) — Validar ejecutivo_id NOT NULL constraint
+    if (!user?.id) {
+      setErrors(['Tu sesión expiró. Recarga la página y vuelve a iniciar sesión antes de guardar.'])
+      return
+    }
+    if (!cliente) {
+      setErrors(['Selecciona un cliente antes de guardar.'])
+      return
+    }
     setErrors([])
     setSaving(true)
     try {
       const { data, error } = await supabase.from('cotizaciones').insert({
         cliente_id: cliente,
-        ejecutivo_id: user?.id,
+        ejecutivo_id: user.id,
         tipo_operacion: tipoOp,
         moneda,
         hazmat,

@@ -54,8 +54,8 @@ export default function NuevoLead(): ReactElement {
   const [viajesMes, setViajesMes] = useState('')
   const [tarifa, setTarifa] = useState('')
   const [proyectadoUsd, setProyectadoUsd] = useState('')
-  const [hitoN4, setHitoN4] = useState('')
-  const [hitoN5, setHitoN5] = useState('')
+  const [hitoN4, setHitoN4] = useState(false)
+  const [hitoN5, setHitoN5] = useState(false)
   const [hitoN6, setHitoN6] = useState(false)
   const [hitoN7, setHitoN7] = useState(false)
   const [dupWarning, setDupWarning] = useState(false)
@@ -161,33 +161,40 @@ export default function NuevoLead(): ReactElement {
         .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
         .join(' ')
 
+      // V50 (26/Abr/2026) — Schema fix: solo columnas que existen en tabla leads.
+      // Datos extra (web, tipo_empresa, estado_mx, prioridad, tamano, fecha_cierre,
+      // transbordo, dtd, proximos_pasos, tarifa, proyectado_usd) se persisten en `notas`
+      // como bloque legible para no perder data del formulario.
+      const notasExtra = [
+        web.trim() && `Web: ${web.trim()}`,
+        tipoEmpresa && `Tipo empresa: ${tipoEmpresa}`,
+        estadoMx.trim() && `Estado MX: ${estadoMx.trim()}`,
+        prioridad && `Prioridad: ${prioridad}`,
+        tamano && `Tamaño: ${tamano}`,
+        fechaCierre && `Fecha cierre: ${fechaCierre}`,
+        `Tipo viaje: FTL · Transbordo: ${transbordo ? 'Sí' : 'No'} · DTD: ${dtd ? 'Sí' : 'No'}`,
+        proximosPasos.trim() && `Próximos pasos: ${proximosPasos.trim()}`,
+        tarifa && `Tarifa: $${tarifa}`,
+        proyectadoUsd && `Proyectado USD: $${proyectadoUsd}`,
+      ].filter(Boolean).join('\n')
+
       const { error: err } = await supabase.from('leads').insert([{
         empresa: empresaTitleCase,
         contacto: contacto.trim(),
         telefono: telefono.trim(),
         email: email.trim(),
-        web: web.trim(),
-        tipo_empresa: tipoEmpresa,
         ciudad: ciudad.trim(),
-        estado_mx: estadoMx.trim(),
-        prioridad,
-        tamano,
-        fecha_cierre: fechaCierre || null,
         tipo_carga: tipoServicio.join(', '),
-        tipo_viaje: 'FTL',
-        transbordo,
-        dtd,
-        proximos_pasos: proximosPasos.trim(),
         ruta_interes: rutas.filter(r => r.trim()).join(' | '),
         viajes_mes: parseInt(viajesMes) || 0,
-        tarifa: parseFloat(tarifa) || 0,
-        proyectado_usd: parseFloat(proyectadoUsd) || 0,
         valor_estimado: parseFloat(proyectadoUsd) || 0,
         estado: 'Nuevo',
         probabilidad: 10,
         fuente: 'Manual',
-        ejecutivo_id: user?.id || '',
+        ejecutivo_id: user?.id || null,
         ejecutivo_nombre: user?.nombre || user?.email || 'Sin asignar',
+        ejecutivo_email: user?.email || null,
+        notas: notasExtra || null,
         fecha_creacion: new Date().toISOString(),
         fecha_ultimo_mov: new Date().toISOString(),
       }])
@@ -339,7 +346,7 @@ export default function NuevoLead(): ReactElement {
   }
 
   return (
-    <ModuleLayout titulo="Agregar Lead" moduloPadre={{ nombre: 'Mis Leads', ruta: '/ventas/mis-leads' }}>
+    <ModuleLayout titulo="Agregar Lead" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/mis-leads' }}>
       {/* MAIN CONTENT — premium V29 sectioned layout */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px', padding: '8px 16px', height: 'calc(100vh - 160px)', overflow: 'hidden' }}>
 

@@ -267,18 +267,20 @@ const ControlTractos: React.FC = () => {
       setSubmitting(true)
       setError(null)
 
+      // V50 (26/Abr/2026) — Schema fix: tabla tractos NO tiene placas, viaje_actual,
+      // operador_asignado, horas_ociosas. Mapeo a columnas reales del schema.
+      // tractos columnas reales: numero_economico, empresa, segmento, estado_operativo,
+      // operador_actual_id, km_acumulados, activo, plaza_id, ubicacion, tipo, estado,
+      // marca, modelo, deleted_at, created_at, updated_at
       if (editingTracto) {
         const { error: updateError } = await supabase
           .from('tractos')
           .update({
             numero_economico: formData.numero_economico,
-            placas: formData.placas,
             marca: formData.marca,
             modelo: formData.modelo,
             estado_operativo: formData.estado_operativo,
-            viaje_actual: formData.viaje_actual,
-            operador_asignado: formData.operador_asignado,
-            horas_ociosas: formData.horas_ociosas || 0,
+            operador_actual_id: formData.operador_asignado || null,
             km_acumulados: formData.km_acumulados || 0,
             empresa: formData.empresa,
             activo: formData.activo,
@@ -290,13 +292,10 @@ const ControlTractos: React.FC = () => {
       } else {
         const { error: insertError } = await supabase.from('tractos').insert({
           numero_economico: formData.numero_economico,
-          placas: formData.placas,
           marca: formData.marca,
           modelo: formData.modelo,
           estado_operativo: formData.estado_operativo || 'disponible',
-          viaje_actual: formData.viaje_actual || null,
-          operador_asignado: formData.operador_asignado || null,
-          horas_ociosas: formData.horas_ociosas || 0,
+          operador_actual_id: formData.operador_asignado || null,
           km_acumulados: formData.km_acumulados || 0,
           empresa: formData.empresa || 'trob',
           activo: formData.activo !== false,
