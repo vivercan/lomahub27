@@ -1296,101 +1296,101 @@ export default function ControlEquipo() {
               </div>
             ) : (
               <>
-                {/* V47 — Grid 3 cols cards GRANDES + mega número + barras progreso visual + semáforo border (25/Abr/2026) */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: terminalExpandida ? '20px' : 0 }}>
+                {/* V48 — Cards refinadas: paleta sobria, sin border-left grueso, número 36px (25/Abr/2026) */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: terminalExpandida ? '18px' : 0 }}>
                   {inventariosPorTerminal.map(inv => {
                     const obj = objetivos.get(inv.terminal.id) || { seca: 2, thermo: 2 }
-                    const colorFor = (a: number, t: number) => {
-                      if (a >= t) return '#0D9668'
-                      if (a >= Math.ceil(t * 0.5)) return '#B8860B'
-                      return '#DC2626'
+                    // Paleta refinada — slate-based, premium, baja saturación
+                    const PAL = {
+                      ok:    { txt: '#047857', bar: '#10B981', bg: 'rgba(16,185,129,0.04)', bd: 'rgba(16,185,129,0.35)' },
+                      warn:  { txt: '#B45309', bar: '#F59E0B', bg: 'rgba(245,158,11,0.04)', bd: 'rgba(245,158,11,0.40)' },
+                      err:   { txt: '#B91C1C', bar: '#EF4444', bg: 'rgba(239,68,68,0.04)',  bd: 'rgba(239,68,68,0.40)' },
                     }
-                    const iconFor = (a: number, t: number) => {
-                      if (a >= t) return '✓'
-                      if (a >= Math.ceil(t * 0.5)) return '◐'
-                      return '!'
+                    const stateFor = (a: number, t: number): keyof typeof PAL => {
+                      if (a >= t) return 'ok'
+                      if (a >= Math.ceil(t * 0.5)) return 'warn'
+                      return 'err'
                     }
+                    const iconFor = (s: keyof typeof PAL) => s === 'ok' ? '✓' : s === 'warn' ? '◐' : '!'
                     const pctFor = (a: number, t: number) => Math.min(100, t === 0 ? 0 : Math.round((a / t) * 100))
-                    const cSecas = colorFor(inv.secas, obj.seca)
-                    const cThermos = colorFor(inv.thermos, obj.thermo)
-                    // Semáforo global = el peor de los dos
-                    const globalColor = (cSecas === '#DC2626' || cThermos === '#DC2626') ? '#DC2626'
-                                      : (cSecas === '#B8860B' || cThermos === '#B8860B') ? '#B8860B'
-                                      : '#0D9668'
+                    const sSecas = stateFor(inv.secas, obj.seca)
+                    const sThermos = stateFor(inv.thermos, obj.thermo)
+                    const sGlobal: keyof typeof PAL = (sSecas === 'err' || sThermos === 'err') ? 'err'
+                                                    : (sSecas === 'warn' || sThermos === 'warn') ? 'warn'
+                                                    : 'ok'
                     const isOpen = terminalExpandida === inv.terminal.id
                     return (
                       <div
                         key={inv.terminal.id}
                         onClick={() => setTerminalExpandida(isOpen ? null : inv.terminal.id)}
                         style={{
-                          background: isOpen ? '#F8FAFC' : '#FFFFFF',
-                          border: isOpen ? '2px solid #FF4500' : '1px solid ' + tokens.colors.border,
-                          borderLeft: isOpen ? '2px solid #FF4500' : '4px solid ' + globalColor,
-                          borderRadius: '14px',
-                          padding: '18px 18px 16px',
+                          background: isOpen ? '#F8FAFC' : PAL[sGlobal].bg,
+                          border: isOpen ? '1.5px solid #FF4500' : '1px solid ' + PAL[sGlobal].bd,
+                          borderRadius: '12px',
+                          padding: '16px',
                           cursor: 'pointer',
                           transition: 'all 0.18s ease',
                           boxShadow: isOpen
-                            ? '0 4px 12px rgba(255,69,0,0.15), 0 8px 24px rgba(15,23,42,0.08)'
-                            : '0 1px 2px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.06)',
-                          display: 'flex', flexDirection: 'column', gap: '14px',
-                          minHeight: '186px',
+                            ? '0 2px 8px rgba(255,69,0,0.12), 0 6px 16px rgba(15,23,42,0.06)'
+                            : '0 1px 2px rgba(15,23,42,0.03)',
+                          display: 'flex', flexDirection: 'column', gap: '12px',
+                          minHeight: '158px',
                         }}
                         onMouseEnter={(e) => {
                           if (!isOpen) {
-                            e.currentTarget.style.transform = 'translateY(-2px)'
-                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,23,42,0.08), 0 12px 24px rgba(15,23,42,0.10)'
+                            e.currentTarget.style.transform = 'translateY(-1px)'
+                            e.currentTarget.style.boxShadow = '0 4px 10px rgba(15,23,42,0.06), 0 8px 20px rgba(15,23,42,0.08)'
                           }
                         }}
                         onMouseLeave={(e) => {
                           if (!isOpen) {
                             e.currentTarget.style.transform = 'translateY(0)'
-                            e.currentTarget.style.boxShadow = '0 1px 2px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.06)'
+                            e.currentTarget.style.boxShadow = '0 1px 2px rgba(15,23,42,0.03)'
                           }
                         }}
                       >
                         {/* Header: dot semáforo + nombre terminal */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
-                          <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: globalColor, boxShadow: '0 0 0 3px ' + globalColor + '22', flexShrink: 0 }} />
-                          <span style={{ fontFamily: tokens.fonts.heading, fontWeight: 700, fontSize: '16px', color: tokens.colors.textPrimary, letterSpacing: '-0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', minWidth: 0 }}>
+                          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: PAL[sGlobal].bar, boxShadow: '0 0 0 3px ' + PAL[sGlobal].bar + '22', flexShrink: 0 }} />
+                          <span style={{ fontFamily: tokens.fonts.heading, fontWeight: 700, fontSize: '15px', color: tokens.colors.textPrimary, letterSpacing: '-0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>
                             {inv.terminal.nombre}
                           </span>
                         </div>
 
-                        {/* Mega número EN PATIO */}
-                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-                          <span style={{ fontFamily: tokens.fonts.heading, fontSize: '46px', fontWeight: 800, color: tokens.colors.textPrimary, lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.03em' }}>
+                        {/* Número EN PATIO — más sobrio */}
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                          <span style={{ fontFamily: tokens.fonts.heading, fontSize: '36px', fontWeight: 700, color: tokens.colors.textPrimary, lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.025em' }}>
                             {inv.total}
                           </span>
-                          <span style={{ fontSize: '11px', fontWeight: 700, color: tokens.colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.10em' }}>
-                            cajas en patio
+                          <span style={{ fontSize: '10px', fontWeight: 600, color: tokens.colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.10em' }}>
+                            en patio
                           </span>
                         </div>
 
-                        {/* Barras de progreso SECAS y THERMOS con semáforo */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {/* Barras de progreso SECAS y THERMOS — finas y limpias */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: 'auto' }}>
                           {/* SECAS */}
                           <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
-                              <span style={{ fontSize: '10px', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Secas</span>
-                              <span style={{ fontFamily: tokens.fonts.heading, fontSize: '14px', fontWeight: 800, color: cSecas, fontVariantNumeric: 'tabular-nums' }}>
-                                {inv.secas}<span style={{ color: tokens.colors.textMuted, fontWeight: 600, fontSize: '12px' }}> / {obj.seca}</span> <span style={{ marginLeft: 4 }}>{iconFor(inv.secas, obj.seca)}</span>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '3px' }}>
+                              <span style={{ fontSize: '10px', fontWeight: 600, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Secas</span>
+                              <span style={{ fontFamily: tokens.fonts.heading, fontSize: '12px', fontWeight: 700, color: PAL[sSecas].txt, fontVariantNumeric: 'tabular-nums' }}>
+                                {inv.secas}<span style={{ color: tokens.colors.textMuted, fontWeight: 500 }}> / {obj.seca}</span> <span style={{ marginLeft: 3, fontSize: '11px' }}>{iconFor(sSecas)}</span>
                               </span>
                             </div>
-                            <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '4px', overflow: 'hidden' }}>
-                              <div style={{ height: '100%', width: pctFor(inv.secas, obj.seca) + '%', background: cSecas, borderRadius: '4px', transition: 'width 0.3s ease' }} />
+                            <div style={{ height: '5px', background: '#E2E8F0', borderRadius: '3px', overflow: 'hidden' }}>
+                              <div style={{ height: '100%', width: pctFor(inv.secas, obj.seca) + '%', background: PAL[sSecas].bar, borderRadius: '3px', transition: 'width 0.3s ease' }} />
                             </div>
                           </div>
                           {/* THERMOS */}
                           <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
-                              <span style={{ fontSize: '10px', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Thermos</span>
-                              <span style={{ fontFamily: tokens.fonts.heading, fontSize: '14px', fontWeight: 800, color: cThermos, fontVariantNumeric: 'tabular-nums' }}>
-                                {inv.thermos}<span style={{ color: tokens.colors.textMuted, fontWeight: 600, fontSize: '12px' }}> / {obj.thermo}</span> <span style={{ marginLeft: 4 }}>{iconFor(inv.thermos, obj.thermo)}</span>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '3px' }}>
+                              <span style={{ fontSize: '10px', fontWeight: 600, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Thermos</span>
+                              <span style={{ fontFamily: tokens.fonts.heading, fontSize: '12px', fontWeight: 700, color: PAL[sThermos].txt, fontVariantNumeric: 'tabular-nums' }}>
+                                {inv.thermos}<span style={{ color: tokens.colors.textMuted, fontWeight: 500 }}> / {obj.thermo}</span> <span style={{ marginLeft: 3, fontSize: '11px' }}>{iconFor(sThermos)}</span>
                               </span>
                             </div>
-                            <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '4px', overflow: 'hidden' }}>
-                              <div style={{ height: '100%', width: pctFor(inv.thermos, obj.thermo) + '%', background: cThermos, borderRadius: '4px', transition: 'width 0.3s ease' }} />
+                            <div style={{ height: '5px', background: '#E2E8F0', borderRadius: '3px', overflow: 'hidden' }}>
+                              <div style={{ height: '100%', width: pctFor(inv.thermos, obj.thermo) + '%', background: PAL[sThermos].bar, borderRadius: '3px', transition: 'width 0.3s ease' }} />
                             </div>
                           </div>
                         </div>
@@ -1398,48 +1398,47 @@ export default function ControlEquipo() {
                     )
                   })}
 
-                  {/* Card En Ruta — V47 mismo lenguaje (mega número + dot ámbar) */}
+                  {/* Card En Ruta — V48 sutil azul-slate (no compite con semáforos) */}
                   <div
                     onClick={() => setTerminalExpandida(terminalExpandida === '__ruta__' ? null : '__ruta__')}
                     style={{
-                      background: terminalExpandida === '__ruta__' ? '#FFF7ED' : '#FFFFFF',
-                      border: terminalExpandida === '__ruta__' ? '2px solid #F59E0B' : '1px solid ' + tokens.colors.border,
-                      borderLeft: terminalExpandida === '__ruta__' ? '2px solid #F59E0B' : '4px solid #B8860B',
-                      borderRadius: '14px', padding: '18px 18px 16px', cursor: 'pointer',
+                      background: terminalExpandida === '__ruta__' ? '#F8FAFC' : 'rgba(99,102,241,0.03)',
+                      border: terminalExpandida === '__ruta__' ? '1.5px solid #FF4500' : '1px solid rgba(99,102,241,0.20)',
+                      borderRadius: '12px', padding: '16px', cursor: 'pointer',
                       transition: 'all 0.18s ease',
-                      boxShadow: '0 1px 2px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.06)',
-                      display: 'flex', flexDirection: 'column', gap: '14px',
-                      minHeight: '186px',
+                      boxShadow: '0 1px 2px rgba(15,23,42,0.03)',
+                      display: 'flex', flexDirection: 'column', gap: '12px',
+                      minHeight: '158px',
                     }}
                     onMouseEnter={(e) => {
                       if (terminalExpandida !== '__ruta__') {
-                        e.currentTarget.style.transform = 'translateY(-2px)'
-                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,23,42,0.08), 0 12px 24px rgba(15,23,42,0.10)'
+                        e.currentTarget.style.transform = 'translateY(-1px)'
+                        e.currentTarget.style.boxShadow = '0 4px 10px rgba(15,23,42,0.06), 0 8px 20px rgba(15,23,42,0.08)'
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (terminalExpandida !== '__ruta__') {
                         e.currentTarget.style.transform = 'translateY(0)'
-                        e.currentTarget.style.boxShadow = '0 1px 2px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.06)'
+                        e.currentTarget.style.boxShadow = '0 1px 2px rgba(15,23,42,0.03)'
                       }
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
-                      <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#B8860B', boxShadow: '0 0 0 3px #B8860B22', flexShrink: 0 }} />
-                      <span style={{ fontFamily: tokens.fonts.heading, fontWeight: 700, fontSize: '16px', color: tokens.colors.textPrimary, letterSpacing: '-0.01em', flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '9px', minWidth: 0 }}>
+                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6366F1', boxShadow: '0 0 0 3px rgba(99,102,241,0.18)', flexShrink: 0 }} />
+                      <span style={{ fontFamily: tokens.fonts.heading, fontWeight: 700, fontSize: '15px', color: tokens.colors.textPrimary, letterSpacing: '-0.01em', flex: 1 }}>
                         En Ruta
                       </span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-                      <span style={{ fontFamily: tokens.fonts.heading, fontSize: '46px', fontWeight: 800, color: '#B8860B', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.03em' }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                      <span style={{ fontFamily: tokens.fonts.heading, fontSize: '36px', fontWeight: 700, color: '#4F46E5', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.025em' }}>
                         {cajasEnRuta.length}
                       </span>
-                      <span style={{ fontSize: '11px', fontWeight: 700, color: tokens.colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.10em' }}>
-                        cajas en tránsito
+                      <span style={{ fontSize: '10px', fontWeight: 600, color: tokens.colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.10em' }}>
+                        en tránsito
                       </span>
                     </div>
-                    <div style={{ marginTop: 'auto', fontSize: '11px', color: tokens.colors.textMuted, fontStyle: 'italic' }}>
-                      Fuera de todas las geocercas · click para detalle
+                    <div style={{ marginTop: 'auto', fontSize: '10px', color: tokens.colors.textMuted }}>
+                      Fuera de geocercas · click para detalle
                     </div>
                   </div>
                 </div>
