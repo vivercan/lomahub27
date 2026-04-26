@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ModuleLayout } from '../components/layout/ModuleLayout'
 import { Card } from '../components/ui/Card'
+import { Badge } from '../components/ui/Badge'  // V50 26/Abr/2026 — Badge sólido 3D
 import { tokens } from '../lib/tokens'
 import { supabase } from '../lib/supabase'
 
@@ -132,7 +133,8 @@ export default function ControlEquipo() {
   const [filtroTipo, setFiltroTipo] = useState('')
   const [filtroEstado, setFiltroEstado] = useState('')
   const [busqueda, setBusqueda] = useState('')
-  const [vista, setVista] = useState<'mapa' | 'tabla' | 'criticos' | 'reportes' | 'inventarios'>('mapa')
+  // V50 26/Abr/2026 — JJ pidió que abra en Inventarios por default (no Mapa)
+  const [vista, setVista] = useState<'mapa' | 'tabla' | 'criticos' | 'reportes' | 'inventarios'>('inventarios')
   const [umbralDias, setUmbralDias] = useState(3)
 
   // ─── Reportes state ────────────────────────────────────────
@@ -875,16 +877,9 @@ export default function ControlEquipo() {
                           {c.empresa}
                         </td>
                         <td style={{ padding: '10px 12px' }}>
-                          <span style={{
-                            padding: '3px 10px',
-                            borderRadius: '20px',
-                            fontSize: '11px',
-                            fontWeight: 600,
-                            backgroundColor: c.tipoNorm === 'seca' ? 'rgba(249,115,22,0.1)' : 'rgba(8,145,178,0.1)',
-                            color: c.tipoNorm === 'seca' ? '#F97316' : '#0891B2',
-                          }}>
+                          <Badge color={c.tipoNorm === 'seca' ? 'orange' : 'blue'}>
                             {c.tipoNorm === 'seca' ? 'Seca' : 'Thermo'}
-                          </span>
+                          </Badge>
                         </td>
                         <td style={{ padding: '10px 12px' }}>
                           {c.conGPS ? (
@@ -1026,16 +1021,9 @@ export default function ControlEquipo() {
                             {c.empresa}
                           </td>
                           <td style={{ padding: '10px 12px' }}>
-                            <span style={{
-                              padding: '3px 10px',
-                              borderRadius: '20px',
-                              fontSize: '11px',
-                              fontWeight: 600,
-                              backgroundColor: c.tipoNorm === 'seca' ? 'rgba(249,115,22,0.1)' : 'rgba(8,145,178,0.1)',
-                              color: c.tipoNorm === 'seca' ? '#F97316' : '#0891B2',
-                            }}>
+                            <Badge color={c.tipoNorm === 'seca' ? 'orange' : 'blue'}>
                               {c.tipoNorm === 'seca' ? 'Seca' : 'Thermo'}
-                            </span>
+                            </Badge>
                           </td>
                           <td style={{ padding: '10px 12px', color: tokens.colors.textSecondary, fontSize: '12px' }}>
                             {c.ultimaSenal}
@@ -1209,16 +1197,9 @@ export default function ControlEquipo() {
                             {r.empresa}
                           </td>
                           <td style={{ padding: '10px 12px' }}>
-                            <span style={{
-                              padding: '3px 10px',
-                              borderRadius: '20px',
-                              fontSize: '11px',
-                              fontWeight: 600,
-                              backgroundColor: r.tipo === 'Thermo' ? 'rgba(8,145,178,0.1)' : 'rgba(249,115,22,0.1)',
-                              color: r.tipo === 'Thermo' ? '#0891B2' : '#F97316',
-                            }}>
+                            <Badge color={r.tipo === 'Thermo' ? 'blue' : 'orange'}>
                               {r.tipo}
-                            </span>
+                            </Badge>
                           </td>
                           <td style={{ padding: '10px 12px', color: tokens.colors.textPrimary, fontWeight: 600 }}>
                             {r.totalRegistros}
