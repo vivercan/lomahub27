@@ -165,7 +165,7 @@ export default function HomeDashboard() {
     'servicio-clientes': { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#2B5FB5', gradient: 'linear-gradient(135deg, #2B5FB5 0%, #0B2E68 100%)', iconFile: 'servicio-al-cliente.svg', statusDot: 'green', statusText: 'Tickets · KPIs · Programación' },
     'comercial': { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#224CA0', gradient: 'linear-gradient(135deg, #224CA0 0%, #062348 100%)', iconFile: 'comercial.svg', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics' },
     'operaciones': { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#3D78D6', gradient: 'linear-gradient(135deg, #3D78D6 0%, #134287 100%)', iconFile: 'camion-contenedor-v2.svg', statusDot: 'green', statusText: 'Despachos · Seguimiento' },
-    'ventas': { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#F09830', gradient: 'linear-gradient(135deg, #F09830 0%, #9A4E0E 100%)', iconFile: 'ingresos.svg', statusDot: 'green', statusText: 'Analytics · KPIs' },
+    // V50 26/Abr/2026 BUG-002: card 'ventas' eliminada (duplicaba 'comercial'). Analytics accesible vía Comercial → Ventas Analytics.
     'comunicaciones': { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#4078D0', gradient: 'linear-gradient(135deg, #4078D0 0%, #153E88 100%)', iconFile: 'comunicaciones.svg', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA' },
     'autofomento': { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#3A72CF', gradient: 'linear-gradient(135deg, #3A72CF 0%, #153E82 100%)', iconFile: 'gps.svg', statusDot: 'green', statusText: 'GPS · Cajas · Tractos · Thermos' },
     'config': { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#3F4856', gradient: 'linear-gradient(135deg, #3F4856 0%, #0F1620 100%)', iconFile: 'configuracion.svg', statusDot: 'gray', statusText: '' },
@@ -588,14 +588,7 @@ export default function HomeDashboard() {
               <div style={{ position: 'absolute', left: 'calc(34% - 8%)', top: '-30%', width: `${14 * brightWidthMult}%`, height: '160%', background: `rgba(255,255,255,${0.10 * mult * opacityMult})`, transform: 'rotate(34deg)', transformOrigin: 'center center', pointerEvents: 'none', transition: baseTransition }} />
             </>
           )
-        case 'ventas':
-          /* V60 — Ventas: -3% adicional (0.498 * 0.97 = 0.483) */
-          return (
-            <>
-              <div style={{ position: 'absolute', left: '52%', top: '-30%', width: `${30 * brightWidthMult}%`, height: '160%', background: `rgba(255,255,255,${strongerOpacity * 0.483})`, transform: 'rotate(38deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
-              <div style={{ position: 'absolute', left: '70%', top: '-30%', width: '12%', height: '160%', background: `rgba(255,255,255,${baseOpacity * 0.483})`, transform: 'rotate(44deg)', transformOrigin: 'top left', pointerEvents: 'none', transition: baseTransition }} />
-            </>
-          )
+        // V50 26/Abr/2026 — case 'ventas' eliminado (BUG-002, card removida)
         case 'comunicaciones':
           return (
             <>
@@ -746,7 +739,6 @@ export default function HomeDashboard() {
                   'servicio-clientes': '0.3s',
                   'comercial': '0.7s',
                   'operaciones': '1.1s',
-                  'ventas': '1.5s',
                   'comunicaciones': '0.5s',
                   'autofomento': '0.9s',
                 }

@@ -80,32 +80,45 @@ export default function FlotaMaster() {
   }, [unidades, gpsMap])
 
   const saveUnidad = async (u: Partial<UnidadFlota> & { numero_economico: string }, isNew: boolean) => {
-    if (isNew) {
-      await supabase.from('flota_master').insert([{
-        numero_economico: u.numero_economico,
-        tipo: u.tipo || 'tracto',
-        linea: u.linea || null,
-        empresa: u.empresa || u.linea || null,
-        activo: u.activo !== false,
-        origen: 'MANUAL_UI',
-      }])
-    } else {
-      await supabase.from('flota_master').update({
-        tipo: u.tipo,
-        linea: u.linea || null,
-        empresa: u.empresa || u.linea || null,
-        activo: u.activo,
-        notas: u.notas || null,
-      }).eq('numero_economico', u.numero_economico)
+    // V50 26/Abr/2026 BUG-014 — try/catch hardening
+    try {
+      if (isNew) {
+        const { error } = await supabase.from('flota_master').insert([{
+          numero_economico: u.numero_economico,
+          tipo: u.tipo || 'tracto',
+          linea: u.linea || null,
+          empresa: u.empresa || u.linea || null,
+          activo: u.activo !== false,
+          origen: 'MANUAL_UI',
+        }])
+        if (error) throw error
+      } else {
+        const { error } = await supabase.from('flota_master').update({
+          tipo: u.tipo,
+          linea: u.linea || null,
+          empresa: u.empresa || u.linea || null,
+          activo: u.activo,
+          notas: u.notas || null,
+        }).eq('numero_economico', u.numero_economico)
+        if (error) throw error
+      }
+      setEditing(null)
+      setAdding(false)
+      loadAll()
+    } catch (err: any) {
+      console.error('Error guardando unidad flota:', err)
+      alert('Error guardando: ' + (err?.message || 'desconocido'))
     }
-    setEditing(null)
-    setAdding(false)
-    loadAll()
   }
 
   const toggleActivo = async (ne: string, next: boolean) => {
-    await supabase.from('flota_master').update({ activo: next }).eq('numero_economico', ne)
-    loadAll()
+    try {
+      const { error } = await supabase.from('flota_master').update({ activo: next }).eq('numero_economico', ne)
+      if (error) throw error
+      loadAll()
+    } catch (err: any) {
+      console.error('Error toggle activo:', err)
+    }
   }
 
   const TipoIcon = ({ t }: { t: string }) => (

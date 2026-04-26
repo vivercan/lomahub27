@@ -7,7 +7,7 @@ import { KPICard } from '../../components/ui/KPICard'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 
-interface Notificación {
+interface Notificacion {
   id: string
   titulo: string
   mensaje: string
@@ -46,7 +46,7 @@ const prioridadColores: Record<string, 'red' | 'yellow' | 'gray'> = {
 }
 
 export default function Notificaciones() {
-  const [notificaciones, setNotificaciones] = useState<Notificación[]>([])
+  const [notificaciones, setNotificaciones] = useState<Notificacion[]>([])
   const [loading, setLoading] = useState(true)
   const [filtroTipo, setFiltroTipo] = useState<string | null>(null)
   const [soloNoLeidas, setSoloNoLeidas] = useState(false)
@@ -67,15 +67,22 @@ export default function Notificaciones() {
   }
 
   async function marcarLeida(id: string) {
-    await supabase.from('notificaciones').update({ leida: true }).eq('id', id)
-    setNotificaciones(prev => prev.map(n => n.id === id ? { ...n, leida: true } : n))
+    // V50 26/Abr/2026 BUG-014 — try/catch hardening
+    try {
+      const { error } = await supabase.from('notificaciones').update({ leida: true }).eq('id', id)
+      if (error) throw error
+      setNotificaciones(prev => prev.map(n => n.id === id ? { ...n, leida: true } : n))
+    } catch (err) { console.error('Error marcando notificación leída:', err) }
   }
 
   async function marcarTodasLeidas() {
     const ids = notificaciones.filter(n => !n.leida).map(n => n.id)
     if (ids.length === 0) return
-    await supabase.from('notificaciones').update({ leida: true }).in('id', ids)
-    setNotificaciones(prev => prev.map(n => ({ ...n, leida: true })))
+    try {
+      const { error } = await supabase.from('notificaciones').update({ leida: true }).in('id', ids)
+      if (error) throw error
+      setNotificaciones(prev => prev.map(n => ({ ...n, leida: true })))
+    } catch (err) { console.error('Error marcando todas:', err) }
   }
 
   const filtered = notificaciones.filter(n => {
