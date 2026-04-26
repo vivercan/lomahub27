@@ -2,21 +2,26 @@ import { supabase } from '../../lib/supabase'
 import { ModuleDashboardGrid } from '../../components/dashboard/ModuleDashboardGrid'
 import type { CardDef } from '../../components/dashboard/ModuleDashboardGrid'
 
-/* ———————————————————————————————————————————————————————————————
-   OPERACIONES — Landing Page V4.2 (patrón Catálogos, 25/Abr/2026)
-   9 cards con subtítulo descriptivo + mojibake header limpiado.
-   ——————————————————————————————————————————————————————————————— */
+/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+   OPERACIONES â Landing Page V4.1
+   9 cards: eliminados Cajas (â Control Equipo), Dedicados, Cruce,
+   Temp., Oferta, Rentabilidad (â Comercial).
+   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
 const CARDS: CardDef[] = [
-  { id: 'despachos',      label: 'Despachos',         route: '/operaciones/despachos',              kpiLabel: 'Asignaciones',   iconSet: 'hugeicons', iconName: 'delivery-truck-01',  subtitle: 'Asignación de equipo a viajes' },
-  { id: 'torre_control',  label: 'Torre de Control',  route: '/operaciones/torre-control',          kpiLabel: 'Viajes activos', iconSet: 'hugeicons', iconName: 'satellite-02',       subtitle: 'Seguimiento en vivo' },
-  { id: 'mapa_gps',       label: 'Mapa GPS',          route: '/operaciones/mapa',                   kpiLabel: 'Unidades',       iconSet: 'hugeicons', iconName: 'maps-location-01',   subtitle: 'Posición en tiempo real' },
-  { id: 'tractos',        label: 'Control Tractos',   route: '/operaciones/tractos',                kpiLabel: 'Activos',        iconSet: 'hugeicons', iconName: 'truck-01',           subtitle: 'Estado y disponibilidad de tractos' },
-  { id: 'disponibilidad', label: 'Disponibilidad',    route: '/operaciones/disponibilidad',         kpiLabel: 'Equipo',         iconSet: 'hugeicons', iconName: 'checkmark-circle-01', subtitle: 'Equipo libre por terminal' },
-  { id: 'planeacion',     label: 'Planeación Flota',  route: '/operaciones/planeacion-flota',       kpiLabel: 'Unidades',       iconSet: 'hugeicons', iconName: 'route-01',           subtitle: 'Ruteo y asignación de flota' },
-  { id: 'prog_impex',     label: 'Prog. IMPEX',       route: '/operaciones/programacion-impex',     kpiLabel: 'Programados',    iconSet: 'hugeicons', iconName: 'ship-02',            subtitle: 'Cruces y citas IMPO/EXPO' },
-  { id: 'prog_dedicados', label: 'Prog. Dedicados',   route: '/operaciones/programacion-dedicados', kpiLabel: 'Programados',    iconSet: 'hugeicons', iconName: 'calendar-check-01',  subtitle: 'Rutas dedicadas semana' },
-  { id: 'war_room',       label: 'War Room',          route: '/war-room',                           kpiLabel: 'Alertas',        iconSet: 'hugeicons', iconName: 'alert-diamond',      subtitle: 'Alertas críticas en vivo' },
+  { id: 'despachos',      label: 'Despachos',         route: '/operaciones/despachos',              kpiLabel: 'Asignaciones',   iconSet: 'hugeicons', iconName: 'delivery-truck-01' },
+  { id: 'torre_control',  label: 'Torre de Control',  route: '/operaciones/torre-control',          kpiLabel: 'Viajes activos', iconSet: 'hugeicons', iconName: 'satellite-02' },
+  { id: 'mapa_gps',       label: 'Mapa GPS',          route: '/operaciones/mapa',                   kpiLabel: 'Unidades',       iconSet: 'hugeicons', iconName: 'maps-location-01' },
+  { id: 'tractos',        label: 'Control Tractos',   route: '/operaciones/tractos',                kpiLabel: 'Activos',        iconSet: 'hugeicons', iconName: 'truck-01' },
+  { id: 'cajas',          label: 'Control Cajas',     route: '/operaciones/cajas',                  kpiLabel: 'Activas',        iconSet: 'hugeicons', iconName: 'package-receive' },
+  { id: 'disponibilidad', label: 'Disponibilidad',    route: '/operaciones/disponibilidad',         kpiLabel: 'Equipo',         iconSet: 'hugeicons', iconName: 'checkmark-circle-01' },
+  { id: 'planeacion',     label: 'Planeacion Flota',  route: '/operaciones/planeacion-flota',       kpiLabel: 'Unidades',       iconSet: 'hugeicons', iconName: 'route-01' },
+  { id: 'prog_impex',     label: 'Prog. IMPEX',       route: '/operaciones/programacion-impex',     kpiLabel: 'Programados',    iconSet: 'hugeicons', iconName: 'ship-02' },
+  { id: 'prog_dedicados', label: 'Prog. Dedicados',   route: '/operaciones/programacion-dedicados', kpiLabel: 'Programados',    iconSet: 'hugeicons', iconName: 'calendar-check-01' },
+  { id: 'cruce_fronterizo', label: 'Cruce Fronterizo', route: '/operaciones/cruce-fronterizo',      kpiLabel: 'Pendientes',     iconSet: 'hugeicons', iconName: 'route-block' },
+  { id: 'control_temp',   label: 'Control Temperatura', route: '/operaciones/control-temperatura',  kpiLabel: 'Activos',        iconSet: 'hugeicons', iconName: 'thermometer' },
+  { id: 'documentos',     label: 'Documentos',        route: '/documentos',                         kpiLabel: 'Repositorio',    iconSet: 'hugeicons', iconName: 'file-empty-02' },
+  { id: 'war_room',       label: 'War Room',          route: '/war-room',                           kpiLabel: 'Alertas',        iconSet: 'hugeicons', iconName: 'alert-diamond' },
 ]
 
 async function fallbackFetch(): Promise<Record<string, number>> {

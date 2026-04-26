@@ -33,7 +33,7 @@ interface Lead {
   proyectado_usd: number
   fecha_creacion: string
   fecha_ultimo_mov: string
-  eliminado?: boolean
+  deleted_at?: string | null  // V50 26/Abr/2026 — schema fix: tabla leads usa deleted_at, no `eliminado`
 }
 
 interface AnalysisResult {
@@ -50,7 +50,7 @@ const PIPELINE_STAGES = [
   { id: 'Nuevo', label: 'Nuevo', color: tokens.colors.blue },
   { id: 'Contactado', label: 'Contactado', color: tokens.colors.yellow },
   { id: 'Cotizado', label: 'Cotizado', color: tokens.colors.orange },
-  { id: 'Negociación', label: 'Negociación', color: '#A855F7' },
+  { id: 'Negociacion', label: 'Negociación', color: '#A855F7' },
   { id: 'Cerrado Ganado', label: 'Cerrado Ganado', color: tokens.colors.green },
   { id: 'Cerrado Perdido', label: 'Cerrado Perdido', color: tokens.colors.red },
 ]
@@ -165,9 +165,11 @@ export default function MisLeads() {
 
   const handleSoftDelete = async (lead: Lead) => {
     try {
-      const { error } = await supabase.from('leads').update({ eliminado: true }).eq('id', lead.id)
+      // V50 26/Abr/2026 — schema fix: usar deleted_at (no `eliminado` que no existe)
+      const nowIso = new Date().toISOString()
+      const { error } = await supabase.from('leads').update({ deleted_at: nowIso }).eq('id', lead.id)
       if (error) throw error
-      setLeads(leads.map(l => l.id === lead.id ? { ...l, eliminado: true } : l))
+      setLeads(leads.map(l => l.id === lead.id ? { ...l, deleted_at: nowIso } : l))
     } catch (err) {
       console.error('Error deleting lead:', err)
     }
@@ -176,9 +178,9 @@ export default function MisLeads() {
 
   const handleRestore = async (lead: Lead) => {
     try {
-      const { error } = await supabase.from('leads').update({ eliminado: false }).eq('id', lead.id)
+      const { error } = await supabase.from('leads').update({ deleted_at: null }).eq('id', lead.id)
       if (error) throw error
-      setLeads(leads.map(l => l.id === lead.id ? { ...l, eliminado: false } : l))
+      setLeads(leads.map(l => l.id === lead.id ? { ...l, deleted_at: null } : l))
     } catch (err) {
       console.error('Error restoring lead:', err)
     }
@@ -330,8 +332,8 @@ export default function MisLeads() {
     URL.revokeObjectURL(url)
   }
 
-  // Filter logic
-  let filteredLeads = leads.filter(l => showDeleted ? l.eliminado === true : !l.eliminado)
+  // Filter logic — V50 26/Abr/2026: usar deleted_at en vez de eliminado
+  let filteredLeads = leads.filter(l => showDeleted ? l.deleted_at != null : l.deleted_at == null)
   if (searchTerm) {
     const term = searchTerm.toLowerCase()
     filteredLeads = filteredLeads.filter(l =>
@@ -366,8 +368,8 @@ export default function MisLeads() {
   const safeCurrentPage = Math.min(currentPage, Math.max(1, totalPages))
   const paginatedLeads = filteredLeads.slice((safeCurrentPage - 1) * rowsPerPage, safeCurrentPage * rowsPerPage)
 
-  const totalActive = leads.filter(l => !l.eliminado).length
-  const totalValue = leads.filter(l => !l.eliminado).reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0)
+  const totalActive = leads.filter(l => l.deleted_at == null).length
+  const totalValue = leads.filter(l => l.deleted_at == null).reduce((sum, l) => sum + (l.proyectado_usd || l.valor_estimado || 0), 0)
   const isSuperAdmin = user?.rol === 'superadmin'
 
   // Styles

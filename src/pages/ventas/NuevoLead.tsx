@@ -123,7 +123,8 @@ export default function NuevoLead(): ReactElement {
       } else {
         // No duplicates - call enrichment API
         try {
-          const { data: enrichData } = await supabase.functions.invoke('enrich-lead', {
+          // V50 26/Abr/2026 — Edge fn renamed: 'enrich-lead' no existe deployed, usar 'prospeccion-enriquecer'
+          const { data: enrichData } = await supabase.functions.invoke('prospeccion-enriquecer', {
             body: { empresa: empresa.trim() }
           })
 
