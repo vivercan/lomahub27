@@ -7,6 +7,7 @@ import { tokens } from '../../lib/tokens'
 import {
   Plus, Edit2, Trash2, MapPin, Search, X, CheckCircle, AlertCircle, Loader2, ChevronDown
 } from 'lucide-react'
+import { confirmDialog } from '../../components/ui/ConfirmModal'
 
 /* ——— Types ——————————————————————————————————————— */
 
@@ -242,7 +243,7 @@ export default function TerminalesConfig() {
   }
 
   const handleDelete = async (t: Terminal) => {
-    if (!confirm(`¿Desactivar terminal "${t.nombre}"? Se usará soft-delete.`)) return
+    if (!await confirmDialog({ message: `¿Desactivar terminal "${t.nombre}"? Se usará soft-delete.`, danger: true })) return
     try {
       setDeletingId(t.id)
       const { error: err } = await supabase

@@ -9,6 +9,7 @@ import { Badge } from '../../components/ui/Badge'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 import { useAuthContext } from '../../hooks/AuthContext'
+import { confirmDialog } from '../../components/ui/ConfirmModal'
 
 interface Documento {
   id: string
@@ -102,7 +103,7 @@ export default function DocumentosCompania() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('¿Eliminar este documento? (soft delete)')) return
+    if (!await confirmDialog({ message: '¿Eliminar este documento? (soft delete)', danger: true })) return
     try {
       await supabase.from('documentos').update({ deleted_at: new Date().toISOString() }).eq('id', id)
       load()

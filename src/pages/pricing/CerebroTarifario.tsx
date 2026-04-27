@@ -8,6 +8,7 @@ import { Badge } from '../../components/ui/Badge'
 import { KPICard } from '../../components/ui/KPICard'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
+import { confirmDialog } from '../../components/ui/ConfirmModal'
 
 /* –– Interfaces –– */
 interface TarifaMX {
@@ -324,7 +325,7 @@ export default function CerebroTarifario() /* renamed: Parámetros de Cotizació
 
   /* –– Delete row (soft delete) –– */
   async function handleDelete(table: string, id: string, label: string) {
-    if (!confirm(`¿Eliminar "${label}"? Se desactivará del sistema.`)) return
+    if (!await confirmDialog({ message: `¿Eliminar "${label}"? Se desactivará del sistema.`, danger: true })) return
     setSaving(true)
     const { error } = await supabase.from(table).update({ activo: false, updated_at: new Date().toISOString() }).eq('id', id)
     if (!error) {

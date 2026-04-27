@@ -5,6 +5,7 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 import { toast } from '../../components/ui/Toast'
+import { confirmDialog } from '../../components/ui/ConfirmModal'
 
 interface Lead {
   id: string
@@ -98,7 +99,7 @@ export default function FichaLead() {
 
   const handleConvertToClient = async () => {
     if (!lead || converting) return
-    if (!confirm('¿Convertir este lead a Cliente (Cerrado Ganado)?')) return
+    if (!await confirmDialog({ message: '¿Convertir este lead a Cliente (Cerrado Ganado)?', danger: false })) return
     try {
       setConverting(true)
       const { error } = await supabase
