@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { Upload, CheckCircle, AlertCircle, FileText, Shield, Loader2, ChevronRight, ChevronLeft, Building2, Users, Globe } from 'lucide-react'
+import { toast } from '../../components/ui/Toast'
 
 /* ───────────────────────────────────────────────────────────────
    PORTAL PÚBLICO — Solicitud de Alta (Sin login, acceso por token)
@@ -155,18 +156,18 @@ export default function PortalAltaPublico() {
 
   const handleUpload = async (docKey: string, file: File) => {
     if (!alta) return
-    if (file.size > MAX_FILE) { alert('Archivo excede 10MB'); return }
+    if (file.size > MAX_FILE) { toast.warn('Archivo excede 10MB'); return }
     setUploading(docKey)
     try {
       const ext = file.name.split('.').pop() || 'pdf'
       const path = `alta/${alta.id}/${docKey}.${ext}`
       const { error: upErr } = await supabase.storage.from('documentos_onboarding').upload(path, file, { cacheControl: '3600', upsert: true })
-      if (upErr) { alert('Error: ' + upErr.message); setUploading(null); return }
+      if (upErr) { toast.error('Error: ' + upErr.message); setUploading(null); return }
       const { data: urlData } = supabase.storage.from('documentos_onboarding').getPublicUrl(path)
       const newUrls = { ...docUrls, [docKey]: urlData.publicUrl }
       setDocUrls(newUrls)
       await supabase.from('alta_clientes').update({ documentos_urls: newUrls, updated_at: new Date().toISOString() }).eq('id', alta.id)
-    } catch (e) { alert('Error inesperado') }
+    } catch (e) { toast.error('Error inesperado') }
     setUploading(null)
   }
 
@@ -211,7 +212,7 @@ export default function PortalAltaPublico() {
           },
         })
       }
-    } catch (e) { alert('Error al firmar') }
+    } catch (e) { toast.error('Error al firmar') }
     setSigning(false)
   }
 

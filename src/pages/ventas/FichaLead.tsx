@@ -4,6 +4,7 @@ import { Phone, Mail, MapPin, Building2, TrendingUp, User, Calendar, ArrowLeft, 
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
+import { toast } from '../../components/ui/Toast'
 
 interface Lead {
   id: string
@@ -108,14 +109,14 @@ export default function FichaLead() {
       setLead({ ...lead, estado: 'Cerrado Ganado', fecha_ultimo_mov: new Date().toISOString() })
     } catch (err) {
       console.error('Error converting lead:', err)
-      alert('Error al convertir el lead.')
+      toast.error('Error al convertir el lead.')
     } finally {
       setConverting(false)
     }
   }
 
   const handleWhatsApp = () => {
-    if (!lead?.telefono) { alert('Este lead no tiene teléfono registrado.'); return }
+    if (!lead?.telefono) { toast.error('Este lead no tiene teléfono registrado.'); return }
     const phone = lead.telefono.replace(/\\D/g, '')
     const msg = encodeURIComponent(`Hola, me comunico de parte de LOMA respecto a ${lead.empresa || 'su empresa'}.`)
     window.open(`https://wa.me/${phone}?text=${msg}`, '_blank')
@@ -128,7 +129,7 @@ export default function FichaLead() {
   const handleFileSelected = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file || !lead) return
-    if (file.type !== 'application/pdf') { alert('Por favor selecciona un archivo PDF'); return }
+    if (file.type !== 'application/pdf') { toast.info('Por favor selecciona un archivo PDF'); return }
     try {
       const reader = new FileReader()
       reader.onload = async (e) => {
@@ -137,12 +138,12 @@ export default function FichaLead() {
           const { data, error } = await supabase.functions.invoke('analisis-cotizacion', {
             body: { file_base64: base64Content, filename: file.name, lead_id: lead.id, lead_empresa: lead.empresa }
           })
-          if (error) { console.error(error); alert('Error al analizar la cotización.'); return }
-          if (data) { alert(`Cotización analizada: ${data.resumen || 'OK'}`); }
-        } catch (err) { console.error(err); alert('Error al analizar la cotización.') }
+          if (error) { console.error(error); toast.error('Error al analizar la cotización.'); return }
+          if (data) { toast.success(`Cotización analizada: ${data.resumen || 'OK'}`); }
+        } catch (err) { console.error(err); toast.error('Error al analizar la cotización.') }
       }
       reader.readAsDataURL(file)
-    } catch (err) { console.error(err); alert('Error al leer el archivo.') }
+    } catch (err) { console.error(err); toast.error('Error al leer el archivo.') }
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 

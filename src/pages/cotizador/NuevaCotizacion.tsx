@@ -10,6 +10,7 @@ import { supabase } from '../../lib/supabase'
 import { useFxRate } from '../../hooks/useFxRate'
 import { useAuthContext } from '../../hooks/AuthContext'
 import type { ReactNode } from 'react'
+import { toast } from '../../components/ui/Toast'
 
 /* ── Types ──────────────────────────────────────────── */
 interface SelectOption { value: string; label: string }
@@ -210,10 +211,10 @@ export default function NuevaCotizacion() {
           moneda, hazmat, notas,
         })
       }
-      alert('Cotización guardada exitosamente')
+      toast.success('Cotización guardada exitosamente')
     } catch (err) {
       console.error('Error guardando cotización:', err)
-      alert('Error al guardar. Verifica consola.')
+      toast.error('Error al guardar. Verifica consola.')
     } finally {
       setSaving(false)
     }

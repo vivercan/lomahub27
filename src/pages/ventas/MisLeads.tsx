@@ -9,6 +9,7 @@ import { tokens } from '../../lib/tokens'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { useAuthContext } from '../../hooks/AuthContext'
+import { toast } from '../../components/ui/Toast'
 
 interface Lead {
   id: string
@@ -226,7 +227,7 @@ export default function MisLeads() {
     }
 
     if (file.type !== 'application/pdf') {
-      alert('Por favor selecciona un archivo PDF')
+      toast.info('Por favor selecciona un archivo PDF')
       setAnalyzingLead(null)
       return
     }
@@ -253,7 +254,7 @@ export default function MisLeads() {
 
           if (error) {
             console.error('Error invoking analysis function:', error)
-            alert('Error al analizar la cotización. Intenta de nuevo.')
+            toast.error('Error al analizar la cotización. Intenta de nuevo.')
             setAnalyzing(false)
             setAnalyzingLead(null)
             return
@@ -264,7 +265,7 @@ export default function MisLeads() {
           }
         } catch (err) {
           console.error('Error calling analysis function:', err)
-          alert('Error al analizar la cotización.')
+          toast.error('Error al analizar la cotización.')
           setAnalyzing(false)
           setAnalyzingLead(null)
         } finally {
@@ -275,7 +276,7 @@ export default function MisLeads() {
       reader.readAsDataURL(file)
     } catch (err) {
       console.error('Error reading file:', err)
-      alert('Error al leer el archivo.')
+      toast.error('Error al leer el archivo.')
       setAnalyzing(false)
       setAnalyzingLead(null)
     }
@@ -324,7 +325,7 @@ export default function MisLeads() {
       setAnalysisResult(null)
     } catch (err) {
       console.error('Error accepting analysis:', err)
-      alert('Error al actualizar el lead.')
+      toast.error('Error al actualizar el lead.')
     }
   }
 

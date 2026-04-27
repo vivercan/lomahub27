@@ -3,6 +3,7 @@ import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { supabase } from '../../lib/supabase'
 import { tokens } from '../../lib/tokens'
 import { Plus, Search, Edit2, Trash2, X, Satellite, Truck, Container, Thermometer } from 'lucide-react'
+import { toast } from '../../components/ui/Toast'
 
 interface UnidadFlota {
   numero_economico: string
@@ -107,7 +108,7 @@ export default function FlotaMaster() {
       loadAll()
     } catch (err: any) {
       console.error('Error guardando unidad flota:', err)
-      alert('Error guardando: ' + (err?.message || 'desconocido'))
+      toast.error('Error guardando: ' + (err?.message || 'desconocido'))
     }
   }
 
