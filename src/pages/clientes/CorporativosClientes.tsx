@@ -1,8 +1,6 @@
-// V2 (28/Abr/2026) — Listado de clientes con ventas REALES de ANODOS
-// JJ pidio: jala el listado de clientes y sus ventas con los GET de anodos.
-// Antes: pagina vacia "Sin grupos corporativos" (porque 0 clientes tipo='corporativo')
-// Ahora: tabla simple con TODOS los clientes activos, agregados desde view v_clientes_con_ventas
-// La vista ya tiene CTE optimizada (1 query agregada en lugar de 879 LATERAL).
+// V3 (28/Abr/2026) — Listado clientes dedup + ventas ANODOS + vendedor/CS/CXC
+// JJ pidio: dedup duplicados, agregar columnas vendedor + CS + ejecutivo CXC
+// La VIEW v_clientes_con_ventas ya hace dedup por razon_social_norm + JOINs.
 
 import type { ReactElement } from 'react'
 import { useState, useEffect, useMemo } from 'react'
@@ -16,12 +14,14 @@ import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
 import { Building2, Users, TrendingUp, Activity, Search } from 'lucide-react'
 
-interface ClienteConVentas {
+interface ClienteRow {
   id: string
   razon_social: string
   tipo: string | null
   empresa: string | null
-  ejecutivo_asignado: string | null
+  vendedor_nombre: string | null
+  cs_nombre: string | null
+  cxc_nombre: string | null
   viajes_90d: number
   viajes_30d: number
   viajes_7d: number
@@ -38,36 +38,33 @@ const fmtFecha = (iso: string | null): string => {
 
 const fmtN = (n: number): string => (n || 0).toLocaleString('en-US')
 
+const cap = (s: string | null): string => {
+  if (!s) return '—'
+  return s.split(/[._-]/).map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(' ')
+}
+
 export default function CorporativosClientes(): ReactElement {
   const navigate = useNavigate()
 
-  const [clientes, setClientes] = useState<ClienteConVentas[]>([])
+  const [clientes, setClientes] = useState<ClienteRow[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [filtro, setFiltro] = useState<'todos' | 'con_ventas' | 'activos'>('con_ventas')
+  const [filtroEmpresa, setFiltroEmpresa] = useState<string>('todas')
 
   useEffect(() => {
     const load = async () => {
       try {
         const { data, error } = await supabase
           .from('v_clientes_con_ventas')
-          .select('id, razon_social, tipo, empresa, ejecutivo_asignado, viajes_90d, viajes_30d, viajes_7d, viajes_activos, ultimo_viaje')
+          .select('id, razon_social, tipo, empresa, vendedor_nombre, cs_nombre, cxc_nombre, viajes_90d, viajes_30d, viajes_7d, viajes_activos, ultimo_viaje')
           .order('viajes_90d', { ascending: false })
           .order('razon_social', { ascending: true })
         if (error) {
           console.error('Error v_clientes_con_ventas:', error)
           setClientes([])
         } else {
-          // Dedup por id (la vista puede traer duplicados si hay clientes con mismo nombre)
-          const seen = new Set<string>()
-          const uniq: ClienteConVentas[] = []
-          for (const c of (data || []) as ClienteConVentas[]) {
-            if (!seen.has(c.id)) {
-              seen.add(c.id)
-              uniq.push(c)
-            }
-          }
-          setClientes(uniq)
+          setClientes((data || []) as ClienteRow[])
         }
       } catch (err) {
         console.error('Unexpected:', err)
@@ -79,33 +76,37 @@ export default function CorporativosClientes(): ReactElement {
     load()
   }, [])
 
-  // KPIs computados
+  const empresas = useMemo(() => {
+    const set = new Set<string>()
+    clientes.forEach(c => { if (c.empresa) set.add(c.empresa) })
+    return Array.from(set).sort()
+  }, [clientes])
+
   const kpis = useMemo(() => {
     const total = clientes.length
     const con90 = clientes.filter(c => c.viajes_90d > 0).length
     const con30 = clientes.filter(c => c.viajes_30d > 0).length
     const activos = clientes.filter(c => c.viajes_activos > 0).length
-    const totalViajes90 = clientes.reduce((s, c) => s + (c.viajes_90d || 0), 0)
-    return { total, con90, con30, activos, totalViajes90 }
+    return { total, con90, con30, activos }
   }, [clientes])
 
-  // Filtrado por búsqueda + filtro
   const filtrados = useMemo(() => {
     const s = search.trim().toLowerCase()
     return clientes.filter(c => {
       if (filtro === 'con_ventas' && c.viajes_90d === 0) return false
       if (filtro === 'activos' && c.viajes_activos === 0) return false
+      if (filtroEmpresa !== 'todas' && (c.empresa || '').toLowerCase() !== filtroEmpresa.toLowerCase()) return false
       if (s && !(c.razon_social || '').toLowerCase().includes(s)) return false
       return true
     })
-  }, [clientes, search, filtro])
+  }, [clientes, search, filtro, filtroEmpresa])
 
   const columns = [
     {
       key: 'razon_social',
       label: 'Cliente',
-      render: (row: ClienteConVentas) => (
-        <div style={{ fontWeight: 600, color: tokens.colors.textPrimary }}>
+      render: (row: ClienteRow) => (
+        <div style={{ fontWeight: 600, color: tokens.colors.textPrimary, fontSize: '13px' }}>
           {row.razon_social || '—'}
         </div>
       ),
@@ -113,24 +114,51 @@ export default function CorporativosClientes(): ReactElement {
     {
       key: 'empresa',
       label: 'Empresa',
-      render: (row: ClienteConVentas) => (
-        <span style={{ color: tokens.colors.textSecondary, fontSize: '13px' }}>
-          {row.empresa || '—'}
+      render: (row: ClienteRow) => (
+        <span style={{ color: tokens.colors.textSecondary, fontSize: '12px', fontWeight: 600 }}>
+          {(row.empresa || '—').toUpperCase()}
         </span>
       ),
     },
     {
       key: 'tipo',
       label: 'Tipo',
-      render: (row: ClienteConVentas) => row.tipo
-        ? <Badge color="primary">{row.tipo}</Badge>
+      render: (row: ClienteRow) => row.tipo
+        ? <Badge color={row.tipo === 'activo' ? 'green' : 'gray'}>{row.tipo}</Badge>
         : <span style={{ color: tokens.colors.textMuted }}>—</span>,
     },
     {
+      key: 'vendedor_nombre',
+      label: 'Vendedor',
+      render: (row: ClienteRow) => (
+        <span style={{ color: row.vendedor_nombre ? tokens.colors.textPrimary : tokens.colors.textMuted, fontSize: '12px' }}>
+          {cap(row.vendedor_nombre)}
+        </span>
+      ),
+    },
+    {
+      key: 'cs_nombre',
+      label: 'CS',
+      render: (row: ClienteRow) => (
+        <span style={{ color: row.cs_nombre ? tokens.colors.textPrimary : tokens.colors.textMuted, fontSize: '12px' }}>
+          {row.cs_nombre || '—'}
+        </span>
+      ),
+    },
+    {
+      key: 'cxc_nombre',
+      label: 'CXC',
+      render: (row: ClienteRow) => (
+        <span style={{ color: row.cxc_nombre ? tokens.colors.textPrimary : tokens.colors.textMuted, fontSize: '12px' }}>
+          {row.cxc_nombre || '—'}
+        </span>
+      ),
+    },
+    {
       key: 'viajes_90d',
-      label: 'Viajes 90d',
+      label: '90d',
       align: 'right' as const,
-      render: (row: ClienteConVentas) => (
+      render: (row: ClienteRow) => (
         <span style={{
           color: row.viajes_90d > 0 ? tokens.colors.green : tokens.colors.textMuted,
           fontWeight: row.viajes_90d > 0 ? 700 : 400,
@@ -141,9 +169,9 @@ export default function CorporativosClientes(): ReactElement {
     },
     {
       key: 'viajes_30d',
-      label: 'Viajes 30d',
+      label: '30d',
       align: 'right' as const,
-      render: (row: ClienteConVentas) => (
+      render: (row: ClienteRow) => (
         <span style={{ color: row.viajes_30d > 0 ? tokens.colors.blue : tokens.colors.textMuted }}>
           {fmtN(row.viajes_30d)}
         </span>
@@ -153,15 +181,15 @@ export default function CorporativosClientes(): ReactElement {
       key: 'viajes_activos',
       label: 'Activos',
       align: 'right' as const,
-      render: (row: ClienteConVentas) => row.viajes_activos > 0
+      render: (row: ClienteRow) => row.viajes_activos > 0
         ? <span style={{ color: tokens.colors.orange, fontWeight: 700 }}>{row.viajes_activos}</span>
         : <span style={{ color: tokens.colors.textMuted }}>—</span>,
     },
     {
       key: 'ultimo_viaje',
-      label: 'Último viaje',
-      render: (row: ClienteConVentas) => (
-        <span style={{ color: tokens.colors.textSecondary, fontSize: '13px' }}>
+      label: 'Último',
+      render: (row: ClienteRow) => (
+        <span style={{ color: tokens.colors.textSecondary, fontSize: '12px' }}>
           {fmtFecha(row.ultimo_viaje)}
         </span>
       ),
@@ -170,7 +198,6 @@ export default function CorporativosClientes(): ReactElement {
 
   return (
     <ModuleLayout titulo="Clientes — Listado y Ventas">
-      {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
         <KPICard titulo="Registrados" valor={fmtN(kpis.total)} color="primary" icono={<Users size={20} />} />
         <KPICard titulo="Con ventas 90d" valor={fmtN(kpis.con90)} color="blue" icono={<TrendingUp size={20} />} />
@@ -178,10 +205,9 @@ export default function CorporativosClientes(): ReactElement {
         <KPICard titulo="Con viajes activos" valor={fmtN(kpis.activos)} color="orange" icono={<Activity size={20} />} />
       </div>
 
-      {/* Buscador + filtros */}
       <Card>
         <div style={{ display: 'flex', gap: tokens.spacing.md, alignItems: 'center', marginBottom: tokens.spacing.md, flexWrap: 'wrap' }}>
-          <div style={{ position: 'relative', flex: 1, minWidth: 240 }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: 220 }}>
             <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: tokens.colors.textMuted }} />
             <input
               type="text"
@@ -200,6 +226,24 @@ export default function CorporativosClientes(): ReactElement {
               }}
             />
           </div>
+          <select
+            value={filtroEmpresa}
+            onChange={(e) => setFiltroEmpresa(e.target.value)}
+            style={{
+              padding: '10px 14px',
+              background: tokens.colors.bgMain,
+              border: `1px solid ${tokens.colors.border}`,
+              borderRadius: tokens.radius.md,
+              color: tokens.colors.textPrimary,
+              fontSize: '13px',
+              fontWeight: 600,
+              outline: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            <option value="todas">Todas las empresas</option>
+            {empresas.map(e => <option key={e} value={e}>{e.toUpperCase()}</option>)}
+          </select>
           <div style={{ display: 'flex', gap: '6px' }}>
             {([
               ['con_ventas', 'Con ventas 90d'],
@@ -242,7 +286,7 @@ export default function CorporativosClientes(): ReactElement {
           <DataTable
             columns={columns}
             data={filtrados}
-            onRowClick={(row: ClienteConVentas) => navigate(`/clientes/${row.id}`)}
+            onRowClick={(row: ClienteRow) => navigate(`/clientes/${row.id}`)}
           />
         )}
       </Card>
