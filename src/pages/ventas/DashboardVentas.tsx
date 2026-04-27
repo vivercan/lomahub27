@@ -35,7 +35,7 @@ async function fallbackFetch(): Promise<Record<string, number>> {
   ])
   return {
     cotizador: cots.count ?? 0,
-    mis_cotizaciones: leads.count ?? 0,
+    mis_cotizaciones: cots.count ?? 0,  // V52 FIX M03-01: era leads.count, debia ser cots.count
     programa: prog.count ?? 0,
     alta_clientes: altas.count ?? 0,
     inteligencia: 0,

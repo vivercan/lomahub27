@@ -50,6 +50,7 @@ export default function TicketsQuejas() {
         const { data, error } = await supabase
           .from('tickets')
           .select('*')
+          .is('deleted_at', null)  // V52 FIX M02-01: respetar soft delete
           .order('created_at', { ascending: false })
 
         if (error) {
