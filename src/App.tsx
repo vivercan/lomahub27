@@ -1,100 +1,101 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './hooks/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import HomeDashboard from './pages/HomeDashboard'
 
 // Pages
-import Login from './pages/Login'
+const Login = lazy(() => import('./pages/Login'))
 import Proximamente from './components/Proximamente'
-import Unauthorized from './pages/Unauthorized'
-import WarRoom from './pages/WarRoom'
-import Inteligencia from './pages/Inteligencia'
+const Unauthorized = lazy(() => import('./pages/Unauthorized'))
+const WarRoom = lazy(() => import('./pages/WarRoom'))
+const Inteligencia = lazy(() => import('./pages/Inteligencia'))
 
 // Ventas
-import DashboardVentas from './pages/ventas/DashboardVentas'
-import MisLeads from './pages/ventas/MisLeads'
-import NuevoLead from './pages/ventas/NuevoLead'
-import FichaLead from './pages/ventas/FichaLead'
-import ProgramaSemanal from './pages/ventas/ProgramaSemanal'
-import ProspeccionExterna from './pages/ventas/ProspeccionExterna'
-import VentasAnalytics from './pages/ventas/VentasAnalytics'
+const DashboardVentas = lazy(() => import('./pages/ventas/DashboardVentas'))
+const MisLeads = lazy(() => import('./pages/ventas/MisLeads'))
+const NuevoLead = lazy(() => import('./pages/ventas/NuevoLead'))
+const FichaLead = lazy(() => import('./pages/ventas/FichaLead'))
+const ProgramaSemanal = lazy(() => import('./pages/ventas/ProgramaSemanal'))
+const ProspeccionExterna = lazy(() => import('./pages/ventas/ProspeccionExterna'))
+const VentasAnalytics = lazy(() => import('./pages/ventas/VentasAnalytics'))
 
 // Cotizador
-import NuevaCotizacion from './pages/cotizador/NuevaCotizacion'
-import FirmaDigital from './pages/cotizador/FirmaDigital'
-import MisCotizaciones from './pages/cotizador/MisCotizaciones'
+const NuevaCotizacion = lazy(() => import('./pages/cotizador/NuevaCotizacion'))
+const FirmaDigital = lazy(() => import('./pages/cotizador/FirmaDigital'))
+const MisCotizaciones = lazy(() => import('./pages/cotizador/MisCotizaciones'))
 import { ErrorBoundary } from './components/ErrorBoundary'
 
 // Clientes
-import AltaCliente from './pages/clientes/AltaCliente'
-import PortalDocumentos from './pages/clientes/PortalDocumentos'
-import FichaCliente from './pages/clientes/FichaCliente'
-import RadiografiaFinanciera from './pages/clientes/RadiografiaFinanciera'
-import CorporativosClientes from './pages/clientes/CorporativosClientes'
-import AltaClienteWorkflow from './pages/clientes/AltaClienteWorkflow'
-import PortalAltaPublico from './pages/clientes/PortalAltaPublico'
-import PortalAltaReview from './pages/clientes/PortalAltaReview'
+const AltaCliente = lazy(() => import('./pages/clientes/AltaCliente'))
+const PortalDocumentos = lazy(() => import('./pages/clientes/PortalDocumentos'))
+const FichaCliente = lazy(() => import('./pages/clientes/FichaCliente'))
+const RadiografiaFinanciera = lazy(() => import('./pages/clientes/RadiografiaFinanciera'))
+const CorporativosClientes = lazy(() => import('./pages/clientes/CorporativosClientes'))
+const AltaClienteWorkflow = lazy(() => import('./pages/clientes/AltaClienteWorkflow'))
+const PortalAltaPublico = lazy(() => import('./pages/clientes/PortalAltaPublico'))
+const PortalAltaReview = lazy(() => import('./pages/clientes/PortalAltaReview'))
 
 // Operaciones
-import Despachos from './pages/operaciones/Despachos'
-import TorreControl from './pages/operaciones/TorreControl'
-import MapaGPS from './pages/operaciones/MapaGPS'
-import Dedicados from './pages/operaciones/Dedicados'
-import TrazabilidadViaje from './pages/operaciones/TrazabilidadViaje'
-import ControlCajas from './pages/operaciones/ControlCajas'
-import ControlTractos from './pages/operaciones/ControlTractos'
-import Disponibilidad from './pages/operaciones/Disponibilidad'
-import OfertaEquipo from './pages/operaciones/OfertaEquipo'
-import Rentabilidad from './pages/operaciones/Rentabilidad'
-import CruceFronterizo from './pages/operaciones/CruceFronterizo'
-import ControlTemperatura from './pages/operaciones/ControlTemperatura'
-import PlaneacionFlota from './pages/operaciones/PlaneacionFlota'
+const Despachos = lazy(() => import('./pages/operaciones/Despachos'))
+const TorreControl = lazy(() => import('./pages/operaciones/TorreControl'))
+const MapaGPS = lazy(() => import('./pages/operaciones/MapaGPS'))
+const Dedicados = lazy(() => import('./pages/operaciones/Dedicados'))
+const TrazabilidadViaje = lazy(() => import('./pages/operaciones/TrazabilidadViaje'))
+const ControlCajas = lazy(() => import('./pages/operaciones/ControlCajas'))
+const ControlTractos = lazy(() => import('./pages/operaciones/ControlTractos'))
+const Disponibilidad = lazy(() => import('./pages/operaciones/Disponibilidad'))
+const OfertaEquipo = lazy(() => import('./pages/operaciones/OfertaEquipo'))
+const Rentabilidad = lazy(() => import('./pages/operaciones/Rentabilidad'))
+const CruceFronterizo = lazy(() => import('./pages/operaciones/CruceFronterizo'))
+const ControlTemperatura = lazy(() => import('./pages/operaciones/ControlTemperatura'))
+const PlaneacionFlota = lazy(() => import('./pages/operaciones/PlaneacionFlota'))
 
 // Servicio
-import DashboardCS from './pages/servicio/DashboardCS'
-import WhatsAppBandeja from './pages/servicio/WhatsApp'
-import MetricasServicio from './pages/servicio/MetricasServicio'
-import ComunicacionProactiva from './pages/servicio/ComunicacionProactiva'
-import EscalamientoWhatsApp from './pages/servicio/EscalamientoWhatsApp'
-import ViajesImpo from './pages/servicio/ViajesImpo'
-import ViajesExpo from './pages/servicio/ViajesExpo'
+const DashboardCS = lazy(() => import('./pages/servicio/DashboardCS'))
+const WhatsAppBandeja = lazy(() => import('./pages/servicio/WhatsApp'))
+const MetricasServicio = lazy(() => import('./pages/servicio/MetricasServicio'))
+const ComunicacionProactiva = lazy(() => import('./pages/servicio/ComunicacionProactiva'))
+const EscalamientoWhatsApp = lazy(() => import('./pages/servicio/EscalamientoWhatsApp'))
+const ViajesImpo = lazy(() => import('./pages/servicio/ViajesImpo'))
+const ViajesExpo = lazy(() => import('./pages/servicio/ViajesExpo'))
 
 // CXC
-import Cartera from './pages/cxc/Cartera'
-import AgingReport from './pages/cxc/AgingReport'
-import AccionesCobro from './pages/cxc/AccionesCobro'
+const Cartera = lazy(() => import('./pages/cxc/Cartera'))
+const AgingReport = lazy(() => import('./pages/cxc/AgingReport'))
+const AccionesCobro = lazy(() => import('./pages/cxc/AccionesCobro'))
 
 // Inteligencia
-import PresupuestoMensual from './pages/inteligencia/PresupuestoMensual'
-import Analisis8020 from './pages/inteligencia/Analisis8020'
+const PresupuestoMensual = lazy(() => import('./pages/inteligencia/PresupuestoMensual'))
+const Analisis8020 = lazy(() => import('./pages/inteligencia/Analisis8020'))
 
 // Admin
-import Configuracion from './pages/admin/Configuracion'
-import FlotaMaster from './pages/admin/FlotaMaster'
-import UsuariosPermisos from './pages/admin/UsuariosPermisos'
-import FunnelVentas from './pages/ventas/FunnelVentas'
-import TicketsQuejas from './pages/servicio/TicketsQuejas'
-import ProgramacionIMPEX from './pages/operaciones/ProgramacionIMPEX'
+const Configuracion = lazy(() => import('./pages/admin/Configuracion'))
+const FlotaMaster = lazy(() => import('./pages/admin/FlotaMaster'))
+const UsuariosPermisos = lazy(() => import('./pages/admin/UsuariosPermisos'))
+const FunnelVentas = lazy(() => import('./pages/ventas/FunnelVentas'))
+const TicketsQuejas = lazy(() => import('./pages/servicio/TicketsQuejas'))
+const ProgramacionIMPEX = lazy(() => import('./pages/operaciones/ProgramacionIMPEX'))
 
 // Módulos V28 nuevos
-import Actividades from './pages/actividades/Actividades'
-import Documentos from './pages/documentos/Documentos'
-import CerebroTarifario from './pages/pricing/CerebroTarifario'
-import CorreosAutomaticos from './pages/comunicaciones/CorreosAutomaticos'
-import Notificaciones from './pages/comunicaciones/Notificaciones'
-import BriefingChiefOfStaff from './pages/comunicaciones/BriefingChiefOfStaff'
-import Comisiones from './pages/ventas/Comisiones'
-import ChiefOfStaffHome from './pages/comunicaciones/ChiefOfStaffHome'
-import PanelIntegraciones from './pages/admin/PanelIntegraciones'
-import ParametrosConfig from './pages/admin/ParametrosConfig'
-import CatalogosTab from './pages/admin/CatalogosTab'
-import ProgramacionDedicados from './pages/operaciones/ProgramacionDedicados'
-import ConfigIntegraciones from './pages/admin/ConfigIntegraciones'
-import DocumentosCompania from './pages/admin/DocumentosCompania'
-import TerminalesConfig from './pages/admin/TerminalesConfig'
-import DashboardOperaciones from './pages/operaciones/DashboardOperaciones'
-import ControlEquipo from './pages/ControlEquipo'
-import DashboardComunicaciones from './pages/comunicaciones/DashboardComunicaciones'
+const Actividades = lazy(() => import('./pages/actividades/Actividades'))
+const Documentos = lazy(() => import('./pages/documentos/Documentos'))
+const CerebroTarifario = lazy(() => import('./pages/pricing/CerebroTarifario'))
+const CorreosAutomaticos = lazy(() => import('./pages/comunicaciones/CorreosAutomaticos'))
+const Notificaciones = lazy(() => import('./pages/comunicaciones/Notificaciones'))
+const BriefingChiefOfStaff = lazy(() => import('./pages/comunicaciones/BriefingChiefOfStaff'))
+const Comisiones = lazy(() => import('./pages/ventas/Comisiones'))
+const ChiefOfStaffHome = lazy(() => import('./pages/comunicaciones/ChiefOfStaffHome'))
+const PanelIntegraciones = lazy(() => import('./pages/admin/PanelIntegraciones'))
+const ParametrosConfig = lazy(() => import('./pages/admin/ParametrosConfig'))
+const CatalogosTab = lazy(() => import('./pages/admin/CatalogosTab'))
+const ProgramacionDedicados = lazy(() => import('./pages/operaciones/ProgramacionDedicados'))
+const ConfigIntegraciones = lazy(() => import('./pages/admin/ConfigIntegraciones'))
+const DocumentosCompania = lazy(() => import('./pages/admin/DocumentosCompania'))
+const TerminalesConfig = lazy(() => import('./pages/admin/TerminalesConfig'))
+const DashboardOperaciones = lazy(() => import('./pages/operaciones/DashboardOperaciones'))
+const ControlEquipo = lazy(() => import('./pages/ControlEquipo'))
+const DashboardComunicaciones = lazy(() => import('./pages/comunicaciones/DashboardComunicaciones'))
 // V50 26/Abr/2026 BUG-012 — Toast singleton montado en root
 import { ToastContainer } from './components/ui/Toast'
 
@@ -104,7 +105,16 @@ function App() {
       <AuthProvider>
         <ErrorBoundary>
         <ToastContainer />
-        <Routes>
+        
+            <Suspense fallback={
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#F7F8FA' }}>
+                <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '40px', height: '40px', border: '3px solid #E2E8F0', borderTopColor: '#3B6CE7', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                  <span style={{ color: '#64748B', fontSize: '13px', fontFamily: 'Montserrat, sans-serif' }}>Cargando módulo…</span>
+                </div>
+              </div>
+            }>
+            <Routes>
           {/* ——— Public ——— */}
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
@@ -587,6 +597,7 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
+            </Suspense>
         </ErrorBoundary>
       </AuthProvider>
     </BrowserRouter>

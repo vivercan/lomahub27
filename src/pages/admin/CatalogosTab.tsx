@@ -2,6 +2,7 @@ import { tokens } from '../../lib/tokens'
 import { useState, useEffect, useCallback } from 'react';
 import type { FC } from 'react';
 import { supabase } from '../../lib/supabase';
+import { toast } from '../../components/ui/Toast'
 import { ModuleLayout } from '../../components/layout/ModuleLayout';
 import {
   ArrowLeft,

@@ -5,6 +5,7 @@ import { Card } from '../../components/ui/Card'
 import { KPICard } from '../../components/ui/KPICard'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
+import { toast } from '../../components/ui/Toast'
 import {
   Truck,
   AlertTriangle,
