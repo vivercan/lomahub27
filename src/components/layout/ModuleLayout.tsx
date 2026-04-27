@@ -53,12 +53,9 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
         flexShrink: 0
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          {/* UNICO BOTON DE NAVEGACION: Atras (regresa al moduloPadre o al dashboard si no hay padre) */}
+          {/* V53 (26/Abr/2026) — UNICO boton de navegacion: SIEMPRE regresa al Dashboard principal (decision JJ). La prop moduloPadre se ignora en navegacion para evitar saltos intermedios. */}
           <button
-            onClick={() => {
-              if (moduloPadre?.ruta) navigate(moduloPadre.ruta)
-              else navigate('/dashboard')
-            }}
+            onClick={() => navigate('/dashboard')}
             style={{
               display: 'flex', alignItems: 'center', gap: '8px',
               padding: '9px 18px', minWidth: '120px',
@@ -76,10 +73,10 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
               e.currentTarget.style.background = '#FFFFFF'
               e.currentTarget.style.borderColor = '#E2E8F0'
             }}
-            title={moduloPadre?.ruta ? `Volver a ${moduloPadre?.label || moduloPadre?.nombre}` : 'Volver al Dashboard'}
+            title="Volver al Dashboard"
           >
             <ArrowLeft size={16} strokeWidth={2.2} />
-            <span>{moduloPadre?.label || moduloPadre?.nombre || 'Dashboard'}</span>
+            <span>Dashboard</span>
           </button>
           <div style={{
             display: 'flex',
