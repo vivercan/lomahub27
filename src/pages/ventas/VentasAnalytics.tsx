@@ -107,43 +107,55 @@ export default function VentasAnalytics() {
     setLoading(true)
     setError(null)
     try {
-      // Fetch closed-won leads (ventas)
-      const { data: ventasData, error: ventasError } = await supabase
-        .from('leads')
-        .select('*')
-        .eq('estado', 'Cerrado Ganado')
-        .is('deleted_at', null)
-        .order('fecha_ultimo_mov', { ascending: false })
+      // V53 (FIX 33 — 27/Abr/2026) — Datos REALES de ANODOS (136K viajes)
+      // viajes_anodos = libro de operaciones reales facturadas
+      // JOIN con formatos_venta para obtener tarifa por viaje
+      const desde = new Date(); desde.setMonth(desde.getMonth() - 12)
+      const desdeISO = desde.toISOString()
 
-      if (ventasError) throw ventasError
+      const [viajesRes, formatosRes, usuariosVRes, usuariosCRes] = await Promise.all([
+        supabase.from('viajes_anodos')
+          .select('id, viaje, tipo, cliente, origen, destino, municipio_origen, municipio_destino, estado_origen, estado_destino, operador, inicia_viaje, llega_destino, kms_viaje, cruce, moneda, formato_venta, id_formato_venta, caja, tracto')
+          .gte('inicia_viaje', desdeISO)
+          .order('inicia_viaje', { ascending: false })
+          .limit(5000),
+        supabase.from('formatos_venta')
+          .select('anodos_id, tarifa, refrigerado, dedicado, tipo_servicio')
+          .limit(10000),
+        supabase.from('usuarios_autorizados').select('id, nombre').eq('rol', 'ventas').eq('activo', true),
+        supabase.from('usuarios_autorizados').select('id, nombre').eq('rol', 'cs').eq('activo', true),
+      ])
 
-      // Fetch unique empresas/clientes
-      const { data: clientesData } = await supabase
-        .from('clientes')
-        .select('nombre')
-        .is('deleted_at', null)
+      const viajesRaw: any[] = viajesRes.data || []
+      const formatos: any[] = formatosRes.data || []
+      // Map formato_venta.anodos_id -> tarifa/refrigerado
+      const formatoMap: Record<number, any> = {}
+      for (const f of formatos) if (f.anodos_id) formatoMap[f.anodos_id] = f
 
-      // Fetch vendedores
-      const { data: vendedoresData } = await supabase
-        .from('usuarios')
-        .select('id, nombre')
-        .eq('rol', 'ventas')
+      // Mapear viajes_anodos al interface Venta existente
+      const ventasData: Venta[] = viajesRaw.map(v => {
+        const fmt = formatoMap[v.id_formato_venta] || formatoMap[v.formato_venta] || {}
+        const tarifa = Number(fmt.tarifa || 0)
+        return {
+          id: v.id,
+          empresa: v.cliente || '—',
+          contacto: v.operador || '',
+          tipo_operacion: v.tipo || '',
+          tipo_equipo: fmt.refrigerado ? 'Refrigerada' : 'Seca',
+          ruta_interes: `${v.municipio_origen || v.origen || '?'} → ${v.municipio_destino || v.destino || '?'}`,
+          valor_estimado: tarifa,
+          ejecutivo_nombre: v.operador || '—',
+          cs_asignada: null,
+          fecha_ultimo_mov: v.inicia_viaje,
+          estado: v.llega_destino ? 'Cerrado Ganado' : 'En Tránsito',
+        }
+      })
 
-      // Fetch CS team
-      const { data: csData } = await supabase
-        .from('usuarios')
-        .select('id, nombre')
-        .eq('rol', 'cs')
-
-      if (ventasData) {
-        setVentas(ventasData as Venta[])
-        // Extract unique empresas from data
-        const uniqueEmpresas = [...new Set((ventasData as Venta[]).map(v => v.empresa))].filter(Boolean).sort()
-        setEmpresas(uniqueEmpresas)
-      }
-
-      if (vendedoresData) setVendedores(vendedoresData as any)
-      if (csData) setCsTeam(csData as any)
+      setVentas(ventasData)
+      const uniqueEmpresas = [...new Set(ventasData.map(v => v.empresa))].filter(Boolean).sort()
+      setEmpresas(uniqueEmpresas)
+      if (usuariosVRes.data) setVendedores(usuariosVRes.data as any)
+      if (usuariosCRes.data) setCsTeam(usuariosCRes.data as any)
     } catch (err) {
       console.error('Error fetching data:', err)
       setError('Error al cargar los datos')
