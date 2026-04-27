@@ -20,7 +20,7 @@ interface ViajeExpo {
   inicia_viaje: string
   fecha_crea: string
   kms_viaje: number
-  tipo_viaje: number
+  tipo: string
   origen_ciudad?: string
   destino_ciudad?: string
 }
@@ -65,7 +65,7 @@ export default function ViajesExpo() {
       let { data, error } = await supabase
         .from('viajes_anodos')
         .select('*')
-        .eq('tipo_viaje', 2)
+        .eq('tipo', 'EXPO')
         .gte('inicia_viaje', desdeISO)
         .order('inicia_viaje', { ascending: false })
         .limit(500)
@@ -74,7 +74,7 @@ export default function ViajesExpo() {
         const res = await supabase
           .from('viajes_anodos')
           .select('*')
-          .eq('tipo_viaje', 2)
+          .eq('tipo', 'EXPO')
           .gte('fecha_crea', desdeISO)
           .order('fecha_crea', { ascending: false })
           .limit(500)

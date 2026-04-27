@@ -925,8 +925,8 @@ export default function HomeDashboard() {
         }}>
           {SLOTS.map((_, i) => renderCard(i))}
         </div>
-        {/* V53 (Tarea #16) — Cenefa rosa mexicano con metas de vendedores en marquee */}
-        <div style={{ flex: '0 0 auto', padding: '12px 32px 16px', maxWidth: '100%' }}>
+        {/* V54 (28/Abr/2026) — Cenefa rosa mexicano PLANA, ancho completo, separada del grid */}
+        <div style={{ flex: '0 0 auto', padding: '32px 0 8px 0', maxWidth: '100%' }}>
           <MarqueeMetas />
         </div>
       </div>

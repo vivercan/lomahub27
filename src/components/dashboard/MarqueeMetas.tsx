@@ -1,7 +1,11 @@
-// V53 (Tarea #16 — 27/Abr/2026)
-// Cenefa rosa mexicano con marquee horizontal de metas vs avance por vendedor.
-// Lee tabla metas_vendedores + cruza con formatos_venta del mes para calcular avance.
-// Auto-refresh cada 30s.
+// V54 (28/Abr/2026) — Cenefa rosa mexicano PLANA tipo anuncio
+// JJ pidió: cero 3D, ancho completo a las orillas, más lento, sin trabón.
+// Cambios vs V53:
+//  - Sin gradient, sin sombras 3D — color sólido rosa mexicano
+//  - Width 100vw con negative margin (rompe el padding del padre)
+//  - Animación 120s lineal continua sin saltos
+//  - Triple repetición del ticker para no notar el "wrap"
+//  - GPU acceleration (will-change + translate3d)
 
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
@@ -25,8 +29,7 @@ interface VendedorAvance {
   expos_hoy: number
 }
 
-const ROSA_MEX = '#E91E63'
-const ROSA_MEX_DARK = '#AD1457'
+const ROSA_MEX = '#E91E63'  // sólido, sin gradient
 
 function formatName(email: string): string {
   if (!email) return ''
@@ -68,8 +71,7 @@ export function MarqueeMetas() {
       })
       setItems(vendedores)
     } catch (e) {
-      // Silent fail — la cenefa puede no mostrar nada si la tabla aún no existe
-      console.warn('MarqueeMetas: tabla metas_vendedores aún no creada o error', e)
+      console.warn('MarqueeMetas: tabla metas_vendedores aún no creada', e)
     }
   }
 
@@ -83,21 +85,26 @@ export function MarqueeMetas() {
 
   if (items.length === 0) return null
 
-  // Construir el contenido del ticker concatenando todos los vendedores
-  const ticker = items.map(v =>
+  // Triple repetición del ticker = nunca se ve el "salto" cuando hace wrap
+  const tickerOnce = items.map(v =>
     `${v.nombre} · ${v.pct}% meta (${fmtMoney(v.avance_mxn)} de ${fmtMoney(v.meta)}) · ${v.impos_hoy} IMPO hoy · ${v.expos_hoy} EXPO hoy`
-  ).join('  ◆  ')
+  ).join('     ◆     ')
+  const ticker = `${tickerOnce}     ◆     ${tickerOnce}     ◆     ${tickerOnce}`
 
   return (
     <div style={{
-      width: '100%',
-      background: `linear-gradient(180deg, ${ROSA_MEX} 0%, ${ROSA_MEX_DARK} 100%)`,
+      // Width: 100vw + escapar el padding del padre (calc rompe el contenedor)
+      width: '100vw',
+      marginLeft: 'calc(50% - 50vw)',
+      marginRight: 'calc(50% - 50vw)',
+      // PLANO — sin gradient, sin shadow
+      background: ROSA_MEX,
       color: '#FFFFFF',
-      padding: '10px 0',
+      padding: '12px 0',
       overflow: 'hidden',
       whiteSpace: 'nowrap',
-      borderRadius: '10px',
-      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.20), 0 4px 12px rgba(233,30,99,0.30)',
+      // Sin border-radius — anuncio rectangular puro
+      borderRadius: 0,
       fontFamily: '"Montserrat", sans-serif',
       fontWeight: 600,
       fontSize: '14px',
@@ -107,14 +114,16 @@ export function MarqueeMetas() {
       <div style={{
         display: 'inline-block',
         paddingLeft: '100%',
-        animation: 'lhub-marquee-metas 60s linear infinite',
+        // GPU accel + duración larga = movimiento fluido sin trabón
+        animation: 'lhub-marquee-metas 120s linear infinite',
+        willChange: 'transform',
       }}>
-        {ticker}  ◆  {ticker}
+        {ticker}
       </div>
       <style>{`
         @keyframes lhub-marquee-metas {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-100%); }
+          0%   { transform: translate3d(0, 0, 0); }
+          100% { transform: translate3d(-33.333%, 0, 0); }
         }
       `}</style>
     </div>
