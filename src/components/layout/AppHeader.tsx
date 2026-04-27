@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useFxRate } from '../../hooks/useFxRate'
 
@@ -38,6 +39,7 @@ export default function AppHeader({
   const { rate: tipoCambio } = useFxRate()
   const notifPanelRef = useRef<HTMLDivElement>(null)
   const bellButtonRef = useRef<HTMLButtonElement>(null)
+  const navigate = useNavigate()
 
   const now = new Date()
   const fechaStr = now.toLocaleDateString('es-MX', {
@@ -195,8 +197,17 @@ export default function AppHeader({
           zIndex: 10,
         }}
       >
-        {/* LEFT — Logo LomaHUB27 — V41: "27" con glow azul sutil para más firma */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        {/* LEFT — Logo LomaHUB27 — V52 (26/Abr/2026): clickeable a /dashboard (reemplaza casita Home en submodulos) */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate('/dashboard')}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/dashboard') } }}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', userSelect: 'none', transition: 'opacity 0.15s ease' }}
+          onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.78' }}
+          onMouseLeave={(e) => { e.currentTarget.style.opacity = '1' }}
+          title="Ir al Dashboard"
+        >
           <h1 style={{ margin: 0, fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontStyle: 'italic', fontSize: 22, letterSpacing: '-0.5px', lineHeight: 1 }}>
             <span style={{ color: '#0F172A' }}>Loma</span>
             <span style={{ color: '#0F172A' }}>HUB</span>
