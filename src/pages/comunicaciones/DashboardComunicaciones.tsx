@@ -11,6 +11,9 @@ const CARDS: CardDef[] = [
   { id: 'correos',         label: 'Correos Automáticos', route: '/comunicaciones/correos',        kpiLabel: 'Templates', iconSet: 'hugeicons', iconName: 'mail-send-02',               subtitle: 'Plantillas y envíos transaccionales' },
   { id: 'chief_of_staff',  label: 'Chief of Staff IA',   route: '/comunicaciones/chief-of-staff', kpiLabel: 'Briefings', iconSet: 'hugeicons', iconName: 'artificial-intelligence-04', subtitle: 'Resumen ejecutivo diario con IA' },
   { id: 'notificaciones',  label: 'Notificaciones',      route: '/comunicaciones/notificaciones', kpiLabel: 'Centro',    iconSet: 'hugeicons', iconName: 'notification-02',            subtitle: 'Centro de avisos y alertas' },
+  { id: 'whatsapp',              label: 'WhatsApp',              route: '/comunicaciones/whatsapp',  kpiLabel: 'Conversaciones', iconSet: 'hugeicons', iconName: 'whatsapp' },
+  { id: 'comunicacion_asistida', label: 'Comunicación Asistida', route: '/comunicaciones/asistida',  kpiLabel: 'Pendientes',     iconSet: 'hugeicons', iconName: 'megaphone-01' },
+
 ]
 
 async function fallbackFetch(): Promise<Record<string, number>> {

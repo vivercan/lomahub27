@@ -17,12 +17,10 @@ const MisLeads = lazy(() => import('./pages/ventas/MisLeads'))
 const NuevoLead = lazy(() => import('./pages/ventas/NuevoLead'))
 const FichaLead = lazy(() => import('./pages/ventas/FichaLead'))
 const ProgramaSemanal = lazy(() => import('./pages/ventas/ProgramaSemanal'))
-const ProspeccionExterna = lazy(() => import('./pages/ventas/ProspeccionExterna'))
 const VentasAnalytics = lazy(() => import('./pages/ventas/VentasAnalytics'))
 
 // Cotizador
 const NuevaCotizacion = lazy(() => import('./pages/cotizador/NuevaCotizacion'))
-const FirmaDigital = lazy(() => import('./pages/cotizador/FirmaDigital'))
 const MisCotizaciones = lazy(() => import('./pages/cotizador/MisCotizaciones'))
 import { ErrorBoundary } from './components/ErrorBoundary'
 
@@ -47,13 +45,11 @@ const ControlTractos = lazy(() => import('./pages/operaciones/ControlTractos'))
 const Disponibilidad = lazy(() => import('./pages/operaciones/Disponibilidad'))
 const OfertaEquipo = lazy(() => import('./pages/operaciones/OfertaEquipo'))
 const Rentabilidad = lazy(() => import('./pages/operaciones/Rentabilidad'))
-const CruceFronterizo = lazy(() => import('./pages/operaciones/CruceFronterizo'))
-const ControlTemperatura = lazy(() => import('./pages/operaciones/ControlTemperatura'))
 const PlaneacionFlota = lazy(() => import('./pages/operaciones/PlaneacionFlota'))
 
 // Servicio
 const DashboardCS = lazy(() => import('./pages/servicio/DashboardCS'))
-const WhatsAppBandeja = lazy(() => import('./pages/servicio/WhatsApp'))
+const WhatsAppBandeja = lazy(() => import('./pages/comunicaciones/WhatsApp'))
 const MetricasServicio = lazy(() => import('./pages/servicio/MetricasServicio'))
 const ComunicacionProactiva = lazy(() => import('./pages/servicio/ComunicacionProactiva'))
 const EscalamientoWhatsApp = lazy(() => import('./pages/servicio/EscalamientoWhatsApp'))
@@ -80,11 +76,10 @@ const ProgramacionIMPEX = lazy(() => import('./pages/operaciones/ProgramacionIMP
 // Módulos V28 nuevos
 const Actividades = lazy(() => import('./pages/actividades/Actividades'))
 const Documentos = lazy(() => import('./pages/documentos/Documentos'))
-const CerebroTarifario = lazy(() => import('./pages/pricing/CerebroTarifario'))
+const CerebroTarifario = lazy(() => import('./pages/admin/CerebroTarifario'))
 const CorreosAutomaticos = lazy(() => import('./pages/comunicaciones/CorreosAutomaticos'))
 const Notificaciones = lazy(() => import('./pages/comunicaciones/Notificaciones'))
 const BriefingChiefOfStaff = lazy(() => import('./pages/comunicaciones/BriefingChiefOfStaff'))
-const Comisiones = lazy(() => import('./pages/ventas/Comisiones'))
 const ChiefOfStaffHome = lazy(() => import('./pages/comunicaciones/ChiefOfStaffHome'))
 const PanelIntegraciones = lazy(() => import('./pages/admin/PanelIntegraciones'))
 const ParametrosConfig = lazy(() => import('./pages/admin/ParametrosConfig'))
@@ -96,6 +91,10 @@ const TerminalesConfig = lazy(() => import('./pages/admin/TerminalesConfig'))
 const DashboardOperaciones = lazy(() => import('./pages/operaciones/DashboardOperaciones'))
 const ControlEquipo = lazy(() => import('./pages/ControlEquipo'))
 const DashboardComunicaciones = lazy(() => import('./pages/comunicaciones/DashboardComunicaciones'))
+const ComunicacionAsistida = lazy(() => import('./pages/comunicaciones/ComunicacionAsistida'))
+const DashboardVentasResultados = lazy(() => import('./pages/ventas/DashboardVentasResultados'))
+const MetasVendedoresConfig = lazy(() => import('./pages/admin/MetasVendedoresConfig'))
+const CenefaConfig = lazy(() => import('./pages/admin/CenefaConfig'))
 // V50 26/Abr/2026 BUG-012 — Toast singleton montado en root
 import { ToastContainer } from './components/ui/Toast'
 
@@ -166,11 +165,6 @@ function App() {
           } />
 
           {/* ——— Prospección Externa ——— */}
-          <Route path="/ventas/prospeccion" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas']}>
-              <ProspeccionExterna />
-            </ProtectedRoute>
-          } />
 
           {/* ––– Ventas Analytics ––– */}
           <Route path="/ventas/analytics" element={
@@ -193,11 +187,6 @@ function App() {
           {/* V50 26/Abr/2026 — BUG-005: ruta /cotizador/tarifas eliminada (duplicaba /cotizador/nueva) */}
 
           {/* ——— Firma Digital ——— */}
-          <Route path="/cotizador/firma-digital" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas']}>
-              <FirmaDigital />
-            </ProtectedRoute>
-          } />
 
           {/* ——— 08b. Clientes Corporativos ——— */}
           <Route path="/clientes/corporativos" element={
@@ -320,11 +309,6 @@ function App() {
           } />
 
           {/* ——— Cruce Fronterizo ——— */}
-          <Route path="/operaciones/cruce-fronterizo" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones']}>
-              <CruceFronterizo />
-            </ProtectedRoute>
-          } />
 
           {/* ——— 18. Disponibilidad ——— */}
           <Route path="/operaciones/disponibilidad" element={
@@ -334,11 +318,6 @@ function App() {
           } />
 
           {/* ——— Control Temperatura ——— */}
-          <Route path="/operaciones/control-temperatura" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'operaciones']}>
-              <ControlTemperatura />
-            </ProtectedRoute>
-          } />
 
           {/* ——— 19. Oferta de Equipo ——— */}
           <Route path="/operaciones/oferta-equipo" element={
@@ -368,7 +347,7 @@ function App() {
           } />
 
           {/* ——— 20. WhatsApp — cs sí, ventas NO ——— */}
-          <Route path="/servicio/whatsapp" element={
+          <Route path="/comunicaciones/whatsapp" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs']}>
               <WhatsAppBandeja />
             </ProtectedRoute>
@@ -578,11 +557,6 @@ function App() {
           {/* --- Redirects legacy a rutas canonicas (P0-03) --- */}
           <Route path="/ventas/nuevo-lead" element={<Navigate to="/ventas/leads/nuevo" replace />} />
           <Route path="/ventas/leads" element={<Navigate to="/ventas/mis-leads" replace />} />
-          <Route path="/ventas/comisiones" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'direccion', 'gerente_comercial']}>
-              <Comisiones />
-            </ProtectedRoute>
-          } />
           <Route path="/ventas/prospeccion-externa" element={<Navigate to="/ventas/prospeccion" replace />} />
           <Route path="/clientes" element={<Navigate to="/clientes/alta" replace />} />
           <Route path="/operaciones/mapa-gps" element={<Navigate to="/operaciones/mapa" replace />} />
@@ -596,7 +570,36 @@ function App() {
           {/* ——— Default ——— */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
+                  <Route path="/servicio/whatsapp" element={<Navigate to="/comunicaciones/whatsapp" replace />} />
+          <Route path="/pricing/cerebro-tarifario" element={<Navigate to="/admin/cerebro-tarifario" replace />} />
+          <Route path="/servicio/comunicacion-proactiva" element={<Navigate to="/comunicaciones/asistida?tab=proactiva" replace />} />
+          <Route path="/servicio/escalamiento-whatsapp" element={<Navigate to="/comunicaciones/asistida?tab=escalamiento" replace />} />
+                    <Route path="/ventas/resultados" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'direccion', 'gerente_comercial', 'ventas']}>
+              <DashboardVentasResultados />
+            </ProtectedRoute>
+          } />
+          <Route path="/comunicaciones/asistida" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs', 'ventas']}>
+              <ComunicacionAsistida />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/cerebro-tarifario" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'pricing']}>
+              <CerebroTarifario />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/metas-vendedores" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'direccion']}>
+              <MetasVendedoresConfig />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/cenefa-config" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'direccion']}>
+              <CenefaConfig />
+            </ProtectedRoute>
+          } />
+          </Routes>
             </Suspense>
         </ErrorBoundary>
       </AuthProvider>

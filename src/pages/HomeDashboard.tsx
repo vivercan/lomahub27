@@ -93,6 +93,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import AppHeader from '../components/layout/AppHeader'
 import { useAuthContext } from '../hooks/AuthContext'
+import { MarqueeMetas } from '../components/dashboard/MarqueeMetas'
 
 interface CardConfig {
   id: string
@@ -166,7 +167,7 @@ export default function HomeDashboard() {
     'comercial': { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#2557A8', gradient: 'linear-gradient(135deg, #2557A8 0%, #082552 100%)', iconFile: 'comercial.svg', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics' },
     'operaciones': { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#3D78D6', gradient: 'linear-gradient(135deg, #3D78D6 0%, #134287 100%)', iconFile: 'camion-contenedor-v2.svg', statusDot: 'green', statusText: 'Despachos · Seguimiento' },
     // V51 26/Abr/2026: REVERT BUG-002. JJ aclaró: Comercial=tools de trabajo, Ventas=panel resultados/KPIs. Son distintos, ambos quedan.
-    'ventas': { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#C77A22', gradient: 'linear-gradient(135deg, #C77A22 0%, #7A3F0E 100%)', iconFile: 'ingresos.svg', statusDot: 'green', statusText: 'Analytics · KPIs · Resultados' },
+    'ventas': { id: 'ventas', label: 'Ventas', route: '/ventas/resultados', bgColor: '#C77A22', gradient: 'linear-gradient(135deg, #C77A22 0%, #7A3F0E 100%)', iconFile: 'ingresos.svg', statusDot: 'green', statusText: 'Analytics · KPIs · Resultados' },
     'comunicaciones': { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#4F88E3', gradient: 'linear-gradient(135deg, #4F88E3 0%, #1B56A8 100%)', iconFile: 'comunicaciones.svg', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA' },
     'autofomento': { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#3A72CF', gradient: 'linear-gradient(135deg, #3A72CF 0%, #153E82 100%)', iconFile: 'gps.svg', statusDot: 'green', statusText: 'GPS · Cajas · Tractos · Thermos' },
     'config': { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#3F4856', gradient: 'linear-gradient(135deg, #3F4856 0%, #0F1620 100%)', iconFile: 'configuracion.svg', statusDot: 'gray', statusText: '' },
@@ -923,6 +924,10 @@ export default function HomeDashboard() {
           transformStyle: 'preserve-3d',
         }}>
           {SLOTS.map((_, i) => renderCard(i))}
+        </div>
+        {/* V53 (Tarea #16) — Cenefa rosa mexicano con metas de vendedores en marquee */}
+        <div style={{ flex: '0 0 auto', padding: '12px 32px 16px', maxWidth: '100%' }}>
+          <MarqueeMetas />
         </div>
       </div>
     </div>

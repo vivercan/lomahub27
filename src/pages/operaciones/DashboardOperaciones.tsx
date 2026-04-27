@@ -18,8 +18,6 @@ const CARDS: CardDef[] = [
   { id: 'planeacion',     label: 'Planeacion Flota',  route: '/operaciones/planeacion-flota',       kpiLabel: 'Unidades',       iconSet: 'hugeicons', iconName: 'route-01' },
   { id: 'prog_impex',     label: 'Prog. IMPEX',       route: '/operaciones/programacion-impex',     kpiLabel: 'Programados',    iconSet: 'hugeicons', iconName: 'cargo-ship' },
   { id: 'prog_dedicados', label: 'Prog. Dedicados',   route: '/operaciones/programacion-dedicados', kpiLabel: 'Programados',    iconSet: 'hugeicons', iconName: 'calendar-04' },
-  { id: 'cruce_fronterizo', label: 'Cruce Fronterizo', route: '/operaciones/cruce-fronterizo',      kpiLabel: 'Pendientes',     iconSet: 'hugeicons', iconName: 'route-block' },
-  { id: 'control_temp',   label: 'Control Temperatura', route: '/operaciones/control-temperatura',  kpiLabel: 'Activos',        iconSet: 'hugeicons', iconName: 'thermometer' },
   { id: 'documentos',     label: 'Documentos',        route: '/documentos',                         kpiLabel: 'Repositorio',    iconSet: 'hugeicons', iconName: 'file-empty-02' },
   { id: 'war_room',       label: 'War Room',          route: '/war-room',                           kpiLabel: 'Alertas',        iconSet: 'hugeicons', iconName: 'alert-diamond' },
 ]

@@ -106,6 +106,31 @@ export const tokens = {
     xl:  '1280px',
     xxl: '1536px',
   },
+  // ─── TIPO DE CAJA — SEMÁNTICA CALIENTE/FRÍO (V53 27/Abr/2026) ───
+  // Estandarización GLOBAL: cualquier render de tipo de caja usa estos.
+  // SECA = caliente (sin refrigeración) → naranja vivo
+  // THERMO = frío (refrigerado) → azul cielo frío
+  tipo: {
+    seca: {
+      bg:       '#F97316',           // orange-500 sólido
+      bgLight:  '#FB923C',           // orange-400 highlight superior
+      bgDark:   '#C2410C',           // orange-700 sombra inferior
+      gradient: 'linear-gradient(180deg, #FB923C 0%, #F97316 50%, #C2410C 100%)',
+      border:   '#EA580C',           // orange-600 border
+      glow:     'rgba(249, 115, 22, 0.30)',
+      label:    'Seca',
+    },
+    thermo: {
+      bg:       '#0EA5E9',           // sky-500 azul frío
+      bgLight:  '#38BDF8',           // sky-400 highlight superior
+      bgDark:   '#075985',           // sky-800 sombra inferior
+      gradient: 'linear-gradient(180deg, #38BDF8 0%, #0EA5E9 50%, #075985 100%)',
+      border:   '#0284C7',           // sky-600 border
+      glow:     'rgba(14, 165, 233, 0.30)',
+      label:    'Thermo',
+    },
+  },
+
 } as const
 
 // Tipos TypeScript para autocompletado

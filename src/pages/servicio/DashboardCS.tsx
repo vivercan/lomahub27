@@ -10,11 +10,9 @@ import type { CardDef } from '../../components/dashboard/ModuleDashboardGrid'
 
 const CARDS: CardDef[] = [
   { id: 'tickets',      label: 'Tickets',           route: '/servicio/tickets',         kpiLabel: 'Activos',         iconSet: 'bi',        iconName: 'ticket-perforated' },
-  { id: 'whatsapp',     label: 'WhatsApp',          route: '/servicio/whatsapp',        kpiLabel: 'Conversaciones',  iconSet: 'bi',        iconName: 'whatsapp' },
   { id: 'clientes',     label: 'Clientes Activos',  route: '/clientes/corporativos',    kpiLabel: 'Clientes',        iconSet: 'gridicons', iconName: 'multiple-users' },
   { id: 'impo',         label: 'Importación',       route: '/servicio/importacion',     kpiLabel: 'Viajes IMPO (30d)', iconSet: 'ion',     iconName: 'cloud-download' },
   { id: 'expo',         label: 'Exportación',       route: '/servicio/exportacion',     kpiLabel: 'Viajes EXPO (30d)', iconSet: 'ion',     iconName: 'cloud-upload' },
-  { id: 'comunicacion_proactiva', label: 'Comunicación Proactiva', route: '/servicio/comunicacion-proactiva', kpiLabel: 'Alertas',  iconSet: 'bi', iconName: 'megaphone' },
   { id: 'escalamiento_wa', label: 'Escalamiento WA', route: '/servicio/escalamiento-whatsapp', kpiLabel: 'Pendientes', iconSet: 'bi', iconName: 'arrow-up-right-square' },
   { id: 'despacho_ia',  label: 'Despacho IA',       route: '/operaciones/torre-control', kpiLabel: 'Viajes activos',  iconSet: 'bi',        iconName: 'cpu' },
   { id: 'metricas',     label: 'Métricas Servicio', route: '/servicio/metricas',        kpiLabel: 'Dashboard',       iconSet: 'bi',        iconName: 'graph-up' },

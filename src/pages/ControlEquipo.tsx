@@ -128,6 +128,8 @@ export default function ControlEquipo() {
   const markersRef = useRef<any[]>([])
   const [cajas, setCajas] = useState<CajaRecord[]>([])
   const [loading, setLoading] = useState(true)
+  // V53 (Tarea #3+#5) — Map caja_economico → viaje activo (de viajes_anodos)
+  const [viajesPorCaja, setViajesPorCaja] = useState<Record<string, any>>({})
   const [leafletReady, setLeafletReady] = useState(false)
   const [filtroEmpresa, setFiltroEmpresa] = useState('')
   const [filtroTipo, setFiltroTipo] = useState('')
@@ -245,6 +247,37 @@ export default function ControlEquipo() {
     }
     fetchData()
   }, [])
+
+  // ─── V53 (Tarea #3+#5) — Cruce caja↔viaje ANODOS + auto-refresh 30s ──
+  useEffect(() => {
+    fetchViajesActivos()
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        fetchViajesActivos()
+      }
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  async function fetchViajesActivos() {
+    try {
+      const { data } = await supabase
+        .from('viajes_anodos')
+        .select('caja, origen, origen_ciudad, destino, destino_ciudad, eta, cita_carga, cita_descarga, folio, estado, inicia_viaje')
+        .in('estado', ['en_transito', 'programado', 'en_riesgo', 'asignado'])
+        .order('inicia_viaje', { ascending: false })
+        .limit(2000)
+      if (!data) return
+      const map: Record<string, any> = {}
+      for (const v of data) {
+        const caja = String(v.caja || '').trim()
+        if (caja && !map[caja]) map[caja] = v
+      }
+      setViajesPorCaja(map)
+    } catch (e) {
+      console.error('fetchViajesActivos error:', e)
+    }
+  }
 
   // ─── Fetch terminales + objetivos de inventario ──────────
   useEffect(() => {
@@ -528,10 +561,19 @@ export default function ControlEquipo() {
     if (!leafletReady || !mapRef.current || mapInstanceRef.current) return
     if (!(window as any).L) return
 
-    const map = L.map(mapRef.current).setView([23.6345, -102.5528], 5)
+    // V53 (27/Abr/2026) — Restringido a USA + México (operación TROB)
+    const map = L.map(mapRef.current, {
+      center: [28, -98],          // Texas/Norte de México (centro de operaciones)
+      zoom: 5,
+      minZoom: 4,                 // No alejar más allá del encuadre operativo
+      maxZoom: 12,                // Suficiente para distinguir cajas en ciudad
+      maxBounds: [[14, -118], [50, -85]],  // SW México hasta NE USA
+      maxBoundsViscosity: 0.85,   // Resistencia al arrastre fuera de bounds
+    })
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap',
-      maxZoom: 18,
+      maxZoom: 12,
+      minZoom: 4,
     }).addTo(map)
 
     mapInstanceRef.current = map
@@ -571,8 +613,23 @@ export default function ControlEquipo() {
       })
 
       const marker = L.marker([c.latitud, c.longitud], { icon }).addTo(map)
+      // V53 (Tarea #3) — agregar info de viaje activo desde ANODOS si existe
+      const viaje = viajesPorCaja[c.numero_economico]
+      const fmtFecha = (d: any) => {
+        if (!d) return '—'
+        try { const dt = new Date(d); return dt.toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) } catch { return String(d) }
+      }
+      const viajeBlock = viaje
+        ? '<hr style="border:none;border-top:1px solid #E2E8F0;margin:8px 0;"/>' +
+          '<b>Folio:</b> ' + (viaje.folio || '—') + '<br/>' +
+          '<b>Origen:</b> ' + (viaje.origen_ciudad || viaje.origen || '—') + '<br/>' +
+          '<b>Destino:</b> ' + (viaje.destino_ciudad || viaje.destino || '—') + '<br/>' +
+          '<b>ETA:</b> ' + fmtFecha(viaje.eta) + '<br/>' +
+          '<b>Cita:</b> ' + fmtFecha(viaje.cita_descarga || viaje.cita_carga)
+        : '<hr style="border:none;border-top:1px solid #E2E8F0;margin:8px 0;"/>' +
+          '<i style="color:#94A3B8;">Sin viaje activo en ANODOS</i>'
       marker.bindPopup(
-        '<div style="font-family:Montserrat,system-ui,sans-serif;font-size:13px;line-height:1.6;">' +
+        '<div style="font-family:Montserrat,system-ui,sans-serif;font-size:13px;line-height:1.6;min-width:240px;">' +
         '<strong style="font-size:14px;">' + c.numero_economico + '</strong>' +
         '<span style="margin-left:8px;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;' +
         'background:' + (moving ? 'rgba(13,150,104,0.15);color:#0D9668' : 'rgba(107,114,128,0.15);color:#6B7280') + ';">' +
@@ -582,15 +639,14 @@ export default function ControlEquipo() {
         '<b>Velocidad:</b> ' + (c.velocidad > 0 ? c.velocidad + ' km/h' : '0 km/h') + '<br/>' +
         '<b>Ubicación:</b> ' + c.ubicacion + '<br/>' +
         '<b>Señal:</b> ' + c.ultimaSenal +
+        viajeBlock +
         '</div>'
       )
       markersRef.current.push(marker)
     })
 
-    if (markersRef.current.length > 0) {
-      const group = L.featureGroup(markersRef.current)
-      map.fitBounds(group.getBounds().pad(0.1))
-    }
+    // V53 — fitBounds desactivado: el view inicial USA+MX ya está bien encuadrado.
+    // Si el usuario quiere centrar en sus markers, doble-click sobre el mapa hace zoom natural.
   }, [cajasFiltradas, leafletReady, vista])
 
   // ─── Inject pulse animation ───────────────────────────────
@@ -665,14 +721,14 @@ export default function ControlEquipo() {
     color: tokens.colors.textSecondary,
   }
 
-  // ─── KPI card config ──────────────────────────────────────
+  // ─── KPI card config V53 — sólidos 3D con paleta semántica ──
   const kpiCards = [
-    { label: 'Total Cajas', value: kpis.total, color: tokens.colors.textPrimary, accent: tokens.colors.primary },
-    { label: 'Cajas Secas', value: kpis.secas, color: '#F97316', accent: '#F97316' },
-    { label: 'Thermos', value: kpis.thermos, color: '#0891B2', accent: '#0891B2' },
-    { label: 'Con GPS', value: kpis.conGPS, color: '#0D9668', accent: '#0D9668' },
-    { label: 'En Movimiento', value: kpis.enMovimiento, color: '#0D9668', accent: '#10B981' },
-    { label: 'Sin Señal', value: kpis.sinSenal, color: tokens.colors.red, accent: tokens.colors.red },
+    { label: 'Total Cajas',   value: kpis.total,        gradient: 'linear-gradient(180deg, #475569 0%, #334155 50%, #0F172A 100%)', borderColor: '#1E293B', glow: 'rgba(15,23,42,0.30)' },
+    { label: 'Cajas Secas',   value: kpis.secas,        gradient: tokens.tipo.seca.gradient,                                          borderColor: tokens.tipo.seca.border,    glow: tokens.tipo.seca.glow },
+    { label: 'Thermos',       value: kpis.thermos,      gradient: tokens.tipo.thermo.gradient,                                        borderColor: tokens.tipo.thermo.border,  glow: tokens.tipo.thermo.glow },
+    { label: 'Con GPS',       value: kpis.conGPS,       gradient: 'linear-gradient(180deg, #2557A8 0%, #1E40AF 50%, #082552 100%)', borderColor: '#1E3A8A', glow: 'rgba(37,87,168,0.30)' },
+    { label: 'En Movimiento', value: kpis.enMovimiento, gradient: 'linear-gradient(180deg, #34D399 0%, #10B981 50%, #047857 100%)', borderColor: '#059669', glow: 'rgba(16,185,129,0.30)' },
+    { label: 'Sin Señal',     value: kpis.sinSenal,     gradient: 'linear-gradient(180deg, #F87171 0%, #EF4444 50%, #B91C1C 100%)', borderColor: '#DC2626', glow: 'rgba(239,68,68,0.30)' },
   ]
 
   return (
@@ -687,31 +743,37 @@ export default function ControlEquipo() {
             <div
               key={k.label}
               style={{
-                background: tokens.colors.bgCard,
-                borderRadius: '12px',
-                padding: '14px 16px',
-                border: '1px solid ' + tokens.colors.border,
-                borderLeft: '4px solid ' + k.accent,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                background: k.gradient,
+                borderRadius: '14px',
+                padding: '16px 18px',
+                border: '1px solid ' + k.borderColor,
+                // V53 — 4 layer shadow para 3D contundente
+                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.20), inset 0 -1px 0 rgba(0,0,0,0.25), 0 2px 4px rgba(15,23,42,0.10), 0 8px 20px ${k.glow}`,
+                cursor: 'default',
+                transition: 'transform 0.2s ease',
               }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}
             >
               <div style={{
                 fontFamily: tokens.fonts.heading,
                 fontSize: '10px',
-                fontWeight: 600,
-                color: tokens.colors.textSecondary,
+                fontWeight: 700,
+                color: 'rgba(255,255,255,0.78)',
                 textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                marginBottom: '4px',
+                letterSpacing: '0.6px',
+                marginBottom: '6px',
+                textShadow: '0 1px 1px rgba(0,0,0,0.20)',
               }}>
                 {k.label}
               </div>
               <div style={{
                 fontFamily: tokens.fonts.heading,
-                fontSize: '26px',
-                fontWeight: 800,
-                color: k.color,
+                fontSize: '28px',
+                fontWeight: 900,
+                color: '#FFFFFF',
                 lineHeight: 1,
+                textShadow: '0 -1px 0 rgba(0,0,0,0.32), 0 1px 0 rgba(255,255,255,0.10), 0 2px 4px rgba(0,0,0,0.30)',
               }}>
                 {loading ? '—' : k.value}
               </div>
