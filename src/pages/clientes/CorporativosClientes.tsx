@@ -152,24 +152,39 @@ export default function CorporativosClientes(): ReactElement {
           setCxcMap(map);
         }
 
-        /* viajes resumen */
-        const { data: viajesData } = await supabase
-          .from('viajes')
-          .select('cliente_id,estado');
-
-        if (viajesData) {
-          const map: Record<string, ViajeResumen> = {};
-          for (const row of viajesData) {
-            if (!row.cliente_id) continue;
-            if (!map[row.cliente_id]) {
-              map[row.cliente_id] = { cliente_id: row.cliente_id, viajes_activos: 0, viajes_total: 0 };
-            }
-            map[row.cliente_id].viajes_total += 1;
-            if (['en_transito', 'programado'].includes(row.estado)) {
-              map[row.cliente_id].viajes_activos += 1;
+        /* viajes resumen — viajes_anodos por nombre cliente (texto) */
+        const desde90d = new Date(); desde90d.setDate(desde90d.getDate() - 90);
+        const conteoPorNombre = new Map<string, { total: number; activos: number }>();
+        let off = 0; const PAGE = 1000;
+        while (true) {
+          const { data: vData, error: vErr } = await supabase
+            .from('viajes_anodos')
+            .select('cliente, llega_destino, inicia_viaje')
+            .gte('inicia_viaje', desde90d.toISOString())
+            .neq('tipo', 'VACIO')
+            .range(off, off + PAGE - 1);
+          if (vErr || !vData || vData.length === 0) break;
+          for (const v of vData) {
+            const nombre = (v.cliente || '').trim().toUpperCase();
+            if (!nombre) continue;
+            const cur = conteoPorNombre.get(nombre) || { total: 0, activos: 0 };
+            cur.total += 1;
+            if (!v.llega_destino) cur.activos += 1;
+            conteoPorNombre.set(nombre, cur);
+          }
+          if (vData.length < PAGE) break;
+          off += PAGE;
+        }
+        if (clientesData && conteoPorNombre.size > 0) {
+          const vmap: Record<string, ViajeResumen> = {};
+          for (const cl of clientesData) {
+            const key = (cl.razon_social || '').trim().toUpperCase();
+            const conteo = conteoPorNombre.get(key);
+            if (conteo) {
+              vmap[cl.id] = { cliente_id: cl.id, viajes_total: conteo.total, viajes_activos: conteo.activos };
             }
           }
-          setViajesMap(map);
+          setViajesMap(vmap);
         }
 
         /* corporativos — relación matriz↔subsidiaria */

@@ -54,16 +54,17 @@ async function fetchDemandaPorCiudad(): Promise<Map<string, number>> {
   while (true) {
     const { data, error } = await supabase
       .from('viajes_anodos')
-      .select('destino_ciudad')
+      .select('municipio_destino')
       .gte('inicia_viaje', desde)
-      .not('destino_ciudad', 'is', null)
+      .not('municipio_destino', 'is', null)
+      .neq('tipo', 'VACIO')
       .range(offset, offset + PAGE - 1)
 
     if (error) { console.error('demanda viajes_anodos:', error); break }
     if (!data || data.length === 0) break
 
     for (const row of data) {
-      const c = (row.destino_ciudad || '').trim()
+      const c = (row.municipio_destino || '').trim()
       if (c) demandaMap.set(c, (demandaMap.get(c) || 0) + 1)
     }
 
@@ -77,16 +78,17 @@ async function fetchDemandaPorCiudad(): Promise<Map<string, number>> {
     while (true) {
       const { data, error } = await supabase
         .from('viajes_anodos')
-        .select('destino_ciudad')
+        .select('municipio_destino')
         .gte('fecha_crea', desde)
-        .not('destino_ciudad', 'is', null)
+        .not('municipio_destino', 'is', null)
+        .neq('tipo', 'VACIO')
         .range(offset, offset + PAGE - 1)
 
       if (error) { console.error('demanda viajes_anodos fallback:', error); break }
       if (!data || data.length === 0) break
 
       for (const row of data) {
-        const c = (row.destino_ciudad || '').trim()
+        const c = (row.municipio_destino || '').trim()
         if (c) demandaMap.set(c, (demandaMap.get(c) || 0) + 1)
       }
 
@@ -128,21 +130,31 @@ export default function PlaneacionFlota(): ReactElement {
 
       if (e1) { console.error('tractos:', e1); setUnidades([]); return }
 
+      // Viajes ACTIVOS desde viajes_anodos (match por tracto texto, no tracto_id)
       const { data: viajes, error: e2 } = await supabase
-        .from('viajes')
-        .select('id, tracto_id, origen, destino, cita_descarga, estado')
-        .in('estado', ['en_transito', 'en_carga', 'programado'])
+        .from('viajes_anodos')
+        .select('id, tracto, municipio_origen, municipio_destino, origen, destino, cita_descarga, llega_destino, inicia_viaje')
+        .is('llega_destino', null)
+        .neq('tipo', 'VACIO')
 
-      if (e2) console.error('viajes:', e2)
+      if (e2) console.error('viajes_anodos:', e2)
 
       /* Demanda real desde viajes_anodos */
       const demandaDiaria = await fetchDemandaPorCiudad()
 
-      const viajeMap = new Map((viajes || []).map((v: any) => [v.tracto_id, v]))
+      // Index por tracto texto (numero economico) → último viaje activo
+      const viajeMap = new Map<string, any>()
+      ;(viajes || []).forEach((v: any) => {
+        if (v.tracto) {
+          const key = String(v.tracto).trim().toUpperCase()
+          if (!viajeMap.has(key)) viajeMap.set(key, v)
+        }
+      })
       const now = Date.now()
 
       const proyectadas: UnidadProyectada[] = (tractos || []).map((t: any) => {
-        const v = viajeMap.get(t.id)
+        const tractoKey = String(t.numero_economico || '').trim().toUpperCase()
+        const v = viajeMap.get(tractoKey)
         let disponibleEn: string | null = null
         let ciudadDisp = t.segmento || 'Sin segmento'
         let horasDisp = 0
@@ -151,7 +163,7 @@ export default function PlaneacionFlota(): ReactElement {
           const eta = new Date(v.cita_descarga).getTime()
           horasDisp = Math.max(0, (eta - now) / 3600000)
           disponibleEn = v.cita_descarga
-          ciudadDisp = v.destino || ciudadDisp
+          ciudadDisp = v.municipio_destino || v.destino || ciudadDisp
         } else if (t.estado_operativo === 'disponible') {
           horasDisp = 0
           disponibleEn = new Date().toISOString()

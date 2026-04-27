@@ -150,33 +150,42 @@ export default function Despachos(): ReactElement {
   const [filtroEstado, setFiltroEstado] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('');
 
-  // Cargar viajes desde Supabase al montar
+  // Cargar viajes desde Supabase — viajes_anodos (data REAL TROB últimos 30 días)
   useEffect(() => {
     const fetchViajes = async () => {
       try {
+        const desde = new Date(); desde.setDate(desde.getDate() - 30);
         const { data, error: dbError } = await supabase
-          .from('viajes')
-          .select('*, clientes(razon_social), tractos(numero_economico), cajas(numero_economico), operadores(nombre)')
-          .order('created_at', { ascending: false });
+          .from('viajes_anodos')
+          .select('id, viaje, anodos_id, cliente, tracto, caja, operador, municipio_origen, municipio_destino, origen, destino, tipo, inicia_viaje, llega_destino, cita_descarga')
+          .gte('inicia_viaje', desde.toISOString())
+          .neq('tipo', 'VACIO')
+          .order('inicia_viaje', { ascending: false })
+          .limit(500);
 
         if (dbError) {
-          console.error('Error fetching viajes:', dbError);
+          console.error('Error fetching viajes_anodos:', dbError);
           setViajes([]);
         } else if (data) {
-          const viajesFormatted: Viaje[] = (data as any[]).map((v) => ({
-            id: v.id,
-            folio: v.folio || '—',
-            cliente: v.clientes?.razon_social || v.cliente_nombre || '—',
-            ruta: `${v.origen || '?'} → ${v.destino || '?'}`,
-            tipo: v.tipo || '—',
-            tracto: v.tractos?.numero_economico || v.tracto_numero || '—',
-            caja: v.cajas?.numero_economico || v.caja_numero || '—',
-            operador: v.operadores?.nombre || v.operador_nombre || '—',
-            estado: v.estado || 'programado',
-            citaDescarga: v.cita_descarga ? new Date(v.cita_descarga).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : '—',
-            eta_calculado: v.eta_calculado,
-            eta_imposible: v.eta_imposible || false,
-          }));
+          const viajesFormatted: Viaje[] = (data as any[]).map((v) => {
+            const estadoDerivado = v.llega_destino ? 'completado' : (v.inicia_viaje ? 'en_transito' : 'programado');
+            return {
+              id: v.id,
+              folio: v.viaje ? `V${v.viaje}` : (v.anodos_id ? `A${v.anodos_id}` : '—'),
+              cliente: v.cliente || '—',
+              ruta: `${v.municipio_origen || v.origen || '?'} → ${v.municipio_destino || v.destino || '?'}`,
+              tipo: v.tipo || '—',
+              tracto: v.tracto || '—',
+              caja: v.caja || '—',
+              operador: v.operador || '—',
+              estado: estadoDerivado,
+              citaDescarga: v.cita_descarga
+                ? new Date(v.cita_descarga).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })
+                : '—',
+              eta_calculado: v.cita_descarga,
+              eta_imposible: false,
+            };
+          });
           setViajes(viajesFormatted);
         }
       } catch (err) {

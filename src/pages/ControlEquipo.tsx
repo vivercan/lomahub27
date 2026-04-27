@@ -304,18 +304,35 @@ export default function ControlEquipo() {
     fetchTerminalesYObjetivos()
   }, [])
 
-  // V46.7 — Fetch viajes activos por caja_id (para hacer cajas clickeables)
+  // V47 — Viajes activos desde viajes_anodos (sin caja_id, solo texto)
+  // Mapeamos caja.numero_economico ↔ viajes_anodos.caja (texto)
   useEffect(() => {
     const fetchViajesActivos = async () => {
       try {
-        const { data } = await supabase
-          .from('viajes')
-          .select('id, caja_id, folio, estado')
-          .in('estado', ['asignado', 'en_transito', 'en_curso', 'programado', 'en_riesgo', 'activo'])
-        if (!data) return
+        const [viajesRes, cajasRes] = await Promise.all([
+          supabase
+            .from('viajes_anodos')
+            .select('id, viaje, caja, llega_destino')
+            .is('llega_destino', null)
+            .neq('tipo', 'VACIO'),
+          supabase
+            .from('cajas')
+            .select('id, numero_economico')
+            .is('deleted_at', null),
+        ])
+        if (!viajesRes.data || !cajasRes.data) return
+        const cajaByEconomico = new Map<string, string>()
+        ;(cajasRes.data as any[]).forEach(c => {
+          if (c.numero_economico) cajaByEconomico.set(String(c.numero_economico).trim().toUpperCase(), c.id)
+        })
         const map = new Map<string, { id: string; folio?: string; estado?: string }>()
-        ;(data as any[]).forEach(v => {
-          if (v.caja_id) map.set(v.caja_id, { id: v.id, folio: v.folio, estado: v.estado })
+        ;(viajesRes.data as any[]).forEach(v => {
+          if (!v.caja) return
+          const key = String(v.caja).trim().toUpperCase()
+          const cajaId = cajaByEconomico.get(key)
+          if (cajaId) {
+            map.set(cajaId, { id: v.id, folio: v.viaje ? `V${v.viaje}` : '—', estado: 'en_transito' })
+          }
         })
         setViajesByCajaId(map)
       } catch { /* tabla puede no responder */ }

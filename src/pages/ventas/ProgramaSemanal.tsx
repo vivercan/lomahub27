@@ -51,36 +51,38 @@ export default function ProgramaSemanal() {
       weekEnd.setDate(weekEnd.getDate() + 6)
       const fin = weekEnd.toISOString().split('T')[0]
 
+      // viajes_anodos: data REAL (136K viajes), agrupada por cliente texto
       const { data: viajes, error: vErr } = await supabase
-        .from('viajes')
-        .select('id, cliente_id, tracto_id, caja_id, origen, destino, fecha_salida, created_at')
-        .gte('fecha_salida', semanaInicio)
-        .lte('fecha_salida', fin + 'T23:59:59')
+        .from('viajes_anodos')
+        .select('id, cliente, tracto, caja, municipio_origen, municipio_destino, inicia_viaje')
+        .gte('inicia_viaje', semanaInicio + 'T00:00:00')
+        .lte('inicia_viaje', fin + 'T23:59:59')
+        .neq('tipo', 'VACIO')
+        .limit(5000)
       if (vErr) throw new Error(vErr.message)
 
-      const { data: clientes } = await supabase.from('clientes').select('id, razon_social')
-      const clienteMap: Record<string, string> = {}
-      for (const cl of (clientes || [])) { clienteMap[cl.id] = cl.razon_social }
-
-      const { data: tractos } = await supabase.from('tractos').select('id').eq('activo', true)
-      const { data: cajas } = await supabase.from('cajas').select('id').eq('activo', true)
+      const { data: tractos } = await supabase.from('tractos').select('id').is('deleted_at', null)
+      const { data: cajas } = await supabase.from('cajas').select('id').is('deleted_at', null)
       const totalTractos = tractos?.length || 0
       const totalCajas = cajas?.length || 0
 
+      // Agrupar por nombre cliente texto (ANODOS no tiene cliente_id)
       const clienteGroups: Record<string, number> = {}
       for (const v of (viajes || [])) {
-        const cid = v.cliente_id || 'sin_cliente'
-        clienteGroups[cid] = (clienteGroups[cid] || 0) + 1
+        const nombre = (v.cliente || 'Sin cliente').trim()
+        clienteGroups[nombre] = (clienteGroups[nombre] || 0) + 1
       }
 
-      const programa: ClientePrograma[] = Object.entries(clienteGroups).map(([cid, count]) => ({
-        cliente_id: cid,
-        razon_social: clienteMap[cid] || 'Sin cliente',
-        promedio_semanal: count,
-        forecast_proxima: count,
-        tendencia: 'estable' as const,
-        semanas_data: 1,
-      }))
+      const programa: ClientePrograma[] = Object.entries(clienteGroups)
+        .map(([nombre, count]) => ({
+          cliente_id: nombre,
+          razon_social: nombre,
+          promedio_semanal: count,
+          forecast_proxima: count,
+          tendencia: 'estable' as const,
+          semanas_data: 1,
+        }))
+        .sort((a, b) => b.promedio_semanal - a.promedio_semanal)
 
       const forecastTotal = viajes?.length || 0
       const balance = Math.min(totalTractos, totalCajas) - forecastTotal

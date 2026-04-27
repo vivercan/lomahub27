@@ -57,14 +57,29 @@ export default function FichaCliente(): ReactElement {
 
         setCliente(clienteData);
 
-        const { data: viajesData, error: viajesError } = await supabase
-          .from('viajes')
-          .select('*')
-          .eq('cliente_id', id)
-          .in('estado', ['en_transito', 'programado']);
+        // viajes_anodos no tiene cliente_id, matchea por razon_social (texto)
+        if (clienteData?.razon_social) {
+          const { data: viajesData, error: viajesError } = await supabase
+            .from('viajes_anodos')
+            .select('id, viaje, cliente, tracto, municipio_origen, municipio_destino, inicia_viaje, llega_destino, cita_descarga, tipo')
+            .ilike('cliente', clienteData.razon_social)
+            .is('llega_destino', null)
+            .order('inicia_viaje', { ascending: false })
+            .limit(50);
 
-        if (!viajesError) {
-          setViajesActivos(viajesData || []);
+          if (!viajesError && viajesData) {
+            setViajesActivos(
+              viajesData.map((v: any) => ({
+                id: v.id,
+                origen: v.municipio_origen || '—',
+                destino: v.municipio_destino || '—',
+                estado: v.llega_destino ? 'verde' : (v.inicia_viaje ? 'amarillo' : 'azul'),
+                eta: v.cita_descarga
+                  ? new Date(v.cita_descarga).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' })
+                  : '—',
+              }))
+            );
+          }
         }
       } catch (error) {
         console.error('Error fetching cliente:', error);

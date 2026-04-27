@@ -77,18 +77,19 @@ async function fetchRutaStats(): Promise<Map<string, RutaStats>> {
   while (true) {
     const { data, error } = await supabase
       .from('viajes_anodos')
-      .select('origen_ciudad, destino_ciudad, km_total')
+      .select('municipio_origen, municipio_destino, kms_viaje')
       .gte('inicia_viaje', desde)
+      .neq('tipo', 'VACIO')
       .range(offset, offset + PAGE - 1)
 
     if (error) { console.error('ruta stats:', error); break }
     if (!data || data.length === 0) break
 
     for (const row of data) {
-      const ruta = `${row.origen_ciudad || '?'} → ${row.destino_ciudad || '?'}`
+      const ruta = `${row.municipio_origen || '?'} → ${row.municipio_destino || '?'}`
       const prev = rutaMap.get(ruta) || { total: 0, kmSum: 0 }
       prev.total += 1
-      prev.kmSum += Number(row.km_total) || 0
+      prev.kmSum += Number(row.kms_viaje) || 0
       rutaMap.set(ruta, prev)
     }
 
@@ -102,18 +103,19 @@ async function fetchRutaStats(): Promise<Map<string, RutaStats>> {
     while (true) {
       const { data, error } = await supabase
         .from('viajes_anodos')
-        .select('origen_ciudad, destino_ciudad, km_total')
+        .select('municipio_origen, municipio_destino, kms_viaje')
         .gte('fecha_crea', desde)
+        .neq('tipo', 'VACIO')
         .range(offset, offset + PAGE - 1)
 
       if (error) break
       if (!data || data.length === 0) break
 
       for (const row of data) {
-        const ruta = `${row.origen_ciudad || '?'} → ${row.destino_ciudad || '?'}`
+        const ruta = `${row.municipio_origen || '?'} → ${row.municipio_destino || '?'}`
         const prev = rutaMap.get(ruta) || { total: 0, kmSum: 0 }
         prev.total += 1
-        prev.kmSum += Number(row.km_total) || 0
+        prev.kmSum += Number(row.kms_viaje) || 0
         rutaMap.set(ruta, prev)
       }
 
@@ -474,18 +476,21 @@ export default function TorreControl(): ReactElement {
       try {
         setLoading(true)
 
-        // Fetch active viajes + route stats + CS users in parallel
+        // Fetch viajes ACTIVOS desde viajes_anodos (llega_destino IS NULL = en vuelo)
         const [viajesResp, rutaStats, mesCount, csResp] = await Promise.all([
           supabase
-            .from('viajes')
-            .select('*, clientes(razon_social), tractos(numero_economico)')
-            .not('estado', 'eq', 'cancelado')
-            .order('created_at', { ascending: false }),
+            .from('viajes_anodos')
+            .select('id, viaje, anodos_id, cliente, tracto, caja, operador, municipio_origen, municipio_destino, origen, destino, tipo, inicia_viaje, llega_destino, cita_carga, cita_descarga, kms_viaje')
+            .is('llega_destino', null)
+            .neq('tipo', 'VACIO')
+            .order('inicia_viaje', { ascending: false })
+            .limit(500),
           fetchRutaStats(),
           supabase
             .from('viajes_anodos')
             .select('*', { count: 'exact', head: true })
-            .gte('inicia_viaje', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()),
+            .gte('inicia_viaje', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString())
+            .neq('tipo', 'VACIO'),
           supabase
             .from('usuarios')
             .select('id, nombre_completo, email')
@@ -494,7 +499,7 @@ export default function TorreControl(): ReactElement {
         ])
 
         if (viajesResp.error) {
-          console.error('Error fetching viajes:', viajesResp.error)
+          console.error('Error fetching viajes_anodos:', viajesResp.error)
           setViajes([])
           return
         }
@@ -506,28 +511,43 @@ export default function TorreControl(): ReactElement {
 
         setTotalViajesMes(mesCount.count || 0)
 
+        const now = Date.now()
         const formattedViajes = (viajesResp.data || []).map((viaje: any) => {
-          const eta = viaje.eta_calculado ? new Date(viaje.eta_calculado) : null
           const cita = viaje.cita_descarga ? new Date(viaje.cita_descarga) : null
-          const diffMin = eta && cita ? Math.round((eta.getTime() - cita.getTime()) / 60000) : 0
-          const ruta = `${viaje.origen || '?'} → ${viaje.destino || '?'}`
+          // ANODOS no tiene eta_calculado; derivamos riesgo por cita vs ahora
+          const diffMin = cita ? Math.round((cita.getTime() - now) / 60000) : 0
+          const origenTxt = viaje.municipio_origen || viaje.origen || '?'
+          const destinoTxt = viaje.municipio_destino || viaje.destino || '?'
+          const ruta = `${origenTxt} → ${destinoTxt}`
           const stats = rutaStats.get(ruta)
 
+          // Derivar estado: cita pasada+sin llegada = retrasado, <2h = en_riesgo, en vuelo = en_transito
+          let estado = 'programado'
+          if (viaje.inicia_viaje) {
+            estado = 'en_transito'
+            if (cita) {
+              if (diffMin < 0) estado = 'retrasado'
+              else if (diffMin < 120) estado = 'en_riesgo'
+            }
+          }
+
+          const folio = viaje.viaje ? `V${viaje.viaje}` : (viaje.anodos_id ? `A${viaje.anodos_id}` : '—')
+
           return {
-            folio: viaje.folio || viaje.id?.substring(0, 8)?.toUpperCase() || '—',
-            cliente: viaje.clientes?.razon_social || viaje.cliente_nombre || '—',
+            folio,
+            cliente: viaje.cliente || '—',
             ruta,
-            tracto: viaje.tractos?.numero_economico || viaje.tracto_numero || '—',
-            eta: eta ? eta.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
+            tracto: viaje.tracto || '—',
+            eta: cita ? cita.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
             cita: cita ? cita.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
             diferencia: diffMin,
-            estadoViaje: viaje.estado || 'programado',
-            semaforo: estadoToSemaforo(viaje.estado || 'programado'),
-            kmRuta: stats?.avgKm || 0,
+            estadoViaje: estado,
+            semaforo: estadoToSemaforo(estado),
+            kmRuta: stats?.avgKm || Number(viaje.kms_viaje) || 0,
             viajesHistoricos: stats?.totalViajes || 0,
-            origen: viaje.origen,
-            destino: viaje.destino,
-            clienteId: viaje.cliente_id,
+            origen: origenTxt,
+            destino: destinoTxt,
+            clienteId: undefined,
           }
         })
 

@@ -28,7 +28,7 @@ async function fallbackFetch(): Promise<Record<string, number>> {
     supabase.from('tickets').select('*', { count: 'exact', head: true }).is('deleted_at', null).in('estado', ['abierto', 'en_proceso']),
     supabase.from('clientes').select('*', { count: 'exact', head: true }).is('deleted_at', null),
     supabase.from('actividades').select('*', { count: 'exact', head: true }).eq('resultado', 'pendiente'),
-    supabase.from('viajes').select('*', { count: 'exact', head: true }).in('estado', ['en_transito', 'programado', 'en_riesgo']),
+    supabase.from('viajes_anodos').select('*', { count: 'exact', head: true }).is('llega_destino', null),
     supabase.from('viajes_anodos').select('*', { count: 'exact', head: true }).eq('tipo', 'IMPO').gte('inicia_viaje', desde),
     supabase.from('viajes_anodos').select('*', { count: 'exact', head: true }).eq('tipo', 'EXPO').gte('inicia_viaje', desde),
   ])

@@ -42,8 +42,8 @@ export default function TrazabilidadViaje(): ReactElement {
         }
 
         const { data: viajeData, error: viajeError } = await supabase
-          .from('viajes')
-          .select('*')
+          .from('viajes_anodos')
+          .select('id, viaje, anodos_id, cliente, tracto, caja, operador, origen, destino, municipio_origen, municipio_destino, tipo, inicia_viaje, llega_destino, cita_carga, cita_descarga, kms_viaje')
           .eq('id', id)
           .single();
 
@@ -52,16 +52,38 @@ export default function TrazabilidadViaje(): ReactElement {
           return;
         }
 
-        setViaje(viajeData);
+        // Mapear schema ANODOS al interface Viaje
+        const v: any = viajeData;
+        const estadoDerivado = v.llega_destino ? 'entregado' : (v.inicia_viaje ? 'en_transito' : 'programado');
+        const eta = v.cita_descarga
+          ? new Date(v.cita_descarga).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' })
+          : '—';
 
-        const { data: eventosData, error: eventosError } = await supabase
-          .from('gps_tracking')
-          .select('*')
-          .eq('viaje_id', id)
-          .order('created_at', { ascending: true });
+        setViaje({
+          id: v.id,
+          cliente: v.cliente || '—',
+          origen: v.municipio_origen || v.origen || '—',
+          destino: v.municipio_destino || v.destino || '—',
+          tracto: v.tracto || '—',
+          caja: v.caja || '—',
+          operador: v.operador || '—',
+          estado: estadoDerivado,
+          eta,
+        });
 
-        if (!eventosError && eventosData) {
-          setEventos(eventosData || []);
+        // GPS por economico del tracto (no por viaje_id porque ANODOS no lo enlaza)
+        if (v.tracto) {
+          const { data: eventosData, error: eventosError } = await supabase
+            .from('gps_tracking')
+            .select('*')
+            .eq('economico', v.tracto)
+            .gte('created_at', v.inicia_viaje || new Date(Date.now() - 7 * 86400000).toISOString())
+            .order('created_at', { ascending: true })
+            .limit(500);
+
+          if (!eventosError && eventosData) {
+            setEventos(eventosData || []);
+          }
         }
       } catch (error) {
         console.error('Error fetching viaje:', error);
