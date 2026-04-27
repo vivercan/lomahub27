@@ -94,8 +94,10 @@ export function MarqueeMetas() {
     `IMPO HOY: ${data.impos_hoy}`,
     `EXPO HOY: ${data.expos_hoy}`,
     `PRIORIDAD DE LA SEMANA: ${PRIORIDAD_SEMANA}`,
-  ].join('     ◆     ')
-  const ticker = `${tickerOnce}     ◆     ${tickerOnce}     ◆     ${tickerOnce}`
+  ].join('     ◆     ') + '     ◆     '
+  // Marquee fluido sin trabón: dos copias side-by-side animadas a -50%
+  // Cuando el primer set llega a -50%, el segundo está exactamente donde
+  // estaba el primero al inicio → loop perfecto sin gap.
 
   return (
     <div style={{
@@ -104,36 +106,30 @@ export function MarqueeMetas() {
       marginRight: 'calc(50% - 50vw)',
       background: VERDE_BRILLANTE,
       color: '#FFFFFF',
-      // Doble de alto: padding 24px vs 12px previo
+      // Doble de alto
       padding: '24px 0',
       overflow: 'hidden',
       whiteSpace: 'nowrap',
       borderRadius: 0,
       fontFamily: '"Montserrat", sans-serif',
       fontWeight: 800,
-      // Tipografia mas grande: 18px vs 14px
-      fontSize: '18px',
-      letterSpacing: '0.04em',
-      // Sombra oscura fuerte para que blanco se lea sobre verde brillante
-      textShadow: '0 1px 2px rgba(0,0,0,0.85), 0 0 8px rgba(0,0,0,0.55), 0 2px 4px rgba(0,0,0,0.7)',
-      // Linea oscura arriba/abajo para enmarcar
-      borderTop: '2px solid rgba(0,0,0,0.25)',
-      borderBottom: '2px solid rgba(0,0,0,0.25)',
+      // Tipografia un poco mas grande, blanco puro sin contorno
+      fontSize: '22px',
+      letterSpacing: '0.03em',
       position: 'relative',
     }}>
       <div style={{
-        display: 'inline-block',
-        paddingLeft: '100%',
-        // 10% mas rapido: 120s -> 108s
-        animation: 'lhub-marquee-metas 108s linear infinite',
+        display: 'inline-flex',
+        animation: 'lhub-marquee-metas 95s linear infinite',
         willChange: 'transform',
       }}>
-        {ticker}
+        <span style={{ paddingRight: '0' }}>{tickerOnce}</span>
+        <span style={{ paddingRight: '0' }}>{tickerOnce}</span>
       </div>
       <style>{`
         @keyframes lhub-marquee-metas {
           0%   { transform: translate3d(0, 0, 0); }
-          100% { transform: translate3d(-33.333%, 0, 0); }
+          100% { transform: translate3d(-50%, 0, 0); }
         }
       `}</style>
     </div>

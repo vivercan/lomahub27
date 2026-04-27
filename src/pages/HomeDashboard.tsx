@@ -94,6 +94,7 @@ import { supabase } from '../lib/supabase'
 import AppHeader from '../components/layout/AppHeader'
 import { useAuthContext } from '../hooks/AuthContext'
 import { MarqueeMetas } from '../components/dashboard/MarqueeMetas'
+import { MarqueeNoticias } from '../components/dashboard/MarqueeNoticias'
 
 interface CardConfig {
   id: string
@@ -925,9 +926,10 @@ export default function HomeDashboard() {
         }}>
           {SLOTS.map((_, i) => renderCard(i))}
         </div>
-        {/* V54 (28/Abr/2026) — Cenefa rosa mexicano PLANA, ancho completo, separada del grid */}
-        <div style={{ flex: '0 0 auto', padding: '32px 0 8px 0', maxWidth: '100%' }}>
+        {/* V57 (28/Abr/2026) — Cenefa verde metas + cenefa azul noticias transporte */}
+        <div style={{ flex: '0 0 auto', padding: '32px 0 0 0', maxWidth: '100%' }}>
           <MarqueeMetas />
+          <MarqueeNoticias />
         </div>
       </div>
     </div>
