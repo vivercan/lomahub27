@@ -55,6 +55,18 @@ const PIPELINE_STAGES = [
   { id: 'Cerrado Perdido', label: 'Cerrado Perdido', color: tokens.colors.red },
 ]
 
+// V52 26/Abr/2026 (FIX 28) — Helper estancados (>5 dias sin mov)
+const DIAS_ESTANCADO_THRESHOLD = 5
+function diasSinMovimiento(fecha?: string | null): number {
+  if (!fecha) return 0
+  const ms = Date.now() - new Date(fecha).getTime()
+  return Math.max(0, Math.floor(ms / 86400000))
+}
+function esEstancado(lead: { fecha_ultimo_mov?: string; estado: string }): boolean {
+  if (lead.estado === 'Cerrado Ganado' || lead.estado === 'Cerrado Perdido') return false
+  return diasSinMovimiento(lead.fecha_ultimo_mov) >= DIAS_ESTANCADO_THRESHOLD
+}
+
 const STAGE_MAP = Object.fromEntries(PIPELINE_STAGES.map(s => [s.id, s]))
 
 export default function MisLeads() {
@@ -279,11 +291,16 @@ export default function MisLeads() {
 
     try {
       const timestamp = new Date().toISOString()
+      // V52 26/Abr/2026 (FIX 28) — análisis IA va a `notas` con prefijo, no en cotizacion_url.
+      // cotizacion_url se reserva para URL real del PDF (cuando se conecte Supabase Storage).
+      const fechaCorta = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' })
+      const iaPrefix = `\n\n[IA cotizacion ${fechaCorta}]:\n${analysisResult.resumen || 'Sin resumen'}`
+      const notasNuevas = (analyzingLead.notas || '') + iaPrefix
       const { error } = await supabase
         .from('leads')
         .update({
           estado: analysisResult.etapa_sugerida,
-          cotizacion_url: analysisResult.resumen, // Store summary or use a filename if available
+          notas: notasNuevas,
           fecha_ultimo_mov: timestamp,
         })
         .eq('id', analyzingLead.id)
@@ -296,7 +313,7 @@ export default function MisLeads() {
           ? {
               ...l,
               estado: analysisResult.etapa_sugerida,
-              cotizacion_url: analysisResult.resumen,
+              notas: notasNuevas,
               fecha_ultimo_mov: timestamp,
             }
           : l
@@ -954,6 +971,22 @@ export default function MisLeads() {
             </span>
           </div>
         ) : (
+          {/* V52 (FIX 28) — Banner conteo de estancados */}
+          {(() => {
+            const estancadosCount = filteredLeads.filter(l => esEstancado(l)).length
+            if (estancadosCount === 0) return null
+            return (
+              <div style={{
+                margin: '0 0 12px 0', padding: '10px 14px', borderRadius: 10,
+                background: 'linear-gradient(180deg, rgba(245,158,11,0.12) 0%, rgba(217,119,6,0.06) 100%)',
+                border: '1px solid rgba(217,119,6,0.32)', display: 'flex', alignItems: 'center', gap: 10,
+                fontSize: 13, color: '#92400E', fontWeight: 600,
+              }}>
+                <span style={{ fontSize: 16 }}>{'⚠'}</span>
+                <span>{estancadosCount === 1 ? '1 lead estancado' : `${estancadosCount} leads estancados`} (sin movimiento +5 dias) - atender prioritario.</span>
+              </div>
+            )
+          })()}
           <table style={s.table}>
             <thead>
               <tr>
@@ -1024,6 +1057,18 @@ export default function MisLeads() {
                       <span style={s.stageBadge(stage.color)}>
                         {stage.label}
                       </span>
+                      {/* V52 (FIX 28) — Badge ESTANCADO si >5 dias sin mov */}
+                      {esEstancado(lead) && (
+                        <span style={{
+                          display: 'inline-block', marginLeft: 6, padding: '2px 7px',
+                          borderRadius: 6, fontSize: 10, fontWeight: 700,
+                          background: 'linear-gradient(180deg, #F59E0B 0%, #D97706 100%)',
+                          color: '#FFFFFF', boxShadow: '0 1px 2px rgba(217,119,6,0.30)',
+                          letterSpacing: '0.02em',
+                        }}>
+                          ESTANCADO {diasSinMovimiento(lead.fecha_ultimo_mov)}d
+                        </span>
+                      )}
                     </td>
                     <td style={{ ...s.td, height: `${ROW_HEIGHT}px`, padding: '6px 14px', verticalAlign: 'middle' as const }}>
                       <div style={{ color: tokens.colors.textPrimary }}>{lead.contacto || '—'}</div>
