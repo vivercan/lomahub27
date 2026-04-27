@@ -120,3 +120,128 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+
+/* ===================================================================
+   MOBILE RESPONSIVE V53 — 27/Abr/2026
+   Estrategia global: 1 cambio en CSS impacta TODA la app sin tocar
+   60+ archivos con styles inline. Usa attribute selectors sobre
+   styles inline + media queries.
+   Breakpoints: mobile <768px, tablet 768-1024px, desktop >1024px
+   =================================================================== */
+
+/* === MOBILE (< 768px) === */
+@media (max-width: 768px) {
+  /* Liberar overflow para permitir scroll natural en mobile */
+  html, body {
+    overflow: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100vh;
+  }
+  #root {
+    overflow: auto !important;
+    height: auto !important;
+    min-height: 100vh;
+  }
+
+  /* Forzar grids fijos a 1 columna en mobile */
+  div[style*="grid-template-columns: repeat(4, 1fr)"],
+  div[style*="grid-template-columns: repeat(3, 1fr)"],
+  div[style*="grid-template-columns: repeat(2, 1fr)"],
+  div[style*="gridTemplateColumns: 'repeat(4, 1fr)'"],
+  div[style*="gridTemplateColumns: 'repeat(3, 1fr)'"],
+  div[style*="gridTemplateColumns: 'repeat(2, 1fr)'"] {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Reducir paddings excesivos del header global */
+  header[style*="height: 64"],
+  header[style*="padding: 0 32px"] {
+    padding: 0 12px !important;
+    height: 56px !important;
+  }
+
+  /* AppHeader: ocultar fecha/semana/usd en pantallas chicas (info secundaria) */
+  header > div:nth-child(2) {
+    display: none !important;
+  }
+  header h1 {
+    font-size: 18px !important;
+  }
+
+  /* ModuleLayout content area — padding reducido */
+  div[style*="padding: '0 24px 24px'"],
+  div[style*="padding: 0 24px 24px"] {
+    padding: 0 8px 12px !important;
+  }
+  div[style*="padding: '12px 24px'"],
+  div[style*="padding: 12px 24px"] {
+    padding: 8px 10px !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* Cards del dashboard principal — adaptar height fijo */
+  div[style*="aspect-ratio"] {
+    aspect-ratio: 16/9 !important;
+  }
+
+  /* Tablas — scroll horizontal cuando no caben */
+  table {
+    display: block !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    max-width: 100vw !important;
+  }
+
+  /* Forms en stack vertical */
+  form > div[style*="grid"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Reducir font-sizes excesivos */
+  h1[style*="font-size: 22"], h1[style*="fontSize: 22"] {
+    font-size: 16px !important;
+  }
+  span[style*="font-size: 22px"], span[style*="fontSize: 22px"] {
+    font-size: 16px !important;
+  }
+
+  /* Botones touch-friendly mínimo 40x40 */
+  button {
+    min-height: 36px;
+  }
+
+  /* Toolbar / filtros: stack vertical */
+  div[style*="display: 'flex'"][style*="gap"] {
+    flex-wrap: wrap !important;
+  }
+}
+
+/* === TABLET (768-1024px) === */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Grids 4 cols → 2 cols */
+  div[style*="grid-template-columns: repeat(4, 1fr)"],
+  div[style*="gridTemplateColumns: 'repeat(4, 1fr)'"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* Header padding reducido */
+  header[style*="padding: 0 32px"] {
+    padding: 0 16px !important;
+  }
+  /* Content padding reducido */
+  div[style*="padding: '0 24px 24px'"] {
+    padding: 0 16px 16px !important;
+  }
+}
+
+/* === Touch-friendly globalmente === */
+@media (pointer: coarse) {
+  button, a, [role="button"] {
+    min-height: 36px;
+  }
+  input, select, textarea {
+    font-size: 16px !important; /* iOS evita auto-zoom si >= 16px */
+  }
+}
