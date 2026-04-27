@@ -59,11 +59,14 @@ export default function FichaCliente(): ReactElement {
 
         // viajes_anodos no tiene cliente_id, matchea por razon_social (texto)
         if (clienteData?.razon_social) {
+          // Filtro 30d para descartar viajes huerfanos legacy de ANODOS
+          const desde30d = new Date(Date.now() - 30 * 86400000).toISOString();
           const { data: viajesData, error: viajesError } = await supabase
             .from('viajes_anodos')
             .select('id, viaje, cliente, tracto, municipio_origen, municipio_destino, inicia_viaje, llega_destino, cita_descarga, tipo')
             .ilike('cliente', clienteData.razon_social)
             .is('llega_destino', null)
+            .gte('inicia_viaje', desde30d)
             .order('inicia_viaje', { ascending: false })
             .limit(50);
 

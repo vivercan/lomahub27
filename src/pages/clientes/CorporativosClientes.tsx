@@ -164,12 +164,15 @@ export default function CorporativosClientes(): ReactElement {
             .neq('tipo', 'VACIO')
             .range(off, off + PAGE - 1);
           if (vErr || !vData || vData.length === 0) break;
+          // FIX: "activos" debe ser viaje sin llega_destino + reciente (no huerfano)
+          const limite7d = Date.now() - 7 * 86400000;
           for (const v of vData) {
             const nombre = (v.cliente || '').trim().toUpperCase();
             if (!nombre) continue;
             const cur = conteoPorNombre.get(nombre) || { total: 0, activos: 0 };
             cur.total += 1;
-            if (!v.llega_destino) cur.activos += 1;
+            const iniMs = v.inicia_viaje ? new Date(v.inicia_viaje).getTime() : 0;
+            if (!v.llega_destino && iniMs >= limite7d) cur.activos += 1;
             conteoPorNombre.set(nombre, cur);
           }
           if (vData.length < PAGE) break;

@@ -483,6 +483,7 @@ export default function TorreControl(): ReactElement {
             .select('id, viaje, anodos_id, cliente, tracto, caja, operador, municipio_origen, municipio_destino, origen, destino, tipo, inicia_viaje, llega_destino, cita_carga, cita_descarga, kms_viaje')
             .is('llega_destino', null)
             .neq('tipo', 'VACIO')
+            .gte('inicia_viaje', new Date(Date.now() - 7 * 86400000).toISOString())
             .order('inicia_viaje', { ascending: false })
             .limit(500),
           fetchRutaStats(),

@@ -131,11 +131,13 @@ export default function PlaneacionFlota(): ReactElement {
       if (e1) { console.error('tractos:', e1); setUnidades([]); return }
 
       // Viajes ACTIVOS desde viajes_anodos (match por tracto texto, no tracto_id)
+      // FIX: filtrar 7d porque ANODOS tiene 27K viajes huerfanos sin llega_destino
       const { data: viajes, error: e2 } = await supabase
         .from('viajes_anodos')
         .select('id, tracto, municipio_origen, municipio_destino, origen, destino, cita_descarga, llega_destino, inicia_viaje')
         .is('llega_destino', null)
         .neq('tipo', 'VACIO')
+        .gte('inicia_viaje', new Date(Date.now() - 7 * 86400000).toISOString())
 
       if (e2) console.error('viajes_anodos:', e2)
 

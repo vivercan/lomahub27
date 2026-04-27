@@ -312,9 +312,10 @@ export default function ControlEquipo() {
         const [viajesRes, cajasRes] = await Promise.all([
           supabase
             .from('viajes_anodos')
-            .select('id, viaje, caja, llega_destino')
+            .select('id, viaje, caja, llega_destino, inicia_viaje')
             .is('llega_destino', null)
-            .neq('tipo', 'VACIO'),
+            .neq('tipo', 'VACIO')
+            .gte('inicia_viaje', new Date(Date.now() - 7 * 86400000).toISOString()),
           supabase
             .from('cajas')
             .select('id, numero_economico')
