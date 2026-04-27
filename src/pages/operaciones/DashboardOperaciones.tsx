@@ -10,7 +10,7 @@ import type { CardDef } from '../../components/dashboard/ModuleDashboardGrid'
 
 const CARDS: CardDef[] = [
   { id: 'despachos',      label: 'Despachos',         route: '/operaciones/despachos',              kpiLabel: 'Asignaciones',   iconSet: 'hugeicons', iconName: 'delivery-truck-01' },
-  { id: 'torre_control',  label: 'Torre de Control',  route: '/operaciones/torre-control',          kpiLabel: 'Viajes activos', iconSet: 'hugeicons', iconName: 'satellite-02' },
+  // V51 26/Abr/2026 — Torre de Control eliminada de aquí. Acceso único vía Servicio → Despacho IA (decisión JJ)
   { id: 'mapa_gps',       label: 'Mapa GPS',          route: '/operaciones/mapa',                   kpiLabel: 'Unidades',       iconSet: 'hugeicons', iconName: 'maps-location-01' },
   { id: 'tractos',        label: 'Control Tractos',   route: '/operaciones/tractos',                kpiLabel: 'Activos',        iconSet: 'hugeicons', iconName: 'delivery-truck-02' },
   { id: 'cajas',          label: 'Control Cajas',     route: '/operaciones/cajas',                  kpiLabel: 'Activas',        iconSet: 'hugeicons', iconName: 'package-receive' },
@@ -32,7 +32,7 @@ async function fallbackFetch(): Promise<Record<string, number>> {
   const out: Record<string, number> = {}
   CARDS.forEach(c => { out[c.id] = 0 })
   out.despachos = viajes.count ?? 0
-  out.torre_control = viajes.count ?? 0
+  // V51 — torre_control removed
   out.mapa_gps = tractos.count ?? 0
   out.tractos = tractos.count ?? 0
   return out

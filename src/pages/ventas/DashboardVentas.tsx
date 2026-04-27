@@ -21,7 +21,7 @@ const CARDS: CardDef[] = [
   { id: 'pareto',           label: 'Análisis 80/20',  route: '/inteligencia/pareto',        kpiLabel: 'Pareto',      iconSet: 'hugeicons', iconName: 'chart-bar-line' },
   { id: 'rentabilidad',     label: 'Rentabilidad',      route: '/operaciones/rentabilidad',      kpiLabel: 'Por tracto',  iconSet: 'hugeicons', iconName: 'chart-increase' },
   { id: 'cartera_360',      label: 'Cartera 360',       route: '/cxc/cartera',                   kpiLabel: 'Cuentas',     iconSet: 'hugeicons', iconName: 'wallet-done-01' },
-  { id: 'chief_of_staff',   label: 'Chief of Staff',    route: '/comunicaciones/chief-of-staff', kpiLabel: 'AI Briefing', iconSet: 'hugeicons', iconName: 'artificial-intelligence-04' },
+  // V51 26/Abr/2026 — Chief of Staff eliminado de aquí. Acceso único vía Comunicaciones (decisión JJ)
 ]
 
 async function fallbackFetch(): Promise<Record<string, number>> {
@@ -43,7 +43,7 @@ async function fallbackFetch(): Promise<Record<string, number>> {
     pareto: 0,
     rentabilidad: 0,
     cartera_360: cxcCuentas.count ?? 0,
-    chief_of_staff: 0,
+    // V51 — chief_of_staff removed
   }
 }
 
