@@ -117,7 +117,6 @@ export default function ProgramaSemanal() {
     <ModuleLayout
       titulo="Programa Semanal"
       subtitulo="Forecast de carga vs capacidad de flota"
-      moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}
       acciones={
         <Button variant="secondary" size="sm" onClick={fetchData} loading={loading}>
           <RefreshCw size={16} />

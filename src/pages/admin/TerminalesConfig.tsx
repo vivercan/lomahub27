@@ -288,7 +288,6 @@ export default function TerminalesConfig() {
     <ModuleLayout
       titulo="Terminales y Geocercas"
       subtitulo={`${activas} activa${activas !== 1 ? 's' : ''} · ${inactivas} inactiva${inactivas !== 1 ? 's' : ''}`}
-      moduloPadre={{ label: 'Configuración', ruta: '/admin/configuracion' }}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', height: '100%' }}>
 

@@ -441,7 +441,6 @@ export default function Rentabilidad() {
   return (
     <ModuleLayout
       titulo="Rentabilidad por Tracto"
-      moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}
       subtitulo="Ingreso estimado, costo y margen por unidad — datos ANODOS en tiempo real"
       acciones={
         <div className="flex items-center gap-2">

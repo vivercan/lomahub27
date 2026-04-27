@@ -131,7 +131,6 @@ export default function CorreosAutomaticos() {
   return (
     <ModuleLayout
       titulo="Correos Automáticos"
-      moduloPadre={{ nombre: 'Comunicaciones', ruta: '/comunicaciones/dashboard' }}
       subtitulo="Templates y triggers de seguimiento automatizado"
       acciones={<Button size="sm"><Plus size={16} /> Nuevo Template</Button>}
     >

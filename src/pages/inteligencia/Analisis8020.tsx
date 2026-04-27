@@ -478,7 +478,6 @@ export default function Analisis8020() {
     <ModuleLayout
       titulo="Análisis 80/20 (Pareto)"
       subtitulo="Identifica qué 20% genera el 80% de tus ingresos — datos ANODOS en tiempo real"
-      moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}
       acciones={
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={handleExportCSV} disabled={!current?.detalle?.length}>

@@ -83,6 +83,7 @@ import CerebroTarifario from './pages/pricing/CerebroTarifario'
 import CorreosAutomaticos from './pages/comunicaciones/CorreosAutomaticos'
 import Notificaciones from './pages/comunicaciones/Notificaciones'
 import BriefingChiefOfStaff from './pages/comunicaciones/BriefingChiefOfStaff'
+import Comisiones from './pages/ventas/Comisiones'
 import ChiefOfStaffHome from './pages/comunicaciones/ChiefOfStaffHome'
 import PanelIntegraciones from './pages/admin/PanelIntegraciones'
 import ParametrosConfig from './pages/admin/ParametrosConfig'
@@ -567,7 +568,11 @@ function App() {
           {/* --- Redirects legacy a rutas canonicas (P0-03) --- */}
           <Route path="/ventas/nuevo-lead" element={<Navigate to="/ventas/leads/nuevo" replace />} />
           <Route path="/ventas/leads" element={<Navigate to="/ventas/mis-leads" replace />} />
-          <Route path="/ventas/comisiones" element={<Navigate to="/ventas/dashboard" replace />} />
+          <Route path="/ventas/comisiones" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'direccion', 'gerente_comercial']}>
+              <Comisiones />
+            </ProtectedRoute>
+          } />
           <Route path="/ventas/prospeccion-externa" element={<Navigate to="/ventas/prospeccion" replace />} />
           <Route path="/clientes" element={<Navigate to="/clientes/alta" replace />} />
           <Route path="/operaciones/mapa-gps" element={<Navigate to="/operaciones/mapa" replace />} />

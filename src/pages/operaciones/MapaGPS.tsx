@@ -152,7 +152,7 @@ export default function MapaGPS(): ReactElement {
   };
 
   return (
-    <ModuleLayout titulo="Mapa GPS en Tiempo Real" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
+    <ModuleLayout titulo="Mapa GPS en Tiempo Real">
       {/* KPI Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.md }}>
         {[

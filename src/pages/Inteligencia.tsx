@@ -347,7 +347,6 @@ export default function Inteligencia() {
     <ModuleLayout
       titulo="Rankings e Inteligencia"
       subtitulo="Top y Bottom de clientes, tractos y rutas"
-      moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}
       acciones={
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={handleExportCSV} disabled={!currentData.length}>

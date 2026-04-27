@@ -21,6 +21,7 @@ const CARDS: CardDef[] = [
   { id: 'pareto',           label: 'Análisis 80/20',  route: '/inteligencia/pareto',        kpiLabel: 'Pareto',      iconSet: 'hugeicons', iconName: 'chart-bar-line' },
   { id: 'rentabilidad',     label: 'Rentabilidad',      route: '/operaciones/rentabilidad',      kpiLabel: 'Por tracto',  iconSet: 'hugeicons', iconName: 'chart-increase' },
   { id: 'cartera_360',      label: 'Cartera 360',       route: '/cxc/cartera',                   kpiLabel: 'Cuentas',     iconSet: 'hugeicons', iconName: 'wallet-done-01' },
+  { id: 'comisiones',       label: 'Comisiones',        route: '/ventas/comisiones',             kpiLabel: 'Mensual',     iconSet: 'hugeicons', iconName: 'money-bag-02' },
   // V51 26/Abr/2026 — Chief of Staff eliminado de aquí. Acceso único vía Comunicaciones (decisión JJ)
 ]
 

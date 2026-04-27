@@ -632,7 +632,7 @@ export default function TorreControl(): ReactElement {
   return (
     <>
       <MapModal viaje={selectedViaje} onClose={() => setSelectedViaje(null)} />
-      <ModuleLayout titulo="Torre de Control" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
+      <ModuleLayout titulo="Torre de Control">
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
         <KPICard titulo="En Tránsito" valor={enTransito} color="green" icono={<Truck size={18} />} />

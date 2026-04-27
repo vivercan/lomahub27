@@ -76,7 +76,7 @@ export default function TrazabilidadViaje(): ReactElement {
 
   if (notFound) {
     return (
-      <ModuleLayout titulo="Trazabilidad" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
+      <ModuleLayout titulo="Trazabilidad">
         <Card>
           <div style={{ textAlign: 'center', padding: tokens.spacing.lg }}>
             <p style={{ color: tokens.colors.textPrimary, fontSize: '18px', marginBottom: tokens.spacing.md }}>
@@ -93,7 +93,7 @@ export default function TrazabilidadViaje(): ReactElement {
 
   if (!viaje) {
     return (
-      <ModuleLayout titulo="Trazabilidad" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
+      <ModuleLayout titulo="Trazabilidad">
         <Card>
           <div style={{ textAlign: 'center', padding: tokens.spacing.lg }}>
             <p style={{ color: tokens.colors.textSecondary }}>Cargando...</p>
@@ -115,7 +115,7 @@ export default function TrazabilidadViaje(): ReactElement {
   ];
 
   return (
-    <ModuleLayout titulo={`Trazabilidad — Viaje #${viaje.id}`} moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
+    <ModuleLayout titulo={`Trazabilidad — Viaje #${viaje.id}`}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: tokens.spacing.lg }}>
         {/* Left: Timeline */}
         <Card>

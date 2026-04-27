@@ -184,7 +184,7 @@ export default function AltaCliente(): ReactElement {
   }
 
   return (
-    <ModuleLayout titulo="Alta de Clientes" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
+    <ModuleLayout titulo="Alta de Clientes">
       <div style={{ padding: '8px 16px', height: 'calc(100vh - 140px)', display: 'flex', flexDirection: 'column', gap: '12px', overflow: 'hidden' }}>
 
         {/* Toolbar */}

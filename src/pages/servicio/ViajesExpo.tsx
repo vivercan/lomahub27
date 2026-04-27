@@ -132,7 +132,6 @@ export default function ViajesExpo() {
     <ModuleLayout
       titulo="Exportación — Viajes EXPO"
       subtitulo={`Últimos ${periodo} días`}
-      moduloPadre={{ nombre: 'Servicio', ruta: '/servicio/dashboard' }}
       acciones={periodoAcciones}
     >
       {/* KPIs */}

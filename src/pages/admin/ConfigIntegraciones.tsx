@@ -237,7 +237,7 @@ export default function ConfigIntegraciones() {
   }
 
   return (
-    <ModuleLayout titulo="Integraciones — Panel de Control" moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}>
+    <ModuleLayout titulo="Integraciones — Panel de Control">
       <div style={{ padding: tokens.spacing.lg, minHeight: '100vh', background: tokens.colors.bgMain }}>
         {/* Header stats */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: tokens.spacing.lg }}>

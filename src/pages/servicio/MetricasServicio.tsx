@@ -231,7 +231,6 @@ export default function MetricasServicio(): ReactElement {
     <ModuleLayout
       titulo="Métricas de Servicio — SLA por Canal"
       subtitulo="Cumplimiento de SLA medido por WhatsApp, correo y teléfono"
-      moduloPadre={{ nombre: 'Servicio', ruta: '/servicio/dashboard' }}
       acciones={
         <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing.sm }}>
           <div style={{ position: 'relative' }}>

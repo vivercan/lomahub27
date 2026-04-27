@@ -165,7 +165,6 @@ export default function FichaLead() {
       boxShadow: '0 2px 4px rgba(255,69,0,0.30), 0 6px 14px -3px rgba(255,69,0,0.25), 0 10px 24px -6px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.20)',
       textShadow: '0 1px 2px rgba(0,0,0,0.25)',
       transition: 'all 0.18s ease',
-      transition: 'all 0.15s',
     },
     card: {
       background: tokens.colors.bgCard,
@@ -277,7 +276,7 @@ export default function FichaLead() {
 
   if (loading) {
     return (
-      <ModuleLayout titulo="Lead" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
+      <ModuleLayout titulo="Lead">
         <div style={{ textAlign: 'center', padding: '60px', color: tokens.colors.textMuted }}>
           <p style={{ fontFamily: tokens.fonts.body }}>Cargando...</p>
         </div>
@@ -287,7 +286,7 @@ export default function FichaLead() {
 
   if (notFound || !lead) {
     return (
-      <ModuleLayout titulo="Lead" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
+      <ModuleLayout titulo="Lead">
         <div style={{ textAlign: 'center', padding: '60px', color: tokens.colors.textMuted }}>
           <p style={{ fontSize: '18px', fontWeight: 500, margin: 0, fontFamily: tokens.fonts.heading }}>Lead no encontrado</p>
           <p style={{ fontSize: '14px', marginTop: '8px', fontFamily: tokens.fonts.body }}>No hay información disponible para este lead</p>
@@ -304,7 +303,6 @@ export default function FichaLead() {
   return (
     <ModuleLayout
       titulo={`Lead — ${lead.empresa}`}
-      moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}
       acciones={
         <button
           style={s.backBtn}

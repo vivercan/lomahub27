@@ -816,7 +816,6 @@ export default function MisLeads() {
     <ModuleLayout
         titulo="Panel de Oportunidades"
         subtitulo={`${totalActive} oportunidades activas \u2022 ${formatCurrency(totalValue)} en pipeline`}
-        moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}
         acciones={
           <button
             style={s.addBtn}
@@ -953,6 +952,23 @@ export default function MisLeads() {
           Exportar
         </button>
       </div>
+
+      {/* V52 (FIX 30) — Banner conteo estancados — version corregida fuera del ternario interno */}
+      {(() => {
+        const estancadosCount = filteredLeads.filter(l => esEstancado(l)).length
+        if (estancadosCount === 0) return null
+        return (
+          <div style={{
+            margin: '0 0 12px 0', padding: '10px 14px', borderRadius: 10,
+            background: 'linear-gradient(180deg, rgba(245,158,11,0.12) 0%, rgba(217,119,6,0.06) 100%)',
+            border: '1px solid rgba(217,119,6,0.32)', display: 'flex', alignItems: 'center', gap: 10,
+            fontSize: 13, color: '#92400E', fontWeight: 600,
+          }}>
+            <span style={{ fontSize: 16 }}>{'⚠'}</span>
+            <span>{estancadosCount === 1 ? '1 lead estancado' : `${estancadosCount} leads estancados`} (sin movimiento +5 dias) - atender prioritario.</span>
+          </div>
+        )
+      })()}
 
       {viewMode === 'table' ? (
           <>

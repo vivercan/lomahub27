@@ -126,7 +126,7 @@ export default function FlotaMaster() {
   )
 
   return (
-    <ModuleLayout titulo="Flota Master (GPS)" moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion/integraciones' }}>
+    <ModuleLayout titulo="Flota Master (GPS)">
       <div style={{ fontFamily: tokens.fonts.body, padding: '1.5rem 2rem', background: '#F7F8FA', minHeight: 'calc(100vh - 120px)' }}>
         {/* Header row */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: 16 }}>

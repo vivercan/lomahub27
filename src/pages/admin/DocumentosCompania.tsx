@@ -133,7 +133,6 @@ export default function DocumentosCompania() {
     <ModuleLayout
       titulo="Documentos de Compañía"
       subtitulo={`${docs.length} documentos · contratos, pólizas, manuales`}
-      moduloPadre={{ label: 'Configuración', ruta: '/admin/configuracion' }}
       acciones={
         <button onClick={() => setAdding(!adding)} style={{
           padding: '8px 16px', borderRadius: 10, border: 'none',

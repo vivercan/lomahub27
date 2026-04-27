@@ -67,7 +67,7 @@ export default function ChiefOfStaffHome() {
   ]
 
   return (
-    <ModuleLayout titulo="Resumen Ejecutivo" moduloPadre={{ nombre: 'Comunicaciones', ruta: '/comunicaciones/dashboard' }}>
+    <ModuleLayout titulo="Resumen Ejecutivo">
     <div style={{
       height: 'calc(100vh - 110px)', background: t.colors.bgMain,
       fontFamily: t.fonts.body, color: t.colors.textPrimary,

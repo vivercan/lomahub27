@@ -468,7 +468,7 @@ export default function UsuariosPermisos() {
 
   if (loading) {
     return (
-      <ModuleLayout titulo="Usuarios y Permisos" moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}>
+      <ModuleLayout titulo="Usuarios y Permisos">
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           height: 'calc(100vh - 140px)', fontFamily: 'Montserrat, sans-serif',
@@ -481,7 +481,7 @@ export default function UsuariosPermisos() {
   }
 
   return (
-    <ModuleLayout titulo="Usuarios y Permisos" moduloPadre={{ nombre: 'Configuración', ruta: '/admin/configuracion' }}>
+    <ModuleLayout titulo="Usuarios y Permisos">
       <div style={{
         display: 'flex', height: 'calc(100vh - 140px)', fontFamily: 'Montserrat, sans-serif',
         background: '#F3F4F8', overflow: 'hidden',

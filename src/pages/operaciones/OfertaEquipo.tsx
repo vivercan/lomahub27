@@ -233,7 +233,6 @@ export default function OfertaEquipo() {
   return (
     <ModuleLayout
       titulo="Oferta de Equipo"
-      moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}
       subtitulo="Clientes con historial de carga — datos ANODOS últimos 90 días"
       acciones={
         <Button variant="secondary" size="sm" onClick={fetchClientes} loading={loading}>

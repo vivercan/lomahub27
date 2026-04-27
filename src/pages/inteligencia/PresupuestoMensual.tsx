@@ -354,7 +354,6 @@ export default function PresupuestoMensual() {
   return (
     <ModuleLayout
       titulo="Ingreso Mensual por Cliente"
-      moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}
       subtitulo="Ingreso estimado, costo y margen por cliente — datos ANODOS en tiempo real"
       acciones={
         <div className="flex items-center gap-2">

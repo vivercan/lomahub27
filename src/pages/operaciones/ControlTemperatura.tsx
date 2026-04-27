@@ -127,7 +127,7 @@ export default function ControlTemperatura(): ReactElement {
   }
 
   return (
-    <ModuleLayout titulo="Control de Temperatura — Refrigerados" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
+    <ModuleLayout titulo="Control de Temperatura — Refrigerados">
       <div style={{ padding: tokens.spacing.lg, minHeight: '100vh', background: tokens.colors.bgMain }}>
         {/* KPIs */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>

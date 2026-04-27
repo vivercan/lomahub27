@@ -177,7 +177,7 @@ export default function ControlCajas(): ReactElement {
   ];
 
   return (
-    <ModuleLayout titulo="Control de Cajas" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
+    <ModuleLayout titulo="Control de Cajas">
       {/* KPIs */}
       <div
         style={{

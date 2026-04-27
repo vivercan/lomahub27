@@ -160,7 +160,6 @@ export default function InventarioObjetivoConfig() {
     <ModuleLayout
       titulo="Inventario Objetivo por Terminal"
       subtitulo={`${rows.length} terminales · ${totalSecas} secas + ${totalThermos} thermos objetivo`}
-      moduloPadre={{ label: 'Configuración', ruta: '/admin/configuracion' }}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, height: '100%' }}>
 

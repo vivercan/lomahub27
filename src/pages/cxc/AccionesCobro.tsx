@@ -195,7 +195,7 @@ export default function AccionesCobro() {
   ];
 
   return (
-    <ModuleLayout titulo="CXC — Acciones de Cobro" moduloPadre={{ nombre: 'Comercial', ruta: '/ventas/dashboard' }}>
+    <ModuleLayout titulo="CXC — Acciones de Cobro">
       {/* KPI Cards */}
       <div style={{
         display: 'grid',

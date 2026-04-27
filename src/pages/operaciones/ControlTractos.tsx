@@ -389,7 +389,7 @@ const ControlTractos: React.FC = () => {
   ]
 
   return (
-    <ModuleLayout titulo="Control de Tractos" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
+    <ModuleLayout titulo="Control de Tractos">
     <div style={{ fontFamily: tokens.fontFamily }}>
       {/* Header */}
       <div style={{ marginBottom: '2rem', display: 'none' }}>

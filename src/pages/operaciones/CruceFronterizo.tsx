@@ -118,7 +118,7 @@ export default function CruceFronterizo(): ReactElement {
   )
 
   return (
-    <ModuleLayout titulo="Cruce Fronterizo — Docs Aduanales" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
+    <ModuleLayout titulo="Cruce Fronterizo — Docs Aduanales">
       <div style={{ padding: tokens.spacing.lg, minHeight: '100vh', background: tokens.colors.bgMain }}>
         {/* KPIs */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>

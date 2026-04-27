@@ -184,7 +184,6 @@ export default function WhatsAppBandeja() {
     <ModuleLayout
       titulo="WhatsApp Bandeja"
       subtitulo={loading ? 'Cargando...' : `${conversaciones.length} conversaciones · ${mensajes.length} mensajes`}
-      moduloPadre={{ label: 'Servicio', ruta: '/servicio/dashboard' }}
     >
       {error && (
         <div style={{

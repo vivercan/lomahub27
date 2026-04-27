@@ -133,7 +133,6 @@ export default function ViajesImpo() {
     <ModuleLayout
       titulo="Importación — Viajes IMPO"
       subtitulo={`Últimos ${periodo} días`}
-      moduloPadre={{ nombre: 'Servicio', ruta: '/servicio/dashboard' }}
       acciones={periodoAcciones}
     >
       {/* KPIs */}

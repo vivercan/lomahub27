@@ -517,7 +517,7 @@ export default function Despachos(): ReactElement {
   ];
 
   return (
-    <ModuleLayout titulo="Despachos" moduloPadre={{ nombre: 'Operaciones', ruta: '/operaciones/dashboard' }}>
+    <ModuleLayout titulo="Despachos">
       {/* Botón Nuevo Viaje */}
       <div style={{ marginBottom: tokens.spacing.lg }}>
         <Button variant="primary" onClick={() => setShowNuevoViaje(true)}>

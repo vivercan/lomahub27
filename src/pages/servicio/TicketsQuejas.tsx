@@ -266,7 +266,6 @@ export default function TicketsQuejas() {
     <ModuleLayout
       titulo="Tickets & Quejas"
       subtitulo="Gestión de reclamos y solicitudes de clientes"
-      moduloPadre={{ nombre: 'Servicio', ruta: '/servicio/dashboard' }}
       acciones={
         <Button variant="primary" size="md">
           <Plus size={18} />

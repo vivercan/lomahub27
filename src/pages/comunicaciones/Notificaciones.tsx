@@ -101,7 +101,6 @@ export default function Notificaciones() {
   return (
     <ModuleLayout
       titulo="Notificaciones"
-      moduloPadre={{ nombre: 'Comunicaciones', ruta: '/comunicaciones/dashboard' }}
       subtitulo="Centro de alertas en tiempo real"
       acciones={
         totalNoLeidas > 0 ? (
