@@ -163,11 +163,11 @@ export default function HomeDashboard() {
   const cardCatalog: Record<string, CardConfig> = useMemo(() => ({
     'oportunidades': { id: 'oportunidades', label: 'Oportunidades', route: '/ventas/mis-leads', bgColor: '#2763C4', gradient: 'linear-gradient(135deg, #2763C4 0%, #0A2D6F 100%)', iconFile: 'oportunidades.svg', statusDot: 'green', statusText: 'Mis Leads · Funnel · Oportunidades' },
     'servicio-clientes': { id: 'servicio-clientes', label: 'Servicio al Cliente', route: '/servicio/dashboard', bgColor: '#2B5FB5', gradient: 'linear-gradient(135deg, #2B5FB5 0%, #0B2E68 100%)', iconFile: 'servicio-al-cliente.svg', statusDot: 'green', statusText: 'Tickets · KPIs · Programación' },
-    'comercial': { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#224CA0', gradient: 'linear-gradient(135deg, #224CA0 0%, #062348 100%)', iconFile: 'comercial.svg', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics' },
+    'comercial': { id: 'comercial', label: 'Comercial', route: '/ventas/dashboard', bgColor: '#2557A8', gradient: 'linear-gradient(135deg, #2557A8 0%, #082552 100%)', iconFile: 'comercial.svg', statusDot: 'green', statusText: 'Formatos · Cotizaciones · Analytics' },
     'operaciones': { id: 'operaciones', label: 'Operaciones', route: '/operaciones/dashboard', bgColor: '#3D78D6', gradient: 'linear-gradient(135deg, #3D78D6 0%, #134287 100%)', iconFile: 'camion-contenedor-v2.svg', statusDot: 'green', statusText: 'Despachos · Seguimiento' },
     // V51 26/Abr/2026: REVERT BUG-002. JJ aclaró: Comercial=tools de trabajo, Ventas=panel resultados/KPIs. Son distintos, ambos quedan.
-    'ventas': { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#F09830', gradient: 'linear-gradient(135deg, #F09830 0%, #9A4E0E 100%)', iconFile: 'ingresos.svg', statusDot: 'green', statusText: 'Analytics · KPIs · Resultados' },
-    'comunicaciones': { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#4078D0', gradient: 'linear-gradient(135deg, #4078D0 0%, #153E88 100%)', iconFile: 'comunicaciones.svg', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA' },
+    'ventas': { id: 'ventas', label: 'Ventas', route: '/ventas/analytics', bgColor: '#C77A22', gradient: 'linear-gradient(135deg, #C77A22 0%, #7A3F0E 100%)', iconFile: 'ingresos.svg', statusDot: 'green', statusText: 'Analytics · KPIs · Resultados' },
+    'comunicaciones': { id: 'comunicaciones', label: 'Comunicaciones', route: '/comunicaciones/dashboard', bgColor: '#4F88E3', gradient: 'linear-gradient(135deg, #4F88E3 0%, #1B56A8 100%)', iconFile: 'comunicaciones.svg', statusDot: 'green', statusText: 'Mail · WhatsApp · Resumen Ejecutivo IA' },
     'autofomento': { id: 'autofomento', label: 'Control de equipo', route: '/control-equipo', bgColor: '#3A72CF', gradient: 'linear-gradient(135deg, #3A72CF 0%, #153E82 100%)', iconFile: 'gps.svg', statusDot: 'green', statusText: 'GPS · Cajas · Tractos · Thermos' },
     'config': { id: 'config', label: 'Configuración', route: '/admin/configuracion', bgColor: '#3F4856', gradient: 'linear-gradient(135deg, #3F4856 0%, #0F1620 100%)', iconFile: 'configuracion.svg', statusDot: 'gray', statusText: '' },
   }), [])
@@ -738,7 +738,7 @@ export default function HomeDashboard() {
               top: '50%', left: '50%',
               width: '14px', height: '14px',
               borderRadius: '50%',
-              border: '1.5px solid rgba(16,185,129,0.75)',
+              border: '1.5px solid rgba(214,168,79,0.75)',
               transform: 'translate(-50%, -50%)',
               animation: 'lhDotPulse 2.2s ease-in-out infinite',
               animationDelay: (() => {
@@ -755,14 +755,14 @@ export default function HomeDashboard() {
               })(),
               pointerEvents: 'none',
             }} />
-            {/* Dot verde central */}
+            {/* Dot dorado V37 (spec Notion 34, ley) — Loma gold #D6A84F */}
             <div style={{
               position: 'absolute',
               top: '50%', left: '50%',
               width: '6px', height: '6px',
               borderRadius: '50%',
-              background: 'radial-gradient(circle at 35% 30%, #2DD4BF 0%, #10B981 65%, #065F46 100%)',
-              boxShadow: '0 0 0 1px rgba(255,255,255,0.10), 0 0 6px rgba(16,185,129,0.38)',
+              background: 'radial-gradient(circle at 35% 30%, #FFD270 0%, #D6A84F 65%, #B8892B 100%)',
+              boxShadow: '0 0 0 1.5px rgba(214,168,79,0.22), 0 0 10px rgba(214,168,79,0.45)',
               transform: 'translate(-50%, -50%)',
               pointerEvents: 'none',
             }} />
