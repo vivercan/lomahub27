@@ -91,12 +91,16 @@ export default function Inteligencia() {
     setLoading(true)
     setError(null)
     try {
-      // Query viajes directly from Supabase (replaces Edge Function call)
+      // V54 (28/Abr/2026) — Refactor a viajes_anodos (136K registros, mucho mas data)
+      // Campos cambian: cliente_id→cliente, tracto_id→tracto, created_at→inicia_viaje
+      // Los nombres ya vienen embebidos en viajes_anodos (no requiere JOIN)
       const { data: viajes, error: vErr } = await supabase
-        .from('viajes')
-        .select('id, cliente_id, tracto_id, origen, destino, created_at')
-        .gte('created_at', `${periodoInicio}T00:00:00`)
-        .lte('created_at', `${periodoFin}T23:59:59`)
+        .from('viajes_anodos')
+        .select('id, cliente, tracto, origen, destino, municipio_origen, municipio_destino, inicia_viaje, tipo, kms_viaje')
+        .gte('inicia_viaje', `${periodoInicio}T00:00:00`)
+        .lte('inicia_viaje', `${periodoFin}T23:59:59`)
+        .neq('tipo', 'VACIO')
+        .limit(10000)
 
       if (vErr) throw new Error(vErr.message)
 
@@ -111,19 +115,7 @@ export default function Inteligencia() {
         return
       }
 
-      // Fetch client and tracto names
-      const clienteIds = [...new Set(viajes.map(v => v.cliente_id).filter(Boolean))]
-      const tractoIds = [...new Set(viajes.map(v => v.tracto_id).filter(Boolean))]
-
-      const { data: clientes } = clienteIds.length > 0
-        ? await supabase.from('clientes').select('id, razon_social, empresa').in('id', clienteIds)
-        : { data: [] }
-      const { data: tractos } = tractoIds.length > 0
-        ? await supabase.from('tractos').select('id, numero_economico, empresa').in('id', tractoIds)
-        : { data: [] }
-
-      const clienteMap = new Map((clientes || []).map(c => [c.id, c]))
-      const tractoMap = new Map((tractos || []).map(t => [t.id, t]))
+      // V54 — JOIN eliminado: viajes_anodos.cliente y .tracto ya son nombres legibles
 
       // Aggregate by dimension
       const agg = (key: (v: any) => string) => {
@@ -135,9 +127,9 @@ export default function Inteligencia() {
         return map
       }
 
-      const clienteAgg = agg(v => v.cliente_id)
-      const tractoAgg = agg(v => v.tracto_id)
-      const rutaAgg = agg(v => `${v.origen || '?'} → ${v.destino || '?'}`)
+      const clienteAgg = agg(v => v.cliente)
+      const tractoAgg = agg(v => v.tracto)
+      const rutaAgg = agg(v => `${v.municipio_origen || v.origen || '?'} → ${v.municipio_destino || v.destino || '?'}`)
 
       // Build ranking items
       const buildRanking = (
@@ -164,12 +156,12 @@ export default function Inteligencia() {
 
       const clienteRanking = buildRanking(
         Array.from(clienteAgg.entries()),
-        id => ({ nombre: clienteMap.get(id)?.razon_social || id, empresa: clienteMap.get(id)?.empresa }),
+        nombre => ({ nombre }),
         'Viajes',
       )
       const tractoRanking = buildRanking(
         Array.from(tractoAgg.entries()),
-        id => ({ nombre: tractoMap.get(id)?.numero_economico || id, empresa: tractoMap.get(id)?.empresa }),
+        nombre => ({ nombre }),
         'Viajes',
       )
       const rutaRanking = buildRanking(

@@ -23,16 +23,21 @@ const CARDS: CardDef[] = [
 ]
 
 async function fallbackFetch(): Promise<Record<string, number>> {
-  const [viajes, tractos] = await Promise.all([
-    supabase.from('viajes').select('*', { count: 'exact', head: true }).in('estado', ['asignado', 'en_transito', 'en_curso', 'programado']),
+  // V54 (28/Abr/2026) — Usar viajes_anodos (136K registros) para datos reales
+  const desde7d = new Date(Date.now() - 7 * 86400000).toISOString()
+  const [viajesAnodos, tractos, cajas] = await Promise.all([
+    supabase.from('viajes_anodos').select('*', { count: 'exact', head: true })
+      .gte('inicia_viaje', desde7d)
+      .neq('tipo', 'VACIO'),
     supabase.from('tractos').select('*', { count: 'exact', head: true }).eq('activo', true),
+    supabase.from('cajas').select('*', { count: 'exact', head: true }),
   ])
   const out: Record<string, number> = {}
   CARDS.forEach(c => { out[c.id] = 0 })
-  out.despachos = viajes.count ?? 0
-  // V51 — torre_control removed
+  out.despachos = viajesAnodos.count ?? 0
   out.mapa_gps = tractos.count ?? 0
   out.tractos = tractos.count ?? 0
+  out.cajas = cajas.count ?? 0
   return out
 }
 
