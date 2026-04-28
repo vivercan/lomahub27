@@ -54,6 +54,7 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           {/* V53 (26/Abr/2026) — UNICO boton de navegacion: SIEMPRE regresa al Dashboard principal (decision JJ). La prop moduloPadre se ignora en navegacion para evitar saltos intermedios. */}
+          {/* V54 (28/Abr/2026) — DOS botones: Dashboard (blanco) + Regresar (NARANJA) para no confundir */}
           <button
             onClick={() => navigate('/dashboard')}
             style={{
@@ -73,10 +74,30 @@ export function ModuleLayout({ titulo, subtitulo, acciones, children, moduloPadr
               e.currentTarget.style.background = '#FFFFFF'
               e.currentTarget.style.borderColor = '#E2E8F0'
             }}
-            title="Volver al Dashboard"
+            title="Volver al Dashboard principal"
           >
             <ArrowLeft size={16} strokeWidth={2.2} />
             <span>Dashboard</span>
+          </button>
+          <button
+            onClick={() => moduloPadre?.ruta ? navigate(moduloPadre.ruta) : navigate(-1)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '8px',
+              padding: '9px 18px', minWidth: '120px',
+              background: 'linear-gradient(180deg, #FB923C 0%, #F97316 50%, #EA580C 100%)',
+              border: 'none', borderRadius: '10px',
+              color: '#FFFFFF', fontSize: '14px', fontWeight: 700, cursor: 'pointer',
+              fontFamily: tokens.fonts.body, transition: 'all 0.18s ease',
+              boxShadow: '0 2px 4px rgba(249,115,22,0.30), 0 4px 10px -2px rgba(249,115,22,0.25), inset 0 1px 0 rgba(255,255,255,0.30)',
+              textShadow: '0 1px 2px rgba(0,0,0,0.20)',
+              letterSpacing: '-0.01em', justifyContent: 'flex-start',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.filter = 'brightness(1.05)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.filter = 'brightness(1)' }}
+            title="Regresar a la pantalla anterior"
+          >
+            <ArrowLeft size={16} strokeWidth={2.4} />
+            <span>Regresar</span>
           </button>
           <div style={{
             display: 'flex',

@@ -161,29 +161,14 @@ export default function FichaCliente(): ReactElement {
 
   const t = radio?.totales
 
-  // Botón Regresar NARANJA para diferenciar del Dashboard
-  const btnRegresarStyle: React.CSSProperties = {
-    display: 'inline-flex', alignItems: 'center', gap: 6,
-    padding: '8px 16px', borderRadius: tokens.radius.md,
-    background: 'linear-gradient(180deg, #FB923C 0%, #F97316 50%, #EA580C 100%)',
-    color: '#FFFFFF', fontSize: '13px', fontWeight: 700,
-    border: 'none', cursor: 'pointer',
-    boxShadow: '0 2px 4px rgba(249,115,22,0.30), 0 4px 10px -2px rgba(249,115,22,0.25), inset 0 1px 0 rgba(255,255,255,0.30)',
-    textShadow: '0 1px 2px rgba(0,0,0,0.20)',
-  }
-
   return (
     <ModuleLayout
       titulo={`Cliente — ${cliente.razon_social}`}
+      moduloPadre={{ ruta: '/clientes/corporativos' }}
       acciones={
-        <div style={{ display: 'flex', gap: tokens.spacing.sm }}>
-          <button onClick={() => navigate('/clientes/corporativos')} style={btnRegresarStyle}>
-            <ArrowLeft size={14} /> Regresar
-          </button>
-          <Button variant="primary" size="sm" onClick={abrirModal}>
-            <UserCog size={14} style={{ marginRight: 4 }} /> Editar contactos
-          </Button>
-        </div>
+        <Button variant="primary" size="sm" onClick={abrirModal}>
+          <UserCog size={14} style={{ marginRight: 4 }} /> Editar contactos
+        </Button>
       }
     >
       {/* KPIs */}
