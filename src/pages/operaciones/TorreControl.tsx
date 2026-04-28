@@ -1,787 +1,443 @@
+// V60 (28/Abr/2026) — Torre de Control / Despacho IA
+// JJ: mapa de TRACTOS estilo Control Equipo + tabla airline (origen→destino, cita, ETA, semáforo)
+// Datos: gps_tracking (tracto live position) + viajes_anodos (viaje activo + cita + cliente)
+
 import type { ReactElement } from 'react'
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
 import { KPICard } from '../../components/ui/KPICard'
-import { DataTable } from '../../components/ui/DataTable'
-import { Select } from '../../components/ui/Select'
-import { Semaforo } from '../../components/ui/Semaforo'
-import type { SemaforoEstado } from '../../lib/tokens'
+import { Badge } from '../../components/ui/Badge'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
-import { Truck, AlertTriangle, Clock, CheckCircle2, BarChart3, X, Search } from 'lucide-react'
+import { Truck, Activity, AlertTriangle, CheckCircle2, MapPin, Clock, Search, ArrowUp, ArrowDown } from 'lucide-react'
 
-/* ──── types ──── */
-interface Viaje {
-  folio: string
-  cliente: string
-  ruta: string
+declare global { interface Window { L: any } }
+
+interface TractoGPS {
+  economico: string
+  empresa: string | null
+  latitud: number
+  longitud: number
+  velocidad: number
+  ubicacion: string | null
+  ultima_actualizacion: string
+}
+
+interface ViajeActivo {
   tracto: string
-  eta: string
-  cita: string
-  diferencia: number
-  estadoViaje: string
-  semaforo: SemaforoEstado
-  kmRuta: number
-  viajesHistoricos: number
-  origen?: string
-  destino?: string
-  clienteId?: string
+  caja: string | null
+  cliente: string
+  tipo: string
+  viaje: number | null
+  origen: string
+  destino: string
+  cita_carga: string | null
+  cita_descarga: string | null
+  inicia_viaje: string
+  llega_destino: string | null
 }
 
-interface CSUser {
-  id: string
-  nombre_completo: string
-  email: string
+interface FilaTorre {
+  economico: string
+  empresa: string | null
+  // GPS
+  latitud: number | null
+  longitud: number | null
+  velocidad: number
+  ubicacion: string | null
+  ultimo_gps: string | null
+  // Viaje
+  viaje_num: number | null
+  cliente: string
+  tipo: string
+  caja: string | null
+  origen: string
+  destino: string
+  cita_descarga: string | null
+  inicia_viaje: string | null
+  // Computed
+  estado: 'en_tiempo' | 'en_riesgo' | 'retrasado' | 'sin_viaje' | 'sin_gps'
+  minutos_a_cita: number | null
 }
 
-interface RutaStats {
-  ruta: string
-  totalViajes: number
-  avgKm: number
+const fmt = (iso: string | null) => {
+  if (!iso) return '—'
+  try { return new Date(iso).toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) }
+  catch { return '—' }
 }
+const fmtN = (n: number) => (n || 0).toLocaleString('en-US')
+const empresaLabel = (e: string | null) => e === 'wexpress' ? 'WExpress' : e === 'SpeedyHaul' ? 'SpeedyHaul' : (e || '—').toUpperCase()
 
-/* ──── helpers ──── */
-const estadoToSemaforo = (estado: string): SemaforoEstado => {
-  switch (estado) {
-    case 'en_transito': return 'verde'
-    case 'programado': return 'azul'
-    case 'en_riesgo': return 'amarillo'
-    case 'retrasado': return 'rojo'
-    case 'entregado': return 'gris'
-    default: return 'azul'
-  }
-}
+const estadoLabel = (e: string) =>
+  e === 'en_tiempo' ? 'En tiempo' :
+  e === 'en_riesgo' ? 'En riesgo' :
+  e === 'retrasado' ? 'Retrasado' :
+  e === 'sin_viaje' ? 'Sin viaje' : 'Sin GPS'
 
-const estadoLabel = (estado: string): string => {
-  switch (estado) {
-    case 'en_transito': return 'En Tránsito'
-    case 'programado': return 'Programado'
-    case 'en_riesgo': return 'En Riesgo'
-    case 'retrasado': return 'Retrasado'
-    case 'entregado': return 'Entregado'
-    default: return estado || 'Sin estado'
-  }
-}
+const estadoColor = (e: string): 'green' | 'orange' | 'red' | 'gray' | 'blue' =>
+  e === 'en_tiempo' ? 'green' :
+  e === 'en_riesgo' ? 'orange' :
+  e === 'retrasado' ? 'red' :
+  e === 'sin_viaje' ? 'blue' : 'gray'
 
-/* Fetch route statistics from viajes_anodos (last 90 days) */
-async function fetchRutaStats(): Promise<Map<string, RutaStats>> {
-  const hace90d = new Date()
-  hace90d.setDate(hace90d.getDate() - 90)
-  const desde = hace90d.toISOString()
+type SortKey = 'economico' | 'empresa' | 'cliente' | 'tipo' | 'origen' | 'destino' | 'cita_descarga' | 'estado' | 'minutos_a_cita' | 'velocidad'
+type SortDir = 'asc' | 'desc'
 
-  const rutaMap = new Map<string, { total: number; kmSum: number }>()
-  let offset = 0
-  const PAGE = 1000
-
-  while (true) {
-    const { data, error } = await supabase
-      .from('viajes_anodos')
-      .select('municipio_origen, municipio_destino, kms_viaje')
-      .gte('inicia_viaje', desde)
-      .neq('tipo', 'VACIO')
-      .range(offset, offset + PAGE - 1)
-
-    if (error) { console.error('ruta stats:', error); break }
-    if (!data || data.length === 0) break
-
-    for (const row of data) {
-      const ruta = `${row.municipio_origen || '?'} → ${row.municipio_destino || '?'}`
-      const prev = rutaMap.get(ruta) || { total: 0, kmSum: 0 }
-      prev.total += 1
-      prev.kmSum += Number(row.kms_viaje) || 0
-      rutaMap.set(ruta, prev)
-    }
-
-    if (data.length < PAGE) break
-    offset += PAGE
-  }
-
-  // Fallback to fecha_crea if no results
-  if (rutaMap.size === 0) {
-    offset = 0
-    while (true) {
-      const { data, error } = await supabase
-        .from('viajes_anodos')
-        .select('municipio_origen, municipio_destino, kms_viaje')
-        .gte('fecha_crea', desde)
-        .neq('tipo', 'VACIO')
-        .range(offset, offset + PAGE - 1)
-
-      if (error) break
-      if (!data || data.length === 0) break
-
-      for (const row of data) {
-        const ruta = `${row.municipio_origen || '?'} → ${row.municipio_destino || '?'}`
-        const prev = rutaMap.get(ruta) || { total: 0, kmSum: 0 }
-        prev.total += 1
-        prev.kmSum += Number(row.kms_viaje) || 0
-        rutaMap.set(ruta, prev)
-      }
-
-      if (data.length < PAGE) break
-      offset += PAGE
-    }
-  }
-
-  const result = new Map<string, RutaStats>()
-  rutaMap.forEach((v, ruta) => {
-    result.set(ruta, { ruta, totalViajes: v.total, avgKm: v.total > 0 ? Math.round(v.kmSum / v.total) : 0 })
-  })
-  return result
-}
-
-/* ──── MultiSelectDropdown Component ──── */
-interface MultiSelectProps {
-  label: string
-  options: { value: string; label: string }[]
-  selectedValues: string[]
-  onChange: (values: string[]) => void
-  placeholder?: string
-  searchPlaceholder?: string
-}
-
-function MultiSelectDropdown({
-  label,
-  options,
-  selectedValues,
-  onChange,
-  placeholder = 'Seleccionar...',
-  searchPlaceholder = 'Buscar...',
-}: MultiSelectProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const dropdownRef = useRef<HTMLDivElement>(null)
-
-  // Handle click outside to close dropdown
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
-
-  const filteredOptions = options.filter(opt =>
-    opt.label.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-
-  const handleToggle = (value: string) => {
-    if (selectedValues.includes(value)) {
-      onChange(selectedValues.filter(v => v !== value))
-    } else {
-      onChange([...selectedValues, value])
-    }
-  }
-
-  const displayLabel = selectedValues.length === 0
-    ? placeholder
-    : selectedValues.length === 1
-      ? options.find(o => o.value === selectedValues[0])?.label || placeholder
-      : `${selectedValues.length} seleccionado${selectedValues.length !== 1 ? 's' : ''}`
-
-  return (
-    <div ref={dropdownRef} style={{ position: 'relative', width: '100%' }}>
-      <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: tokens.colors.textSecondary }}>
-        {label}
-      </label>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          width: '100%',
-          padding: '10px 12px',
-          border: `1px solid ${tokens.colors.border}`,
-          borderRadius: tokens.radius.md,
-          backgroundColor: tokens.colors.bg,
-          color: tokens.colors.text,
-          cursor: 'pointer',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          fontSize: '14px',
-          transition: 'all 0.2s',
-        }}
-        onMouseEnter={(e) => {
-          if (!isOpen) (e.currentTarget as HTMLElement).style.borderColor = tokens.colors.blue
-        }}
-        onMouseLeave={(e) => {
-          if (!isOpen) (e.currentTarget as HTMLElement).style.borderColor = tokens.colors.border
-        }}
-      >
-        <span>{displayLabel}</span>
-        <span style={{ fontSize: '12px' }}>{isOpen ? '▲' : '▼'}</span>
-      </button>
-
-      {isOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            marginTop: '4px',
-            backgroundColor: tokens.colors.bg,
-            border: `1px solid ${tokens.colors.border}`,
-            borderRadius: tokens.radius.md,
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            zIndex: 1000,
-            maxHeight: '300px',
-            overflowY: 'auto',
-          }}
-        >
-          {/* Search Input */}
-          <div style={{ padding: '8px', borderBottom: `1px solid ${tokens.colors.border}`, position: 'sticky', top: 0, backgroundColor: tokens.colors.bg }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', backgroundColor: tokens.colors.bgSecondary, borderRadius: tokens.radius.sm }}>
-              <Search size={14} color={tokens.colors.textSecondary} />
-              <input
-                type="text"
-                placeholder={searchPlaceholder}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                  flex: 1,
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  color: tokens.colors.text,
-                  fontSize: '13px',
-                  outline: 'none',
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Options */}
-          {filteredOptions.length === 0 ? (
-            <div style={{ padding: '12px', textAlign: 'center', color: tokens.colors.textSecondary, fontSize: '13px' }}>
-              Sin resultados
-            </div>
-          ) : (
-            filteredOptions.map(opt => (
-              <label
-                key={opt.value}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding: '10px 12px',
-                  cursor: 'pointer',
-                  backgroundColor: selectedValues.includes(opt.value) ? tokens.colors.bgSecondary : 'transparent',
-                  borderLeft: selectedValues.includes(opt.value) ? `3px solid ${tokens.colors.blue}` : '3px solid transparent',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  if (!selectedValues.includes(opt.value)) {
-                    (e.currentTarget as HTMLElement).style.backgroundColor = tokens.colors.bgSecondary
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!selectedValues.includes(opt.value)) {
-                    (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
-                  }
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedValues.includes(opt.value)}
-                  onChange={() => handleToggle(opt.value)}
-                  style={{
-                    cursor: 'pointer',
-                    width: '16px',
-                    height: '16px',
-                    accentColor: tokens.colors.blue,
-                  }}
-                />
-                <span style={{ fontSize: '13px', flex: 1 }}>{opt.label}</span>
-              </label>
-            ))
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
-
-/* ──── MapModal Component ──── */
-interface MapModalProps {
-  viaje: Viaje | null
-  onClose: () => void
-}
-
-function MapModal({ viaje, onClose }: MapModalProps) {
-  if (!viaje) return null
-
-  const [mapUrl, setMapUrl] = useState('')
-
-  useEffect(() => {
-    // Create a simple OpenStreetMap embed URL using the route
-    // Since we don't have exact GPS coordinates, we'll use a generic map view
-    // In production, you'd want to geocode origen and destino
-    const encodedRoute = encodeURIComponent(`${viaje.origen || 'Origen'}, México to ${viaje.destino || 'Destino'}, México`)
-    setMapUrl(`https://www.openstreetmap.org/export/embed.html?bbox=-120,15,-85,35&layer=mapnik`)
-  }, [viaje])
-
-  return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 2000,
-      }}
-      onClick={onClose}
-    >
-      <Card
-        style={{
-          width: '90%',
-          maxWidth: '800px',
-          maxHeight: '90vh',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          position: 'relative',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingBottom: tokens.spacing.md,
-            borderBottom: `1px solid ${tokens.colors.border}`,
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>Ruta: {viaje.folio}</h2>
-          <button
-            onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: tokens.colors.textSecondary,
-            }}
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* Content */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: tokens.spacing.md, paddingTop: tokens.spacing.md, overflowY: 'auto' }}>
-          {/* Trip Details */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: tokens.spacing.md,
-              padding: tokens.spacing.md,
-              backgroundColor: tokens.colors.bgSecondary,
-              borderRadius: tokens.radius.md,
-            }}
-          >
-            <div>
-              <span style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>Cliente</span>
-              <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: 500 }}>{viaje.cliente}</p>
-            </div>
-            <div>
-              <span style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>Tracto</span>
-              <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: 500 }}>{viaje.tracto}</p>
-            </div>
-            <div>
-              <span style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>Origen</span>
-              <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: 500 }}>{viaje.origen || '—'}</p>
-            </div>
-            <div>
-              <span style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>Destino</span>
-              <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: 500 }}>{viaje.destino || '—'}</p>
-            </div>
-            <div>
-              <span style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>ETA</span>
-              <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: 500 }}>{viaje.eta}</p>
-            </div>
-            <div>
-              <span style={{ fontSize: '12px', color: tokens.colors.textSecondary }}>Cita</span>
-              <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: 500 }}>{viaje.cita}</p>
-            </div>
-          </div>
-
-          {/* Map */}
-          <div
-            style={{
-              width: '100%',
-              height: '400px',
-              borderRadius: tokens.radius.md,
-              overflow: 'hidden',
-              border: `1px solid ${tokens.colors.border}`,
-              backgroundColor: tokens.colors.bgSecondary,
-            }}
-          >
-            {mapUrl ? (
-              <iframe
-                src={mapUrl}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  border: 'none',
-                }}
-                allowFullScreen={true}
-                loading="lazy"
-              />
-            ) : (
-              <div
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: tokens.colors.textSecondary,
-                }}
-              >
-                Cargando mapa...
-              </div>
-            )}
-          </div>
-        </div>
-      </Card>
-    </div>
-  )
-}
-
-/* ──── component ──── */
 export default function TorreControl(): ReactElement {
-  const [viajes, setViajes] = useState<Viaje[]>([])
+  const [tractosGps, setTractosGps] = useState<TractoGPS[]>([])
+  const [viajes, setViajes] = useState<ViajeActivo[]>([])
   const [loading, setLoading] = useState(true)
-  const [filtroEmpresas, setFiltroEmpresas] = useState<string[]>([])
-  const [filtroCS, setFiltroCS] = useState<string[]>([])
-  const [filtroEstado, setFiltroEstado] = useState('')
-  const [totalViajesMes, setTotalViajesMes] = useState(0)
-  const [csUsers, setCSUsers] = useState<CSUser[]>([])
-  const [selectedViaje, setSelectedViaje] = useState<Viaje | null>(null)
+  const [search, setSearch] = useState('')
+  const [filtroEstado, setFiltroEstado] = useState<string>('todos')
+  const [filtroEmpresa, setFiltroEmpresa] = useState<string>('todas')
+  const [sortKey, setSortKey] = useState<SortKey>('minutos_a_cita')
+  const [sortDir, setSortDir] = useState<SortDir>('asc')
+  const [leafletReady, setLeafletReady] = useState(false)
 
+  const mapDivRef = useRef<HTMLDivElement>(null)
+  const mapRef = useRef<any>(null)
+  const markersRef = useRef<any[]>([])
+
+  // ─── Inject Leaflet ─────────────────────────────────────
   useEffect(() => {
-    const fetchViajes = async () => {
-      try {
-        setLoading(true)
-
-        // Fetch viajes ACTIVOS desde viajes_anodos (llega_destino IS NULL = en vuelo)
-        const [viajesResp, rutaStats, mesCount, csResp] = await Promise.all([
-          supabase
-            .from('viajes_anodos')
-            .select('id, viaje, anodos_id, cliente, tracto, caja, operador, municipio_origen, municipio_destino, origen, destino, tipo, inicia_viaje, llega_destino, cita_carga, cita_descarga, kms_viaje')
-            .is('llega_destino', null)
-            .neq('tipo', 'VACIO')
-            .gte('inicia_viaje', new Date(Date.now() - 7 * 86400000).toISOString())
-            .order('inicia_viaje', { ascending: false })
-            .limit(500),
-          fetchRutaStats(),
-          supabase
-            .from('viajes_anodos')
-            .select('*', { count: 'exact', head: true })
-            .gte('inicia_viaje', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString())
-            .neq('tipo', 'VACIO'),
-          supabase
-            .from('usuarios')
-            .select('id, nombre_completo, email')
-            .eq('rol', 'cs')
-            .order('nombre_completo', { ascending: true }),
-        ])
-
-        if (viajesResp.error) {
-          console.error('Error fetching viajes_anodos:', viajesResp.error)
-          setViajes([])
-          return
-        }
-
-        // Set CS users
-        if (csResp.data) {
-          setCSUsers(csResp.data)
-        }
-
-        setTotalViajesMes(mesCount.count || 0)
-
-        const now = Date.now()
-        const formattedViajes = (viajesResp.data || []).map((viaje: any) => {
-          const cita = viaje.cita_descarga ? new Date(viaje.cita_descarga) : null
-          // ANODOS no tiene eta_calculado; derivamos riesgo por cita vs ahora
-          const diffMin = cita ? Math.round((cita.getTime() - now) / 60000) : 0
-          const origenTxt = viaje.municipio_origen || viaje.origen || '?'
-          const destinoTxt = viaje.municipio_destino || viaje.destino || '?'
-          const ruta = `${origenTxt} → ${destinoTxt}`
-          const stats = rutaStats.get(ruta)
-
-          // Derivar estado: cita pasada+sin llegada = retrasado, <2h = en_riesgo, en vuelo = en_transito
-          let estado = 'programado'
-          if (viaje.inicia_viaje) {
-            estado = 'en_transito'
-            if (cita) {
-              if (diffMin < 0) estado = 'retrasado'
-              else if (diffMin < 120) estado = 'en_riesgo'
-            }
-          }
-
-          const folio = viaje.viaje ? `V${viaje.viaje}` : (viaje.anodos_id ? `A${viaje.anodos_id}` : '—')
-
-          return {
-            folio,
-            cliente: viaje.cliente || '—',
-            ruta,
-            tracto: viaje.tracto || '—',
-            eta: cita ? cita.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
-            cita: cita ? cita.toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—',
-            diferencia: diffMin,
-            estadoViaje: estado,
-            semaforo: estadoToSemaforo(estado),
-            kmRuta: stats?.avgKm || Number(viaje.kms_viaje) || 0,
-            viajesHistoricos: stats?.totalViajes || 0,
-            origen: origenTxt,
-            destino: destinoTxt,
-            clienteId: undefined,
-          }
-        })
-
-        setViajes(formattedViajes)
-      } catch (err) {
-        console.error('Unexpected error:', err)
-        setViajes([])
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchViajes()
+    if (window.L) { setLeafletReady(true); return }
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
+    document.head.appendChild(link)
+    const script = document.createElement('script')
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+    script.onload = () => setLeafletReady(true)
+    document.body.appendChild(script)
   }, [])
 
-  const getDiferenciaColor = (diferencia: number) => {
-    if (diferencia <= 0) return tokens.colors.green
-    if (diferencia <= 60) return tokens.colors.yellow
-    return tokens.colors.red
+  // ─── Fetch data ─────────────────────────────────────────
+  const fetchAll = async () => {
+    try {
+      const desde7d = new Date(Date.now() - 7 * 86400000).toISOString()
+      const desde24h = new Date(Date.now() - 24 * 3600000).toISOString()
+      const [gpsRes, vjRes] = await Promise.all([
+        supabase.from('gps_tracking')
+          .select('economico, empresa, latitud, longitud, velocidad, ubicacion, ultima_actualizacion')
+          .eq('tipo_unidad', 'tracto')
+          .gte('ultima_actualizacion', desde24h)
+          .limit(500),
+        supabase.from('viajes_anodos')
+          .select('tracto, caja, cliente, tipo, viaje, municipio_origen, origen, municipio_destino, destino, cita_carga, cita_descarga, inicia_viaje, llega_destino')
+          .is('llega_destino', null)
+          .neq('tipo', 'VACIO')
+          .gte('inicia_viaje', desde7d)
+          .order('inicia_viaje', { ascending: false })
+          .limit(500),
+      ])
+      setTractosGps((gpsRes.data || []).map((r: any) => ({
+        economico: String(r.economico || '').trim(),
+        empresa: r.empresa,
+        latitud: Number(r.latitud),
+        longitud: Number(r.longitud),
+        velocidad: Number(r.velocidad || 0),
+        ubicacion: r.ubicacion,
+        ultima_actualizacion: r.ultima_actualizacion,
+      })))
+      setViajes((vjRes.data || []).map((v: any) => ({
+        tracto: String(v.tracto || '').trim(),
+        caja: v.caja,
+        cliente: v.cliente || '—',
+        tipo: v.tipo || 'NAC',
+        viaje: v.viaje,
+        origen: v.municipio_origen || v.origen || '?',
+        destino: v.municipio_destino || v.destino || '?',
+        cita_carga: v.cita_carga,
+        cita_descarga: v.cita_descarga,
+        inicia_viaje: v.inicia_viaje,
+        llega_destino: v.llega_destino,
+      })))
+    } catch (e) {
+      console.error('TorreControl fetch:', e)
+    } finally { setLoading(false) }
   }
 
-  // Apply filters
-  const filteredViajes = viajes.filter(v => {
-    if (filtroEstado && v.estadoViaje !== filtroEstado) return false
-    if (filtroEmpresas.length > 0 && !filtroEmpresas.includes(v.cliente)) return false
-    // CS filter would be applied if we had CS info in viaje data
-    // For now, we'll skip CS filtering since it's not in the viaje schema
-    return true
-  })
+  useEffect(() => {
+    fetchAll()
+    const itv = setInterval(() => { if (document.visibilityState === 'visible') fetchAll() }, 30000)
+    return () => clearInterval(itv)
+  }, [])
 
-  // Compute KPIs from all viajes
-  const enTransito = viajes.filter(v => v.estadoViaje === 'en_transito').length
-  const enRiesgo = viajes.filter(v => v.estadoViaje === 'en_riesgo').length
-  const retrasados = viajes.filter(v => v.estadoViaje === 'retrasado').length
-  const programados = viajes.filter(v => v.estadoViaje === 'programado').length
+  // ─── Build filas ────────────────────────────────────────
+  const filas = useMemo<FilaTorre[]>(() => {
+    // Index viajes por tracto (último activo)
+    const viajesPorTracto = new Map<string, ViajeActivo>()
+    for (const v of viajes) {
+      if (v.tracto && !viajesPorTracto.has(v.tracto)) viajesPorTracto.set(v.tracto, v)
+    }
+    // Index gps por tracto
+    const gpsPorTracto = new Map<string, TractoGPS>()
+    for (const g of tractosGps) {
+      if (g.economico) gpsPorTracto.set(g.economico, g)
+    }
+    // Universo: union de tractos en gps O en viajes
+    const all = new Set<string>([...gpsPorTracto.keys(), ...viajesPorTracto.keys()])
+    const now = Date.now()
+    const out: FilaTorre[] = []
+    all.forEach(tracto => {
+      const g = gpsPorTracto.get(tracto)
+      const v = viajesPorTracto.get(tracto)
+      let estado: FilaTorre['estado'] = 'sin_viaje'
+      let minutos: number | null = null
+      if (v && v.cita_descarga) {
+        const cita = new Date(v.cita_descarga).getTime()
+        minutos = Math.round((cita - now) / 60000)
+        if (minutos < 0) estado = 'retrasado'
+        else if (minutos < 120) estado = 'en_riesgo'
+        else estado = 'en_tiempo'
+      } else if (!v && g) {
+        estado = 'sin_viaje'
+      } else if (v && !g) {
+        estado = 'sin_gps'
+      } else if (v) {
+        estado = 'en_tiempo'
+      }
+      out.push({
+        economico: tracto,
+        empresa: g?.empresa || null,
+        latitud: g?.latitud || null,
+        longitud: g?.longitud || null,
+        velocidad: g?.velocidad || 0,
+        ubicacion: g?.ubicacion || null,
+        ultimo_gps: g?.ultima_actualizacion || null,
+        viaje_num: v?.viaje || null,
+        cliente: v?.cliente || '—',
+        tipo: v?.tipo || '—',
+        caja: v?.caja || null,
+        origen: v?.origen || '—',
+        destino: v?.destino || '—',
+        cita_descarga: v?.cita_descarga || null,
+        inicia_viaje: v?.inicia_viaje || null,
+        estado, minutos_a_cita: minutos,
+      })
+    })
+    return out
+  }, [tractosGps, viajes])
 
-  const viajesColumns = [
-    { key: 'folio', label: 'Folio' },
-    { key: 'cliente', label: 'Cliente' },
-    { key: 'ruta', label: 'Origen → Destino' },
-    { key: 'tracto', label: 'Tracto' },
-    { key: 'eta', label: 'ETA' },
-    { key: 'cita', label: 'Cita' },
-    {
-      key: 'diferencia',
-      label: 'Diferencia',
-      render: (row: Viaje) => (
-        <span style={{ color: getDiferenciaColor(row.diferencia), fontWeight: 600 }}>
-          {row.diferencia > 0 ? '+' : ''}{row.diferencia} min
-        </span>
-      ),
-    },
-    {
-      key: 'kmRuta',
-      label: 'Km Ruta',
-      align: 'center' as const,
-      render: (row: Viaje) => (
-        <span style={{ color: tokens.colors.textSecondary, fontSize: '13px' }}>
-          {row.kmRuta > 0 ? `${row.kmRuta.toLocaleString()} km` : '—'}
-        </span>
-      ),
-    },
-    {
-      key: 'viajesHistoricos',
-      label: 'Hist 90d',
-      align: 'center' as const,
-      render: (row: Viaje) => (
-        <span style={{
-          color: row.viajesHistoricos > 20 ? tokens.colors.green : row.viajesHistoricos > 5 ? tokens.colors.blue : tokens.colors.textMuted,
-          fontSize: '13px', fontWeight: 600,
-        }}>
-          {row.viajesHistoricos > 0 ? row.viajesHistoricos : '—'}
-        </span>
-      ),
-    },
-    {
-      key: 'estadoViaje',
-      label: 'Estado',
-      render: (row: Viaje) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Semaforo estado={row.semaforo} />
-          <span>{estadoLabel(row.estadoViaje)}</span>
-        </div>
-      ),
-    },
-  ]
+  // ─── Filtrado + sort ────────────────────────────────────
+  const empresas = useMemo(() => {
+    const s = new Set<string>(); filas.forEach(f => f.empresa && s.add(f.empresa))
+    return Array.from(s).sort()
+  }, [filas])
 
-  // Function to make DataTable rows clickable for map
-  const handleRowClick = (row: Viaje) => {
-    setSelectedViaje(row)
+  const filtradas = useMemo(() => {
+    const s = search.trim().toLowerCase()
+    return filas.filter(f => {
+      if (filtroEstado !== 'todos' && f.estado !== filtroEstado) return false
+      if (filtroEmpresa !== 'todas' && (f.empresa || '').toLowerCase() !== filtroEmpresa.toLowerCase()) return false
+      if (s && !(f.economico.toLowerCase().includes(s) || f.cliente.toLowerCase().includes(s) ||
+                f.origen.toLowerCase().includes(s) || f.destino.toLowerCase().includes(s))) return false
+      return true
+    })
+  }, [filas, search, filtroEstado, filtroEmpresa])
+
+  const sorted = useMemo(() => {
+    const arr = [...filtradas]
+    const dir = sortDir === 'asc' ? 1 : -1
+    arr.sort((a, b) => {
+      const va = (a as any)[sortKey], vb = (b as any)[sortKey]
+      if (va == null && vb == null) return 0
+      if (va == null) return 1
+      if (vb == null) return -1
+      if (typeof va === 'number') return (va - vb) * dir
+      return String(va).localeCompare(String(vb), 'es') * dir
+    })
+    return arr
+  }, [filtradas, sortKey, sortDir])
+
+  const kpis = useMemo(() => ({
+    total: filas.length,
+    en_tiempo: filas.filter(f => f.estado === 'en_tiempo').length,
+    en_riesgo: filas.filter(f => f.estado === 'en_riesgo').length,
+    retrasados: filas.filter(f => f.estado === 'retrasado').length,
+  }), [filas])
+
+  const toggleSort = (k: SortKey) => {
+    if (sortKey === k) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
+    else { setSortKey(k); setSortDir(k === 'minutos_a_cita' || k === 'cita_descarga' ? 'asc' : 'desc') }
   }
 
-  // Extract unique empresas for filter
-  const empresasUnicas = [...new Set(viajes.map(v => v.cliente).filter(c => c !== '—'))]
+  // ─── Mapa Leaflet ───────────────────────────────────────
+  useEffect(() => {
+    if (!leafletReady || !mapDivRef.current || !window.L) return
+    const L = window.L
+    if (!mapRef.current) {
+      mapRef.current = L.map(mapDivRef.current, {
+        center: [23.5, -102], zoom: 5, minZoom: 4, maxZoom: 12,
+        maxBounds: [[14, -118], [50, -85]],
+      })
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap', maxZoom: 12,
+      }).addTo(mapRef.current)
+    }
+    // Limpiar markers anteriores
+    markersRef.current.forEach(m => mapRef.current.removeLayer(m))
+    markersRef.current = []
+    sorted.filter(f => f.latitud && f.longitud).forEach(f => {
+      const moving = f.velocidad > 5
+      const color =
+        f.estado === 'retrasado' ? '#EF4444' :
+        f.estado === 'en_riesgo' ? '#F59E0B' :
+        f.estado === 'en_tiempo' ? '#10B981' :
+        f.estado === 'sin_viaje' ? '#6B7280' : '#9CA3AF'
+      const size = moving ? 14 : 10
+      const icon = L.divIcon({
+        className: '',
+        html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:3px;' +
+              'background:' + color + ';border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.35);' +
+              (moving ? 'animation:pulseT 2s infinite;' : '') + '"></div>',
+        iconSize: [size, size], iconAnchor: [size / 2, size / 2],
+      })
+      const marker = L.marker([f.latitud, f.longitud], { icon }).addTo(mapRef.current)
+      const popup =
+        '<div style="font-family:Montserrat,system-ui;font-size:12px;line-height:1.5;min-width:220px">' +
+        '<strong style="font-size:14px">Tracto ' + f.economico + '</strong> ' +
+        '<span style="margin-left:6px;padding:2px 6px;border-radius:8px;font-size:10px;font-weight:700;' +
+        'background:' + color + ';color:#fff">' + estadoLabel(f.estado).toUpperCase() + '</span>' +
+        '<br/><b>Empresa:</b> ' + empresaLabel(f.empresa) +
+        '<br/><b>Velocidad:</b> ' + (f.velocidad || 0) + ' km/h' +
+        (f.viaje_num ? '<hr style="margin:6px 0;border:none;border-top:1px solid #E2E8F0"/>' +
+          '<b>Viaje:</b> V' + f.viaje_num + '<br/>' +
+          '<b>Cliente:</b> ' + f.cliente + '<br/>' +
+          '<b>Caja:</b> ' + (f.caja || '—') + '<br/>' +
+          '<b>Origen:</b> ' + f.origen + '<br/>' +
+          '<b>Destino:</b> ' + f.destino + '<br/>' +
+          '<b>Cita:</b> ' + fmt(f.cita_descarga)
+          : '<br/><i style="color:#94A3B8">Sin viaje activo</i>') +
+        '</div>'
+      marker.bindPopup(popup)
+      markersRef.current.push(marker)
+    })
+  }, [sorted, leafletReady])
 
-  // Prepare CS options for filter
-  const csOptions = [
-    { value: 'sin_asignar', label: 'Sin asignar' },
-    ...csUsers.map(cs => ({ value: cs.id, label: cs.nombre_completo })),
-  ]
+  const Th = ({ k, label, align = 'left' }: { k: SortKey, label: string, align?: 'left' | 'right' | 'center' }) => (
+    <th onClick={() => toggleSort(k)} style={{
+      textAlign: align as any, padding: '8px 10px', fontSize: '11px',
+      textTransform: 'uppercase', color: tokens.colors.textSecondary, fontWeight: 700,
+      cursor: 'pointer', userSelect: 'none', borderBottom: `1px solid ${tokens.colors.border}`,
+      background: sortKey === k ? 'rgba(30,102,245,0.08)' : 'transparent', whiteSpace: 'nowrap',
+    }}>
+      {label}{sortKey === k ? (sortDir === 'asc' ? <ArrowUp size={10} style={{ marginLeft: 4 }} /> : <ArrowDown size={10} style={{ marginLeft: 4 }} />) : <span style={{ opacity: 0.3, marginLeft: 4 }}>⇅</span>}
+    </th>
+  )
+
+  const fmtMinutos = (m: number | null) => {
+    if (m == null) return '—'
+    if (m === 0) return 'AHORA'
+    if (m > 0) {
+      const h = Math.floor(m / 60), mm = m % 60
+      return h > 0 ? `+${h}h ${mm}m` : `+${m}m`
+    }
+    const abs = Math.abs(m)
+    const h = Math.floor(abs / 60), mm = abs % 60
+    return h > 0 ? `-${h}h ${mm}m` : `-${abs}m`
+  }
 
   return (
-    <>
-      <MapModal viaje={selectedViaje} onClose={() => setSelectedViaje(null)} />
-      <ModuleLayout titulo="Torre de Control">
-      {/* KPIs */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
-        <KPICard titulo="En Tránsito" valor={enTransito} color="green" icono={<Truck size={18} />} />
-        <KPICard titulo="En Riesgo" valor={enRiesgo} color="yellow" icono={<AlertTriangle size={18} />} />
-        <KPICard titulo="Retrasados" valor={retrasados} color="red" icono={<Clock size={18} />} />
-        <KPICard titulo="Programados" valor={programados} color="primary" icono={<CheckCircle2 size={18} />} />
-        <KPICard titulo="Viajes del Mes" valor={totalViajesMes.toLocaleString()} color="blue" icono={<BarChart3 size={18} />} />
+    <ModuleLayout titulo="Despacho IA — Torre de Control">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
+        <KPICard titulo="Tractos en operación" valor={fmtN(kpis.total)} color="primary" icono={<Truck size={20} />} />
+        <KPICard titulo="En tiempo" valor={fmtN(kpis.en_tiempo)} color="green" icono={<CheckCircle2 size={20} />} />
+        <KPICard titulo="En riesgo (<2h cita)" valor={fmtN(kpis.en_riesgo)} color="orange" icono={<Clock size={20} />} />
+        <KPICard titulo="Retrasados" valor={fmtN(kpis.retrasados)} color="red" icono={<AlertTriangle size={20} />} />
       </div>
+
+      {/* Mapa */}
+      <Card style={{ marginBottom: tokens.spacing.lg, padding: 0, overflow: 'hidden' }}>
+        <div style={{ padding: tokens.spacing.md, borderBottom: `1px solid ${tokens.colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 style={{ margin: 0, fontSize: '15px', color: tokens.colors.textPrimary }}>
+            <MapPin size={16} style={{ display: 'inline', marginRight: 6, verticalAlign: 'middle' }} />
+            Mapa de tractos en operación ({sorted.filter(f => f.latitud && f.longitud).length})
+          </h3>
+          <div style={{ fontSize: '11px', color: tokens.colors.textSecondary }}>
+            <span style={{ display: 'inline-block', width: 10, height: 10, background: '#10B981', borderRadius: 2, marginRight: 4 }} />En tiempo
+            <span style={{ display: 'inline-block', width: 10, height: 10, background: '#F59E0B', borderRadius: 2, marginLeft: 12, marginRight: 4 }} />En riesgo
+            <span style={{ display: 'inline-block', width: 10, height: 10, background: '#EF4444', borderRadius: 2, marginLeft: 12, marginRight: 4 }} />Retrasado
+            <span style={{ display: 'inline-block', width: 10, height: 10, background: '#6B7280', borderRadius: 2, marginLeft: 12, marginRight: 4 }} />Sin viaje
+          </div>
+        </div>
+        <div ref={mapDivRef} style={{ height: 420, width: '100%' }} />
+      </Card>
 
       {/* Filtros */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
-        <MultiSelectDropdown
-          label="Empresa"
-          placeholder="Todas las empresas"
-          options={empresasUnicas.map(e => ({ value: e, label: e }))}
-          selectedValues={filtroEmpresas}
-          onChange={(vals) => setFiltroEmpresas(vals)}
-          searchPlaceholder="Buscar empresa..."
-        />
-        <MultiSelectDropdown
-          label="CS Asignada"
-          placeholder="Todos los CS"
-          options={csOptions}
-          selectedValues={filtroCS}
-          onChange={(vals) => setFiltroCS(vals)}
-          searchPlaceholder="Buscar CS..."
-        />
-        <Select
-          label="Estado"
-          placeholder="Todos los estados"
-          value={filtroEstado}
-          onChange={(val) => setFiltroEstado(val)}
-          options={[
-            { value: 'en_transito', label: 'En Tránsito' },
-            { value: 'en_riesgo', label: 'En Riesgo' },
-            { value: 'retrasado', label: 'Retrasado' },
-            { value: 'programado', label: 'Programado' },
-          ]}
-        />
-      </div>
-
-      {/* Viajes DataTable */}
       <Card>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: tokens.spacing.md }}>
-          <h3 style={{ margin: 0 }}>Monitoreo de Viajes</h3>
-          {!loading && viajes.length > 0 && (
-            <span style={{ fontSize: '13px', color: tokens.colors.textSecondary }}>
-              {filteredViajes.length} de {viajes.length} viajes
-            </span>
-          )}
+        <div style={{ display: 'flex', gap: tokens.spacing.sm, marginBottom: tokens.spacing.md, flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
+            <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: tokens.colors.textMuted }} />
+            <input type="text" placeholder="Buscar tracto, cliente, origen, destino…" value={search} onChange={e => setSearch(e.target.value)}
+              style={{ width: '100%', padding: '10px 14px 10px 36px', background: tokens.colors.bgMain,
+                       border: `1px solid ${tokens.colors.border}`, borderRadius: tokens.radius.md,
+                       color: tokens.colors.textPrimary, fontSize: '13px', outline: 'none' }} />
+          </div>
+          <select value={filtroEmpresa} onChange={e => setFiltroEmpresa(e.target.value)} style={{
+            padding: '10px 12px', background: tokens.colors.bgMain, border: `1px solid ${tokens.colors.border}`,
+            borderRadius: tokens.radius.md, color: tokens.colors.textPrimary, fontSize: '13px', fontWeight: 600,
+            outline: 'none', cursor: 'pointer', minWidth: 140,
+          }}>
+            <option value="todas">Todas las empresas</option>
+            {empresas.map(e => <option key={e} value={e}>{empresaLabel(e)}</option>)}
+          </select>
+          {(['todos', 'en_tiempo', 'en_riesgo', 'retrasado', 'sin_viaje'] as const).map(s => (
+            <button key={s} onClick={() => setFiltroEstado(s)} style={{
+              padding: '8px 14px', borderRadius: tokens.radius.md,
+              border: `1px solid ${filtroEstado === s ? tokens.colors.primary : tokens.colors.border}`,
+              background: filtroEstado === s ? tokens.colors.primary : 'transparent',
+              color: filtroEstado === s ? '#FFFFFF' : tokens.colors.textPrimary,
+              fontSize: '12px', fontWeight: 600, cursor: 'pointer',
+            }}>
+              {s === 'todos' ? 'Todos' : estadoLabel(s)}
+            </button>
+          ))}
         </div>
-
+        <div style={{ marginBottom: tokens.spacing.sm, fontSize: '13px', color: tokens.colors.textSecondary }}>
+          Mostrando {fmtN(sorted.length)} de {fmtN(filas.length)} tractos · click encabezado para ordenar
+        </div>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
-            <p>Cargando viajes...</p>
-          </div>
-        ) : filteredViajes.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '48px 0', color: tokens.colors.textSecondary }}>
-            <p style={{ fontSize: '18px', fontWeight: 500, margin: 0 }}>Sin datos</p>
-            <p style={{ fontSize: '14px', marginTop: '4px' }}>
-              {viajes.length > 0 ? 'No hay viajes que coincidan con los filtros' : 'Los datos se cargarán cuando estén disponibles en el sistema'}
-            </p>
-          </div>
+          <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textSecondary }}>Cargando torre de control…</div>
+        ) : sorted.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>Sin resultados</div>
         ) : (
-          <div
-            style={{
-              overflowX: 'auto',
-            }}
-          >
-            <table
-              style={{
-                width: '100%',
-                borderCollapse: 'collapse',
-                fontSize: '13px',
-              }}
-            >
-              <thead>
-                <tr
-                  style={{
-                    borderBottom: `1px solid ${tokens.colors.border}`,
-                    backgroundColor: tokens.colors.bgSecondary,
-                  }}
-                >
-                  {viajesColumns.map(col => (
-                    <th
-                      key={col.key}
-                      style={{
-                        padding: '12px',
-                        textAlign: (col.align as 'left' | 'center' | 'right') || 'left',
-                        fontWeight: 600,
-                        color: tokens.colors.textSecondary,
-                      }}
-                    >
-                      {col.label}
-                    </th>
-                  ))}
+          <div style={{ overflowX: 'auto', maxHeight: 500 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead style={{ position: 'sticky', top: 0, background: tokens.colors.bgCard, zIndex: 5 }}>
+                <tr>
+                  <Th k="economico" label="Tracto" />
+                  <Th k="empresa" label="Empresa" />
+                  <Th k="cliente" label="Cliente" />
+                  <Th k="tipo" label="Tipo" />
+                  <Th k="origen" label="Origen" />
+                  <Th k="destino" label="Destino" />
+                  <Th k="cita_descarga" label="Cita descarga" />
+                  <Th k="minutos_a_cita" label="ETA vs cita" />
+                  <Th k="velocidad" label="Vel" align="right" />
+                  <Th k="estado" label="Estado" />
                 </tr>
               </thead>
               <tbody>
-                {filteredViajes.map((row, idx) => (
-                  <tr
-                    key={idx}
-                    onClick={() => handleRowClick(row)}
-                    style={{
-                      borderBottom: `1px solid ${tokens.colors.border}`,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      backgroundColor: 'transparent',
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLElement).style.backgroundColor = tokens.colors.bgSecondary
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
-                    }}
-                  >
-                    {viajesColumns.map(col => (
-                      <td
-                        key={col.key}
-                        style={{
-                          padding: '12px',
-                          textAlign: (col.align as 'left' | 'center' | 'right') || 'left',
-                          color: tokens.colors.text,
-                        }}
-                      >
-                        {col.render ? col.render(row) : (row as any)[col.key]}
-                      </td>
-                    ))}
+                {sorted.map(f => (
+                  <tr key={f.economico} style={{ borderBottom: `1px solid ${tokens.colors.border}` }}>
+                    <td style={{ padding: '6px 10px', fontWeight: 700, fontSize: '12px', color: tokens.colors.textPrimary }}>{f.economico}</td>
+                    <td style={{ padding: '6px 10px', fontSize: '11px', color: tokens.colors.textSecondary }}>{empresaLabel(f.empresa)}</td>
+                    <td style={{ padding: '6px 10px', fontSize: '12px', color: tokens.colors.textPrimary }}>{f.cliente}</td>
+                    <td style={{ padding: '6px 10px' }}>{f.tipo !== '—' ? <Badge color={f.tipo === 'IMPO' ? 'blue' : f.tipo === 'EXPO' ? 'green' : 'gray'}>{f.tipo}</Badge> : '—'}</td>
+                    <td style={{ padding: '6px 10px', fontSize: '11px', color: tokens.colors.textSecondary }}>{f.origen}</td>
+                    <td style={{ padding: '6px 10px', fontSize: '11px', color: tokens.colors.textSecondary }}>{f.destino}</td>
+                    <td style={{ padding: '6px 10px', fontSize: '11px', color: tokens.colors.textSecondary }}>{fmt(f.cita_descarga)}</td>
+                    <td style={{ padding: '6px 10px', fontSize: '11px', fontWeight: 700,
+                                 color: f.estado === 'retrasado' ? tokens.colors.red : f.estado === 'en_riesgo' ? tokens.colors.orange : f.estado === 'en_tiempo' ? tokens.colors.green : tokens.colors.textMuted }}>
+                      {fmtMinutos(f.minutos_a_cita)}
+                    </td>
+                    <td style={{ padding: '6px 10px', textAlign: 'right', fontSize: '11px',
+                                 color: f.velocidad > 5 ? tokens.colors.green : tokens.colors.textMuted, fontWeight: f.velocidad > 5 ? 700 : 400 }}>
+                      {f.velocidad ? Math.round(f.velocidad) + ' km/h' : '—'}
+                    </td>
+                    <td style={{ padding: '6px 10px' }}><Badge color={estadoColor(f.estado)}>{estadoLabel(f.estado)}</Badge></td>
                   </tr>
                 ))}
               </tbody>
@@ -789,7 +445,8 @@ export default function TorreControl(): ReactElement {
           </div>
         )}
       </Card>
+
+      <style>{`@keyframes pulseT { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 8px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }`}</style>
     </ModuleLayout>
-    </>
   )
 }
