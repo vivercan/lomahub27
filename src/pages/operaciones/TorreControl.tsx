@@ -1,22 +1,29 @@
-// V61 (28/Abr/2026) — Despacho IA / Torre de Control - versión simple sin Leaflet
-// JJ: V60 fallaba con "Unexpected token <" — versión mínima primero, mapa después
-// Datos: gps_tracking (tractos) + viajes_anodos (viajes activos)
+// V63 (28/Abr/2026) — Despacho IA / Torre de Control con MAPA Leaflet
+// V61 era tabla airline simple; V63 agrega:
+//   - Mapa Leaflet con markers de TODOS los tractos GPS (218, 109 con datos 24h)
+//   - Toggle Mapa | Tabla | Ambos
+//   - Defensivo: si Leaflet no carga, mostrar tabla nada mas (sin pantalla blanca)
+//   - Mismo encuadre USA+MX que ControlEquipo
 
 import type { ReactElement } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
 import { KPICard } from '../../components/ui/KPICard'
 import { Badge } from '../../components/ui/Badge'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
-import { Truck, AlertTriangle, CheckCircle2, Clock, Search, ArrowUp, ArrowDown } from 'lucide-react'
+import { Truck, AlertTriangle, CheckCircle2, Clock, Search, ArrowUp, ArrowDown, Map as MapIcon, List, Layout } from 'lucide-react'
+
+declare const L: any
 
 interface FilaTorre {
   economico: string
   empresa: string | null
   velocidad: number
   ubicacion: string | null
+  latitud: number | null
+  longitud: number | null
   viaje_num: number | null
   cliente: string
   tipo: string
@@ -41,6 +48,9 @@ const estadoLabel = (e: string) =>
 const estadoColor = (e: string): 'green' | 'orange' | 'red' | 'gray' | 'blue' =>
   e === 'en_tiempo' ? 'green' : e === 'en_riesgo' ? 'orange' :
   e === 'retrasado' ? 'red' : e === 'sin_viaje' ? 'blue' : 'gray'
+const estadoHex = (e: string) =>
+  e === 'en_tiempo' ? '#10B981' : e === 'en_riesgo' ? '#F59E0B' :
+  e === 'retrasado' ? '#EF4444' : e === 'sin_viaje' ? '#3B82F6' : '#6B7280'
 
 const fmtMinutos = (m: number | null) => {
   if (m == null) return '—'
@@ -51,6 +61,7 @@ const fmtMinutos = (m: number | null) => {
 }
 
 type SortKey = 'economico' | 'cliente' | 'origen' | 'destino' | 'cita_descarga' | 'minutos_a_cita' | 'velocidad' | 'estado'
+type Vista = 'mapa' | 'tabla' | 'ambos'
 
 export default function TorreControl(): ReactElement {
   const [filas, setFilas] = useState<FilaTorre[]>([])
@@ -61,6 +72,30 @@ export default function TorreControl(): ReactElement {
   const [filtroEmpresa, setFiltroEmpresa] = useState<string>('todas')
   const [sortKey, setSortKey] = useState<SortKey>('minutos_a_cita')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
+  const [vista, setVista] = useState<Vista>('ambos')
+  const [leafletReady, setLeafletReady] = useState(false)
+  const [leafletError, setLeafletError] = useState<string | null>(null)
+  const mapRef = useRef<HTMLDivElement | null>(null)
+  const mapInstanceRef = useRef<any>(null)
+  const markersRef = useRef<any[]>([])
+
+  // Cargar Leaflet desde CDN (mismo patron que ControlEquipo)
+  useEffect(() => {
+    if ((window as any).L) { setLeafletReady(true); return }
+    try {
+      const css = document.createElement('link')
+      css.rel = 'stylesheet'
+      css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
+      document.head.appendChild(css)
+      const script = document.createElement('script')
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+      script.onload = () => setLeafletReady(true)
+      script.onerror = () => setLeafletError('No se pudo cargar Leaflet desde CDN')
+      document.head.appendChild(script)
+    } catch (e: any) {
+      setLeafletError(e?.message || 'Error al inyectar Leaflet')
+    }
+  }, [])
 
   const fetchAll = async () => {
     try {
@@ -69,7 +104,7 @@ export default function TorreControl(): ReactElement {
       const desde24h = new Date(Date.now() - 24 * 3600000).toISOString()
       const [gpsRes, vjRes] = await Promise.all([
         supabase.from('gps_tracking')
-          .select('economico, empresa, velocidad, ubicacion, ultima_actualizacion')
+          .select('economico, empresa, velocidad, ubicacion, latitud, longitud, ultima_actualizacion')
           .eq('tipo_unidad', 'tracto')
           .gte('ultima_actualizacion', desde24h)
           .limit(500),
@@ -115,6 +150,8 @@ export default function TorreControl(): ReactElement {
           empresa: g?.empresa || null,
           velocidad: Number(g?.velocidad || 0),
           ubicacion: g?.ubicacion || null,
+          latitud: g?.latitud != null ? Number(g.latitud) : null,
+          longitud: g?.longitud != null ? Number(g.longitud) : null,
           viaje_num: v?.viaje || null,
           cliente: v?.cliente || '—',
           tipo: v?.tipo || '—',
@@ -133,10 +170,36 @@ export default function TorreControl(): ReactElement {
   }
 
   useEffect(() => {
+    console.log('[TorreControl] V63 montado — con mapa Leaflet')
     fetchAll()
     const itv = setInterval(() => { if (document.visibilityState === 'visible') fetchAll() }, 30000)
     return () => clearInterval(itv)
   }, [])
+
+  // Init mapa Leaflet
+  useEffect(() => {
+    if (!leafletReady || vista === 'tabla' || !mapRef.current || mapInstanceRef.current) return
+    if (!(window as any).L) return
+    try {
+      const map = L.map(mapRef.current, {
+        center: [28, -98], zoom: 5, minZoom: 4, maxZoom: 12,
+        maxBounds: [[14, -118], [50, -85]], maxBoundsViscosity: 0.85,
+      })
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap', maxZoom: 12, minZoom: 4,
+      }).addTo(map)
+      mapInstanceRef.current = map
+    } catch (e: any) {
+      console.error('[TorreControl] Error init mapa:', e)
+      setLeafletError('Error inicializando mapa: ' + (e?.message || 'unknown'))
+    }
+    return () => {
+      if (mapInstanceRef.current) {
+        try { mapInstanceRef.current.remove() } catch {}
+        mapInstanceRef.current = null
+      }
+    }
+  }, [leafletReady, vista])
 
   const empresas = useMemo(() => {
     const s = new Set<string>(); filas.forEach(f => f.empresa && s.add(f.empresa))
@@ -153,6 +216,64 @@ export default function TorreControl(): ReactElement {
       return true
     })
   }, [filas, search, filtroEstado, filtroEmpresa])
+
+  // Update markers cuando cambian filas filtradas o vista
+  useEffect(() => {
+    if (!mapInstanceRef.current || !leafletReady) return
+    const map = mapInstanceRef.current
+    markersRef.current.forEach((m: any) => { try { map.removeLayer(m) } catch {} })
+    markersRef.current = []
+
+    const conCoords = filtradas.filter(f => f.latitud != null && f.longitud != null && f.latitud !== 0)
+    conCoords.forEach(f => {
+      const color = estadoHex(f.estado)
+      const moving = f.velocidad > 5
+      const size = moving ? 14 : 11
+      try {
+        const icon = L.divIcon({
+          className: '',
+          html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;' +
+                'background:' + color + ';border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.4);' +
+                (moving ? 'animation:torre-pulse 2s infinite;' : '') + '"></div>',
+          iconSize: [size, size], iconAnchor: [size / 2, size / 2],
+        })
+        const marker = L.marker([f.latitud, f.longitud], { icon }).addTo(map)
+        const viajeBlock = f.viaje_num
+          ? '<hr style="border:none;border-top:1px solid #E2E8F0;margin:6px 0;"/>' +
+            '<b>Viaje:</b> V' + f.viaje_num + '<br/>' +
+            '<b>Cliente:</b> ' + f.cliente + '<br/>' +
+            '<b>Tipo:</b> ' + f.tipo + '<br/>' +
+            '<b>Caja:</b> ' + (f.caja || '—') + '<br/>' +
+            '<b>Origen:</b> ' + f.origen + '<br/>' +
+            '<b>Destino:</b> ' + f.destino + '<br/>' +
+            '<b>Cita descarga:</b> ' + fmt(f.cita_descarga) + '<br/>' +
+            '<b>ETA vs cita:</b> <span style="color:' + color + ';font-weight:700;">' + fmtMinutos(f.minutos_a_cita) + '</span>'
+          : '<hr style="border:none;border-top:1px solid #E2E8F0;margin:6px 0;"/>' +
+            '<i style="color:#94A3B8;">Sin viaje activo en ANODOS</i>'
+        marker.bindPopup(
+          '<div style="font-family:Montserrat,system-ui,sans-serif;font-size:12px;line-height:1.5;min-width:230px;">' +
+          '<strong style="font-size:14px;">Tracto ' + f.economico + '</strong>' +
+          '<span style="margin-left:6px;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:600;' +
+          'background:' + color + '20;color:' + color + ';">' + estadoLabel(f.estado) + '</span><br/>' +
+          '<b>Empresa:</b> ' + empresaLabel(f.empresa) + '<br/>' +
+          '<b>Velocidad:</b> ' + (f.velocidad > 0 ? Math.round(f.velocidad) + ' km/h' : '0 km/h') + '<br/>' +
+          '<b>Ubicación:</b> ' + (f.ubicacion || '—') +
+          viajeBlock +
+          '</div>'
+        )
+        markersRef.current.push(marker)
+      } catch (e) { console.warn('Error marker tracto', f.economico, e) }
+    })
+  }, [filtradas, leafletReady, vista])
+
+  // Inject pulse animation
+  useEffect(() => {
+    if (document.getElementById('torre-pulse-anim')) return
+    const style = document.createElement('style')
+    style.id = 'torre-pulse-anim'
+    style.textContent = '@keyframes torre-pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,0.5)}70%{box-shadow:0 0 0 8px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}'
+    document.head.appendChild(style)
+  }, [])
 
   const sorted = useMemo(() => {
     const arr = [...filtradas]
@@ -191,9 +312,21 @@ export default function TorreControl(): ReactElement {
     </th>
   )
 
+  const VistaBtn = ({ v, label, icon }: { v: Vista, label: string, icon: ReactElement }) => (
+    <button onClick={() => setVista(v)} style={{
+      padding: '8px 14px', borderRadius: tokens.radius.md, display: 'flex', alignItems: 'center', gap: 6,
+      border: '1px solid ' + (vista === v ? tokens.colors.primary : tokens.colors.border),
+      background: vista === v ? tokens.colors.primary : 'transparent',
+      color: vista === v ? '#FFFFFF' : tokens.colors.textPrimary,
+      fontSize: '12px', fontWeight: 600, cursor: 'pointer',
+    }}>{icon}{label}</button>
+  )
+
+  const conCoordsCount = filtradas.filter(f => f.latitud != null && f.longitud != null && f.latitud !== 0).length
+
   return (
     <ModuleLayout titulo="Despacho IA - Torre de Control">
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: tokens.spacing.md, marginBottom: tokens.spacing.md }}>
         <KPICard titulo="Tractos en operación" valor={fmtN(kpis.total)} color="primary" icono={<Truck size={20} />} />
         <KPICard titulo="En tiempo" valor={fmtN(kpis.en_tiempo)} color="green" icono={<CheckCircle2 size={20} />} />
         <KPICard titulo="En riesgo (<2h cita)" valor={fmtN(kpis.en_riesgo)} color="orange" icono={<Clock size={20} />} />
@@ -206,79 +339,109 @@ export default function TorreControl(): ReactElement {
         </Card>
       )}
 
-      <Card>
-        <div style={{ display: 'flex', gap: tokens.spacing.sm, marginBottom: tokens.spacing.md, flexWrap: 'wrap' }}>
-          <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
-            <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: tokens.colors.textMuted }} />
-            <input type="text" placeholder="Buscar tracto, cliente, origen, destino..." value={search} onChange={e => setSearch(e.target.value)}
-              style={{ width: '100%', padding: '10px 14px 10px 36px', background: tokens.colors.bgMain,
-                       border: '1px solid ' + tokens.colors.border, borderRadius: tokens.radius.md,
-                       color: tokens.colors.textPrimary, fontSize: '13px', outline: 'none' }} />
+      <div style={{ display: 'flex', gap: tokens.spacing.sm, marginBottom: tokens.spacing.md, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
+          <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: tokens.colors.textMuted }} />
+          <input type="text" placeholder="Buscar tracto, cliente, origen, destino..." value={search} onChange={e => setSearch(e.target.value)}
+            style={{ width: '100%', padding: '10px 14px 10px 36px', background: tokens.colors.bgMain,
+                     border: '1px solid ' + tokens.colors.border, borderRadius: tokens.radius.md,
+                     color: tokens.colors.textPrimary, fontSize: '13px', outline: 'none' }} />
+        </div>
+        <select value={filtroEmpresa} onChange={e => setFiltroEmpresa(e.target.value)} style={{
+          padding: '10px 12px', background: tokens.colors.bgMain, border: '1px solid ' + tokens.colors.border,
+          borderRadius: tokens.radius.md, color: tokens.colors.textPrimary, fontSize: '13px', fontWeight: 600,
+          outline: 'none', cursor: 'pointer', minWidth: 140,
+        }}>
+          <option value="todas">Todas las empresas</option>
+          {empresas.map(e => <option key={e} value={e}>{empresaLabel(e)}</option>)}
+        </select>
+        {(['todos', 'en_tiempo', 'en_riesgo', 'retrasado', 'sin_viaje'] as const).map(s => (
+          <button key={s} onClick={() => setFiltroEstado(s)} style={{
+            padding: '8px 14px', borderRadius: tokens.radius.md,
+            border: '1px solid ' + (filtroEstado === s ? tokens.colors.primary : tokens.colors.border),
+            background: filtroEstado === s ? tokens.colors.primary : 'transparent',
+            color: filtroEstado === s ? '#FFFFFF' : tokens.colors.textPrimary,
+            fontSize: '12px', fontWeight: 600, cursor: 'pointer',
+          }}>{s === 'todos' ? 'Todos' : estadoLabel(s)}</button>
+        ))}
+        <div style={{ flex: '0 0 auto', display: 'flex', gap: 6, marginLeft: 'auto' }}>
+          <VistaBtn v="ambos" label="Ambos" icon={<Layout size={14} />} />
+          <VistaBtn v="mapa" label="Mapa" icon={<MapIcon size={14} />} />
+          <VistaBtn v="tabla" label="Tabla" icon={<List size={14} />} />
+        </div>
+      </div>
+
+      {(vista === 'mapa' || vista === 'ambos') && (
+        <Card style={{ marginBottom: tokens.spacing.md, padding: 0, overflow: 'hidden' }}>
+          {leafletError ? (
+            <div style={{ padding: tokens.spacing.lg, textAlign: 'center', color: tokens.colors.orange, fontSize: '13px' }}>
+              ⚠ Mapa no disponible: {leafletError}<br/>
+              <span style={{ fontSize: '11px', color: tokens.colors.textMuted }}>(la tabla sigue funcionando)</span>
+            </div>
+          ) : !leafletReady ? (
+            <div style={{ padding: tokens.spacing.lg, textAlign: 'center', color: tokens.colors.textSecondary, fontSize: '13px' }}>
+              Cargando mapa...
+            </div>
+          ) : (
+            <>
+              <div style={{ padding: '8px 14px', fontSize: '12px', color: tokens.colors.textSecondary, borderBottom: '1px solid ' + tokens.colors.border }}>
+                Mostrando {fmtN(conCoordsCount)} de {fmtN(filtradas.length)} tractos con GPS — verde=en tiempo, naranja=en riesgo, rojo=retrasado, azul=sin viaje
+              </div>
+              <div ref={mapRef} style={{ width: '100%', height: vista === 'mapa' ? '600px' : '420px' }} />
+            </>
+          )}
+        </Card>
+      )}
+
+      {(vista === 'tabla' || vista === 'ambos') && (
+        <Card>
+          <div style={{ marginBottom: tokens.spacing.sm, fontSize: '13px', color: tokens.colors.textSecondary }}>
+            Mostrando {fmtN(sorted.length)} de {fmtN(filas.length)} tractos
           </div>
-          <select value={filtroEmpresa} onChange={e => setFiltroEmpresa(e.target.value)} style={{
-            padding: '10px 12px', background: tokens.colors.bgMain, border: '1px solid ' + tokens.colors.border,
-            borderRadius: tokens.radius.md, color: tokens.colors.textPrimary, fontSize: '13px', fontWeight: 600,
-            outline: 'none', cursor: 'pointer', minWidth: 140,
-          }}>
-            <option value="todas">Todas las empresas</option>
-            {empresas.map(e => <option key={e} value={e}>{empresaLabel(e)}</option>)}
-          </select>
-          {(['todos', 'en_tiempo', 'en_riesgo', 'retrasado', 'sin_viaje'] as const).map(s => (
-            <button key={s} onClick={() => setFiltroEstado(s)} style={{
-              padding: '8px 14px', borderRadius: tokens.radius.md,
-              border: '1px solid ' + (filtroEstado === s ? tokens.colors.primary : tokens.colors.border),
-              background: filtroEstado === s ? tokens.colors.primary : 'transparent',
-              color: filtroEstado === s ? '#FFFFFF' : tokens.colors.textPrimary,
-              fontSize: '12px', fontWeight: 600, cursor: 'pointer',
-            }}>{s === 'todos' ? 'Todos' : estadoLabel(s)}</button>
-          ))}
-        </div>
-        <div style={{ marginBottom: tokens.spacing.sm, fontSize: '13px', color: tokens.colors.textSecondary }}>
-          Mostrando {fmtN(sorted.length)} de {fmtN(filas.length)} tractos
-        </div>
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textSecondary }}>Cargando...</div>
-        ) : sorted.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>Sin resultados</div>
-        ) : (
-          <div style={{ overflowX: 'auto', maxHeight: 600 }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead style={{ position: 'sticky', top: 0, background: tokens.colors.bgCard, zIndex: 5 }}>
-                <tr>
-                  <Th k="economico" label="Tracto" />
-                  <Th k="cliente" label="Cliente" />
-                  <Th k="origen" label="Origen" />
-                  <Th k="destino" label="Destino" />
-                  <Th k="cita_descarga" label="Cita descarga" />
-                  <Th k="minutos_a_cita" label="ETA vs cita" />
-                  <Th k="velocidad" label="Vel" align="right" />
-                  <Th k="estado" label="Estado" />
-                </tr>
-              </thead>
-              <tbody>
-                {sorted.map(f => (
-                  <tr key={f.economico} style={{ borderBottom: '1px solid ' + tokens.colors.border }}>
-                    <td style={{ padding: '6px 10px', fontWeight: 700, fontSize: '12px', color: tokens.colors.textPrimary }}>{f.economico}</td>
-                    <td style={{ padding: '6px 10px', fontSize: '12px', color: tokens.colors.textPrimary }}>{f.cliente}</td>
-                    <td style={{ padding: '6px 10px', fontSize: '11px', color: tokens.colors.textSecondary }}>{f.origen}</td>
-                    <td style={{ padding: '6px 10px', fontSize: '11px', color: tokens.colors.textSecondary }}>{f.destino}</td>
-                    <td style={{ padding: '6px 10px', fontSize: '11px', color: tokens.colors.textSecondary }}>{fmt(f.cita_descarga)}</td>
-                    <td style={{ padding: '6px 10px', fontSize: '11px', fontWeight: 700,
-                                 color: f.estado === 'retrasado' ? tokens.colors.red : f.estado === 'en_riesgo' ? tokens.colors.orange : f.estado === 'en_tiempo' ? tokens.colors.green : tokens.colors.textMuted }}>
-                      {fmtMinutos(f.minutos_a_cita)}
-                    </td>
-                    <td style={{ padding: '6px 10px', textAlign: 'right', fontSize: '11px',
-                                 color: f.velocidad > 5 ? tokens.colors.green : tokens.colors.textMuted, fontWeight: f.velocidad > 5 ? 700 : 400 }}>
-                      {f.velocidad ? Math.round(f.velocidad) + ' km/h' : '—'}
-                    </td>
-                    <td style={{ padding: '6px 10px' }}><Badge color={estadoColor(f.estado)}>{estadoLabel(f.estado)}</Badge></td>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textSecondary }}>Cargando...</div>
+          ) : sorted.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: tokens.spacing.xl, color: tokens.colors.textMuted }}>Sin resultados</div>
+          ) : (
+            <div style={{ overflowX: 'auto', maxHeight: vista === 'tabla' ? 600 : 380 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead style={{ position: 'sticky', top: 0, background: tokens.colors.bgCard, zIndex: 5 }}>
+                  <tr>
+                    <Th k="economico" label="Tracto" />
+                    <Th k="cliente" label="Cliente" />
+                    <Th k="origen" label="Origen" />
+                    <Th k="destino" label="Destino" />
+                    <Th k="cita_descarga" label="Cita descarga" />
+                    <Th k="minutos_a_cita" label="ETA vs cita" />
+                    <Th k="velocidad" label="Vel" align="right" />
+                    <Th k="estado" label="Estado" />
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </Card>
+                </thead>
+                <tbody>
+                  {sorted.map(f => (
+                    <tr key={f.economico} style={{ borderBottom: '1px solid ' + tokens.colors.border }}>
+                      <td style={{ padding: '6px 10px', fontWeight: 700, fontSize: '12px', color: tokens.colors.textPrimary }}>{f.economico}</td>
+                      <td style={{ padding: '6px 10px', fontSize: '12px', color: tokens.colors.textPrimary }}>{f.cliente}</td>
+                      <td style={{ padding: '6px 10px', fontSize: '11px', color: tokens.colors.textSecondary }}>{f.origen}</td>
+                      <td style={{ padding: '6px 10px', fontSize: '11px', color: tokens.colors.textSecondary }}>{f.destino}</td>
+                      <td style={{ padding: '6px 10px', fontSize: '11px', color: tokens.colors.textSecondary }}>{fmt(f.cita_descarga)}</td>
+                      <td style={{ padding: '6px 10px', fontSize: '11px', fontWeight: 700,
+                                   color: f.estado === 'retrasado' ? tokens.colors.red : f.estado === 'en_riesgo' ? tokens.colors.orange : f.estado === 'en_tiempo' ? tokens.colors.green : tokens.colors.textMuted }}>
+                        {fmtMinutos(f.minutos_a_cita)}
+                      </td>
+                      <td style={{ padding: '6px 10px', textAlign: 'right', fontSize: '11px',
+                                   color: f.velocidad > 5 ? tokens.colors.green : tokens.colors.textMuted, fontWeight: f.velocidad > 5 ? 700 : 400 }}>
+                        {f.velocidad ? Math.round(f.velocidad) + ' km/h' : '—'}
+                      </td>
+                      <td style={{ padding: '6px 10px' }}><Badge color={estadoColor(f.estado)}>{estadoLabel(f.estado)}</Badge></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Card>
+      )}
     </ModuleLayout>
   )
 }
