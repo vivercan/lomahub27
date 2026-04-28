@@ -260,24 +260,41 @@ export default function ControlEquipo() {
   }, [])
 
   async function fetchViajesActivos() {
-    // FIX 55 (28/Abr/2026) — viajes_anodos NO tiene campo "estado"; filtramos por llega_destino IS NULL
-    // Agregamos tracto + cliente para popup completo (JJ pidio: "ponle con qué tractocamión la lleva")
+    // FIX 56 (28/Abr/2026) — Doble query: viajes ACTIVOS (sin llegar) + ÚLTIMO viaje cerrado
+    // "Sin viaje activo" puede ser REAL (caja vacía regresando) o caja con su tracto.
+    // Mostramos contexto: si no hay activo, mostrar último cerrado con "hace Xd entregado".
     try {
       const desde14d = new Date(Date.now() - 14 * 86400000).toISOString()
-      const { data } = await supabase
-        .from('viajes_anodos')
-        .select('caja, viaje, tracto, cliente, tipo, municipio_origen, origen, municipio_destino, destino, cita_carga, cita_descarga, llega_destino, inicia_viaje')
-        .is('llega_destino', null)
-        .neq('tipo', 'VACIO')
-        .gte('inicia_viaje', desde14d)
-        .order('inicia_viaje', { ascending: false })
-        .limit(2000)
-      if (!data) return
+      const desde60d = new Date(Date.now() - 60 * 86400000).toISOString()
+      const baseSel = 'caja, viaje, tracto, cliente, tipo, municipio_origen, origen, municipio_destino, destino, cita_carga, cita_descarga, llega_destino, inicia_viaje'
+      const [activosRes, ultimosRes] = await Promise.all([
+        // 1) Activos (sin llegar) últimos 14d
+        supabase.from('viajes_anodos')
+          .select(baseSel)
+          .is('llega_destino', null)
+          .neq('tipo', 'VACIO')
+          .gte('inicia_viaje', desde14d)
+          .order('inicia_viaje', { ascending: false })
+          .limit(2000),
+        // 2) Últimos cerrados (con llega_destino) últimos 60d - como fallback para contexto
+        supabase.from('viajes_anodos')
+          .select(baseSel)
+          .not('llega_destino', 'is', null)
+          .neq('tipo', 'VACIO')
+          .gte('llega_destino', desde60d)
+          .order('llega_destino', { ascending: false })
+          .limit(3000),
+      ])
       const map: Record<string, any> = {}
-      // Tomar el más reciente por caja (el primero del orden DESC por inicia_viaje)
-      for (const v of data) {
+      // Prioridad 1: viaje activo
+      for (const v of (activosRes.data || [])) {
         const caja = String(v.caja || '').trim()
-        if (caja && !map[caja]) map[caja] = v
+        if (caja && !map[caja]) map[caja] = { ...v, _estado: 'activo' }
+      }
+      // Prioridad 2: último cerrado (solo para cajas SIN activo)
+      for (const v of (ultimosRes.data || [])) {
+        const caja = String(v.caja || '').trim()
+        if (caja && !map[caja]) map[caja] = { ...v, _estado: 'cerrado' }
       }
       setViajesPorCaja(map)
     } catch (e) {
@@ -643,18 +660,27 @@ export default function ControlEquipo() {
         if (!d) return '—'
         try { const dt = new Date(d); return dt.toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) } catch { return String(d) }
       }
-      // FIX 55 — campos reales de viajes_anodos + tracto + cliente
+      // FIX 56 — distingue viaje ACTIVO vs ULTIMO CERRADO (contexto cuando caja regresa vacía)
+      const esActivo = viaje && viaje._estado === 'activo'
+      const esCerrado = viaje && viaje._estado === 'cerrado'
+      const labelEstado = esActivo
+        ? '<span style="color:#0D9668;font-weight:600;">● Viaje EN CURSO</span>'
+        : esCerrado
+        ? '<span style="color:#6B7280;font-weight:600;">○ Último viaje (entregado ' + fmtFecha(viaje.llega_destino) + ')</span>'
+        : ''
       const viajeBlock = viaje
         ? '<hr style="border:none;border-top:1px solid #E2E8F0;margin:8px 0;"/>' +
+          labelEstado + '<br/>' +
           '<b>Viaje:</b> ' + (viaje.viaje ? 'V' + viaje.viaje : '—') + '<br/>' +
           '<b>Cliente:</b> ' + (viaje.cliente || '—') + '<br/>' +
           '<b>Tracto:</b> ' + (viaje.tracto || '—') + '<br/>' +
           '<b>Tipo:</b> ' + (viaje.tipo || '—') + '<br/>' +
           '<b>Origen:</b> ' + (viaje.municipio_origen || viaje.origen || '—') + '<br/>' +
           '<b>Destino:</b> ' + (viaje.municipio_destino || viaje.destino || '—') + '<br/>' +
-          '<b>Cita descarga:</b> ' + fmtFecha(viaje.cita_descarga || viaje.cita_carga)
+          (esActivo ? '<b>Cita descarga:</b> ' + fmtFecha(viaje.cita_descarga || viaje.cita_carga) : '')
         : '<hr style="border:none;border-top:1px solid #E2E8F0;margin:8px 0;"/>' +
-          '<i style="color:#94A3B8;">Sin viaje activo en ANODOS</i>'
+          '<i style="color:#94A3B8;">Sin viaje en últimos 60d en ANODOS<br/>' +
+          '(caja posiblemente reposicionando)</i>'
       marker.bindPopup(
         '<div style="font-family:Montserrat,system-ui,sans-serif;font-size:13px;line-height:1.6;min-width:240px;">' +
         '<strong style="font-size:14px;">' + c.numero_economico + '</strong>' +
