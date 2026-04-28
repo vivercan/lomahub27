@@ -260,15 +260,21 @@ export default function ControlEquipo() {
   }, [])
 
   async function fetchViajesActivos() {
+    // FIX 55 (28/Abr/2026) — viajes_anodos NO tiene campo "estado"; filtramos por llega_destino IS NULL
+    // Agregamos tracto + cliente para popup completo (JJ pidio: "ponle con qué tractocamión la lleva")
     try {
+      const desde14d = new Date(Date.now() - 14 * 86400000).toISOString()
       const { data } = await supabase
         .from('viajes_anodos')
-        .select('caja, origen, origen_ciudad, destino, destino_ciudad, eta, cita_carga, cita_descarga, folio, estado, inicia_viaje')
-        .in('estado', ['en_transito', 'programado', 'en_riesgo', 'asignado'])
+        .select('caja, viaje, tracto, cliente, tipo, municipio_origen, origen, municipio_destino, destino, cita_carga, cita_descarga, llega_destino, inicia_viaje')
+        .is('llega_destino', null)
+        .neq('tipo', 'VACIO')
+        .gte('inicia_viaje', desde14d)
         .order('inicia_viaje', { ascending: false })
         .limit(2000)
       if (!data) return
       const map: Record<string, any> = {}
+      // Tomar el más reciente por caja (el primero del orden DESC por inicia_viaje)
       for (const v of data) {
         const caja = String(v.caja || '').trim()
         if (caja && !map[caja]) map[caja] = v
@@ -637,13 +643,16 @@ export default function ControlEquipo() {
         if (!d) return '—'
         try { const dt = new Date(d); return dt.toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) } catch { return String(d) }
       }
+      // FIX 55 — campos reales de viajes_anodos + tracto + cliente
       const viajeBlock = viaje
         ? '<hr style="border:none;border-top:1px solid #E2E8F0;margin:8px 0;"/>' +
-          '<b>Folio:</b> ' + (viaje.folio || '—') + '<br/>' +
-          '<b>Origen:</b> ' + (viaje.origen_ciudad || viaje.origen || '—') + '<br/>' +
-          '<b>Destino:</b> ' + (viaje.destino_ciudad || viaje.destino || '—') + '<br/>' +
-          '<b>ETA:</b> ' + fmtFecha(viaje.eta) + '<br/>' +
-          '<b>Cita:</b> ' + fmtFecha(viaje.cita_descarga || viaje.cita_carga)
+          '<b>Viaje:</b> ' + (viaje.viaje ? 'V' + viaje.viaje : '—') + '<br/>' +
+          '<b>Cliente:</b> ' + (viaje.cliente || '—') + '<br/>' +
+          '<b>Tracto:</b> ' + (viaje.tracto || '—') + '<br/>' +
+          '<b>Tipo:</b> ' + (viaje.tipo || '—') + '<br/>' +
+          '<b>Origen:</b> ' + (viaje.municipio_origen || viaje.origen || '—') + '<br/>' +
+          '<b>Destino:</b> ' + (viaje.municipio_destino || viaje.destino || '—') + '<br/>' +
+          '<b>Cita descarga:</b> ' + fmtFecha(viaje.cita_descarga || viaje.cita_carga)
         : '<hr style="border:none;border-top:1px solid #E2E8F0;margin:8px 0;"/>' +
           '<i style="color:#94A3B8;">Sin viaje activo en ANODOS</i>'
       marker.bindPopup(
