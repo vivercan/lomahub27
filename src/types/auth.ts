@@ -45,12 +45,12 @@ export const RUTAS_INICIALES: Record<Rol, string> = {
   superadmin: '/dashboard',
   admin: '/dashboard',
   direccion: '/war-room',
-  gerente_comercial: '/ventas/dashboard',
-  ventas: '/ventas/mis-leads',
+  gerente_comercial: '/comercial/dashboard',
+  ventas: '/oportunidades/mis-leads',
   cs: '/operaciones/despachos',
   supervisor_cs: '/servicio/dashboard',
   operaciones: '/operaciones/dedicados',
-  gerente_ops: '/operaciones/torre-control',
+  gerente_ops: '/servicio/despacho-ia',
   cxc: '/cxc/cartera',
   pricing: '/cotizador/tarifas',
   it: '/admin/configuracion',
@@ -58,8 +58,8 @@ export const RUTAS_INICIALES: Record<Rol, string> = {
 
 // Maps permisosCustom module IDs to route path prefixes
 export const PERMISOS_CUSTOM_ROUTES: Record<string, string[]> = {
-  'agregar-lead': ['/ventas/leads/nuevo'],
-  'panel-oportunidades': ['/ventas/mis-leads', '/ventas/dashboard', '/ventas/leads/'],
+  'agregar-lead': ['/oportunidades/leads/nuevo'],
+  'panel-oportunidades': ['/oportunidades/mis-leads', '/comercial/dashboard', '/oportunidades/leads/'],
   'servicio-clientes': ['/servicio/dashboard', '/servicio/whatsapp', '/servicio/metricas'],
 }
 

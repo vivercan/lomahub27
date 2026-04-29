@@ -15,7 +15,7 @@ const CARDS: CardDef[] = [
   { id: 'impo',         label: 'Importación',       route: '/servicio/importacion',     kpiLabel: 'Viajes IMPO (30d)', iconSet: 'ion',       iconName: 'cloud-download' },
   { id: 'expo',         label: 'Exportación',       route: '/servicio/exportacion',     kpiLabel: 'Viajes EXPO (30d)', iconSet: 'ion',       iconName: 'cloud-upload' },
   { id: 'escalamiento_wa', label: 'Escalamiento WA', route: '/servicio/escalamiento-whatsapp', kpiLabel: 'Pendientes', iconSet: 'bi', iconName: 'arrow-up-right-square' },
-  { id: 'despacho_ia',  label: 'Despacho IA',       route: '/operaciones/torre-control', kpiLabel: 'Viajes activos',   iconSet: 'bi',        iconName: 'cpu' },
+  { id: 'despacho_ia',  label: 'Despacho IA',       route: '/servicio/despacho-ia', kpiLabel: 'Viajes activos',   iconSet: 'bi',        iconName: 'cpu' },
   { id: 'metricas',     label: 'Métricas Servicio', route: '/servicio/metricas',        kpiLabel: 'Dashboard',         iconSet: 'bi',        iconName: 'graph-up' },
   { id: 'actividades',  label: 'Actividades',       route: '/actividades',              kpiLabel: 'Pendientes',        iconSet: 'bi',        iconName: 'list-check' },
 ]

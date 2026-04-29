@@ -202,7 +202,7 @@ export default function NuevoLead(): ReactElement {
       }])
       if (err) throw err
       setSuccess(true)
-      setTimeout(() => navigate('/ventas/mis-leads'), 1200)
+      setTimeout(() => navigate('/oportunidades/mis-leads'), 1200)
     } catch (e: any) {
       setError(e.message || 'Error al guardar')
     } finally { setSaving(false) }

@@ -91,7 +91,6 @@ const TerminalesConfig = lazy(() => import('./pages/admin/TerminalesConfig'))
 const DashboardOperaciones = lazy(() => import('./pages/operaciones/DashboardOperaciones'))
 const ControlEquipo = lazy(() => import('./pages/ControlEquipo'))
 const DashboardComunicaciones = lazy(() => import('./pages/comunicaciones/DashboardComunicaciones'))
-const ComunicacionAsistida = lazy(() => import('./pages/comunicaciones/ComunicacionAsistida'))
 const DashboardVentasResultados = lazy(() => import('./pages/ventas/DashboardVentasResultados'))
 const MetasVendedoresConfig = lazy(() => import('./pages/admin/MetasVendedoresConfig'))
 const CenefaConfig = lazy(() => import('./pages/admin/CenefaConfig'))
@@ -130,28 +129,28 @@ function App() {
           } />
 
           {/* ——— 03. Dashboard Ventas ——— */}
-          <Route path="/ventas/dashboard" element={
+          <Route path="/comercial/dashboard" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas']}>
               <DashboardVentas />
             </ProtectedRoute>
           } />
 
           {/* ——— 04. Panel Personal Vendedor ——— */}
-          <Route path="/ventas/mis-leads" element={
+          <Route path="/oportunidades/mis-leads" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas']}>
               <MisLeads />
             </ProtectedRoute>
           } />
 
           {/* ——— 05. Captura de Lead ——— */}
-          <Route path="/ventas/leads/nuevo" element={
+          <Route path="/oportunidades/leads/nuevo" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas']}>
               <NuevoLead />
             </ProtectedRoute>
           } />
 
           {/* ——— 06. Ficha del Lead ——— */}
-          <Route path="/ventas/leads/:id" element={
+          <Route path="/oportunidades/leads/:id" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas']}>
               <FichaLead />
             </ProtectedRoute>
@@ -267,7 +266,7 @@ function App() {
           } />
 
           {/* ——— 12. Despacho IA ——— */}
-          <Route path="/operaciones/torre-control" element={
+          <Route path="/servicio/despacho-ia" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas', 'operaciones']}>
               <TorreControl />
             </ProtectedRoute>
@@ -403,7 +402,7 @@ function App() {
 
           {/* ——— 28. Comisiones por Ejecutivo ——— */}
 
-          <Route path="/ventas/funnel" element={
+          <Route path="/oportunidades/funnel" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'ventas']}>
               <FunnelVentas />
             </ProtectedRoute>
@@ -555,33 +554,36 @@ function App() {
           } />
 
           {/* --- Redirects legacy a rutas canonicas (P0-03) --- */}
-          <Route path="/ventas/nuevo-lead" element={<Navigate to="/ventas/leads/nuevo" replace />} />
-          <Route path="/ventas/leads" element={<Navigate to="/ventas/mis-leads" replace />} />
+          <Route path="/ventas/nuevo-lead" element={<Navigate to="/oportunidades/leads/nuevo" replace />} />
+          <Route path="/ventas/leads" element={<Navigate to="/oportunidades/mis-leads" replace />} />
           <Route path="/ventas/prospeccion-externa" element={<Navigate to="/ventas/prospeccion" replace />} />
           <Route path="/clientes" element={<Navigate to="/clientes/alta" replace />} />
           <Route path="/operaciones/mapa-gps" element={<Navigate to="/operaciones/mapa" replace />} />
           <Route path="/operaciones/control-tractos" element={<Navigate to="/operaciones/tractos" replace />} />
           <Route path="/operaciones/control-cajas" element={<Navigate to="/operaciones/cajas" replace />} />
-          <Route path="/operaciones/viajes" element={<Navigate to="/operaciones/torre-control" replace />} />
-          <Route path="/operaciones/trazabilidad" element={<Navigate to="/operaciones/torre-control" replace />} />
+          <Route path="/operaciones/viajes" element={<Navigate to="/servicio/despacho-ia" replace />} />
+          <Route path="/operaciones/trazabilidad" element={<Navigate to="/servicio/despacho-ia" replace />} />
           <Route path="/cotizador/nuevo" element={<Navigate to="/cotizador/nueva" replace />} />
           <Route path="/inteligencia/rankings" element={<Navigate to="/inteligencia" replace />} />
 
           {/* ——— Default ——— */}
           <Route path="/" element={<Navigate to="/login" replace />} />
+          
+          {/* FIX 71 — Legacy redirects URL viejas → nuevas (cards mandan) */}
+          <Route path="/ventas/mis-leads" element={<Navigate to="/oportunidades/mis-leads" replace />} />
+          <Route path="/ventas/funnel" element={<Navigate to="/oportunidades/funnel" replace />} />
+          <Route path="/ventas/leads/nuevo" element={<Navigate to="/oportunidades/leads/nuevo" replace />} />
+          <Route path="/ventas/dashboard" element={<Navigate to="/comercial/dashboard" replace />} />
+          <Route path="/operaciones/torre-control" element={<Navigate to="/servicio/despacho-ia" replace />} />
+
           <Route path="*" element={<Navigate to="/login" replace />} />
                   <Route path="/servicio/whatsapp" element={<Navigate to="/comunicaciones/whatsapp" replace />} />
           <Route path="/pricing/cerebro-tarifario" element={<Navigate to="/admin/cerebro-tarifario" replace />} />
-          <Route path="/servicio/comunicacion-proactiva" element={<Navigate to="/comunicaciones/asistida?tab=proactiva" replace />} />
-          <Route path="/servicio/escalamiento-whatsapp" element={<Navigate to="/comunicaciones/asistida?tab=escalamiento" replace />} />
+          <Route path="/servicio/comunicacion-proactiva" element={<Navigate to="/comunicaciones/whatsapp" replace />} />
+          <Route path="/servicio/escalamiento-whatsapp" element={<Navigate to="/servicio/escalamiento-whatsapp" replace />} />
                     <Route path="/ventas/resultados" element={
             <ProtectedRoute allowedRoles={['superadmin', 'admin', 'direccion', 'gerente_comercial', 'ventas']}>
               <DashboardVentasResultados />
-            </ProtectedRoute>
-          } />
-          <Route path="/comunicaciones/asistida" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'supervisor_cs', 'ventas']}>
-              <ComunicacionAsistida />
             </ProtectedRoute>
           } />
           <Route path="/admin/cerebro-tarifario" element={

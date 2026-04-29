@@ -820,7 +820,7 @@ export default function MisLeads() {
         acciones={
           <button
             style={s.addBtn}
-            onClick={() => navigate('/ventas/leads/nuevo')}
+            onClick={() => navigate('/oportunidades/leads/nuevo')}
             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.primaryHover }}
             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.primary }}
           >
@@ -916,7 +916,7 @@ export default function MisLeads() {
         {/* Funnel */}
         <button
           style={s.toolbarBtn}
-          onClick={() => navigate('/ventas/funnel')}
+          onClick={() => navigate('/oportunidades/funnel')}
         >
           <Filter size={14} />
           Funnel
@@ -1035,7 +1035,7 @@ export default function MisLeads() {
                     onClick={(e) => {
                       const target = e.target as HTMLElement;
                       if (target.closest('button, svg, a, [role="button"], input, select, textarea')) return;
-                      navigate(`/ventas/leads/${lead.id}`);
+                      navigate(`/oportunidades/leads/${lead.id}`);
                     }}
                     onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = tokens.colors.bgHover }}
                     onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = 'transparent' }}
@@ -1045,7 +1045,7 @@ export default function MisLeads() {
                       <div style={{ overflow: 'hidden', maxHeight: `${ROW_HEIGHT - 12}px` }}>
                         <div
                           style={{ fontWeight: 600, color: tokens.colors.textPrimary, cursor: 'pointer', lineHeight: '1.3' }}
-                          onClick={() => navigate(`/ventas/leads/${lead.id}`)}
+                          onClick={() => navigate(`/oportunidades/leads/${lead.id}`)}
                         >
                           {lead.empresa || '—'}
                         </div>
@@ -1103,7 +1103,7 @@ export default function MisLeads() {
                             <button
                               style={{ ...s.actionBtn, color: '#2563EB' }}
                               title="Abrir expediente"
-                              onClick={e => { e.stopPropagation(); navigate(`/ventas/leads/${lead.id}`) }}
+                              onClick={e => { e.stopPropagation(); navigate(`/oportunidades/leads/${lead.id}`) }}
                               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = tokens.colors.bgHover }}
                               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
                             >
@@ -1151,7 +1151,7 @@ export default function MisLeads() {
                   </div>
                   <div style={{ flex: 1, overflow: 'auto', padding: '8px', display: 'flex', flexDirection: 'column', gap: '8px', scrollbarWidth: 'none' }}>
                     {stageLeads.map(lead => (
-                      <div key={lead.id} onClick={() => navigate('/ventas/leads/' + lead.id)} style={{ padding: '12px', background: tokens.colors.bgHover, borderRadius: tokens.radius.md, cursor: 'pointer', border: '1px solid transparent', transition: 'all 0.15s ease' }}
+                      <div key={lead.id} onClick={() => navigate('/oportunidades/leads/' + lead.id)} style={{ padding: '12px', background: tokens.colors.bgHover, borderRadius: tokens.radius.md, cursor: 'pointer', border: '1px solid transparent', transition: 'all 0.15s ease' }}
                         onMouseEnter={e => { e.currentTarget.style.borderColor = stage.color + '44'; e.currentTarget.style.transform = 'translateY(-1px)' }}
                         onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'none' }}>
                         <div style={{ fontSize: '13px', fontWeight: 600, color: tokens.colors.textPrimary, marginBottom: '4px' }}>{lead.empresa}</div>

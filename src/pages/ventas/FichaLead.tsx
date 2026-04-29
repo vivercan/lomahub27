@@ -292,7 +292,7 @@ export default function FichaLead() {
         <div style={{ textAlign: 'center', padding: '60px', color: tokens.colors.textMuted }}>
           <p style={{ fontSize: '18px', fontWeight: 500, margin: 0, fontFamily: tokens.fonts.heading }}>Lead no encontrado</p>
           <p style={{ fontSize: '14px', marginTop: '8px', fontFamily: tokens.fonts.body }}>No hay información disponible para este lead</p>
-          <button style={{ ...s.actionBtn, marginTop: '16px', display: 'inline-flex' }} onClick={() => navigate('/ventas/mis-leads')}>
+          <button style={{ ...s.actionBtn, marginTop: '16px', display: 'inline-flex' }} onClick={() => navigate('/oportunidades/mis-leads')}>
             <ArrowLeft size={14} /> Volver al Panel
           </button>
         </div>
@@ -308,7 +308,7 @@ export default function FichaLead() {
       acciones={
         <button
           style={s.backBtn}
-          onClick={() => navigate('/ventas/mis-leads')}
+          onClick={() => navigate('/oportunidades/mis-leads')}
           onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(180deg, #FF4500 0%, #CC3700 100%)' }}
           onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(180deg, #FF5C1A 0%, #FF4500 50%, #CC3700 100%)' }}
         >
@@ -531,7 +531,7 @@ export default function FichaLead() {
                 <UserCheck size={14} /> {lead.estado === 'Cerrado Ganado' ? 'Ya es Cliente' : converting ? 'Convirtiendo...' : 'Convertir a Cliente'}
               </button>
               <button style={s.actionBtn}
-                onClick={() => navigate(`/ventas/leads/nuevo?edit=${lead.id}`)}>
+                onClick={() => navigate(`/oportunidades/leads/nuevo?edit=${lead.id}`)}>
                 <Edit3 size={14} /> Editar Lead
               </button>
               <button style={s.actionBtn}

@@ -41,7 +41,7 @@ const MODULOS: Modulo[] = [
   {
     id: 'operaciones', label: 'Operaciones', icon: '🚛',
     submodulos: [
-      { id: 'torre_control', label: 'Despacho IA', ruta: '/operaciones/torre-control' },
+      { id: 'torre_control', label: 'Despacho IA', ruta: '/servicio/despacho-ia' },
       { id: 'despachos', label: 'Despachos', ruta: '/operaciones/despachos' },
       { id: 'mapa_gps', label: 'Mapa GPS', ruta: '/operaciones/mapa-gps' },
       { id: 'disponibilidad', label: 'Disponibilidad', ruta: '/operaciones/disponibilidad' },
