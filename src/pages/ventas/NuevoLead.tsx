@@ -98,11 +98,12 @@ export default function NuevoLead(): ReactElement {
       const searchTerm = empresa.trim().toLowerCase()
       const firstChars = searchTerm.substring(0, 5)
 
-      // Query leads table with multiple strategies
+      // FIX 73 — traer ejecutivo + fecha_ultimo_mov para regla 30 dias
       const { data: leadsData } = await supabase
         .from('leads')
-        .select('id, empresa, estado')
+        .select('id, empresa, estado, ejecutivo_nombre, ejecutivo_email, fecha_ultimo_mov')
         .or(`empresa.ilike.%${searchTerm}%,empresa.ilike.${searchTerm}`)
+        .is('deleted_at', null)
         .limit(10)
 
       // Query clientes table with multiple strategies
@@ -173,12 +174,49 @@ export default function NuevoLead(): ReactElement {
       }
     }
     
-    // FIX 72 — Re-chequear duplicados al momento del save (si el usuario ignoró el warning)
+    // FIX 73 — BLOQUEO DURO si empresa ya está asignada a otro vendedor.
+    // Regla 30 días: si el lead lleva ≥30d sin movimiento, permitir solicitar liberación.
     if (dupResults.length > 0) {
-      const confirmar = window.confirm(`Hay ${dupResults.length} coincidencia(s) con leads/clientes existentes. ¿Confirmas crear el duplicado de todas formas?`)
+      const leadConDueno = dupResults.find((d: any) => d.ejecutivo_nombre || d.ejecutivo_email)
+      if (leadConDueno) {
+        const ahora = Date.now()
+        const ultMov = leadConDueno.fecha_ultimo_mov ? new Date(leadConDueno.fecha_ultimo_mov).getTime() : ahora
+        const diasSinMov = Math.floor((ahora - ultMov) / 86400000)
+        const diasRestantes = Math.max(0, 30 - diasSinMov)
+        const owner = leadConDueno.ejecutivo_nombre || leadConDueno.ejecutivo_email || 'otro vendedor'
+        if (diasRestantes > 0) {
+          setError(`Lead bloqueado: "${leadConDueno.empresa}" ya está asignado a ${owner}. Podrá liberarse en ${diasRestantes} días si no hay movimiento (regla 30d).`)
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+          return
+        }
+        const motivo = window.prompt(`"${leadConDueno.empresa}" lleva ${diasSinMov} días sin movimiento bajo ${owner}.\n\n¿Por qué quieres tomarlo? (mensaje al vendedor actual y a admin)`) || ''
+        if (!motivo.trim()) {
+          setError('Solicitud cancelada. Para tomar este lead, escribe un motivo.')
+          return
+        }
+        try {
+          await supabase.from('solicitudes_liberacion_lead').insert([{
+            empresa_solicitada: leadConDueno.empresa,
+            lead_id_existente: leadConDueno.id,
+            ejecutivo_actual_email: leadConDueno.ejecutivo_email || null,
+            ejecutivo_actual_nombre: leadConDueno.ejecutivo_nombre || null,
+            solicitante_id: user?.id || null,
+            solicitante_email: user?.email || null,
+            solicitante_nombre: user?.nombre || user?.email || null,
+            estado: 'pendiente',
+            dias_sin_movimiento_al_solicitar: diasSinMov,
+            motivo_solicitud: motivo.trim(),
+          }])
+          setError(`Solicitud enviada a ${owner} y a admin. Recibirás respuesta en su panel. No se creó lead duplicado.`)
+        } catch (sErr: any) {
+          setError(`No se pudo registrar solicitud: ${sErr?.message || 'error'}`)
+        }
+        return
+      }
+      const confirmar = window.confirm(`"${dupResults[0].empresa}" ya existe como cliente activo. ¿Confirmas crear lead nuevo de todas formas?`)
       if (!confirmar) return
     }
-    
+
     setSaving(true); setError('')
     try {
       // Apply Title Case to empresa

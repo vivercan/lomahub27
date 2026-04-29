@@ -97,6 +97,9 @@ export default function MisLeads() {
   const [analyzing, setAnalyzing] = useState(false)
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null)
 
+  // FIX 73 — Solicitudes de liberación pendientes para el vendedor logueado
+  const [solicitudesPendientes, setSolicitudesPendientes] = useState<any[]>([])
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (ejDropdownRef.current && !ejDropdownRef.current.contains(e.target as Node)) {
@@ -112,6 +115,47 @@ export default function MisLeads() {
   useEffect(() => {
     fetchLeads()
   }, [user?.id])
+
+  // FIX 73 — Cargar solicitudes pendientes para el vendedor logueado
+  useEffect(() => {
+    if (!user?.email) return
+    const fetchSolicitudes = async () => {
+      const { data } = await supabase
+        .from('solicitudes_liberacion_lead')
+        .select('id, empresa_solicitada, solicitante_nombre, solicitante_email, motivo_solicitud, dias_sin_movimiento_al_solicitar, fecha_solicitud, lead_id_existente')
+        .eq('ejecutivo_actual_email', user.email)
+        .eq('estado', 'pendiente')
+        .order('fecha_solicitud', { ascending: false })
+      setSolicitudesPendientes(data || [])
+    }
+    fetchSolicitudes()
+  }, [user?.email])
+
+  const resolverSolicitud = async (solId: number, leadId: string | null, decision: 'aprobada' | 'rechazada') => {
+    if (decision === 'aprobada' && leadId) {
+      const confirmar = window.confirm('Al aprobar, el lead se reasigna al solicitante y deja de ser tuyo. ¿Confirmas?')
+      if (!confirmar) return
+      const { data: sol } = await supabase
+        .from('solicitudes_liberacion_lead')
+        .select('solicitante_id, solicitante_email, solicitante_nombre')
+        .eq('id', solId).single()
+      if (sol?.solicitante_id) {
+        await supabase.from('leads').update({
+          ejecutivo_id: sol.solicitante_id,
+          ejecutivo_email: sol.solicitante_email,
+          ejecutivo_nombre: sol.solicitante_nombre,
+          fecha_ultimo_mov: new Date().toISOString(),
+        }).eq('id', leadId)
+      }
+    }
+    await supabase.from('solicitudes_liberacion_lead').update({
+      estado: decision,
+      fecha_resolucion: new Date().toISOString(),
+      resuelto_por: user?.id || null,
+    }).eq('id', solId)
+    setSolicitudesPendientes(prev => prev.filter(s => s.id !== solId))
+    if (decision === 'aprobada') fetchLeads()
+  }
 
   // Dynamic rows per page calculation
   useEffect(() => {
@@ -970,6 +1014,57 @@ export default function MisLeads() {
           </div>
         )
       })()}
+
+      {/* FIX 73 — Banner solicitudes de liberación pendientes (otro vendedor quiere tomar uno de mis leads) */}
+      {solicitudesPendientes.length > 0 && (
+        <div style={{
+          margin: '0 0 12px 0', padding: '12px 16px', borderRadius: 10,
+          background: 'linear-gradient(180deg, rgba(59,130,246,0.10) 0%, rgba(37,99,235,0.05) 100%)',
+          border: '1px solid rgba(37,99,235,0.32)',
+          fontSize: 13, color: '#1E3A8A',
+        }}>
+          <div style={{ fontWeight: 700, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 16 }}>📩</span>
+            {solicitudesPendientes.length === 1
+              ? '1 solicitud para tomar uno de tus leads'
+              : `${solicitudesPendientes.length} solicitudes para tomar tus leads`}
+          </div>
+          {solicitudesPendientes.map((sol) => (
+            <div key={sol.id} style={{
+              padding: '8px 10px', marginBottom: 6, borderRadius: 8,
+              background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(37,99,235,0.18)',
+            }}>
+              <div style={{ fontSize: 12, lineHeight: 1.5 }}>
+                <strong>{sol.empresa_solicitada}</strong> — solicitado por <strong>{sol.solicitante_nombre || sol.solicitante_email}</strong>
+                {sol.dias_sin_movimiento_al_solicitar != null && (
+                  <span style={{ color: '#7C2D12' }}> · {sol.dias_sin_movimiento_al_solicitar} días sin movimiento</span>
+                )}
+              </div>
+              {sol.motivo_solicitud && (
+                <div style={{ fontSize: 11, color: '#475569', fontStyle: 'italic', marginTop: 3 }}>
+                  Motivo: {sol.motivo_solicitud}
+                </div>
+              )}
+              <div style={{ marginTop: 8, display: 'flex', gap: 6 }}>
+                <button
+                  onClick={() => resolverSolicitud(sol.id, sol.lead_id_existente, 'aprobada')}
+                  style={{
+                    padding: '5px 12px', fontSize: 11, fontWeight: 700, borderRadius: 6, cursor: 'pointer',
+                    background: '#16A34A', color: '#FFF', border: 'none',
+                  }}
+                >Aprobar y reasignar</button>
+                <button
+                  onClick={() => resolverSolicitud(sol.id, sol.lead_id_existente, 'rechazada')}
+                  style={{
+                    padding: '5px 12px', fontSize: 11, fontWeight: 700, borderRadius: 6, cursor: 'pointer',
+                    background: '#FFFFFF', color: '#DC2626', border: '1px solid #DC2626',
+                  }}
+                >Rechazar</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {viewMode === 'table' ? (
           <>
