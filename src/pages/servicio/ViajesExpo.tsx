@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
 import { KPICard } from '../../components/ui/KPICard'
@@ -10,7 +11,8 @@ import { CloudUpload, Package, Clock, CheckCircle2, AlertTriangle } from 'lucide
 
 /* ── Types ── */
 interface ViajeExpo {
-  id: number
+  id: string
+  viaje: number
   folio: string
   cliente: string
   origen: string
@@ -51,6 +53,7 @@ const estadoLabel = (e: string) => {
 
 /* ── Component ── */
 export default function ViajesExpo() {
+  const navigate = useNavigate()
   const [viajes, setViajes] = useState<ViajeExpo[]>([])
   const [loading, setLoading] = useState(true)
   const [periodo, setPeriodo] = useState(30)
@@ -98,7 +101,7 @@ export default function ViajesExpo() {
 
   /* ── Table columns ── */
   const columns = [
-    { key: 'folio', label: 'Folio', width: '100px' },
+    { key: 'folio', label: 'Folio', width: '100px', render: (v: any) => v.viaje ? '#' + v.viaje : (v.folio || '—') },
     { key: 'cliente', label: 'Cliente', width: '180px' },
     { key: 'origen_ciudad', label: 'Origen', width: '130px', render: (v: ViajeExpo) => v.origen_ciudad || v.origen || '—' },
     { key: 'destino_ciudad', label: 'Destino', width: '130px', render: (v: ViajeExpo) => v.destino_ciudad || v.destino || '—' },
@@ -148,6 +151,7 @@ export default function ViajesExpo() {
           data={viajes}
           columns={columns}
           loading={loading}
+          onRowClick={(row: any) => navigate(`/operaciones/viajes/${row.id}`)}
           emptyMessage="No hay viajes de exportación en este periodo"
           maxHeight="calc(100vh - 340px)"
         />

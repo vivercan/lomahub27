@@ -35,7 +35,7 @@ const PortalAltaPublico = lazy(() => import('./pages/clientes/PortalAltaPublico'
 const PortalAltaReview = lazy(() => import('./pages/clientes/PortalAltaReview'))
 
 // Operaciones
-const Despachos = lazy(() => import('./pages/operaciones/Despachos'))
+// FIX 76 — Despachos.tsx eliminado (dummy data). Despacho IA unificado en /servicio/despacho-ia
 const TorreControl = lazy(() => import('./pages/operaciones/TorreControl'))
 const MapaGPS = lazy(() => import('./pages/operaciones/MapaGPS'))
 const Dedicados = lazy(() => import('./pages/operaciones/Dedicados'))
@@ -258,12 +258,8 @@ function App() {
           } />
 
 
-          {/* ——— 11. Despachos ——— */}
-          <Route path="/operaciones/despachos" element={
-            <ProtectedRoute allowedRoles={['superadmin', 'admin', 'cs', 'ventas']}>
-              <Despachos />
-            </ProtectedRoute>
-          } />
+          {/* ——— 11. Despachos → redirige a Despacho IA (FIX 76 unificación) ——— */}
+          <Route path="/operaciones/despachos" element={<Navigate to="/servicio/despacho-ia" replace />} />
 
           {/* ——— 12. Despacho IA ——— */}
           <Route path="/servicio/despacho-ia" element={

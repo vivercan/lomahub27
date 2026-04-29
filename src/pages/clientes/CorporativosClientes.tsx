@@ -83,10 +83,10 @@ export default function CorporativosClientes(): ReactElement {
   useEffect(() => {
     const load = async () => {
       try {
+        // FIX 76 — Source AAA: v_clientes_aaa une viajes_anodos histórico + master clientes (incluye huérfanos)
         const { data, error } = await supabase
-          .from('v_clientes_con_ventas')
-          .select('id, razon_social, estado_derivado, empresa, vendedor_nombre, cs_nombre, cxc_nombre, viajes_90d, viajes_30d, viajes_7d, viajes_activos, venta_mxn_12m, ultimo_viaje')
-          .in('empresa', EMPRESAS_VALIDAS)
+          .from('v_clientes_aaa')
+          .select('id, razon_social, estado_derivado, empresa, vendedor_nombre, cs_nombre, cxc_nombre, viajes_90d, viajes_30d, viajes_7d, viajes_activos, venta_mxn_12m, ultimo_viaje, viajes_total_history, solo_en_anodos')
         if (error) { console.error('Error v_clientes_con_ventas:', error); setClientes([]) }
         else setClientes((data || []) as ClienteRow[])
       } catch (err) { console.error(err); setClientes([]) }
