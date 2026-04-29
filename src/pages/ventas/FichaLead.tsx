@@ -302,20 +302,9 @@ export default function FichaLead() {
 
   const stageInfo = PIPELINE_STAGES.find(st => st.id === lead.estado)
 
+  // FIX 72 — Quitar botón "Volver" redundante. ModuleLayout ya tiene "Regresar" naranja global.
   return (
-    <ModuleLayout
-      titulo={`Lead — ${lead.empresa}`}
-      acciones={
-        <button
-          style={s.backBtn}
-          onClick={() => navigate('/oportunidades/mis-leads')}
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(180deg, #FF4500 0%, #CC3700 100%)' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(180deg, #FF5C1A 0%, #FF4500 50%, #CC3700 100%)' }}
-        >
-          <ArrowLeft size={14} /> Volver
-        </button>
-      }
-    >
+    <ModuleLayout titulo={`Lead — ${lead.empresa}`}>
       {/* Hidden file input */}
       <input ref={fileInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={handleFileSelected} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%', overflow: 'hidden' }}>

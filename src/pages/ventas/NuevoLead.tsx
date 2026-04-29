@@ -154,6 +154,31 @@ export default function NuevoLead(): ReactElement {
     if (!empresa.trim()) { setError('La empresa es obligatoria'); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
     if (!contacto.trim()) { setError('El nombre del contacto es obligatorio'); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
     if (!telefono.trim() && !email.trim()) { setError('Proporciona al menos teléfono o correo de contacto'); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
+    
+    // FIX 72 — Bloquear si email coincide con un usuario interno (vendedor/admin/cs) de TROB/WE/SHI
+    if (email.trim()) {
+      const emailLower = email.trim().toLowerCase()
+      const dominiosInternos = ['@trob.com.mx','@wexpress.com.mx','@speedyhaul.com','@shi.com.mx']
+      if (dominiosInternos.some(d => emailLower.endsWith(d))) {
+        const { data: userInterno } = await supabase
+          .from('usuarios_autorizados')
+          .select('email,rol,nombre')
+          .eq('email', emailLower)
+          .maybeSingle()
+        if (userInterno) {
+          setError(`No se permite registrar lead con email de un colaborador interno (${userInterno.nombre || emailLower}, ${userInterno.rol}). Usa el email del cliente prospecto.`)
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+          return
+        }
+      }
+    }
+    
+    // FIX 72 — Re-chequear duplicados al momento del save (si el usuario ignoró el warning)
+    if (dupResults.length > 0) {
+      const confirmar = window.confirm(`Hay ${dupResults.length} coincidencia(s) con leads/clientes existentes. ¿Confirmas crear el duplicado de todas formas?`)
+      if (!confirmar) return
+    }
+    
     setSaving(true); setError('')
     try {
       // Apply Title Case to empresa

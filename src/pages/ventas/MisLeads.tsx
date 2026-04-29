@@ -1055,21 +1055,23 @@ export default function MisLeads() {
                       </div>
                     </td>
                     <td style={{ ...s.td, textAlign: 'center' as const }}>
-                      <span style={s.stageBadge(stage.color)}>
-                        {stage.label}
-                      </span>
-                      {/* V52 (FIX 28) — Badge ESTANCADO si >5 dias sin mov */}
-                      {esEstancado(lead) && (
-                        <span style={{
-                          display: 'inline-block', marginLeft: 6, padding: '2px 7px',
-                          borderRadius: 6, fontSize: 10, fontWeight: 700,
-                          background: 'linear-gradient(180deg, #F59E0B 0%, #D97706 100%)',
-                          color: '#FFFFFF', boxShadow: '0 1px 2px rgba(217,119,6,0.30)',
-                          letterSpacing: '0.02em',
-                        }}>
-                          ESTANCADO {diasSinMovimiento(lead.fecha_ultimo_mov)}d
+                      <div style={{ display: 'inline-flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        <span style={s.stageBadge(stage.color)}>
+                          {stage.label}
                         </span>
-                      )}
+                        {/* V52 (FIX 28) — Badge ESTANCADO si >5 dias sin mov / FIX 72 — gap visible */}
+                        {esEstancado(lead) && (
+                          <span style={{
+                            display: 'inline-block', padding: '2px 7px',
+                            borderRadius: 6, fontSize: 10, fontWeight: 700,
+                            background: 'linear-gradient(180deg, #F59E0B 0%, #D97706 100%)',
+                            color: '#FFFFFF', boxShadow: '0 1px 2px rgba(217,119,6,0.30)',
+                            letterSpacing: '0.02em',
+                          }}>
+                            ESTANCADO {diasSinMovimiento(lead.fecha_ultimo_mov)}d
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td style={{ ...s.td, height: `${ROW_HEIGHT}px`, padding: '6px 14px', verticalAlign: 'middle' as const }}>
                       <div style={{ color: tokens.colors.textPrimary }}>{lead.contacto || '—'}</div>
