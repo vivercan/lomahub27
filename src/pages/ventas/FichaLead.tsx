@@ -148,7 +148,7 @@ export default function FichaLead() {
 
   const handleWhatsApp = () => {
     if (!lead?.telefono) { toast.error('Este lead no tiene teléfono registrado.'); return }
-    const phone = lead.telefono.replace(/\\D/g, '')
+    const phone = lead.telefono.replace(/\D/g, '')
     const msg = encodeURIComponent(`Hola, me comunico de parte de LOMA respecto a ${lead.empresa || 'su empresa'}.`)
     window.open(`https://wa.me/${phone}?text=${msg}`, '_blank')
   }
