@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, Globe, User, Phone, Mail, AlertCircle, CheckCircle, Building2, MapPin, Target, Zap, Save, DollarSign, TrendingUp, Truck, FileText } from 'lucide-react'
 import { tokens } from '../../lib/tokens'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
@@ -31,7 +31,12 @@ const TAMANO_OPTS = [
 
 export default function NuevoLead(): ReactElement {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { user } = useAuthContext()
+  const editId = searchParams.get('edit')
+  const isEdit = !!editId
+  const [readOnly, setReadOnly] = useState(false)
+  const [loadingEdit, setLoadingEdit] = useState(isEdit)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -46,7 +51,9 @@ export default function NuevoLead(): ReactElement {
   const [prioridad, setPrioridad] = useState('media')
   const [tamano, setTamano] = useState('')
   const [fechaCierre, setFechaCierre] = useState('')
-  const [tipoServicio, setTipoServicio] = useState<string[]>([])
+  const [tipoServicio, setTipoServicio] = useState<string>('')
+  // FIX 75 — tipo carga ahora chips multi-select
+  const [tipoCargaList, setTipoCargaList] = useState<string[]>([])
   const [transbordo, setTransbordo] = useState(false)
   const [dtd, setDtd] = useState(false)
   const [proximosPasos, setProximosPasos] = useState('')
@@ -62,6 +69,33 @@ export default function NuevoLead(): ReactElement {
   const [dupWarning, setDupWarning] = useState(false)
   const [verifying, setVerifying] = useState(false)
   const [dupResults, setDupResults] = useState<any[]>([])
+
+  // FIX 75 — precarga de datos si ?edit=ID
+  useEffect(() => {
+    if (!editId) return
+    const loadLead = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('leads').select('*').eq('id', editId).maybeSingle()
+        if (error) throw error
+        if (!data) { setError('Lead no encontrado'); return }
+        setEmpresa(data.empresa || '')
+        setContacto(data.contacto || '')
+        setTelefono(data.telefono || '')
+        setEmail(data.email || '')
+        setCiudad(data.ciudad || '')
+        // tipo_carga puede venir como "Seca, Refrigerada"
+        if (data.tipo_carga) setTipoCargaList(data.tipo_carga.split(',').map((s: string) => s.trim()).filter(Boolean))
+        // ruta_interes con separador " | "
+        if (data.ruta_interes) setRutas(data.ruta_interes.split(' | ').filter(Boolean) || [''])
+        if (data.viajes_mes) setViajesMes(String(data.viajes_mes))
+        if (data.valor_estimado) setProyectadoUsd(String(data.valor_estimado))
+      } catch (e: any) {
+        setError(`No se pudo cargar el lead: ${e?.message || 'error'}`)
+      } finally { setLoadingEdit(false) }
+    }
+    loadLead()
+  }, [editId])
 
   useEffect(() => {
     const vm = parseInt(viajesMes) || 0
@@ -155,7 +189,33 @@ export default function NuevoLead(): ReactElement {
     if (!empresa.trim()) { setError('La empresa es obligatoria'); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
     if (!contacto.trim()) { setError('El nombre del contacto es obligatorio'); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
     if (!telefono.trim() && !email.trim()) { setError('Proporciona al menos teléfono o correo de contacto'); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
-    
+
+    // FIX 75 — Validar formato email (RFC simple)
+    if (email.trim() && !/^[\w.+-]+@[\w-]+\.[\w.-]+$/.test(email.trim())) {
+      setError('Email con formato inválido (ej: contacto@empresa.com)')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+
+    // FIX 75 — Teléfono: solo dígitos y mínimo 10
+    if (telefono.trim()) {
+      const tel = telefono.trim().replace(/[\s\-\(\)\+]/g, '')
+      if (!/^\d{10,15}$/.test(tel)) {
+        setError('Teléfono inválido. Solo números, 10 a 15 dígitos.')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
+    }
+
+    // FIX 75 — Sanitizar empresa: longitud + caracteres permitidos
+    const empresaClean = empresa.trim().replace(/\s+/g, ' ')
+    if (empresaClean.length < 3) { setError('Nombre de empresa muy corto (mín 3 caracteres)'); return }
+    if (empresaClean.length > 120) { setError('Nombre de empresa muy largo (máx 120 caracteres)'); return }
+    if (/[<>\$#@!%\^&*\\]/.test(empresaClean)) {
+      setError('Nombre de empresa contiene caracteres no permitidos (<>$#@!%^&*\\).')
+      return
+    }
+
     // FIX 72 — Bloquear si email coincide con un usuario interno (vendedor/admin/cs) de TROB/WE/SHI
     if (email.trim()) {
       const emailLower = email.trim().toLowerCase()
@@ -219,11 +279,15 @@ export default function NuevoLead(): ReactElement {
 
     setSaving(true); setError('')
     try {
-      // Apply Title Case to empresa
-      const empresaTitleCase = empresa
-        .trim()
+      // FIX 75 — Title Case respetando acrónimos (palabras 2-4 letras todas mayúsculas se mantienen)
+      const empresaTitleCase = empresaClean
         .split(' ')
-        .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .map(w => {
+          if (!w) return w
+          if (/^[A-Z]{2,4}$/.test(w)) return w  // QA, USA, S.A. (acrónimo, mantener)
+          if (/^[A-Z]\.[A-Z]\.?$/.test(w)) return w  // S.A., S.A.
+          return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
+        })
         .join(' ')
 
       // V50 (26/Abr/2026) — Schema fix: solo columnas que existen en tabla leads.
@@ -243,13 +307,14 @@ export default function NuevoLead(): ReactElement {
         proyectadoUsd && `Proyectado USD: $${proyectadoUsd}`,
       ].filter(Boolean).join('\n')
 
-      const { error: err } = await supabase.from('leads').insert([{
-        empresa: empresaTitleCase,
+      const payload = {
+        empresa: empresaTitleCase,  // FIX 75 — Title Case con acrónimos respetados
+
         contacto: contacto.trim(),
         telefono: telefono.trim(),
         email: email.trim(),
         ciudad: ciudad.trim(),
-        tipo_carga: tipoServicio.join(', '),
+        tipo_carga: tipoCargaList.join(', '),
         ruta_interes: rutas.filter(r => r.trim()).join(' | '),
         viajes_mes: parseInt(viajesMes) || 0,
         valor_estimado: parseFloat(proyectadoUsd) || 0,
@@ -262,7 +327,15 @@ export default function NuevoLead(): ReactElement {
         notas: notasExtra || null,
         fecha_creacion: new Date().toISOString(),
         fecha_ultimo_mov: new Date().toISOString(),
-      }])
+      }
+      let err: any = null
+      if (isEdit && editId) {
+        const { error } = await supabase.from('leads').update(payload).eq('id', editId)
+        err = error
+      } else {
+        const { error } = await supabase.from('leads').insert([payload])
+        err = error
+      }
       if (err) throw err
       setSuccess(true)
       setTimeout(() => navigate('/oportunidades/mis-leads'), 1200)
@@ -548,7 +621,7 @@ export default function NuevoLead(): ReactElement {
             <div style={ps.sectionTitle}><Target size={14} style={{ color: tokens.colors.primary }} /> Servicio</div>
             <div style={ps.fieldGroup}>
               <label style={ps.label}>Tipo servicio</label>
-              <select style={ps.select} value={tipoServicio} onChange={e => setTipoServicio(e.target.value)}>
+              <select style={ps.select} value={tipoServicio} onChange={e => setTipoServicio(e.target.value)} disabled={readOnly}>
                 <option value="">Seleccionar</option>
                 <option value="IMPO">IMPO</option>
                 <option value="EXPO">EXPO</option>
@@ -558,7 +631,22 @@ export default function NuevoLead(): ReactElement {
             </div>
             <div style={ps.fieldGroup}>
               <label style={ps.label}>Tipo carga</label>
-              <input style={ps.input} placeholder="Ej: Seca, Refrigerada, Peligrosa" disabled />
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                {['Seca','Refrigerada','Peligrosa','Hazmat'].map(opt => {
+                  const selected = tipoCargaList.includes(opt)
+                  return (
+                    <button key={opt} type="button"
+                      onClick={() => setTipoCargaList(selected ? tipoCargaList.filter(v => v !== opt) : [...tipoCargaList, opt])}
+                      style={{
+                        padding: '5px 10px', borderRadius: '999px', fontSize: '11px', fontWeight: 600,
+                        border: '1px solid ' + (selected ? tokens.colors.primary : tokens.colors.border),
+                        background: selected ? tokens.colors.primary : 'transparent',
+                        color: selected ? '#FFFFFF' : tokens.colors.textPrimary,
+                        cursor: 'pointer'
+                      }}>{opt}</button>
+                  )
+                })}
+              </div>
             </div>
             <div style={ps.fieldGroup}>
               <label style={ps.label}>Ruta principal</label>

@@ -60,12 +60,12 @@ export default function FichaLead() {
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [converting, setConverting] = useState(false)
-  const [toast, setToast] = useState<string | null>(null)
+  const [toastMsg, setToastMsg] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const showToast = (msg: string) => {
-    setToast(msg)
-    setTimeout(() => setToast(null), 4000)
+    setToastMsg(msg)
+    setTimeout(() => setToastMsg(null), 4000)
   }
 
   useEffect(() => {
@@ -99,18 +99,48 @@ export default function FichaLead() {
 
   const handleConvertToClient = async () => {
     if (!lead || converting) return
-    if (!await confirmDialog({ message: '¿Convertir este lead a Cliente (Cerrado Ganado)?', danger: false })) return
+    if (!await confirmDialog({ message: `¿Convertir "${lead.empresa}" a Cliente activo? Se creará en la base de clientes y el lead se cerrará como Ganado.`, danger: false })) return
     try {
       setConverting(true)
-      const { error } = await supabase
+      // FIX 75 — Crear cliente real en tabla `clientes` + cerrar lead como Ganado
+      // Verificar si ya existe cliente con esa empresa (evitar duplicado)
+      const { data: existeCliente } = await supabase
+        .from('clientes')
+        .select('id')
+        .ilike('empresa', lead.empresa || '')
+        .maybeSingle()
+      let clienteId: string | null = existeCliente?.id || null
+      if (!clienteId) {
+        const { data: nuevoCliente, error: errIns } = await supabase
+          .from('clientes')
+          .insert([{
+            empresa: lead.empresa,
+            contacto_principal: lead.contacto || null,
+            telefono: lead.telefono || null,
+            email: lead.email || null,
+            ciudad: lead.ciudad || null,
+            tipo: 'activo',
+            estado: 'activo',
+            ejecutivo_asignado: lead.ejecutivo_id || null,
+            empresa_grupo: 'TROB',
+            origen: `Convertido desde lead ${lead.id}`,
+          }])
+          .select('id').single()
+        if (errIns) throw errIns
+        clienteId = nuevoCliente?.id || null
+      }
+      // Cerrar lead como Ganado (mantener historial, no borrar)
+      const { error: errUpd } = await supabase
         .from('leads')
         .update({ estado: 'Cerrado Ganado', fecha_ultimo_mov: new Date().toISOString() })
         .eq('id', lead.id)
-      if (error) throw error
+      if (errUpd) throw errUpd
       setLead({ ...lead, estado: 'Cerrado Ganado', fecha_ultimo_mov: new Date().toISOString() })
-    } catch (err) {
+      toast.success(`Cliente creado/encontrado. Lead cerrado como Ganado. ${clienteId ? 'ID cliente: ' + clienteId.slice(0,8) : ''}`)
+      setTimeout(() => navigate(`/clientes/${clienteId}`), 1500)
+    } catch (err: any) {
       console.error('Error converting lead:', err)
-      toast.error('Error al convertir el lead.')
+      toast.error(`Error al convertir: ${err?.message || 'desconocido'}`)
     } finally {
       setConverting(false)
     }
@@ -530,7 +560,7 @@ export default function FichaLead() {
             </div>
 
             {/* Toast notification */}
-            {toast && (
+            {toastMsg && (
               <div style={{
                 position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
                 background: 'linear-gradient(180deg, #1E293B 0%, #0F172A 100%)',
@@ -541,7 +571,7 @@ export default function FichaLead() {
                 display: 'flex', alignItems: 'center', gap: '10px',
               }}>
                 <span style={{ color: '#FBBF24', fontSize: '16px' }}>⚠</span>
-                {toast}
+                {toastMsg}
               </div>
             )}
           </div>
