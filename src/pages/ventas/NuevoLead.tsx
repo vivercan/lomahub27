@@ -234,6 +234,46 @@ export default function NuevoLead(): ReactElement {
       }
     }
     
+    // FIX 75b — POLÍTICA AAA: Si empresa ya es CLIENTE ACTIVO → BLOQUEO DURO.
+    // Si además había un lead abierto de otro vendedor → auto-cerrarlo como
+    // "Cerrado Ganado: ya es cliente activo" y notificar al vendedor anterior.
+    try {
+      const empresaSearch = empresaClean.toLowerCase()
+      const { data: clienteExistente } = await supabase
+        .from('clientes')
+        .select('id, empresa, tipo')
+        .or(`empresa.ilike.%${empresaSearch}%,empresa.ilike.${empresaSearch}`)
+        .in('tipo', ['activo','corporativo','estrategico'])
+        .limit(1)
+        .maybeSingle()
+      if (clienteExistente) {
+        const { data: leadAbierto } = await supabase
+          .from('leads')
+          .select('id, empresa, ejecutivo_nombre, ejecutivo_email, notas, estado')
+          .ilike('empresa', `%${empresaSearch}%`)
+          .not('estado', 'in', '("Cerrado Ganado","Cerrado Perdido")')
+          .is('deleted_at', null)
+          .limit(1)
+          .maybeSingle()
+        if (leadAbierto) {
+          const nota = (leadAbierto.notas || '') +
+            `\n[FIX 75 ${new Date().toISOString().slice(0,10)}] Auto-cerrado: "${clienteExistente.empresa}" ya es cliente activo (tipo=${clienteExistente.tipo}). Detectado al intentar crear lead duplicado por ${user?.nombre || user?.email || 'otro usuario'}.`
+          await supabase.from('leads').update({
+            estado: 'Cerrado Ganado',
+            fecha_ultimo_mov: new Date().toISOString(),
+            notas: nota,
+          }).eq('id', leadAbierto.id)
+          setError(`"${clienteExistente.empresa}" ya es cliente activo. No se creó lead nuevo. Lead anterior de ${leadAbierto.ejecutivo_nombre || leadAbierto.ejecutivo_email || 'otro vendedor'} fue auto-cerrado como Ganado (notificación en sus notas).`)
+        } else {
+          setError(`"${clienteExistente.empresa}" ya es cliente activo. No se crea lead nuevo (regla AAA: clientes activos no se duplican como oportunidades).`)
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
+    } catch (cliErr) {
+      // Si la query falla, continúa con la lógica anterior — no bloquea por error de red
+    }
+
     // FIX 73 — BLOQUEO DURO si empresa ya está asignada a otro vendedor.
     // Regla 30 días: si el lead lleva ≥30d sin movimiento, permitir solicitar liberación.
     if (dupResults.length > 0) {
