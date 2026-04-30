@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { AlertTriangle, Clock, CheckCircle, Plus, Filter } from 'lucide-react'
+import { AlertTriangle, Clock, CheckCircle, Plus, Filter, X } from 'lucide-react'
 import { ModuleLayout } from '../../components/layout/ModuleLayout'
 import { Card } from '../../components/ui/Card'
 import { Button } from '../../components/ui/Button'
@@ -8,401 +8,371 @@ import { KPICard } from '../../components/ui/KPICard'
 import { DataTable, type Column } from '../../components/ui/DataTable'
 import { tokens } from '../../lib/tokens'
 import { supabase } from '../../lib/supabase'
+import { useAuthContext } from '../../hooks/AuthContext'
 
 interface Ticket {
   id: string
-  numero: string
-  cliente: string
-  tipo: 'queja' | 'solicitud' | 'incidencia' | 'reclamo'
-  prioridad: 'alta' | 'media' | 'baja'
-  estado: 'abierto' | 'en_proceso' | 'resuelto' | 'cerrado'
+  cliente_id?: string | null
+  viaje_id?: string | null
+  tipo: string
+  prioridad: string
+  asunto: string
+  descripcion?: string
+  estado: string
+  asignado_a?: string | null
+  creado_por?: string | null
+  fecha_limite?: string | null
+  fecha_resolucion?: string | null
   created_at: string
-  asignado_a?: string
-  sla_horas?: number
+  cliente_nombre?: string | null
 }
 
-interface KPIStats {
-  totalAbiertos: number
-  slaCumplido: number
-  tiempoPromedio: string
-  criticosPorcentaje: number
-  totalTickets: number
-}
+interface Cliente { id: string; razon_social: string }
+interface UserCS { id: string; nombre: string | null; email: string }
+
+// FIX 76 — Tipos de queja AAA enfocados a transporte de carga (Salesforce-grade)
+const TIPOS_QUEJA = [
+  { value: 'demora_entrega',     label: 'Demora en entrega' },
+  { value: 'dano_mercancia',     label: 'Daño en mercancía' },
+  { value: 'faltante_robo',      label: 'Faltante / Robo' },
+  { value: 'mal_manejo_unidad',  label: 'Mal manejo de unidad' },
+  { value: 'conducta_operador',  label: 'Conducta del operador' },
+  { value: 'documentacion',      label: 'Documentación incorrecta' },
+  { value: 'cobro_indebido',     label: 'Cobro indebido' },
+  { value: 'atencion_cliente',   label: 'Atención / Comunicación' },
+  { value: 'sla_incumplido',     label: 'Incumplimiento de SLA' },
+  { value: 'temperatura',        label: 'Cadena de frío / Temperatura' },
+  { value: 'tiempo_descarga',    label: 'Demora en descarga' },
+  { value: 'otro',               label: 'Otro' },
+]
+
+const PRIORIDADES = [
+  { value: 'critica', label: 'Crítica',  sla_horas: 4,   color: 'red' },
+  { value: 'alta',    label: 'Alta',     sla_horas: 24,  color: 'orange' },
+  { value: 'media',   label: 'Media',    sla_horas: 72,  color: 'yellow' },
+  { value: 'baja',    label: 'Baja',     sla_horas: 168, color: 'gray' },
+]
+
+const CANALES_ORIGEN = [
+  { value: 'whatsapp', label: 'WhatsApp' },
+  { value: 'email',    label: 'Email' },
+  { value: 'telefono', label: 'Teléfono' },
+  { value: 'reunion',  label: 'Reunión presencial' },
+  { value: 'sistema',  label: 'Sistema interno' },
+]
 
 export default function TicketsQuejas() {
+  const { user } = useAuthContext()
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [loading, setLoading] = useState(true)
-  const [stats, setStats] = useState<KPIStats>({
-    totalAbiertos: 0,
-    slaCumplido: 0,
-    tiempoPromedio: '—',
-    criticosPorcentaje: 0,
-    totalTickets: 0,
-  })
+  const [stats, setStats] = useState({ abiertos: 0, total: 0, criticos: 0, slaCumplido: 0 })
   const [filtroEstado, setFiltroEstado] = useState<string>('')
   const [filtroPrioridad, setFiltroPrioridad] = useState<string>('')
 
-  // Cargar tickets desde Supabase
-  useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        setLoading(true)
-        const { data, error } = await supabase
-          .from('tickets')
-          .select('*')
-          .is('deleted_at', null)  // V52 FIX M02-01: respetar soft delete
-          .order('created_at', { ascending: false })
+  // Modal "Nuevo Ticket"
+  const [showModal, setShowModal] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+  const [clientes, setClientes] = useState<Cliente[]>([])
+  const [usersCS, setUsersCS] = useState<UserCS[]>([])
+  const [form, setForm] = useState({
+    cliente_id: '',
+    cliente_search: '',
+    viaje_numero: '',
+    tipo: '',
+    prioridad: 'media',
+    canal: 'whatsapp',
+    asunto: '',
+    descripcion: '',
+    asignado_a: '',
+  })
 
-        if (error) {
-          console.warn('Tabla tickets no existe o error:', error.message)
-          setTickets([])
-        } else {
-          setTickets(data || [])
-          calculateStats(data || [])
-        }
-      } catch (err) {
-        console.error('Error fetching tickets:', err)
-        setTickets([])
-      } finally {
-        setLoading(false)
+  const fetchTickets = async () => {
+    try {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('tickets')
+        .select('id, cliente_id, viaje_id, tipo, prioridad, asunto, descripcion, estado, asignado_a, creado_por, fecha_limite, fecha_resolucion, created_at')
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false })
+        .limit(200)
+      if (error) throw error
+      const list = (data || []) as Ticket[]
+      // Enrich con razon_social
+      const cliIds = [...new Set(list.map(t => t.cliente_id).filter(Boolean))] as string[]
+      if (cliIds.length) {
+        const { data: cli } = await supabase.from('clientes').select('id, razon_social').in('id', cliIds)
+        const map = new Map((cli || []).map((c: any) => [c.id, c.razon_social]))
+        list.forEach(t => { if (t.cliente_id) t.cliente_nombre = map.get(t.cliente_id) || null })
       }
+      setTickets(list)
+      // Stats
+      const abiertos = list.filter(t => ['abierto','en_proceso'].includes(t.estado)).length
+      const criticos = list.filter(t => ['critica','alta'].includes(t.prioridad) && ['abierto','en_proceso'].includes(t.estado)).length
+      const cumplido = list.filter(t => t.estado === 'resuelto' && t.fecha_resolucion && t.fecha_limite && new Date(t.fecha_resolucion) <= new Date(t.fecha_limite)).length
+      const resueltos = list.filter(t => t.estado === 'resuelto').length
+      setStats({
+        abiertos, total: list.length, criticos,
+        slaCumplido: resueltos > 0 ? Math.round(cumplido * 100 / resueltos) : 0,
+      })
+    } catch (e: any) {
+      console.error('fetchTickets', e)
+      setTickets([])
+    } finally { setLoading(false) }
+  }
+
+  useEffect(() => { fetchTickets() }, [])
+
+  const openModal = async () => {
+    setError(''); setShowModal(true)
+    // Lazy-load catálogos
+    if (clientes.length === 0) {
+      const { data: cli } = await supabase.from('clientes').select('id, razon_social').is('deleted_at', null).order('razon_social').limit(1000)
+      setClientes((cli || []) as Cliente[])
     }
+    if (usersCS.length === 0) {
+      const { data: u } = await supabase.from('usuarios_autorizados').select('id, nombre, email').in('rol', ['cs','admin','superadmin']).order('nombre')
+      setUsersCS((u || []) as UserCS[])
+    }
+  }
 
-    fetchTickets()
-  }, [])
-
-  // Calcular estadísticas
-  const calculateStats = (allTickets: Ticket[]) => {
-    const abiertos = allTickets.filter(t => t.estado === 'abierto').length
-    const total = allTickets.length
-    const criticos = allTickets.filter(t => t.prioridad === 'alta').length
-
-    let slaCumplidoCount = 0
-    let sumaHoras = 0
-
-    allTickets.forEach(ticket => {
-      const horasTranscurridas = calcularSLA(ticket.created_at).horasTranscurridas
-      sumaHoras += horasTranscurridas
-
-      const slaTarget = getSLATarget(ticket.prioridad)
-      if (horasTranscurridas <= slaTarget) {
-        slaCumplidoCount++
+  const handleSave = async () => {
+    setError('')
+    if (!form.cliente_id) { setError('Selecciona un cliente'); return }
+    if (!form.tipo) { setError('Selecciona el tipo de queja'); return }
+    if (!form.asunto.trim()) { setError('Escribe un asunto'); return }
+    if (form.asunto.trim().length < 5) { setError('El asunto debe tener al menos 5 caracteres'); return }
+    setSaving(true)
+    try {
+      const slaHoras = PRIORIDADES.find(p => p.value === form.prioridad)?.sla_horas || 72
+      const fechaLimite = new Date(Date.now() + slaHoras * 3600 * 1000).toISOString()
+      // Buscar viaje por numero (opcional)
+      let viaje_id: string | null = null
+      if (form.viaje_numero.trim()) {
+        const num = parseInt(form.viaje_numero.trim().replace(/^#/, ''))
+        if (!isNaN(num)) {
+          const { data: v } = await supabase.from('viajes_anodos').select('id').eq('viaje', num).limit(1).maybeSingle()
+          viaje_id = v?.id || null
+        }
       }
-    })
-
-    const slaCumplidoPct = total > 0 ? Math.round((slaCumplidoCount / total) * 100) : 0
-    const tiempoPromedio = total > 0 ? `${Math.round(sumaHoras / total)}h` : '—'
-
-    setStats({
-      totalAbiertos: abiertos,
-      slaCumplido: slaCumplidoPct,
-      tiempoPromedio,
-      criticosPorcentaje: total > 0 ? Math.round((criticos / total) * 100) : 0,
-      totalTickets: total,
-    })
+      const descripcionFull = (form.descripcion || '').trim() +
+        (form.canal ? `\n\n[Canal de origen: ${CANALES_ORIGEN.find(c => c.value === form.canal)?.label}]` : '')
+      const payload = {
+        cliente_id: form.cliente_id,
+        viaje_id,
+        tipo: form.tipo,
+        prioridad: form.prioridad,
+        asunto: form.asunto.trim(),
+        descripcion: descripcionFull || null,
+        estado: 'abierto',
+        asignado_a: form.asignado_a || null,
+        creado_por: user?.id || null,
+        fecha_limite: fechaLimite,
+      }
+      const { error: insErr } = await supabase.from('tickets').insert([payload])
+      if (insErr) throw insErr
+      setShowModal(false)
+      setForm({ cliente_id:'', cliente_search:'', viaje_numero:'', tipo:'', prioridad:'media', canal:'whatsapp', asunto:'', descripcion:'', asignado_a:'' })
+      await fetchTickets()
+    } catch (e: any) {
+      setError(`Error al guardar: ${e?.message || 'desconocido'}`)
+    } finally { setSaving(false) }
   }
 
-  // Obtener target SLA en horas según prioridad
-  const getSLATarget = (prioridad: 'alta' | 'media' | 'baja'): number => {
-    const targets = { alta: 4, media: 24, baja: 72 }
-    return targets[prioridad]
-  }
-
-  // Calcular SLA
-  const calcularSLA = (fechaCreacion: string) => {
-    const ahora = new Date()
-    const creacion = new Date(fechaCreacion)
-    const horasTranscurridas = (ahora.getTime() - creacion.getTime()) / (1000 * 60 * 60)
-    return { horasTranscurridas }
-  }
-
-  // Obtener estado SLA (verde, amarillo, rojo)
-  const getStatusSLA = (ticket: Ticket) => {
-    const slaTarget = getSLATarget(ticket.prioridad)
-    const { horasTranscurridas } = calcularSLA(ticket.created_at)
-    const porcentajeUsado = (horasTranscurridas / slaTarget) * 100
-
-    if (horasTranscurridas > slaTarget) return 'red'
-    if (porcentajeUsado > 75) return 'yellow'
-    return 'green'
-  }
-
-  // Filtrar tickets
   const ticketsFiltered = tickets.filter(t => {
     if (filtroEstado && t.estado !== filtroEstado) return false
     if (filtroPrioridad && t.prioridad !== filtroPrioridad) return false
     return true
   })
 
-  // Columnas de la tabla
-  const columns: Column<Ticket>[] = [
-    {
-      key: 'numero',
-      label: '#',
-      width: '60px',
-      render: (row) => (
-        <span style={{ fontWeight: 600, color: tokens.colors.primary }}>
-          {row.numero || row.id.slice(0, 8)}
-        </span>
-      ),
-    },
-    {
-      key: 'cliente',
-      label: 'Cliente',
-      width: '140px',
-    },
-    {
-      key: 'tipo',
-      label: 'Tipo',
-      width: '100px',
-      render: (row) => (
-        <span style={{ textTransform: 'capitalize', color: tokens.colors.textSecondary }}>
-          {row.tipo}
-        </span>
-      ),
-    },
-    {
-      key: 'prioridad',
-      label: 'Prioridad',
-      width: '100px',
-      render: (row) => {
-        const colorMap = {
-          alta: 'red',
-          media: 'yellow',
-          baja: 'green',
-        }
-        return (
-          <Badge color={colorMap[row.prioridad] as any}>
-            {row.prioridad.charAt(0).toUpperCase() + row.prioridad.slice(1)}
-          </Badge>
-        )
-      },
-    },
-    {
-      key: 'estado',
-      label: 'Estado',
-      width: '100px',
-      render: (row) => {
-        const colorMap = {
-          abierto: 'red',
-          en_proceso: 'yellow',
-          resuelto: 'green',
-          cerrado: 'gray',
-        }
-        const labelMap = {
-          abierto: 'Abierto',
-          en_proceso: 'En proceso',
-          resuelto: 'Resuelto',
-          cerrado: 'Cerrado',
-        }
-        return (
-          <Badge color={colorMap[row.estado] as any}>
-            {labelMap[row.estado]}
-          </Badge>
-        )
-      },
-    },
-    {
-      key: 'sla',
-      label: 'SLA',
-      width: '80px',
-      render: (row) => {
-        const slaStatus = getStatusSLA(row)
-        const { horasTranscurridas } = calcularSLA(row.created_at)
-        const slaTarget = getSLATarget(row.prioridad)
-        const hrsRemaining = Math.max(0, slaTarget - horasTranscurridas)
+  const tipoLabel = (v: string) => TIPOS_QUEJA.find(t => t.value === v)?.label || v
+  const prioColor = (p: string) => (PRIORIDADES.find(x => x.value === p)?.color || 'gray') as any
+  const estadoColor = (e: string): any => e === 'abierto' ? 'red' : e === 'en_proceso' ? 'yellow' : e === 'resuelto' ? 'green' : 'gray'
+  const estadoLabel = (e: string) => ({ abierto:'Abierto', en_proceso:'En proceso', resuelto:'Resuelto', cerrado:'Cerrado' } as any)[e] || e
 
-        return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing.xs }}>
-            <Badge color={slaStatus === 'green' ? 'green' : slaStatus === 'yellow' ? 'yellow' : 'red'}>
-              {slaStatus === 'red' ? 'Vencido' : `${hrsRemaining.toFixed(1)}h`}
-            </Badge>
-          </div>
-        )
-      },
-    },
-    {
-      key: 'asignado_a',
-      label: 'Asignado',
-      width: '120px',
-      render: (row) => (
-        <span style={{ color: tokens.colors.textSecondary }}>
-          {row.asignado_a || '—'}
-        </span>
-      ),
-    },
-    {
-      key: 'created_at',
-      label: 'Fecha',
-      width: '100px',
-      render: (row) => {
-        const fecha = new Date(row.created_at)
-        return (
-          <span style={{ color: tokens.colors.textSecondary, fontSize: '12px' }}>
-            {fecha.toLocaleDateString('es-ES')}
-          </span>
-        )
-      },
-    },
-    {
-      key: 'acciones',
-      label: 'Acciones',
-      width: '80px',
-      render: () => (
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation()
-          }}
-        >
-          Ver
-        </Button>
-      ),
-    },
+  const columns: Column<Ticket>[] = [
+    { key: 'created_at', label: 'Fecha', width: '110px', render: (r) => new Date(r.created_at).toLocaleDateString('es-MX', { day:'2-digit', month:'short' }) },
+    { key: 'cliente_nombre', label: 'Cliente', width: '200px', render: (r) => r.cliente_nombre || '—' },
+    { key: 'tipo', label: 'Tipo', width: '160px', render: (r) => tipoLabel(r.tipo) },
+    { key: 'asunto', label: 'Asunto', render: (r) => r.asunto },
+    { key: 'prioridad', label: 'Prioridad', width: '90px', render: (r) => <Badge color={prioColor(r.prioridad)}>{PRIORIDADES.find(p => p.value === r.prioridad)?.label || r.prioridad}</Badge> },
+    { key: 'estado', label: 'Estado', width: '100px', render: (r) => <Badge color={estadoColor(r.estado)}>{estadoLabel(r.estado)}</Badge> },
+    { key: 'fecha_limite', label: 'SLA', width: '90px', render: (r) => {
+      if (!r.fecha_limite) return '—'
+      const ms = new Date(r.fecha_limite).getTime() - Date.now()
+      const horas = Math.round(ms / 3600000)
+      if (r.estado === 'resuelto' || r.estado === 'cerrado') return <Badge color="green">OK</Badge>
+      if (horas < 0) return <Badge color="red">Vencido</Badge>
+      if (horas < 4) return <Badge color="orange">{horas}h</Badge>
+      return <Badge color="gray">{horas}h</Badge>
+    }},
   ]
 
   return (
     <ModuleLayout
       titulo="Tickets & Quejas"
-      subtitulo="Gestión de reclamos y solicitudes de clientes"
+      subtitulo="Gestión de reclamos y solicitudes de clientes — transporte de carga"
       acciones={
-        <Button variant="primary" size="md">
-          <Plus size={18} />
-          Nuevo Ticket
+        <Button variant="primary" size="md" onClick={openModal}>
+          <Plus size={18} /> Nuevo Ticket
         </Button>
       }
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.lg, height: '100%' }}>
-        {/* KPI Cards Row */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: tokens.spacing.lg,
-            flexShrink: 0,
-          }}
-        >
-          <KPICard
-            titulo="Tickets Abiertos"
-            valor={stats.totalAbiertos}
-            icono={<AlertTriangle size={20} />}
-            color="red"
-            subtitulo={`de ${stats.totalTickets} total`}
-          />
-          <KPICard
-            titulo="SLA Cumplido"
-            valor={`${stats.slaCumplido}%`}
-            icono={<CheckCircle size={20} />}
-            color="green"
-            subtitulo="del total de tickets"
-          />
-          <KPICard
-            titulo="Tiempo Promedio"
-            valor={stats.tiempoPromedio}
-            icono={<Clock size={20} />}
-            color="blue"
-            subtitulo="resolución"
-          />
-          <KPICard
-            titulo="Críticos"
-            valor={`${stats.criticosPorcentaje}%`}
-            icono={<AlertTriangle size={20} />}
-            color="orange"
-            subtitulo="de prioridad alta"
-          />
+      <div style={{ display:'flex', flexDirection:'column', gap: tokens.spacing.lg, height:'100%' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap: tokens.spacing.lg }}>
+          <KPICard titulo="Tickets Abiertos"  valor={stats.abiertos}  icono={<AlertTriangle size={20} />} color="red"    subtitulo={`de ${stats.total} total`} />
+          <KPICard titulo="SLA Cumplido"      valor={`${stats.slaCumplido}%`} icono={<CheckCircle size={20} />}    color="green"  subtitulo="del total resuelto" />
+          <KPICard titulo="Críticos abiertos" valor={stats.criticos}  icono={<AlertTriangle size={20} />} color="orange" subtitulo="prioridad alta/crítica" />
+          <KPICard titulo="Tiempo Promedio"   valor="—"                icono={<Clock size={20} />}        color="blue"   subtitulo="resolución" />
         </div>
 
-        {/* Filters Row */}
-        <div
-          style={{
-            display: 'flex',
-            gap: tokens.spacing.md,
-            alignItems: 'center',
-            flexShrink: 0,
-            paddingBottom: tokens.spacing.md,
-            borderBottom: `1px solid ${tokens.colors.border}`,
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              gap: tokens.spacing.sm,
-              alignItems: 'center',
-            }}
-          >
-            <Filter size={16} style={{ color: tokens.colors.textSecondary }} />
-            <span style={{ color: tokens.colors.textSecondary, fontSize: '13px', fontFamily: tokens.fonts.body }}>
-              Estado:
-            </span>
-            {['abierto', 'en_proceso', 'resuelto', 'cerrado'].map(estado => (
-              <button
-                key={estado}
-                onClick={() => setFiltroEstado(filtroEstado === estado ? '' : estado)}
-                style={{
-                  padding: `${tokens.spacing.xs} ${tokens.spacing.sm}`,
-                  border: `1px solid ${filtroEstado === estado ? tokens.colors.primary : tokens.colors.border}`,
-                  borderRadius: tokens.radius.md,
-                  background: filtroEstado === estado ? 'rgba(30, 102, 245, 0.15)' : 'transparent',
-                  color: filtroEstado === estado ? tokens.colors.primary : tokens.colors.textSecondary,
-                  fontFamily: tokens.fonts.body,
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  textTransform: 'capitalize',
-                }}
-              >
-                {estado.replace('_', ' ')}
-              </button>
-            ))}
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              gap: tokens.spacing.sm,
-              alignItems: 'center',
-              marginLeft: tokens.spacing.lg,
-            }}
-          >
-            <span style={{ color: tokens.colors.textSecondary, fontSize: '13px', fontFamily: tokens.fonts.body }}>
-              Prioridad:
-            </span>
-            {['alta', 'media', 'baja'].map(prioridad => (
-              <button
-                key={prioridad}
-                onClick={() => setFiltroPrioridad(filtroPrioridad === prioridad ? '' : prioridad)}
-                style={{
-                  padding: `${tokens.spacing.xs} ${tokens.spacing.sm}`,
-                  border: `1px solid ${filtroPrioridad === prioridad ? tokens.colors.primary : tokens.colors.border}`,
-                  borderRadius: tokens.radius.md,
-                  background: filtroPrioridad === prioridad ? 'rgba(30, 102, 245, 0.15)' : 'transparent',
-                  color: filtroPrioridad === prioridad ? tokens.colors.primary : tokens.colors.textSecondary,
-                  fontFamily: tokens.fonts.body,
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  textTransform: 'capitalize',
-                }}
-              >
-                {prioridad}
-              </button>
-            ))}
-          </div>
+        <div style={{ display:'flex', gap: tokens.spacing.md, alignItems:'center', borderBottom:`1px solid ${tokens.colors.border}`, paddingBottom: tokens.spacing.md }}>
+          <Filter size={16} style={{ color: tokens.colors.textSecondary }} />
+          <span style={{ color: tokens.colors.textSecondary, fontSize:'13px' }}>Estado:</span>
+          {['abierto','en_proceso','resuelto','cerrado'].map(e => (
+            <button key={e} onClick={() => setFiltroEstado(filtroEstado === e ? '' : e)} style={{
+              padding:'4px 10px', borderRadius: tokens.radius.md,
+              border:`1px solid ${filtroEstado === e ? tokens.colors.primary : tokens.colors.border}`,
+              background: filtroEstado === e ? 'rgba(30,102,245,0.15)' : 'transparent',
+              color: filtroEstado === e ? tokens.colors.primary : tokens.colors.textSecondary,
+              fontSize:'12px', cursor:'pointer', textTransform:'capitalize'
+            }}>{estadoLabel(e)}</button>
+          ))}
+          <span style={{ color: tokens.colors.textSecondary, fontSize:'13px', marginLeft: tokens.spacing.md }}>Prioridad:</span>
+          {PRIORIDADES.map(p => (
+            <button key={p.value} onClick={() => setFiltroPrioridad(filtroPrioridad === p.value ? '' : p.value)} style={{
+              padding:'4px 10px', borderRadius: tokens.radius.md,
+              border:`1px solid ${filtroPrioridad === p.value ? tokens.colors.primary : tokens.colors.border}`,
+              background: filtroPrioridad === p.value ? 'rgba(30,102,245,0.15)' : 'transparent',
+              color: filtroPrioridad === p.value ? tokens.colors.primary : tokens.colors.textSecondary,
+              fontSize:'12px', cursor:'pointer'
+            }}>{p.label}</button>
+          ))}
         </div>
 
-        {/* Data Table */}
-        <Card style={{ flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ flex: 1, overflow: 'auto' }}>
-            <DataTable<Ticket>
-              columns={columns}
-              data={ticketsFiltered}
-              loading={loading}
-              emptyMessage={tickets.length === 0 ? 'Aún no hay registros' : 'Sin resultados para los filtros seleccionados'}
-            />
-          </div>
+        <Card style={{ flex:1, overflow:'auto' }}>
+          <DataTable<Ticket>
+            columns={columns}
+            data={ticketsFiltered}
+            loading={loading}
+            emptyMessage={tickets.length === 0 ? 'Aún no hay tickets registrados — empieza con "Nuevo Ticket"' : 'Sin resultados con los filtros'}
+          />
         </Card>
       </div>
+
+      {/* Modal Nuevo Ticket — AAA transporte de carga */}
+      {showModal && (
+        <div onClick={() => !saving && setShowModal(false)} style={{
+          position:'fixed', inset:0, background:'rgba(0,0,0,0.6)', zIndex:1000,
+          display:'flex', alignItems:'center', justifyContent:'center', padding:'24px'
+        }}>
+          <div onClick={(e) => e.stopPropagation()} style={{
+            background: tokens.colors.bgCard, borderRadius: tokens.radius.lg,
+            padding: tokens.spacing.xl, width:'100%', maxWidth:'640px',
+            maxHeight:'90vh', overflow:'auto',
+            border:`1px solid ${tokens.colors.border}`, fontFamily: tokens.fonts.body,
+          }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: tokens.spacing.lg }}>
+              <h2 style={{ margin:0, color: tokens.colors.textPrimary, fontSize:'18px', fontWeight:600 }}>Nuevo Ticket</h2>
+              <button onClick={() => !saving && setShowModal(false)} style={{ background:'none', border:'none', color: tokens.colors.textSecondary, cursor:'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            {error && (
+              <div style={{ background:'rgba(239,68,68,0.1)', border:`1px solid ${tokens.colors.red}`, color: tokens.colors.red, padding:'10px', borderRadius: tokens.radius.md, marginBottom: tokens.spacing.md, fontSize:'13px' }}>
+                {error}
+              </div>
+            )}
+
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap: tokens.spacing.md }}>
+              {/* Cliente */}
+              <div style={{ gridColumn:'1 / -1' }}>
+                <label style={lbl}>Cliente *</label>
+                <input type="text" placeholder="Buscar cliente..." value={form.cliente_search}
+                  onChange={(e) => setForm({ ...form, cliente_search: e.target.value, cliente_id: '' })}
+                  style={inp} />
+                {form.cliente_search && !form.cliente_id && (
+                  <div style={{ maxHeight:'120px', overflow:'auto', border:`1px solid ${tokens.colors.border}`, borderRadius: tokens.radius.md, marginTop:'4px' }}>
+                    {clientes.filter(c => (c.razon_social || '').toLowerCase().includes(form.cliente_search.toLowerCase())).slice(0, 10).map(c => (
+                      <div key={c.id} onClick={() => setForm({ ...form, cliente_id: c.id, cliente_search: c.razon_social })}
+                        style={{ padding:'8px 12px', cursor:'pointer', color: tokens.colors.textPrimary, fontSize:'13px', borderBottom:`1px solid ${tokens.colors.border}` }}>
+                        {c.razon_social}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Viaje opcional */}
+              <div>
+                <label style={lbl}>Viaje (opcional)</label>
+                <input type="text" placeholder="#191490" value={form.viaje_numero}
+                  onChange={(e) => setForm({ ...form, viaje_numero: e.target.value })} style={inp} />
+              </div>
+
+              {/* Canal de origen */}
+              <div>
+                <label style={lbl}>Canal de origen *</label>
+                <select value={form.canal} onChange={(e) => setForm({ ...form, canal: e.target.value })} style={inp}>
+                  {CANALES_ORIGEN.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                </select>
+              </div>
+
+              {/* Tipo */}
+              <div>
+                <label style={lbl}>Tipo de queja *</label>
+                <select value={form.tipo} onChange={(e) => setForm({ ...form, tipo: e.target.value })} style={inp}>
+                  <option value="">— Selecciona —</option>
+                  {TIPOS_QUEJA.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                </select>
+              </div>
+
+              {/* Prioridad */}
+              <div>
+                <label style={lbl}>Prioridad *</label>
+                <select value={form.prioridad} onChange={(e) => setForm({ ...form, prioridad: e.target.value })} style={inp}>
+                  {PRIORIDADES.map(p => <option key={p.value} value={p.value}>{p.label} (SLA {p.sla_horas}h)</option>)}
+                </select>
+              </div>
+
+              {/* Asignado */}
+              <div style={{ gridColumn:'1 / -1' }}>
+                <label style={lbl}>Asignar a (opcional)</label>
+                <select value={form.asignado_a} onChange={(e) => setForm({ ...form, asignado_a: e.target.value })} style={inp}>
+                  <option value="">— Sin asignar —</option>
+                  {usersCS.map(u => <option key={u.id} value={u.id}>{u.nombre || u.email}</option>)}
+                </select>
+              </div>
+
+              {/* Asunto */}
+              <div style={{ gridColumn:'1 / -1' }}>
+                <label style={lbl}>Asunto *</label>
+                <input type="text" placeholder="Ej: Caja llegó con mercancía dañada en techo" value={form.asunto}
+                  onChange={(e) => setForm({ ...form, asunto: e.target.value })} style={inp} />
+              </div>
+
+              {/* Descripción */}
+              <div style={{ gridColumn:'1 / -1' }}>
+                <label style={lbl}>Descripción detallada</label>
+                <textarea placeholder="Describe lo ocurrido, cuándo, qué viaje/operador/unidad, fotos disponibles, expectativa del cliente..." value={form.descripcion}
+                  onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
+                  style={{ ...inp, minHeight:'90px', resize:'vertical', fontFamily: tokens.fonts.body }} />
+              </div>
+            </div>
+
+            <div style={{ display:'flex', gap: tokens.spacing.sm, justifyContent:'flex-end', marginTop: tokens.spacing.lg }}>
+              <Button variant="secondary" size="md" onClick={() => !saving && setShowModal(false)}>Cancelar</Button>
+              <Button variant="primary" size="md" onClick={handleSave}>
+                {saving ? 'Guardando...' : 'Crear ticket'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </ModuleLayout>
   )
 }
+
+const lbl: any = { display:'block', marginBottom:'4px', color: tokens.colors.textSecondary, fontSize:'12px', fontWeight:500 }
+const inp: any = { width:'100%', padding:'8px 10px', borderRadius: tokens.radius.md, border:`1px solid ${tokens.colors.border}`, background: tokens.colors.bgMain, color: tokens.colors.textPrimary, fontSize:'13px', outline:'none', fontFamily: tokens.fonts.body }

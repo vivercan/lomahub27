@@ -20,11 +20,26 @@ interface ViajeImpo {
   tracto: string
   estado: string
   inicia_viaje: string
+  llega_destino?: string | null
+  cita_descarga?: string | null
   fecha_crea: string
   kms_viaje: number
   tipo: string
   origen_ciudad?: string
   destino_ciudad?: string
+}
+
+// FIX 76 - Derivar estado del viaje desde timestamps ANODOS
+const deriveEstado = (v: any): string => {
+  if (v.llega_destino) return 'entregado'
+  if (!v.inicia_viaje) return 'programado'
+  if (v.cita_descarga) {
+    const cita = new Date(v.cita_descarga).getTime()
+    const horasRetraso = (Date.now() - cita) / 3600000
+    if (horasRetraso > 6) return 'retrasado'
+    if (horasRetraso > 2) return 'en_riesgo'
+  }
+  return 'en_transito'
 }
 
 /* ── Estado badge colors ── */
@@ -96,9 +111,11 @@ export default function ViajesImpo() {
 
   /* ── KPIs ── */
   const total = viajes.length
-  const enTransito = viajes.filter(v => ['en_transito', 'en transito'].includes(v.estado?.toLowerCase())).length
-  const entregados = viajes.filter(v => ['entregado', 'completado'].includes(v.estado?.toLowerCase())).length
-  const enRiesgo = viajes.filter(v => ['en_riesgo', 'retrasado'].includes(v.estado?.toLowerCase())).length
+  // FIX 76 - estado derivado si ANODOS no expone
+  const _estado = (v: any) => (v.estado && v.estado.trim()) ? v.estado.toLowerCase() : deriveEstado(v)
+  const enTransito = viajes.filter(v => ['en_transito','en transito'].includes(_estado(v))).length
+  const entregados = viajes.filter(v => ['entregado','completado'].includes(_estado(v))).length
+  const enRiesgo = viajes.filter(v => ['en_riesgo','retrasado'].includes(_estado(v))).length
 
   /* ── Table columns ── */
   const columns = [
@@ -108,7 +125,7 @@ export default function ViajesImpo() {
     { key: 'destino_ciudad', label: 'Destino', width: '130px', render: (v: ViajeImpo) => v.destino_ciudad || v.destino || '—' },
     { key: 'tracto', label: 'Tracto', width: '100px' },
     { key: 'kms_viaje', label: 'Km', width: '80px', render: (v: ViajeImpo) => v.kms_viaje ? v.kms_viaje.toLocaleString() : '—' },
-    { key: 'estado', label: 'Estado', width: '120px', render: (v: ViajeImpo) => <Badge color={estadoColor(v.estado)}>{estadoLabel(v.estado)}</Badge> },
+    { key: 'estado', label: 'Estado', width: '120px', render: (v: any) => { const e = v.estado && v.estado.trim() ? v.estado : deriveEstado(v); return <Badge color={estadoColor(e)}>{estadoLabel(e)}</Badge> } },
     { key: 'inicia_viaje', label: 'Fecha Inicio', width: '120px', render: (v: ViajeImpo) => {
       const d = v.inicia_viaje || v.fecha_crea
       return d ? new Date(d).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
